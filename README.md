@@ -1,9 +1,9 @@
 # SinterDB
 
-[![CI](https://img.shields.io/github/actions/workflow/status/Killer88967/sinterdb/ci.yml?branch=main&label=CI)](https://github.com/Killer88967/sinterdb/actions/workflows/ci.yml)
-[![License](https://img.shields.io/github/license/Killer88967/sinterdb)](LICENSE)
-[![Node.js](https://img.shields.io/badge/Node.js-%3E%3D24-339933?logo=node.js&logoColor=white)](package.json)
-[![TypeScript](https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![CI](https://img.shields.io/github/actions/workflow/status/Killer88967/sinterdb/ci.yml?style=plastic&branch=main&label=CI)](https://github.com/Killer88967/sinterdb/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/Killer88967/sinterdb?style=plastic)](LICENSE)
+[![Node.js](https://img.shields.io/badge/Node.js-%3E%3D24-339933?style=plastic&logo=node.js&logoColor=white)](package.json)
+[![TypeScript](https://img.shields.io/badge/TypeScript-7-3178C6?style=plastic&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
 A document-oriented database, its official Node.js driver, and supporting packages.
 
