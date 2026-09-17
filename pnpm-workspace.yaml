@@ -1,0 +1,10 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+  - "examples/*"
+
+catalog:
+  "@types/node": "latest"
+  "typescript": "latest"
+  "vitest": "latest"
+  "tsup": "latest"
