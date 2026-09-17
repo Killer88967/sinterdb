@@ -3,6 +3,9 @@ packages:
   - "packages/*"
   - "examples/*"
 
+allowBuilds:
+  esbuild: true
+
 catalog:
   "@types/node": "latest"
   "typescript": "latest"

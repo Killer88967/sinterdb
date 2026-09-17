@@ -1,0 +1,75 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+build/
+out/
+lib/
+*.tsbuildinfo
+
+# Test output
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+
+# Tool caches
+.cache/
+.eslintcache
+.vitest/
+.turbo/
+.temp/
+tmp/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# CustomDB runtime data
+/data/
+/.customdb/
+/customdb-data/
+/backups/
+/certs/local/
+
+# Process files
+*.pid
+*.pid.lock
+
+# Local package archives
+*.tgz
+
+# Local benchmark output
+/benchmarks/results/
+
+# VS Code
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+# JetBrains
+.idea/
+
+# Operating systems
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Temporary editor files
+*.swp
+*.swo
+*~
