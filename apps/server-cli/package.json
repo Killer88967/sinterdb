@@ -1,0 +1,47 @@
+{
+  "name": "sinterdb-server",
+  "version": "0.0.1",
+  "description": "Command-line server for SinterDB.",
+  "author": "Killer88967",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "bin": {
+    "sinterd": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "test:watch": "vitest",
+    "clean": "rimraf dist coverage"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Killer88967/sinterdb.git",
+    "directory": "apps/server-cli"
+  },
+  "homepage": "https://github.com/Killer88967/sinterdb#readme",
+  "bugs": {
+    "url": "https://github.com/Killer88967/sinterdb/issues"
+  },
+  "keywords": [
+    "sinterdb",
+    "database",
+    "document-database",
+    "database-server",
+    "cli"
+  ]
+}
