@@ -12,6 +12,7 @@ export { decodeFrame, encodeFrame } from "./frame.js";
 export { MAX_DOCUMENT_DEPTH, ValueTag } from "./document.js";
 export { encodeDocument, encodeDocumentValue } from "./document-encoder.js";
 export { decodeDocument, decodeDocumentValue } from "./document-decoder.js";
+export { HandshakeRole, ProtocolCapability } from "./messages.js";
 
 export type {
   FrameFlag as FrameFlagValue,
@@ -24,3 +25,16 @@ export type {
   DocumentValue,
   ValueTag as ValueTagValue,
 } from "./document.js";
+export type {
+  CommandEnvelope,
+  ErrorEnvelope,
+  HandshakeEnvelope,
+  HandshakeRole as HandshakeRoleValue,
+  MessagePayloadByKind,
+  PingEnvelope,
+  ProtocolCapability as ProtocolCapabilityValue,
+  ProtocolEnvelope,
+  ResultEnvelope,
+  StreamEndEnvelope,
+  StreamItemEnvelope,
+} from "./messages.js";
