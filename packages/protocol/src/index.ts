@@ -9,7 +9,6 @@ export {
 } from "./constants.js";
 export { ProtocolError, ProtocolErrorCode } from "./errors.js";
 export { decodeFrame, encodeFrame } from "./frame.js";
-export { decodeJsonPayload, encodeJsonPayload } from "./serialization.js";
 export { MAX_DOCUMENT_DEPTH, ValueTag } from "./document.js";
 export { encodeDocument, encodeDocumentValue } from "./document-encoder.js";
 export { decodeDocument, decodeDocumentValue } from "./document-decoder.js";

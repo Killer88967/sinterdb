@@ -18,7 +18,6 @@ export const ProtocolErrorCode = {
   InvalidUtf8: "INVALID_UTF8",
   DuplicateDocumentKey: "DUPLICATE_DOCUMENT_KEY",
   TrailingData: "TRAILING_DATA",
-  SerializationFailure: "SERIALIZATION_FAILURE",
 } as const;
 
 export type ProtocolErrorCode =
