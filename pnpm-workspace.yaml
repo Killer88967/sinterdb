@@ -11,3 +11,6 @@ catalog:
   "typescript": "latest"
   "vitest": "latest"
   "tsup": "latest"
+
+minimumReleaseAgeExclude:
+  - prettier@3.9.7
