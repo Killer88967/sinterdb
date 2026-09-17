@@ -1,6 +1,16 @@
-/**
- * Shared SinterDB wire-protocol primitives.
- *
- * Protocol framing and message types begin in version 0.0.2.
- */
-export {};
+export {
+  FRAME_HEADER_SIZE,
+  MAX_PAYLOAD_SIZE,
+  PROTOCOL_MAGIC,
+  PROTOCOL_VERSION,
+  FrameFlag,
+  FrameOffset,
+  MessageKind,
+} from "./constants.js";
+export { ProtocolError, ProtocolErrorCode } from "./errors.js";
+
+export type {
+  FrameFlag as FrameFlagValue,
+  MessageKind as MessageKindValue,
+} from "./constants.js";
+export type { ProtocolErrorCode as ProtocolErrorCodeValue } from "./errors.js";
