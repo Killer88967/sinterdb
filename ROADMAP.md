@@ -84,15 +84,15 @@ customdb-odm/
 
 ## 4. Package Responsibilities
 
-| Package | Published | Responsibility |
-| --- | --- | --- |
-| `@customdb/protocol` | Initially private | Versioned request/response types, framing, serialization, capabilities, and error codes |
-| `@customdb/storage` | No | Data files, write-ahead log, checkpoints, indexes, recovery, and compaction |
-| `@customdb/server` | Optional | Query execution, sessions, authentication, transactions, and TCP server |
-| `customdb-server` | Optional executable | CLI that configures and starts the server |
-| `customdb` | Yes | Official Node.js driver and primary public npm package |
-| `@customdb/test-utils` | Later | Test-server lifecycle and fixtures for downstream packages |
-| `customdb-odm` | Yes, separate repository | Schemas, models, validation, hooks, virtuals, and population |
+| Package                | Published                | Responsibility                                                                          |
+| ---------------------- | ------------------------ | --------------------------------------------------------------------------------------- |
+| `@customdb/protocol`   | Initially private        | Versioned request/response types, framing, serialization, capabilities, and error codes |
+| `@customdb/storage`    | No                       | Data files, write-ahead log, checkpoints, indexes, recovery, and compaction             |
+| `@customdb/server`     | Optional                 | Query execution, sessions, authentication, transactions, and TCP server                 |
+| `customdb-server`      | Optional executable      | CLI that configures and starts the server                                               |
+| `customdb`             | Yes                      | Official Node.js driver and primary public npm package                                  |
+| `@customdb/test-utils` | Later                    | Test-server lifecycle and fixtures for downstream packages                              |
+| `customdb-odm`         | Yes, separate repository | Schemas, models, validation, hooks, virtuals, and population                            |
 
 ## 5. Public Driver Shape
 
@@ -719,15 +719,15 @@ Each release must include:
 
 ## Required CI Matrix by `0.9.0`
 
-| Area | Required coverage |
-| --- | --- |
-| Node.js | Every declared supported LTS/current release |
-| Operating systems | Linux, macOS, and Windows |
-| Package installation | pnpm, npm, and Yarn consumer fixtures |
-| Protocol | Minimum and maximum compatible driver/server pairs |
-| Storage | Fresh data, upgraded data, recovery, and corrupted fixtures |
-| Security | TLS, authentication, authorization, redaction, and malformed input |
-| Reliability | Stress, soak, forced termination, disk errors, and network interruption |
+| Area                 | Required coverage                                                       |
+| -------------------- | ----------------------------------------------------------------------- |
+| Node.js              | Every declared supported LTS/current release                            |
+| Operating systems    | Linux, macOS, and Windows                                               |
+| Package installation | pnpm, npm, and Yarn consumer fixtures                                   |
+| Protocol             | Minimum and maximum compatible driver/server pairs                      |
+| Storage              | Fresh data, upgraded data, recovery, and corrupted fixtures             |
+| Security             | TLS, authentication, authorization, redaction, and malformed input      |
+| Reliability          | Stress, soak, forced termination, disk errors, and network interruption |
 
 # Initial Issue Milestones
 
