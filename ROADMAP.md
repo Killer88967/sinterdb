@@ -99,14 +99,14 @@ sinterdb-odm/
 The intended low-level API is familiar without pretending to be MongoDB-compatible:
 
 ```ts
-import { CustomClient, type Document } from "sinterdb";
+import { SinterClient, type Document } from "sinterdb";
 
 interface User extends Document {
   username: string;
   createdAt: Date;
 }
 
-const client = new CustomClient("sinterdb://127.0.0.1:4721");
+const client = new SinterClient("sinterdb://127.0.0.1:4721");
 
 await client.connect();
 
@@ -127,7 +127,7 @@ await client.close();
 The public object hierarchy is:
 
 ```text
-CustomClient
+SinterClient
 └── Database
     └── Collection<TDocument>
         └── Cursor<TDocument>
@@ -244,7 +244,7 @@ packages/
 
 ### Deliverables
 
-- `CustomClient`
+- `SinterClient`
 - URI parser for `sinterdb://host:port/database`
 - `connect()`, `close()`, and `db()`
 - Handshake and capability negotiation
@@ -680,7 +680,7 @@ data/
 
 ### Driver guarantees
 
-- Stable `CustomClient`, `Database`, `Collection`, cursor, session, and transaction APIs
+- Stable `SinterClient`, `Database`, `Collection`, cursor, session, and transaction APIs
 - Stable error hierarchy and error codes
 - Connection pooling, monitoring, cancellation, retries, TLS, and authentication
 - Supported Node.js version matrix
@@ -767,7 +767,7 @@ Once the naming decisions are complete, implementation should follow this order:
 4. Add golden protocol fixtures.
 5. Build the incremental frame decoder.
 6. Start a TCP server with `ping`.
-7. Connect through `CustomClient`.
+7. Connect through `SinterClient`.
 8. Add one vertical data path: `insertOne` followed by `findOne`.
 
 That vertical slice proves the package boundaries before more CRUD, persistence, indexes, authentication, or ODM work is added.

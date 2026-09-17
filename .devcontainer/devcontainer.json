@@ -31,7 +31,6 @@
     "memory": "8gb",
     "storage": "32gb"
   },
-  "postCreateCommand": "npm install --global pnpm@latest && if [ -f package.json ]; then pnpm install; fi",
   "customizations": {
     "codespaces": {
       "openFiles": ["README.md", "ROADMAP.md"]
