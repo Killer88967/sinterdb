@@ -8,6 +8,11 @@ export const ProtocolErrorCode = {
   PayloadTooLarge: "PAYLOAD_TOO_LARGE",
   IncompleteFrame: "INCOMPLETE_FRAME",
   PayloadLengthMismatch: "PAYLOAD_LENGTH_MISMATCH",
+  InvalidDocumentValue: "INVALID_DOCUMENT_VALUE",
+  IntegerOutOfRange: "INTEGER_OUT_OF_RANGE",
+  InvalidDate: "INVALID_DATE",
+  DocumentTooDeep: "DOCUMENT_TOO_DEEP",
+  CyclicDocument: "CYCLIC_DOCUMENT",
   SerializationFailure: "SERIALIZATION_FAILURE",
 } as const;
 
