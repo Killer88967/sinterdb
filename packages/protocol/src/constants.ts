@@ -14,10 +14,12 @@ export const MAX_PAYLOAD_SIZE = 16 * 1024 * 1024;
 
 export const MessageKind = {
   Handshake: 0x01,
-  Request: 0x02,
-  Response: 0x03,
-  Error: 0x04,
-  Event: 0x05,
+  Ping: 0x02,
+  Command: 0x03,
+  Result: 0x04,
+  StreamItem: 0x05,
+  StreamEnd: 0x06,
+  Error: 0x07,
 } as const;
 
 export type MessageKind = (typeof MessageKind)[keyof typeof MessageKind];

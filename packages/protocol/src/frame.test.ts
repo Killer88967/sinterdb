@@ -15,7 +15,7 @@ describe("frame encoding", () => {
     const payload = new TextEncoder().encode('{"ping":true}');
 
     const encoded = encodeFrame({
-      kind: MessageKind.Request,
+      kind: MessageKind.Command,
       flags: FrameFlag.None,
       requestId: 42,
       payload,
@@ -25,7 +25,7 @@ describe("frame encoding", () => {
 
     expect(decoded).toEqual({
       version: PROTOCOL_VERSION,
-      kind: MessageKind.Request,
+      kind: MessageKind.Command,
       flags: FrameFlag.None,
       requestId: 42,
       payload,
@@ -34,7 +34,7 @@ describe("frame encoding", () => {
 
   it("writes integers in network byte order", () => {
     const encoded = encodeFrame({
-      kind: MessageKind.Request,
+      kind: MessageKind.Command,
       requestId: 0x01020304,
       payload: new Uint8Array([1, 2, 3]),
     });
@@ -55,7 +55,7 @@ describe("frame encoding", () => {
 describe("frame decoding", () => {
   it("rejects an invalid protocol signature", () => {
     const encoded = encodeFrame({
-      kind: MessageKind.Request,
+      kind: MessageKind.Command,
       requestId: 1,
       payload: new Uint8Array(),
     });
@@ -70,7 +70,7 @@ describe("frame decoding", () => {
 
   it("rejects unsupported protocol versions", () => {
     const encoded = encodeFrame({
-      kind: MessageKind.Request,
+      kind: MessageKind.Command,
       requestId: 1,
       payload: new Uint8Array(),
     });
@@ -91,7 +91,7 @@ describe("frame decoding", () => {
 
   it("rejects incomplete payloads", () => {
     const encoded = encodeFrame({
-      kind: MessageKind.Request,
+      kind: MessageKind.Command,
       requestId: 1,
       payload: new Uint8Array([1, 2, 3]),
     });
@@ -106,7 +106,7 @@ describe("frame decoding", () => {
 
   it("rejects trailing bytes", () => {
     const encoded = encodeFrame({
-      kind: MessageKind.Response,
+      kind: MessageKind.Result,
       requestId: 1,
       payload: new Uint8Array(),
     });

@@ -36,6 +36,18 @@ describe("protocol constants", () => {
     );
   });
 
+  it("assigns stable message kind values", () => {
+    expect(MessageKind).toEqual({
+      Handshake: 0x01,
+      Ping: 0x02,
+      Command: 0x03,
+      Result: 0x04,
+      StreamItem: 0x05,
+      StreamEnd: 0x06,
+      Error: 0x07,
+    });
+  });
+
   it("reserves the first flag bit for continuation frames", () => {
     expect(FrameFlag.None).toBe(0);
     expect(FrameFlag.More).toBe(1);
