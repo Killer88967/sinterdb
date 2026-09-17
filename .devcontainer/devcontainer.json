@@ -1,0 +1,147 @@
+{
+  "name": "CustomDB Development",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "configureZshAsDefaultShell": true,
+      "installOhMyZsh": true,
+      "upgradePackages": true
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "node",
+      "nodeGypDependencies": true
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/git-lfs:1": {}
+  },
+  "remoteUser": "vscode",
+  "containerEnv": {
+    "FORCE_COLOR": "1"
+  },
+  "forwardPorts": [4721],
+  "portsAttributes": {
+    "4721": {
+      "label": "CustomDB Server",
+      "onAutoForward": "notify"
+    }
+  },
+  "hostRequirements": {
+    "cpus": 4,
+    "memory": "8gb",
+    "storage": "32gb"
+  },
+  "postCreateCommand": "npm install --global pnpm@latest && if [ -f package.json ]; then pnpm install; fi",
+  "customizations": {
+    "codespaces": {
+      "openFiles": ["README.md", "ROADMAP.md"]
+    },
+    "vscode": {
+      "extensions": [
+        "vscode-icons-team.vscode-icons",
+        "esbenp.prettier-vscode",
+        "usernamehw.errorlens",
+        "ultram4rine.vscode-choosealicense",
+        "dbaeumer.vscode-eslint",
+        "GitHub.vscode-github-actions",
+        "yoavbls.pretty-ts-errors",
+        "vitest.explorer",
+        "ms-vscode.hexeditor",
+        "EditorConfig.EditorConfig",
+        "streetsidesoftware.code-spell-checker",
+        "christian-kohler.path-intellisense",
+        "redhat.vscode-yaml",
+        "redhat.vscode-xml"
+      ],
+      "settings": {
+        "workbench.colorTheme": "Dark Modern",
+        "workbench.iconTheme": "vscode-icons",
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        "editor.wordWrap": "on",
+        "editor.cursorBlinking": "phase",
+        "editor.cursorSmoothCaretAnimation": "on",
+        "editor.smoothScrolling": true,
+        "editor.bracketPairColorization.enabled": true,
+        "editor.guides.bracketPairs": true,
+        "editor.guides.bracketPairsHorizontal": true,
+        "editor.guides.highlightActiveBracketPair": true,
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit",
+          "source.organizeImports": "explicit"
+        },
+        "explorer.compactFolders": false,
+        "explorer.confirmDelete": false,
+        "files.encoding": "utf8",
+        "files.eol": "\n",
+        "files.insertFinalNewline": true,
+        "files.trimFinalNewlines": true,
+        "files.trimTrailingWhitespace": true,
+        "files.associations": {
+          "devcontainer.json": "jsonc",
+          "*.code-workspace": "jsonc"
+        },
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.scrollback": 10000,
+        "git.autofetch": true,
+        "eslint.validate": [
+          "javascript",
+          "javascriptreact",
+          "typescript",
+          "typescriptreact"
+        ],
+        "eslint.format.enable": true,
+        "js/ts.tsdk.promptToUseWorkspaceVersion": true,
+        "license.author": "Killer88967",
+        "license.default": "apache-2.0",
+        "chat.mcp.enabled": true,
+        "chat.mcp.discovery.enabled": {
+          "claude-desktop": false,
+          "copilot": false,
+          "windsurf": false,
+          "cursor-global": false,
+          "cursor-workspace": false
+        },
+        "chat.mcp.gallery.enabled": true,
+        "chat.mcp.access": "all",
+        "github.copilot.enable": {
+          "*": false,
+          "plaintext": false,
+          "markdown": false,
+          "scminput": false
+        },
+        "[javascript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[javascriptreact]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[typescript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[typescriptreact]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[json]": {
+          "editor.defaultFormatter": "vscode.json-language-features"
+        },
+        "[jsonc]": {
+          "editor.defaultFormatter": "vscode.json-language-features"
+        },
+        "[yaml]": {
+          "editor.defaultFormatter": "redhat.vscode-yaml"
+        },
+        "[github-actions-workflow]": {
+          "editor.defaultFormatter": "redhat.vscode-yaml"
+        },
+        "[xml]": {
+          "editor.defaultFormatter": "redhat.vscode-xml"
+        },
+        "[markdown]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode",
+          "files.trimTrailingWhitespace": false
+        }
+      }
+    }
+  }
+}
