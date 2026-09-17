@@ -20,8 +20,8 @@ export default defineConfig([
       "**/tmp/**",
       "**/*.{ts,tsx,mts,cts}",
       "data/**",
-      ".customdb/**",
-      "customdb-data/**",
+      ".sinterdb/**",
+      "sinterdb-data/**",
       "backups/**",
     ],
 
@@ -50,4 +50,5 @@ export default defineConfig([
       "no-console": "off",
     },
   },
-]);ƒ
+]);
+ƒ;

@@ -16,8 +16,8 @@ playwright-report/
 tmp/
 
 data/
-.customdb/
-customdb-data/
+.sinterdb/
+sinterdb-data/
 backups/
 
 pnpm-lock.yaml

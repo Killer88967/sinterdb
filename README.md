@@ -1,1 +1,1 @@
-# customdb
+# sinterdb

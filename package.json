@@ -1,5 +1,5 @@
 {
-  "name": "customdb-workspace",
+  "name": "sinterdb-workspace",
   "version": "0.0.1",
   "private": true,
   "description": "A document-oriented database, its official Node.js driver, and supporting packages.",

@@ -1,21 +1,21 @@
 # Custom Database, Node.js Driver, and ODM Roadmap
 
 Status: Planning draft  
-Working name: `CustomDB`  
-Package scope: `@customdb/*`  
+Working name: `SinterDB`  
+Package scope: `@sinterdb/*`  
 License: Apache-2.0  
 Primary language: TypeScript  
 Package manager: pnpm
 
-> `CustomDB`, its URI scheme, and its npm scope are placeholders until the project receives a final name.
+> `SinterDB`, its URI scheme, and its npm scope are placeholders until the project receives a final name.
 
 ## 1. Project Vision
 
 Build a document-oriented database with three deliberately separate products:
 
-1. **CustomDB Server** — owns storage, query execution, indexing, authentication, transactions, and replication.
-2. **CustomDB Node.js Driver** — implements the wire protocol and exposes a typed `Client → Database → Collection → Cursor` API.
-3. **CustomDB ODM** — an optional, separately published Mongoose-style modeling layer built on the public driver API.
+1. **SinterDB Server** — owns storage, query execution, indexing, authentication, transactions, and replication.
+2. **SinterDB Node.js Driver** — implements the wire protocol and exposes a typed `Client → Database → Collection → Cursor` API.
+3. **SinterDB ODM** — an optional, separately published Mongoose-style modeling layer built on the public driver API.
 
 The driver must remain useful without the ODM. The ODM must never import server internals or bypass the driver.
 
@@ -35,7 +35,7 @@ The driver must remain useful without the ODM. The ODM must never import server 
 Development begins in one monorepo so protocol, server, and driver changes can be tested atomically. The ODM is developed as a separate repository once the driver reaches `0.3.0`.
 
 ```text
-customdb/
+sinterdb/
 ├── .changeset/
 ├── .github/
 │   ├── ISSUE_TEMPLATE/
@@ -69,7 +69,7 @@ customdb/
 Separately, when ODM development begins:
 
 ```text
-customdb-odm/
+sinterdb-odm/
 ├── docs/
 ├── examples/
 ├── packages/
@@ -86,27 +86,27 @@ customdb-odm/
 
 | Package                | Published                | Responsibility                                                                          |
 | ---------------------- | ------------------------ | --------------------------------------------------------------------------------------- |
-| `@customdb/protocol`   | Initially private        | Versioned request/response types, framing, serialization, capabilities, and error codes |
-| `@customdb/storage`    | No                       | Data files, write-ahead log, checkpoints, indexes, recovery, and compaction             |
-| `@customdb/server`     | Optional                 | Query execution, sessions, authentication, transactions, and TCP server                 |
-| `customdb-server`      | Optional executable      | CLI that configures and starts the server                                               |
-| `customdb`             | Yes                      | Official Node.js driver and primary public npm package                                  |
-| `@customdb/test-utils` | Later                    | Test-server lifecycle and fixtures for downstream packages                              |
-| `customdb-odm`         | Yes, separate repository | Schemas, models, validation, hooks, virtuals, and population                            |
+| `@sinterdb/protocol`   | Initially private        | Versioned request/response types, framing, serialization, capabilities, and error codes |
+| `@sinterdb/storage`    | No                       | Data files, write-ahead log, checkpoints, indexes, recovery, and compaction             |
+| `@sinterdb/server`     | Optional                 | Query execution, sessions, authentication, transactions, and TCP server                 |
+| `sinterdb-server`      | Optional executable      | CLI that configures and starts the server                                               |
+| `sinterdb`             | Yes                      | Official Node.js driver and primary public npm package                                  |
+| `@sinterdb/test-utils` | Later                    | Test-server lifecycle and fixtures for downstream packages                              |
+| `sinterdb-odm`         | Yes, separate repository | Schemas, models, validation, hooks, virtuals, and population                            |
 
 ## 5. Public Driver Shape
 
 The intended low-level API is familiar without pretending to be MongoDB-compatible:
 
 ```ts
-import { CustomClient, type Document } from "customdb";
+import { CustomClient, type Document } from "sinterdb";
 
 interface User extends Document {
   username: string;
   createdAt: Date;
 }
 
-const client = new CustomClient("customdb://127.0.0.1:4721");
+const client = new CustomClient("sinterdb://127.0.0.1:4721");
 
 await client.connect();
 
@@ -223,7 +223,7 @@ packages/
 
 ### Deliverables
 
-- `customdb-server` CLI
+- `sinterdb-server` CLI
 - Configuration through command-line flags and environment variables
 - Graceful startup and shutdown
 - TCP listener
@@ -245,7 +245,7 @@ packages/
 ### Deliverables
 
 - `CustomClient`
-- URI parser for `customdb://host:port/database`
+- URI parser for `sinterdb://host:port/database`
 - `connect()`, `close()`, and `db()`
 - Handshake and capability negotiation
 - Socket timeout and connection timeout
@@ -444,9 +444,9 @@ data/
 ### Exit criteria
 
 - Query semantics are documented with specification tests.
-- ODM development can use only public `customdb` exports.
+- ODM development can use only public `sinterdb` exports.
 
-## `customdb-odm@0.0.1` — ODM Foundation
+## `sinterdb-odm@0.0.1` — ODM Foundation
 
 **Begins after driver `0.3.0`.**
 
