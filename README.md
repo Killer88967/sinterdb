@@ -26,14 +26,14 @@ SinterDB aims to provide:
 
 ## Workspace
 
-| Package                              | Visibility | Purpose                                      |
-| ------------------------------------ | ---------- | -------------------------------------------- |
-| `sinterdb`                           | Public     | Official Node.js database driver             |
-| `sinterdb-protocol`                  | Public     | Wire-protocol types, framing, and errors     |
-| `sinterdb-server`                    | Public     | `sinterd` server executable                  |
-| `@sinterdb-internal/server`          | Private    | Sessions, commands, and query execution      |
-| `@sinterdb-internal/storage`         | Private    | Persistent storage, WAL, indexes, and recovery |
-| `@sinterdb-internal/test-utils`      | Private    | Shared fixtures and server test utilities    |
+| Package                         | Visibility | Purpose                                        |
+| ------------------------------- | ---------- | ---------------------------------------------- |
+| `sinterdb`                      | Public     | Official Node.js database driver               |
+| `sinterdb-protocol`             | Public     | Wire-protocol types, framing, and errors       |
+| `sinterdb-server`               | Public     | `sinterd` server executable                    |
+| `@sinterdb-internal/server`     | Private    | Sessions, commands, and query execution        |
+| `@sinterdb-internal/storage`    | Private    | Persistent storage, WAL, indexes, and recovery |
+| `@sinterdb-internal/test-utils` | Private    | Shared fixtures and server test utilities      |
 
 The ODM will be developed separately as `sinterdb-odm` after the driver API
 becomes stable enough to support it.
