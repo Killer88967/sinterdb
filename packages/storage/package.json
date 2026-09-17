@@ -24,6 +24,9 @@
     "test:watch": "vitest",
     "clean": "rimraf dist coverage"
   },
+  "devDependencies": {
+    "vitest": "catalog:"
+  },
   "engines": {
     "node": ">=24.0.0"
   },

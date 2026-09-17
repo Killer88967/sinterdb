@@ -24,5 +24,8 @@
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
     "clean": "rimraf dist coverage"
+  },
+  "devDependencies": {
+    "vitest": "catalog:"
   }
 }
