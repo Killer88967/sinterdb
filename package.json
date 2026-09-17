@@ -19,7 +19,7 @@
     "test:watch": "pnpm --recursive --parallel test:watch",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "clean": "pnpm --recursive clean",
+    "clean": "pnpm --recursive run clean",
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "pnpm build && changeset publish"
