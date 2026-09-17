@@ -2,7 +2,7 @@
 
 Status: Planning draft  
 Working name: `SinterDB`  
-Package scope: `@sinterdb/*`  
+Package scope: `@sinterdb-internal/*`  
 License: Apache-2.0  
 Primary language: TypeScript  
 Package manager: pnpm
@@ -84,15 +84,15 @@ sinterdb-odm/
 
 ## 4. Package Responsibilities
 
-| Package                | Published                | Responsibility                                                                          |
-| ---------------------- | ------------------------ | --------------------------------------------------------------------------------------- |
-| `@sinterdb/protocol`   | Initially private        | Versioned request/response types, framing, serialization, capabilities, and error codes |
-| `@sinterdb/storage`    | No                       | Data files, write-ahead log, checkpoints, indexes, recovery, and compaction             |
-| `@sinterdb/server`     | Optional                 | Query execution, sessions, authentication, transactions, and TCP server                 |
-| `sinterdb-server`      | Optional executable      | CLI that configures and starts the server                                               |
-| `sinterdb`             | Yes                      | Official Node.js driver and primary public npm package                                  |
-| `@sinterdb/test-utils` | Later                    | Test-server lifecycle and fixtures for downstream packages                              |
-| `sinterdb-odm`         | Yes, separate repository | Schemas, models, validation, hooks, virtuals, and population                            |
+| Package                         | Published                | Responsibility                                                                          |
+| ------------------------------- | ------------------------ | --------------------------------------------------------------------------------------- |
+| `@sinterdb-internal/protocol`   | Initially private        | Versioned request/response types, framing, serialization, capabilities, and error codes |
+| `@sinterdb-internal/storage`    | No                       | Data files, write-ahead log, checkpoints, indexes, recovery, and compaction             |
+| `@sinterdb-internal/server`     | Optional                 | Query execution, sessions, authentication, transactions, and TCP server                 |
+| `sinterdb-server`               | Optional executable      | CLI that configures and starts the server                                               |
+| `sinterdb`                      | Yes                      | Official Node.js driver and primary public npm package                                  |
+| `@sinterdb-internal/test-utils` | Later                    | Test-server lifecycle and fixtures for downstream packages                              |
+| `sinterdb-odm`                  | Yes, separate repository | Schemas, models, validation, hooks, virtuals, and population                            |
 
 ## 5. Public Driver Shape
 
