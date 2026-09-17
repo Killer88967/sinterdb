@@ -4,6 +4,7 @@ export const ProtocolErrorCode = {
   InvalidMessageKind: "INVALID_MESSAGE_KIND",
   InvalidFlags: "INVALID_FLAGS",
   InvalidRequestId: "INVALID_REQUEST_ID",
+  InvalidPayload: "INVALID_PAYLOAD",
   PayloadTooLarge: "PAYLOAD_TOO_LARGE",
   IncompleteFrame: "INCOMPLETE_FRAME",
   PayloadLengthMismatch: "PAYLOAD_LENGTH_MISMATCH",
