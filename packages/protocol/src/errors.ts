@@ -13,6 +13,11 @@ export const ProtocolErrorCode = {
   InvalidDate: "INVALID_DATE",
   DocumentTooDeep: "DOCUMENT_TOO_DEEP",
   CyclicDocument: "CYCLIC_DOCUMENT",
+  UnexpectedEnd: "UNEXPECTED_END",
+  UnknownValueTag: "UNKNOWN_VALUE_TAG",
+  InvalidUtf8: "INVALID_UTF8",
+  DuplicateDocumentKey: "DUPLICATE_DOCUMENT_KEY",
+  TrailingData: "TRAILING_DATA",
   SerializationFailure: "SERIALIZATION_FAILURE",
 } as const;
 
