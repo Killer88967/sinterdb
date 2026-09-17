@@ -13,7 +13,7 @@ This package will own:
 - Replication
 
 Storage persistence is delegated to `@sinterdb-internal/storage`. Wire messages
-are defined by `@sinterdb-internal/protocol`.
+are defined by `sinterdb-protocol`.
 
 > [!WARNING]
 > This package is private and does not provide a stable public API.

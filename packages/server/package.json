@@ -25,7 +25,7 @@
     "clean": "rimraf dist coverage"
   },
   "dependencies": {
-    "@sinterdb-internal/protocol": "workspace:^",
+    "sinterdb-protocol": "workspace:^",
     "@sinterdb-internal/storage": "workspace:^"
   },
   "engines": {

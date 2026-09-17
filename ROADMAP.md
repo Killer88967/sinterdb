@@ -86,7 +86,7 @@ sinterdb-odm/
 
 | Package                         | Published                | Responsibility                                                                          |
 | ------------------------------- | ------------------------ | --------------------------------------------------------------------------------------- |
-| `@sinterdb-internal/protocol`   | Initially private        | Versioned request/response types, framing, serialization, capabilities, and error codes |
+| `sinterdb-protocol`             | Yes, low-level           | Versioned request/response types, framing, serialization, capabilities, and error codes |
 | `@sinterdb-internal/storage`    | No                       | Data files, write-ahead log, checkpoints, indexes, recovery, and compaction             |
 | `@sinterdb-internal/server`     | Optional                 | Query execution, sessions, authentication, transactions, and TCP server                 |
 | `sinterdb-server`               | Optional executable      | CLI that configures and starts the server                                               |
