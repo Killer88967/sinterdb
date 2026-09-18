@@ -1,6 +1,6 @@
 {
   "name": "sinterdb-server",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Command-line server for SinterDB.",
   "author": "Killer88967",
   "license": "Apache-2.0",

@@ -1,6 +1,6 @@
 {
   "name": "sinterdb-workspace",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "description": "A document-oriented database, its official Node.js driver, and supporting packages.",
   "author": "Killer88967",
@@ -12,7 +12,7 @@
     "pnpm": ">=12.0.0"
   },
   "scripts": {
-    "all": "pnpm clean && pnpm build && pnpm typecheck && pnpm format && pnpm test && pnpm format:check",
+    "all": "pnpm clean && pnpm build && pnpm typecheck && pnpm format && pnpm lint && pnpm test && pnpm format:check",
     "build": "pnpm --recursive build",
     "typecheck": "pnpm --recursive typecheck",
     "lint": "eslint .",

@@ -1,6 +1,6 @@
 {
   "name": "@sinterdb-internal/test-utils",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "description": "Internal test utilities and fixtures for SinterDB.",
   "license": "Apache-2.0",
