@@ -10,7 +10,7 @@ export {
   MessageKind,
 } from "./constants.js";
 export { ProtocolError, ProtocolErrorCode } from "./errors.js";
-export { decodeFrame, encodeFrame } from "./frame.js";
+export { decodeFrame, encodeFrame, getFrameLength } from "./frame.js";
 export { MAX_DOCUMENT_DEPTH, ValueTag } from "./document.js";
 export { encodeDocument, encodeDocumentValue } from "./document-encoder.js";
 export { decodeDocument, decodeDocumentValue } from "./document-decoder.js";
@@ -22,6 +22,7 @@ export {
 } from "./message-codec.js";
 export { RequestIdGenerator } from "./request-id.js";
 export { decodeMessage, encodeMessage } from "./message-frame.js";
+export { MessageStreamDecoder } from "./message-stream-decoder.js";
 
 export type {
   FrameFlag as FrameFlagValue,

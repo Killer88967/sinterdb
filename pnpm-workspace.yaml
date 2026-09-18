@@ -12,4 +12,4 @@ catalog:
   "vitest": "latest"
 
 minimumReleaseAgeExclude:
-  - prettier@3.9.7
+  - prettier@3.9.7 || 3.9.8

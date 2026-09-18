@@ -27,6 +27,14 @@ export interface FrameInput {
   flags?: number;
 }
 
+export interface FrameHeader {
+  version: number;
+  kind: MessageKind;
+  flags: number;
+  requestId: number;
+  payloadLength: number;
+}
+
 export function encodeFrame(input: Readonly<FrameInput>): Uint8Array {
   validateMessageKind(input.kind);
   validateRequestId(input.requestId);
@@ -51,6 +59,38 @@ export function encodeFrame(input: Readonly<FrameInput>): Uint8Array {
 }
 
 export function decodeFrame(data: Uint8Array): Frame {
+  const header = readFrameHeader(data);
+  const expectedLength = FRAME_HEADER_SIZE + header.payloadLength;
+
+  if (data.byteLength < expectedLength) {
+    throw new ProtocolError(
+      ProtocolErrorCode.IncompleteFrame,
+      `Frame declares ${header.payloadLength} payload bytes but only ${data.byteLength - FRAME_HEADER_SIZE} are available.`,
+    );
+  }
+
+  if (data.byteLength > expectedLength) {
+    throw new ProtocolError(
+      ProtocolErrorCode.PayloadLengthMismatch,
+      `Frame contains ${data.byteLength - expectedLength} unexpected trailing bytes.`,
+    );
+  }
+
+  return {
+    version: header.version,
+    kind: header.kind,
+    flags: header.flags,
+    requestId: header.requestId,
+    payload: data.slice(FRAME_HEADER_SIZE),
+  };
+}
+
+export function getFrameLength(data: Uint8Array): number {
+  const header = readFrameHeader(data);
+  return FRAME_HEADER_SIZE + header.payloadLength;
+}
+
+function readFrameHeader(data: Uint8Array): FrameHeader {
   if (data.byteLength < FRAME_HEADER_SIZE) {
     throw new ProtocolError(
       ProtocolErrorCode.IncompleteFrame,
@@ -84,30 +124,12 @@ export function decodeFrame(data: Uint8Array): Frame {
     );
   }
 
-  const expectedLength = FRAME_HEADER_SIZE + payloadLength;
-
-  if (data.byteLength < expectedLength) {
-    throw new ProtocolError(
-      ProtocolErrorCode.IncompleteFrame,
-      `Frame declares ${payloadLength} payload bytes but only ${
-        data.byteLength - FRAME_HEADER_SIZE
-      } are available.`,
-    );
-  }
-
-  if (data.byteLength > expectedLength) {
-    throw new ProtocolError(
-      ProtocolErrorCode.PayloadLengthMismatch,
-      `Frame contains ${data.byteLength - expectedLength} unexpected trailing bytes.`,
-    );
-  }
-
   return {
     version,
     kind,
     flags,
     requestId,
-    payload: data.slice(FRAME_HEADER_SIZE),
+    payloadLength,
   };
 }
 
