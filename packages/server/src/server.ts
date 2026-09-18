@@ -12,6 +12,7 @@ import {
   type ServerConfigInput,
   type ServerEnvironment,
 } from "./config.js";
+import { ServerSession } from "./session.js";
 
 export const SinterServerState = {
   Stopped: "stopped",
@@ -143,6 +144,10 @@ export class SinterServer extends EventEmitter {
 
   private trackSocket(socket: Socket): void {
     this.sockets.add(socket);
+
+    new ServerSession(socket, {
+      onError: (error) => this.emit("error", error),
+    });
 
     socket.once("close", () => {
       this.sockets.delete(socket);

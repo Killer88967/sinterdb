@@ -9,6 +9,7 @@ export {
   SinterServer,
   SinterServerState,
 } from "./server.js";
+export { ServerSession, ServerSessionState } from "./session.js";
 
 export type {
   ServerConfig,
@@ -20,3 +21,7 @@ export type {
   SinterServerAddress,
   SinterServerState as SinterServerStateValue,
 } from "./server.js";
+export type {
+  ServerSessionOptions,
+  ServerSessionState as ServerSessionStateValue,
+} from "./session.js";
