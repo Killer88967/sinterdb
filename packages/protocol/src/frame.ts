@@ -1,6 +1,7 @@
 import {
   FRAME_HEADER_SIZE,
   MAX_PAYLOAD_SIZE,
+  MAX_REQUEST_ID,
   PROTOCOL_MAGIC,
   PROTOCOL_VERSION,
   FrameFlag,
@@ -9,7 +10,6 @@ import {
 } from "./constants.js";
 import { ProtocolError, ProtocolErrorCode } from "./errors.js";
 
-const MAX_UINT32 = 0xffffffff;
 const SUPPORTED_FRAME_FLAGS = FrameFlag.More;
 
 export interface Frame {
@@ -151,7 +151,11 @@ function validateFlags(flags: number): void {
 }
 
 function validateRequestId(requestId: number): void {
-  if (!Number.isInteger(requestId) || requestId < 0 || requestId > MAX_UINT32) {
+  if (
+    !Number.isInteger(requestId) ||
+    requestId < 0 ||
+    requestId > MAX_REQUEST_ID
+  ) {
     throw new ProtocolError(
       ProtocolErrorCode.InvalidRequestId,
       `Request ID ${requestId} is outside the unsigned 32-bit range.`,

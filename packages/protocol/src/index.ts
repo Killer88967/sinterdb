@@ -1,6 +1,8 @@
 export {
   FRAME_HEADER_SIZE,
   MAX_PAYLOAD_SIZE,
+  MIN_REQUEST_ID,
+  MAX_REQUEST_ID,
   PROTOCOL_MAGIC,
   PROTOCOL_VERSION,
   FrameFlag,
@@ -18,6 +20,7 @@ export {
   decodeMessagePayload,
   validateMessagePayload,
 } from "./message-codec.js";
+export { RequestIdGenerator } from "./request-id.js";
 
 export type {
   FrameFlag as FrameFlagValue,

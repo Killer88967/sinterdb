@@ -12,6 +12,9 @@ export const FRAME_HEADER_SIZE = 16;
 
 export const MAX_PAYLOAD_SIZE = 16 * 1024 * 1024;
 
+export const MIN_REQUEST_ID = 1;
+export const MAX_REQUEST_ID = 0xffffffff;
+
 export const MessageKind = {
   Handshake: 0x01,
   Ping: 0x02,
