@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Killer88967/sinterdb/blob/main/packages/protocol/schemas/golden-fixtures.schema.json",
+  "title": "SinterDB Golden Protocol Fixtures",
+  "description": "Golden-byte fixtures for a version of the SinterDB wire protocol.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "protocolVersion", "byteOrder", "values", "messages"],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "protocolVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 65535
+    },
+    "byteOrder": {
+      "const": "big-endian"
+    },
+    "values": {
+      "$ref": "#/$defs/fixtureMap"
+    },
+    "messages": {
+      "$ref": "#/$defs/fixtureMap"
+    }
+  },
+  "$defs": {
+    "fixtureMap": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/hexBytes"
+      }
+    },
+    "hexBytes": {
+      "type": "string",
+      "description": "A non-empty, lowercase, even-length hexadecimal byte sequence.",
+      "pattern": "^(?:[0-9a-f]{2})+$"
+    }
+  }
+}

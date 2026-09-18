@@ -1,0 +1,23 @@
+{
+  "$schema": "../schemas/golden-fixtures.schema.json",
+  "protocolVersion": 1,
+  "byteOrder": "big-endian",
+  "values": {
+    "null": "00",
+    "false": "01",
+    "true": "02",
+    "int32-42": "030000002a",
+    "int32-negative-one": "03ffffffff",
+    "int64-max-safe": "04001fffffffffffff",
+    "float64-pi": "05400921fb54442d18",
+    "bigint-42": "06000000000000002a",
+    "string-sinterdb": "070000000853696e7465724442",
+    "binary-010203": "0800000003010203",
+    "unix-epoch": "090000000000000000",
+    "array-null-true": "0a000000020002",
+    "simple-document": "0b0000000100000001610300000001"
+  },
+  "messages": {
+    "result-null-request-1": "534e545200010400000000010000000f0b000000010000000576616c756500"
+  }
+}
