@@ -21,6 +21,7 @@ export {
   validateMessagePayload,
 } from "./message-codec.js";
 export { RequestIdGenerator } from "./request-id.js";
+export { decodeMessage, encodeMessage } from "./message-frame.js";
 
 export type {
   FrameFlag as FrameFlagValue,
@@ -46,3 +47,4 @@ export type {
   StreamEndEnvelope,
   StreamItemEnvelope,
 } from "./messages.js";
+export type { DecodedMessage, MessageInput } from "./message-frame.js";
