@@ -21,7 +21,7 @@ export interface HandshakeEnvelope extends Document {
   protocolVersion: number;
   product: string;
   productVersion: string;
-  capabilities: ProtocolCapability[];
+  capabilities: string[];
 }
 
 export interface PingEnvelope extends Document {
