@@ -78,6 +78,7 @@
         "files.trimTrailingWhitespace": true,
         "files.associations": {
           "devcontainer.json": "jsonc",
+          "NOTICE": "markdown",
           "*.json": "json",
           "*.code-workspace": "jsonc"
         },
