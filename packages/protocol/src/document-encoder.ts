@@ -211,7 +211,9 @@ function assertNotCyclic(value: object, activeContainers: Set<object>): void {
 }
 
 function isPlainDocument(value: object): value is Document {
-  if (typeof value !== "object" || value === null) return false;
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
 
   const prototype = Object.getPrototypeOf(value);
 

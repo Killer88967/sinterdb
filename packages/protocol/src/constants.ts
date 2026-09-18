@@ -26,6 +26,7 @@ export const MessageKind = {
 } as const;
 
 export type MessageKind = (typeof MessageKind)[keyof typeof MessageKind];
+export type MessageKindByName = typeof MessageKind;
 
 export const FrameFlag = {
   None: 0,

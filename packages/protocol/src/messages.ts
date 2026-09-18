@@ -1,4 +1,4 @@
-import { MessageKind } from "./constants.js";
+import type { MessageKindByName } from "./constants.js";
 import type { Document, DocumentValue } from "./document.js";
 
 export const ProtocolCapability = {
@@ -55,14 +55,20 @@ export interface ErrorEnvelope extends Document {
   details?: Document;
 }
 
+type MessagePayloadByName = {
+  Handshake: HandshakeEnvelope;
+  Ping: PingEnvelope;
+  Command: CommandEnvelope;
+  Result: ResultEnvelope;
+  StreamItem: StreamItemEnvelope;
+  StreamEnd: StreamEndEnvelope;
+  Error: ErrorEnvelope;
+};
+
 export type MessagePayloadByKind = {
-  [MessageKind.Handshake]: HandshakeEnvelope;
-  [MessageKind.Ping]: PingEnvelope;
-  [MessageKind.Command]: CommandEnvelope;
-  [MessageKind.Result]: ResultEnvelope;
-  [MessageKind.StreamItem]: StreamItemEnvelope;
-  [MessageKind.StreamEnd]: StreamEndEnvelope;
-  [MessageKind.Error]: ErrorEnvelope;
+  [
+    K in keyof MessagePayloadByName as MessageKindByName[K]
+  ]: MessagePayloadByName[K];
 };
 
 export type ProtocolEnvelope = MessagePayloadByKind[keyof MessagePayloadByKind];

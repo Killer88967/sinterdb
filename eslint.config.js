@@ -4,6 +4,7 @@ import globals from "globals";
 
 export default defineConfig([
   {
+    name: "Global ignores",
     ignores: [
       "**/node_modules/**",
       "**/.pnpm-store/**",
