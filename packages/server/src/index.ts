@@ -4,6 +4,11 @@ export {
   ServerConfigurationError,
   resolveServerConfig,
 } from "./config.js";
+export {
+  ServerLifecycleError,
+  SinterServer,
+  SinterServerState,
+} from "./server.js";
 
 export type {
   ServerConfig,
@@ -11,3 +16,7 @@ export type {
   ServerConfigurationOption,
   ServerEnvironment,
 } from "./config.js";
+export type {
+  SinterServerAddress,
+  SinterServerState as SinterServerStateValue,
+} from "./server.js";
