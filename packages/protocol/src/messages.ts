@@ -16,7 +16,7 @@ export const HandshakeRole = {
 
 export type HandshakeRole = (typeof HandshakeRole)[keyof typeof HandshakeRole];
 
-export interface HandshakeEnvelope extends Document {
+export interface HandshakeEnvelope {
   role: HandshakeRole;
   protocolVersion: number;
   product: string;
@@ -24,30 +24,30 @@ export interface HandshakeEnvelope extends Document {
   capabilities: string[];
 }
 
-export interface PingEnvelope extends Document {
+export interface PingEnvelope {
   sentAt: Date;
 }
 
-export interface CommandEnvelope extends Document {
+export interface CommandEnvelope {
   command: string;
   database?: string;
   parameters: Document;
 }
 
-export interface ResultEnvelope extends Document {
+export interface ResultEnvelope {
   value: DocumentValue;
 }
 
-export interface StreamItemEnvelope extends Document {
+export interface StreamItemEnvelope {
   sequence: number;
   value: DocumentValue;
 }
 
-export interface StreamEndEnvelope extends Document {
+export interface StreamEndEnvelope {
   count: number;
 }
 
-export interface ErrorEnvelope extends Document {
+export interface ErrorEnvelope {
   code: number;
   name: string;
   message: string;

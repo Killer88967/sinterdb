@@ -34,7 +34,7 @@ export function decodeMessagePayload<K extends MessageKindValue>(
 export function validateMessagePayload<K extends MessageKindValue>(
   kind: K,
   payload: unknown,
-): asserts payload is MessagePayloadByKind[K] {
+): asserts payload is MessagePayloadByKind[K] & Document {
   if (!isDocument(payload)) {
     fail(kind, "Payload must be a document.");
   }

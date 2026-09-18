@@ -12,6 +12,7 @@
     "pnpm": ">=12.0.0"
   },
   "scripts": {
+    "all": "pnpm clean && pnpm build && pnpm typecheck && pnpm format && pnpm test && pnpm format:check",
     "build": "pnpm --recursive build",
     "typecheck": "pnpm --recursive typecheck",
     "lint": "eslint .",
