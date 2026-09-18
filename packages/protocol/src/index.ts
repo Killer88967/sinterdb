@@ -13,6 +13,11 @@ export { MAX_DOCUMENT_DEPTH, ValueTag } from "./document.js";
 export { encodeDocument, encodeDocumentValue } from "./document-encoder.js";
 export { decodeDocument, decodeDocumentValue } from "./document-decoder.js";
 export { HandshakeRole, ProtocolCapability } from "./messages.js";
+export {
+  encodeMessagePayload,
+  decodeMessagePayload,
+  validateMessagePayload,
+} from "./message-codec.js";
 
 export type {
   FrameFlag as FrameFlagValue,
