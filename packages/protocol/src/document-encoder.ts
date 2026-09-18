@@ -13,6 +13,7 @@ const MIN_INT32 = -0x80000000;
 const MAX_INT32 = 0x7fffffff;
 const MIN_INT64 = -(2n ** 63n);
 const MAX_INT64 = 2n ** 63n - 1n;
+const CANONICAL_NAN = 0x7ff8000000000000n;
 
 export function encodeDocument(document: Document): Uint8Array {
   return encodeDocumentValue(document);
@@ -94,6 +95,12 @@ function writeValue(
 }
 
 function writeNumber(writer: BinaryWriter, value: number): void {
+  if (Number.isNaN(value)) {
+    writer.writeUint8(ValueTag.Float64);
+    writer.writeBigUint64(CANONICAL_NAN);
+    return;
+  }
+
   if (
     Number.isInteger(value) &&
     !Object.is(value, -0) &&
@@ -174,16 +181,21 @@ function writeDocument(
   activeContainers.add(value);
 
   try {
-    const keys = Object.keys(value).sort();
+    const fields = Object.keys(value)
+      .map((key) => ({
+        key,
+        encodedKey: encodeString(key),
+      }))
+      .sort((left, right) => compareBytes(left.encodedKey, right.encodedKey));
 
     writer.writeUint8(ValueTag.Document);
-    writer.writeUint32(keys.length);
+    writer.writeUint32(fields.length);
 
-    for (const key of keys) {
-      writeLengthPrefixedBytes(writer, encodeString(key));
+    for (const field of fields) {
+      writeLengthPrefixedBytes(writer, field.encodedKey);
       writeValue(
         writer,
-        value[key] as DocumentValue,
+        value[field.key] as DocumentValue,
         depth + 1,
         activeContainers,
       );
@@ -197,11 +209,25 @@ function encodeString(value: string): Uint8Array {
   if (!value.isWellFormed()) {
     throw new ProtocolError(
       ProtocolErrorCode.InvalidDocumentValue,
-      "Strings and document keys must contain valid Unicode.",
+      "Strings and document keys must round-trip through UTF-8.",
     );
   }
 
   return encoder.encode(value);
+}
+
+function compareBytes(left: Uint8Array, right: Uint8Array): number {
+  const sharedLength = Math.min(left.byteLength, right.byteLength);
+
+  for (let index = 0; index < sharedLength; index += 1) {
+    const difference = (left[index] ?? 0) - (right[index] ?? 0);
+
+    if (difference !== 0) {
+      return difference;
+    }
+  }
+
+  return left.byteLength - right.byteLength;
 }
 
 function writeLengthPrefixedBytes(

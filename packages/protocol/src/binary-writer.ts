@@ -43,6 +43,12 @@ export class BinaryWriter {
     this.length += value.byteLength;
   }
 
+  public writeBigUint64(value: bigint): void {
+    this.ensureCapacity(8);
+    this.createView().setBigUint64(this.length, value);
+    this.length += 8;
+  }
+
   public finish(): Uint8Array {
     return this.buffer.slice(0, this.length);
   }

@@ -10,6 +10,7 @@
     "int32-negative-one": "03ffffffff",
     "int64-max-safe": "04001fffffffffffff",
     "float64-pi": "05400921fb54442d18",
+    "float64-nan": "057ff8000000000000",
     "bigint-42": "06000000000000002a",
     "string-sinterdb": "070000000853696e7465724442",
     "binary-010203": "0800000003010203",

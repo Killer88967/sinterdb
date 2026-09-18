@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { encodeDocument, encodeDocumentValue } from "./document-encoder.js";
+import { decodeDocument } from "./document-decoder.js";
 import { type DocumentValue } from "./document.js";
 import { ProtocolError, ProtocolErrorCode } from "./errors.js";
 
@@ -86,6 +87,24 @@ describe("document encoding", () => {
       () => encodeDocumentValue(invalidValue),
       ProtocolErrorCode.InvalidDocumentValue,
     );
+  });
+
+  it("uses a canonical NaN representation", () => {
+    expect(Array.from(encodeDocumentValue(Number.NaN))).toEqual([
+      0x05, 0x7f, 0xf8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    ]);
+  });
+
+  it("sorts document keys by their UTF-8 bytes", () => {
+    const encoded = encodeDocument({
+      "\u{10000}": 1,
+      "\uE000": 2,
+    });
+
+    expect(Object.keys(decodeDocument(encoded))).toEqual([
+      "\uE000",
+      "\u{10000}",
+    ]);
   });
 });
 
