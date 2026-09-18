@@ -73,3 +73,6 @@ Desktop.ini
 *.swp
 *.swo
 *~
+
+# Dont ask
+.vscode
