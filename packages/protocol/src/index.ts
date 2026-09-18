@@ -9,7 +9,7 @@ export {
   FrameOffset,
   MessageKind,
 } from "./constants.js";
-export { ProtocolError, ProtocolErrorCode } from "./errors.js";
+export { ProtocolError, ProtocolErrorCode, WireErrorCode } from "./errors.js";
 export { decodeFrame, encodeFrame, getFrameLength } from "./frame.js";
 export { MAX_DOCUMENT_DEPTH, ValueTag } from "./document.js";
 export { encodeDocument, encodeDocumentValue } from "./document-encoder.js";
@@ -28,7 +28,10 @@ export type {
   FrameFlag as FrameFlagValue,
   MessageKind as MessageKindValue,
 } from "./constants.js";
-export type { ProtocolErrorCode as ProtocolErrorCodeValue } from "./errors.js";
+export type {
+  ProtocolErrorCode as ProtocolErrorCodeValue,
+  WireErrorCode as WireErrorCodeValue,
+} from "./errors.js";
 export type { Frame, FrameInput } from "./frame.js";
 export type {
   Document,

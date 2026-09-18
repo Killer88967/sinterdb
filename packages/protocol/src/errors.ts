@@ -1,3 +1,22 @@
+export const WireErrorCode = {
+  InvalidRequest: 1000,
+  UnsupportedProtocolVersion: 1001,
+  UnsupportedCapability: 1002,
+  UnknownCommand: 1003,
+  RequestTimeout: 1004,
+
+  AuthenticationRequired: 2000,
+  AuthenticationFailed: 2001,
+  PermissionDenied: 2002,
+
+  NamespaceNotFound: 3000,
+  NamespaceConflict: 3001,
+
+  InternalError: 9000,
+} as const;
+
+export type WireErrorCode = (typeof WireErrorCode)[keyof typeof WireErrorCode];
+
 export const ProtocolErrorCode = {
   InvalidMagic: "INVALID_MAGIC",
   UnsupportedVersion: "UNSUPPORTED_VERSION",

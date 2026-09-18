@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { ProtocolError, ProtocolErrorCode } from "./errors.js";
+import { ProtocolError, ProtocolErrorCode, WireErrorCode } from "./errors.js";
 
 describe("ProtocolError", () => {
   it("contains a stable protocol error code", () => {
@@ -18,6 +18,30 @@ describe("ProtocolError", () => {
 
   it("defines unique error codes", () => {
     const codes = Object.values(ProtocolErrorCode);
+
+    expect(new Set(codes).size).toBe(codes.length);
+  });
+});
+
+describe("WireErrorCode", () => {
+  it("defines stable numeric wire codes", () => {
+    expect(WireErrorCode).toEqual({
+      InvalidRequest: 1000,
+      UnsupportedProtocolVersion: 1001,
+      UnsupportedCapability: 1002,
+      UnknownCommand: 1003,
+      RequestTimeout: 1004,
+      AuthenticationRequired: 2000,
+      AuthenticationFailed: 2001,
+      PermissionDenied: 2002,
+      NamespaceNotFound: 3000,
+      NamespaceConflict: 3001,
+      InternalError: 9000,
+    });
+  });
+
+  it("assigns a unique number to every wire error", () => {
+    const codes = Object.values(WireErrorCode);
 
     expect(new Set(codes).size).toBe(codes.length);
   });

@@ -6,6 +6,7 @@ import {
   ProtocolCapability,
   type MessagePayloadByKind,
 } from "./messages.js";
+import { WireErrorCode } from "./errors.js";
 
 describe("protocol message envelopes", () => {
   it("defines stable capabilities", () => {
@@ -56,7 +57,7 @@ describe("protocol message envelopes", () => {
         count: 1,
       },
       [MessageKind.Error]: {
-        code: 1,
+        code: WireErrorCode.InternalError,
         name: "InternalError",
         message: "An internal error occurred.",
         retryable: false,
