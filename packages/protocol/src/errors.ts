@@ -18,7 +18,7 @@ export const ProtocolErrorCode = {
   InvalidUtf8: "INVALID_UTF8",
   DuplicateDocumentKey: "DUPLICATE_DOCUMENT_KEY",
   TrailingData: "TRAILING_DATA",
-  InvalidMessagePayload: "INVALID_MESSAGE_PAYLOAD"
+  InvalidMessagePayload: "INVALID_MESSAGE_PAYLOAD",
 } as const;
 
 export type ProtocolErrorCode =
