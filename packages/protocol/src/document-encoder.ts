@@ -62,7 +62,7 @@ function writeValue(
 
   if (typeof value === "string") {
     writer.writeUint8(ValueTag.String);
-    writeLengthPrefixedBytes(writer, encoder.encode(value));
+    writeLengthPrefixedBytes(writer, encodeString(value));
     return;
   }
 
@@ -180,7 +180,7 @@ function writeDocument(
     writer.writeUint32(keys.length);
 
     for (const key of keys) {
-      writeLengthPrefixedBytes(writer, encoder.encode(key));
+      writeLengthPrefixedBytes(writer, encodeString(key));
       writeValue(
         writer,
         value[key] as DocumentValue,
@@ -191,6 +191,17 @@ function writeDocument(
   } finally {
     activeContainers.delete(value);
   }
+}
+
+function encodeString(value: string): Uint8Array {
+  if (!value.isWellFormed()) {
+    throw new ProtocolError(
+      ProtocolErrorCode.InvalidDocumentValue,
+      "Strings and document keys must contain valid Unicode.",
+    );
+  }
+
+  return encoder.encode(value);
 }
 
 function writeLengthPrefixedBytes(

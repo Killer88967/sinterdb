@@ -51,6 +51,17 @@ describe("document encoding", () => {
     );
   });
 
+  it("rejects strings and keys that cannot round-trip through UTF-8", () => {
+    expectProtocolError(
+      () => encodeDocumentValue("\ud800"),
+      ProtocolErrorCode.InvalidDocumentValue,
+    );
+    expectProtocolError(
+      () => encodeDocument({ "\ud801": 1 }),
+      ProtocolErrorCode.InvalidDocumentValue,
+    );
+  });
+
   it("rejects bigint values outside the signed 64-bit range", () => {
     expectProtocolError(
       () => encodeDocumentValue(2n ** 63n),

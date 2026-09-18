@@ -37,6 +37,26 @@ describe("MessageStreamDecoder", () => {
     expect(decoder.bufferedBytes).toBe(0);
   });
 
+  it("decodes a large frame delivered in small chunks", () => {
+    const value = new Uint8Array(256 * 1024);
+    value.fill(0x5a);
+    const encoded = encodeMessage({
+      kind: MessageKind.Result,
+      requestId: 7,
+      payload: { value },
+    });
+    const decoder = new MessageStreamDecoder();
+    const messages = [];
+
+    for (let index = 0; index < encoded.byteLength; index += 1024) {
+      messages.push(...decoder.push(encoded.subarray(index, index + 1024)));
+    }
+
+    expect(messages).toHaveLength(1);
+    expect(messages[0]?.payload).toEqual({ value });
+    expect(decoder.bufferedBytes).toBe(0);
+  });
+
   it("retains an incomplete following frame", () => {
     const first = createPingMessage(1);
     const second = createPingMessage(2);
