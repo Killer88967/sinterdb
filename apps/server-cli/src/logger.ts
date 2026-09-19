@@ -38,7 +38,7 @@ function writeLog(
       event,
       message,
       ...(details === undefined ? {} : { details }),
-    })}`,
+    })}\n`,
   );
 }
 
