@@ -42,8 +42,14 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
 
+      - name: Build
+        run: pnpm build
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Format
+        run: pnpm format
 
       - name: Check formatting
         run: pnpm format:check
@@ -53,9 +59,6 @@ jobs:
 
       - name: Type-check
         run: pnpm typecheck
-
-      - name: Build
-        run: pnpm build
 
       - name: Test
         run: pnpm test
