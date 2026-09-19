@@ -1,0 +1,71 @@
+export const SinterErrorCode = {
+  InvalidConnectionString: "INVALID_CONNECTION_STRING",
+  ClientClosed: "CLIENT_CLOSED",
+  ClientNotConnected: "CLIENT_NOT_CONNECTED",
+  ConnectionFailed: "CONNECTION_FAILED",
+  ConnectionTimeout: "CONNECTION_TIMEOUT",
+  ProtocolViolation: "PROTOCOL_VIOLATION",
+  ServerError: "SERVER_ERROR",
+} as const;
+
+export type SinterErrorCode =
+  (typeof SinterErrorCode)[keyof typeof SinterErrorCode];
+
+export class SinterError extends Error {
+  public readonly code: SinterErrorCode;
+
+  public constructor(
+    code: SinterErrorCode,
+    message: string,
+    options?: ErrorOptions,
+  ) {
+    super(message, options);
+
+    this.name = new.target.name;
+    this.code = code;
+
+    Object.setPrototypeOf(this, new.target.prototype);
+    Error.captureStackTrace?.(this, new.target);
+  }
+}
+
+export class SinterConnectionStringError extends SinterError {
+  public constructor(message: string, options?: ErrorOptions) {
+    super(SinterErrorCode.InvalidConnectionString, message, options);
+  }
+}
+
+export class SinterClientStateError extends SinterError {
+  public constructor(
+    code:
+      | typeof SinterErrorCode.ClientClosed
+      | typeof SinterErrorCode.ClientNotConnected,
+    message: string,
+    options?: ErrorOptions,
+  ) {
+    super(code, message, options);
+  }
+}
+
+export class SinterConnectionError extends SinterError {
+  public constructor(message: string, options?: ErrorOptions) {
+    super(SinterErrorCode.ConnectionFailed, message, options);
+  }
+}
+
+export class SinterConnectionTimeoutError extends SinterConnectionError {
+  public override readonly code: typeof SinterErrorCode.ConnectionTimeout =
+    SinterErrorCode.ConnectionTimeout;
+}
+
+export class SinterProtocolError extends SinterError {
+  public constructor(message: string, options?: ErrorOptions) {
+    super(SinterErrorCode.ProtocolViolation, message, options);
+  }
+}
+
+export class SinterServerError extends SinterError {
+  public constructor(message: string, options?: ErrorOptions) {
+    super(SinterErrorCode.ServerError, message, options);
+  }
+}
