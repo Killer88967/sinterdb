@@ -18,13 +18,15 @@
     "NOTICE"
   ],
   "scripts": {
-    "build": "tsc --project tsconfig.json",
+    "build": "node esbuild.config.mjs",
     "typecheck": "tsc --project tsconfig.json --noEmit",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
     "clean": "rimraf dist coverage"
   },
   "devDependencies": {
+    "@sinterdb-internal/server": "workspace:^",
+    "esbuild": "catalog:",
     "vitest": "catalog:"
   },
   "publishConfig": {

@@ -8,6 +8,7 @@ allowBuilds:
 
 catalog:
   "@types/node": "latest"
+  "esbuild": "latest"
   "typescript": "latest"
   "vitest": "latest"
 
