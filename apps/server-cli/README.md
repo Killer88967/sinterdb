@@ -69,7 +69,7 @@ Lifecycle events are written as newline-delimited JSON:
     "host": "127.0.0.1",
     "port": 4721,
     "family": "IPv4",
-    "version": "0.0.2"
+    "version": "0.0.3"
   }
 }
 ```

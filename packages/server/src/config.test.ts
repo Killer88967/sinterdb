@@ -34,7 +34,7 @@ describe("resolveServerConfig", () => {
     expect(
       resolveServerConfig(
         {
-          host: "127.0.0.2",
+          host: "127.0.0.1",
           port: 6000,
         },
         {
@@ -43,7 +43,7 @@ describe("resolveServerConfig", () => {
         },
       ),
     ).toEqual({
-      host: "127.0.0.2",
+      host: "127.0.0.1",
       port: 6000,
     });
   });

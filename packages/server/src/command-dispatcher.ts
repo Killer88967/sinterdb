@@ -23,7 +23,7 @@ export const ServerCommand = {
 export type ServerCommand = (typeof ServerCommand)[keyof typeof ServerCommand];
 
 export const SERVER_PRODUCT = "sinterdb-server";
-export const SERVER_PRODUCT_VERSION = "0.0.2";
+export const SERVER_PRODUCT_VERSION = "0.0.3";
 
 export class CommandExecutionError extends Error {
   public readonly code: WireErrorCodeValue;

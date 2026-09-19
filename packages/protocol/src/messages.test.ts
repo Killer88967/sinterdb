@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { PROTOCOL_VERSION, MessageKind } from "./constants.js";
+import { MessageKind, PROTOCOL_VERSION } from "./constants.js";
+import { WireErrorCode } from "./errors.js";
 import {
   HandshakeRole,
   ProtocolCapability,
   type MessagePayloadByKind,
 } from "./messages.js";
-import { WireErrorCode } from "./errors.js";
 
 describe("protocol message envelopes", () => {
   it("defines stable capabilities", () => {
@@ -29,7 +29,7 @@ describe("protocol message envelopes", () => {
         role: HandshakeRole.Client,
         protocolVersion: PROTOCOL_VERSION,
         product: "sinterdb",
-        productVersion: "0.0.2",
+        productVersion: "0.0.3",
         capabilities: [
           ProtocolCapability.TypedDocuments,
           ProtocolCapability.Streaming,

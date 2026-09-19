@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { PROTOCOL_VERSION, MessageKind } from "./constants.js";
+import { MessageKind, PROTOCOL_VERSION } from "./constants.js";
 import { encodeDocument } from "./document-encoder.js";
 import { ProtocolError, ProtocolErrorCode } from "./errors.js";
 import { decodeMessagePayload, encodeMessagePayload } from "./message-codec.js";
@@ -12,7 +12,7 @@ describe("message payload codec", () => {
       role: HandshakeRole.Client,
       protocolVersion: PROTOCOL_VERSION,
       product: "sinterdb",
-      productVersion: "0.0.2",
+      productVersion: "0.0.3",
       capabilities: [
         ProtocolCapability.TypedDocuments,
         ProtocolCapability.Streaming,

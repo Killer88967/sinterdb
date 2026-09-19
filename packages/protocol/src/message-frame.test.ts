@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { PROTOCOL_VERSION, FrameFlag, MessageKind } from "./constants.js";
+import { FrameFlag, MessageKind, PROTOCOL_VERSION } from "./constants.js";
 import { encodeDocument } from "./document-encoder.js";
 import { ProtocolError, ProtocolErrorCode } from "./errors.js";
 import { encodeFrame } from "./frame.js";
@@ -68,7 +68,7 @@ describe("message frames", () => {
           role: "client",
           protocolVersion: PROTOCOL_VERSION,
           product: "sinterdb",
-          productVersion: "0.0.2",
+          productVersion: "0.0.3",
           capabilities: ["typed-documents", "streaming"],
         },
       }),

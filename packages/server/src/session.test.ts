@@ -33,7 +33,7 @@ describe("server protocol sessions", () => {
         role: HandshakeRole.Client,
         protocolVersion: PROTOCOL_VERSION,
         product: "sinterdb-test-client",
-        productVersion: "0.0.2",
+        productVersion: "0.0.3",
         capabilities: [ProtocolCapability.TypedDocuments],
       },
     });
@@ -101,7 +101,7 @@ describe("server protocol sessions", () => {
         role: HandshakeRole.Client,
         protocolVersion: PROTOCOL_VERSION + 1,
         product: "sinterdb-test-client",
-        productVersion: "0.0.2",
+        productVersion: "0.0.3",
         capabilities: [],
       },
     });
@@ -187,7 +187,7 @@ async function performHandshake(client: Socket): Promise<void> {
       role: HandshakeRole.Client,
       protocolVersion: PROTOCOL_VERSION,
       product: "sinterdb-test-client",
-      productVersion: "0.0.2",
+      productVersion: "0.0.3",
       capabilities: [],
     },
   });
