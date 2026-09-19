@@ -1,9 +1,17 @@
 #!/usr/bin/env node
 
-const args = new Set(process.argv.slice(2));
+import { CliUsageError, HELP_TEXT } from "./cli.js";
+import { logError } from "./logger.js";
+import { main } from "./main.js";
 
-if (args.has("--version") || args.has("-v")) {
-  console.log("0.0.2");
-} else {
-  console.log("The SinterDB server will be implemented in version 0.0.3.");
+try {
+  await main();
+} catch (error: unknown) {
+  if (error instanceof CliUsageError) {
+    process.stderr.write(`${error.message}\n\n${HELP_TEXT}`);
+    process.exitCode = 2;
+  } else {
+    logError("server.start_failed", "SinterDB server failed to start.", error);
+    process.exitCode = 1;
+  }
 }
