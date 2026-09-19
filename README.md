@@ -8,9 +8,7 @@
 A document-oriented database, its official Node.js driver, and supporting packages.
 
 > [!WARNING]
-> SinterDB is in early development. Version `0.0.1` establishes the repository
-> and package architecture but does not yet contain a functional database
-> server or client.
+> SinterDB is in early development. The current server supports protocol handshakes, ping requests, and an in-memory database and collection catalog, but it does not yet store documents or persist data.
 
 ## Project Goals
 
@@ -96,38 +94,52 @@ pnpm clean
 
 ## Server CLI
 
-The `sinterdb-server` package installs the future `sinterd` executable.
+Build and start the development server:
 
-During development, it can be built and executed with:
-
-```sh
+```bash
 pnpm --filter sinterdb-server build
 node apps/server-cli/dist/index.js
 ```
 
-Display its current version:
+Use a custom address:
 
-```sh
-node apps/server-cli/dist/index.js --version
+```bash
+node apps/server-cli/dist/index.js \
+  --host 127.0.0.1 \
+  --port 5000
 ```
+
+Display the available options:
+
+```bash
+node apps/server-cli/dist/index.js --help
+```
+
+The server emits newline-delimited JSON lifecycle logs and shuts down gracefully on `SIGINT` or `SIGTERM`.
 
 ## Development Status
 
-The current milestone is `0.0.1`, which establishes:
+The current milestone is `0.0.3 — Server Lifecycle and In-Memory Catalog`.
 
-- The pnpm monorepo
-- TypeScript compilation
-- Package boundaries
-- Testing infrastructure
-- Formatting and linting
-- Changesets
-- GitHub Actions CI
-- Initial package metadata
-- Apache 2.0 licensing
+Implemented so far:
 
-Protocol implementation begins in version `0.0.2`.
+- Publishable pnpm monorepo
+- TypeScript builds and declarations
+- Binary wire framing
+- Deterministic typed document encoding
+- Incremental protocol stream decoding
+- Protocol handshakes and capability advertisement
+- TCP server and session lifecycle
+- Ping requests
+- In-memory database and collection catalog
+- Initial server commands
+- Structured server logging
+- Temporary-port test-server utilities
+- Graceful signal shutdown
 
-See [ROADMAP.md](ROADMAP.md) for the complete development plan.
+The next milestone, `0.0.4`, introduces the first functional `SinterClient`.
+
+See [ROADMAP.md](./ROADMAP.md) for the complete development plan.
 
 ## Versioning
 
