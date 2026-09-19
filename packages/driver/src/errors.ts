@@ -1,5 +1,6 @@
 export const SinterErrorCode = {
   InvalidConnectionString: "INVALID_CONNECTION_STRING",
+  InvalidClientOptions: "INVALID_CLIENT_OPTIONS",
   ClientClosed: "CLIENT_CLOSED",
   ClientNotConnected: "CLIENT_NOT_CONNECTED",
   ConnectionFailed: "CONNECTION_FAILED",
@@ -32,6 +33,12 @@ export class SinterError extends Error {
 export class SinterConnectionStringError extends SinterError {
   public constructor(message: string, options?: ErrorOptions) {
     super(SinterErrorCode.InvalidConnectionString, message, options);
+  }
+}
+
+export class SinterClientOptionsError extends SinterError {
+  public constructor(message: string, options?: ErrorOptions) {
+    super(SinterErrorCode.InvalidClientOptions, message, options);
   }
 }
 

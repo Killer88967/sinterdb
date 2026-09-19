@@ -31,13 +31,14 @@ describe("parseSinterConnectionString", () => {
   });
 
   it("decodes the database name", () => {
-    expect(
-      parseSinterConnectionString("sinterdb://localhost/analytics%20data"),
-    ).toEqual({
-      host: "localhost",
-      port: DEFAULT_SINTERDB_PORT,
-      database: "analytics data",
-    });
+    const encodedDatabase = "analytics%20data";
+    const result = parseSinterConnectionString(
+      `sinterdb://localhost/${encodedDatabase}`,
+    );
+
+    expect(result.host).toBe("localhost");
+    expect(result.port).toBe(DEFAULT_SINTERDB_PORT);
+    expect(result.database).toBe(decodeURIComponent(encodedDatabase));
   });
 
   it("supports IPv6 hosts", () => {

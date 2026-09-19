@@ -4,6 +4,7 @@ import {
   parseSinterConnectionString,
 } from "./connection-string.js";
 import {
+  SinterClientOptionsError,
   SinterClientStateError,
   SinterConnectionError,
   SinterConnectionTimeoutError,
@@ -11,6 +12,11 @@ import {
 } from "./errors.js";
 
 export const DEFAULT_CONNECT_TIMEOUT_MS = 10_000;
+const MAX_CONNECT_TIMEOUT_MS = 2_147_483_647;
+
+export interface SinterClientOptions {
+  readonly connectTimeoutMS?: number;
+}
 
 export const SinterClientState = {
   New: "new",
@@ -25,13 +31,18 @@ export type SinterClientState =
 
 export class SinterClient {
   public readonly target: ParsedSinterConnectionString;
+  public readonly connectTimeoutMS: number;
 
   private currentState: SinterClientState = SinterClientState.New;
   private socket: Socket | undefined;
   private pendingConnection: Promise<this> | undefined;
 
-  public constructor(connectionString: string) {
+  public constructor(
+    connectionString: string,
+    options: SinterClientOptions = {},
+  ) {
     this.target = parseSinterConnectionString(connectionString);
+    this.connectTimeoutMS = resolveConnectTimeout(options);
   }
 
   public get state(): SinterClientState {
@@ -133,7 +144,7 @@ export class SinterClient {
             `Timed out while connecting to ${host}:${port}.`,
           ),
         );
-      }, DEFAULT_CONNECT_TIMEOUT_MS);
+      }, this.connectTimeoutMS);
 
       const onConnect = (): void => {
         cleanup();
@@ -220,4 +231,24 @@ export class SinterClient {
       }
     });
   }
+}
+
+function resolveConnectTimeout(options: SinterClientOptions): number {
+  if (options.connectTimeoutMS === undefined) {
+    return DEFAULT_CONNECT_TIMEOUT_MS;
+  }
+
+  const timeout = options.connectTimeoutMS;
+
+  if (
+    !Number.isSafeInteger(timeout) ||
+    timeout < 1 ||
+    timeout > MAX_CONNECT_TIMEOUT_MS
+  ) {
+    throw new SinterClientOptionsError(
+      `connectTimeoutMS must be an integer between 1 and ${MAX_CONNECT_TIMEOUT_MS}.`,
+    );
+  }
+
+  return timeout;
 }
