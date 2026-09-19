@@ -1,7 +1,3 @@
-/**
- * Internal testing utilities for SinterDB.
- *
- * Server lifecycle helpers, fixtures, and protocol test utilities will be
- * introduced as their corresponding components are implemented.
- */
-export {};
+export { startTestServer, withTestServer } from "./test-server.js";
+
+export type { StartedTestServer } from "./test-server.js";

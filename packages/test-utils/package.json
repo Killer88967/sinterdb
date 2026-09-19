@@ -25,6 +25,9 @@
     "test:watch": "vitest",
     "clean": "rimraf dist coverage"
   },
+  "dependencies": {
+    "@sinterdb-internal/server": "workspace:^"
+  },
   "devDependencies": {
     "vitest": "catalog:"
   }
