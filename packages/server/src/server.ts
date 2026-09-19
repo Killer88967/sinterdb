@@ -13,6 +13,8 @@ import {
   type ServerEnvironment,
 } from "./config.js";
 import { ServerSession } from "./session.js";
+import { InMemoryCatalog } from "./catalog.js";
+import { CommandDispatcher } from "./command-dispatcher.js";
 
 export const SinterServerState = {
   Stopped: "stopped",
@@ -43,9 +45,11 @@ export class ServerLifecycleError extends Error {
 
 export class SinterServer extends EventEmitter {
   public readonly config: Readonly<ServerConfig>;
+  public readonly catalog: InMemoryCatalog;
 
   private netServer: NetServer | undefined;
   private readonly sockets = new Set<Socket>();
+  private readonly dispatcher: CommandDispatcher;
   private currentState: SinterServerState = SinterServerState.Stopped;
   private currentAddress: SinterServerAddress | undefined;
   private stopOperation: Promise<void> | undefined;
@@ -57,6 +61,8 @@ export class SinterServer extends EventEmitter {
     super();
 
     this.config = resolveServerConfig(input, environment);
+    this.catalog = new InMemoryCatalog();
+    this.dispatcher = new CommandDispatcher(this.catalog);
   }
 
   public get state(): SinterServerState {
@@ -146,6 +152,7 @@ export class SinterServer extends EventEmitter {
     this.sockets.add(socket);
 
     new ServerSession(socket, {
+      dispatcher: this.dispatcher,
       onError: (error) => this.emit("error", error),
     });
 

@@ -9,10 +9,17 @@ import {
   ProtocolCapability,
   ProtocolError,
   WireErrorCode,
+  type CommandEnvelope,
   type DecodedMessage,
   type Document,
   type ErrorEnvelope,
 } from "sinterdb-protocol";
+import {
+  CommandExecutionError,
+  SERVER_PRODUCT,
+  SERVER_PRODUCT_VERSION,
+  type CommandDispatcher,
+} from "./command-dispatcher.js";
 
 export const ServerSessionState = {
   AwaitingHandshake: "awaiting-handshake",
@@ -25,6 +32,7 @@ export type ServerSessionState =
   (typeof ServerSessionState)[keyof typeof ServerSessionState];
 
 export interface ServerSessionOptions {
+  dispatcher: CommandDispatcher;
   product?: string;
   productVersion?: string;
   onError?: (error: Error) => void;
@@ -32,6 +40,7 @@ export interface ServerSessionOptions {
 
 export class ServerSession {
   private readonly decoder = new MessageStreamDecoder();
+  private readonly dispatcher: CommandDispatcher;
   private readonly product: string;
   private readonly productVersion: string;
   private readonly onError: (error: Error) => void;
@@ -40,10 +49,11 @@ export class ServerSession {
 
   public constructor(
     private readonly socket: Socket,
-    options: ServerSessionOptions = {},
+    options: ServerSessionOptions,
   ) {
-    this.product = options.product ?? "sinterdb-server";
-    this.productVersion = options.productVersion ?? "0.0.2";
+    this.dispatcher = options.dispatcher;
+    this.product = options.product ?? SERVER_PRODUCT;
+    this.productVersion = options.productVersion ?? SERVER_PRODUCT_VERSION;
     this.onError = options.onError ?? (() => undefined);
 
     socket.on("data", (chunk) => {
@@ -139,13 +149,7 @@ export class ServerSession {
         return;
 
       case MessageKind.Command:
-        this.sendError(
-          message.requestId,
-          WireErrorCode.UnknownCommand,
-          "UnknownCommand",
-          `Unknown command ${JSON.stringify(message.payload.command)}.`,
-          false,
-        );
+        this.handleCommand(message.requestId, message.payload);
         return;
 
       case MessageKind.Handshake:
@@ -166,6 +170,43 @@ export class ServerSession {
           "Clients may only send handshake, ping, and command messages.",
           false,
         );
+    }
+  }
+
+  private handleCommand(requestId: number, command: CommandEnvelope): void {
+    try {
+      const value = this.dispatcher.dispatch(command);
+
+      this.send(MessageKind.Result, requestId, {
+        value,
+      });
+    } catch (error: unknown) {
+      if (error instanceof CommandExecutionError) {
+        this.sendError(
+          requestId,
+          error.code,
+          error.name,
+          error.message,
+          false,
+          error.details,
+        );
+        return;
+      }
+
+      const internalError =
+        error instanceof Error
+          ? error
+          : new Error("Unknown command execution failure.");
+
+      this.onError(internalError);
+
+      this.sendError(
+        requestId,
+        WireErrorCode.InternalError,
+        "InternalError",
+        "The server failed to execute the command.",
+        false,
+      );
     }
   }
 

@@ -114,6 +114,55 @@ describe("server protocol sessions", () => {
       );
     }
   });
+
+  it("executes catalog commands over the wire", async () => {
+    ({ server, client } = await startConnectedServer());
+
+    await performHandshake(client);
+
+    const createResponse = await exchange(client, {
+      kind: MessageKind.Command,
+      requestId: 2,
+      payload: {
+        command: "createCollection",
+        database: "app",
+        parameters: {
+          name: "users",
+        },
+      },
+    });
+
+    expect(createResponse.kind).toBe(MessageKind.Result);
+
+    if (createResponse.kind === MessageKind.Result) {
+      expect(createResponse.payload.value).toEqual({
+        database: "app",
+        collection: "users",
+        created: true,
+      });
+    }
+
+    expect(server.catalog.hasCollection("app", "users")).toBe(true);
+
+    const listResponse = await exchange(client, {
+      kind: MessageKind.Command,
+      requestId: 3,
+      payload: {
+        command: "listCollections",
+        database: "app",
+        parameters: {},
+      },
+    });
+
+    expect(listResponse.kind).toBe(MessageKind.Result);
+
+    if (listResponse.kind === MessageKind.Result) {
+      expect(listResponse.payload.value).toEqual({
+        database: "app",
+        collections: ["users"],
+      });
+    }
+  });
 });
 
 async function startConnectedServer(): Promise<{
