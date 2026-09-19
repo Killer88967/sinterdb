@@ -10,6 +10,7 @@ export {
   SinterServerState,
 } from "./server.js";
 export { ServerSession, ServerSessionState } from "./session.js";
+export { CatalogError, CatalogErrorCode, InMemoryCatalog } from "./catalog.js";
 
 export type {
   ServerConfig,
@@ -25,3 +26,7 @@ export type {
   ServerSessionOptions,
   ServerSessionState as ServerSessionStateValue,
 } from "./session.js";
+export type {
+  CatalogErrorCode as CatalogErrorCodeValue,
+  CreatedCollection,
+} from "./catalog.js";
