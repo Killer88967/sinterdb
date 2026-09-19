@@ -1,30 +1,34 @@
 import eslint from "@eslint/js";
-import { defineConfig } from "eslint/config";
+import { defineConfig, globalIgnores } from "eslint/config";
 import globals from "globals";
 
 export default defineConfig([
-  {
-    name: "Global ignores",
-    ignores: [
-      "**/node_modules/**",
-      "**/.pnpm-store/**",
-      "**/dist/**",
-      "**/build/**",
-      "**/out/**",
-      "**/lib/**",
-      "**/coverage/**",
-      "**/test-results/**",
-      "**/.cache/**",
-      "**/.vitest/**",
-      "**/.turbo/**",
-      "**/.temp/**",
-      "**/tmp/**",
+  globalIgnores(
+    [
+      "**/node_modules/",
+      "**/.pnpm-store/",
+      "**/dist/",
+      "**/build/",
+      "**/out/",
+      "**/lib/",
+      "**/coverage/",
+      "**/test-results/",
+      "**/.cache/",
+      "**/.vitest/",
+      "**/.turbo/",
+      "**/.temp/",
+      "**/tmp/",
       "**/*.{ts,tsx,mts,cts}",
-      "data/**",
-      ".sinterdb/**",
-      "sinterdb-data/**",
-      "backups/**",
+      "data/",
+      ".sinterdb/",
+      "sinterdb-data/",
+      "backups/",
     ],
+    "Global ignores",
+  ),
+
+  {
+    name: "Linter options",
 
     linterOptions: {
       reportUnusedDisableDirectives: "error",

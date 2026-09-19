@@ -11,6 +11,13 @@ export {
 } from "./server.js";
 export { ServerSession, ServerSessionState } from "./session.js";
 export { CatalogError, CatalogErrorCode, InMemoryCatalog } from "./catalog.js";
+export {
+  CommandDispatcher,
+  CommandExecutionError,
+  SERVER_PRODUCT,
+  SERVER_PRODUCT_VERSION,
+  ServerCommand,
+} from "./command-dispatcher.js";
 
 export type {
   ServerConfig,
@@ -30,3 +37,4 @@ export type {
   CatalogErrorCode as CatalogErrorCodeValue,
   CreatedCollection,
 } from "./catalog.js";
+export type { ServerCommand as ServerCommandValue } from "./command-dispatcher.js";
