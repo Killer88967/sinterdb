@@ -384,7 +384,14 @@ across a connection use numeric `WireErrorCode` values.
 | 3000 | `NamespaceNotFound` |
 | 3001 | `NamespaceConflict` |
 
-### 6.4 Internal errors
+### 6.4 Document and write errors
+
+| Code | Name                       |
+| ---: | -------------------------- |
+| 4000 | `DocumentValidationFailed` |
+| 4001 | `DuplicateKey`             |
+
+### 6.5 Internal errors
 
 | Code | Name            |
 | ---: | --------------- |

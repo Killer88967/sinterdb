@@ -1,7 +1,9 @@
 import {
+  CustomId,
   PROTOCOL_VERSION,
   ProtocolCapability,
   WireErrorCode,
+  type Document,
 } from "sinterdb-protocol";
 import { describe, expect, it } from "vitest";
 
@@ -137,6 +139,148 @@ describe("CommandDispatcher", () => {
           parameters: {},
         }),
       WireErrorCode.UnknownCommand,
+    );
+  });
+
+  it("inserts a document and generates its identifier", () => {
+    const catalog = new InMemoryCatalog();
+    const dispatcher = new CommandDispatcher(catalog);
+
+    const result = dispatcher.dispatch({
+      command: ServerCommand.InsertOne,
+      database: "app",
+      parameters: {
+        collection: "users",
+        document: {
+          name: "Ada",
+        },
+      },
+    }) as Document;
+
+    expect(result["acknowledged"]).toBe(true);
+    expect(result["insertedId"]).toBeInstanceOf(CustomId);
+
+    const insertedId = result["insertedId"];
+
+    if (!(insertedId instanceof CustomId)) {
+      throw new Error("Expected insertOne to return a CustomId.");
+    }
+
+    const collection = catalog.getCollection("app", "users");
+
+    if (collection === undefined) {
+      throw new Error("Expected insertOne to create the collection.");
+    }
+
+    const stored = collection.findById(insertedId);
+
+    expect(stored?.["name"]).toBe("Ada");
+    expect(catalog.listCollections("app")).toEqual(["users"]);
+  });
+
+  it("preserves a provided document identifier", () => {
+    const catalog = new InMemoryCatalog();
+    const dispatcher = new CommandDispatcher(catalog);
+    const id = CustomId.fromHexString("00112233445566778899aabbccddeeff");
+
+    const result = dispatcher.dispatch({
+      command: ServerCommand.InsertOne,
+      database: "app",
+      parameters: {
+        collection: "users",
+        document: {
+          _id: id,
+          name: "Ada",
+        },
+      },
+    }) as Document;
+
+    const insertedId = result["insertedId"];
+
+    expect(insertedId).toBeInstanceOf(CustomId);
+
+    if (insertedId instanceof CustomId) {
+      expect(insertedId.equals(id)).toBe(true);
+    }
+  });
+
+  it("reports duplicate document identifiers", () => {
+    const dispatcher = createDispatcher();
+    const id = CustomId.fromHexString("00112233445566778899aabbccddeeff");
+
+    dispatcher.dispatch({
+      command: ServerCommand.InsertOne,
+      database: "app",
+      parameters: {
+        collection: "users",
+        document: {
+          _id: id,
+          name: "first",
+        },
+      },
+    });
+
+    expectCommandError(
+      () =>
+        dispatcher.dispatch({
+          command: ServerCommand.InsertOne,
+          database: "app",
+          parameters: {
+            collection: "users",
+            document: {
+              _id: id,
+              name: "second",
+            },
+          },
+        }),
+      WireErrorCode.DuplicateKey,
+    );
+  });
+
+  it("reports invalid document identifiers", () => {
+    expectCommandError(
+      () =>
+        createDispatcher().dispatch({
+          command: ServerCommand.InsertOne,
+          database: "app",
+          parameters: {
+            collection: "users",
+            document: {
+              _id: "not-a-custom-id",
+            },
+          },
+        }),
+      WireErrorCode.DocumentValidationFailed,
+    );
+  });
+
+  it("requires an insert document", () => {
+    expectCommandError(
+      () =>
+        createDispatcher().dispatch({
+          command: ServerCommand.InsertOne,
+          database: "app",
+          parameters: {
+            collection: "users",
+          },
+        }),
+      WireErrorCode.InvalidRequest,
+    );
+  });
+
+  it("requires an insert collection", () => {
+    expectCommandError(
+      () =>
+        createDispatcher().dispatch({
+          command: ServerCommand.InsertOne,
+          database: "app",
+          parameters: {
+            document: {
+              name: "Ada",
+            },
+          },
+        }),
+      WireErrorCode.InvalidRequest,
     );
   });
 });

@@ -12,6 +12,9 @@ export const WireErrorCode = {
   NamespaceNotFound: 3000,
   NamespaceConflict: 3001,
 
+  DocumentValidationFailed: 4000,
+  DuplicateKey: 4001,
+
   InternalError: 9000,
 } as const;
 

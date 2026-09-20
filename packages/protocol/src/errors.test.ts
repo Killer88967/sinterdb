@@ -36,6 +36,8 @@ describe("WireErrorCode", () => {
       PermissionDenied: 2002,
       NamespaceNotFound: 3000,
       NamespaceConflict: 3001,
+      DocumentValidationFailed: 4000,
+      DuplicateKey: 4001,
       InternalError: 9000,
     });
   });

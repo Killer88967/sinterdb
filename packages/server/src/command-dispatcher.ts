@@ -7,6 +7,7 @@ import {
   type DocumentValue,
   type WireErrorCodeValue,
 } from "sinterdb-protocol";
+import { StorageError, StorageErrorCode } from "@sinterdb-internal/storage";
 import {
   CatalogError,
   CatalogErrorCode,
@@ -18,6 +19,7 @@ export const ServerCommand = {
   ListDatabases: "listDatabases",
   CreateCollection: "createCollection",
   ListCollections: "listCollections",
+  InsertOne: "insertOne",
 } as const;
 
 export type ServerCommand = (typeof ServerCommand)[keyof typeof ServerCommand];
@@ -64,6 +66,9 @@ export class CommandDispatcher {
 
       case ServerCommand.ListCollections:
         return this.listCollections(command);
+
+      case ServerCommand.InsertOne:
+        return this.insertOne(command);
 
       default:
         throw new CommandExecutionError(
@@ -128,6 +133,35 @@ export class CommandDispatcher {
       throw translateCatalogError(error);
     }
   }
+
+  // TODO: Finish
+  private insertOne(command: CommandEnvelope): Document {
+    const databaseName = requireDatabase(command);
+    const collectionName = requireStringParameter(
+      command.parameters,
+      "collection",
+    );
+    const document = requireDocumentParameter(command.parameters, "document");
+
+    try {
+      const collection = this.catalog.getOrCreateCollection(
+        databaseName,
+        collectionName,
+      );
+      const result = collection.insertOne(document);
+
+      return {
+        acknowledged: true,
+        insertedId: result.insertedId,
+      };
+    } catch (error: unknown) {
+      if (error instanceof CatalogError) {
+        throw translateCatalogError(error);
+      }
+
+      throw translateStorageError(error);
+    }
+  }
 }
 
 function requireDatabase(command: CommandEnvelope): string {
@@ -167,6 +201,38 @@ function requireStringParameter(parameters: Document, name: string): string {
   return value;
 }
 
+function requireDocumentParameter(
+  parameters: Document,
+  name: string,
+): Document {
+  const value = parameters[name];
+
+  if (!isPlainDocument(value)) {
+    throw new CommandExecutionError(
+      WireErrorCode.InvalidRequest,
+      "InvalidRequest",
+      `Command parameter ${JSON.stringify(name)} must be a document.`,
+      {
+        details: {
+          field: name,
+        },
+      },
+    );
+  }
+
+  return value;
+}
+
+function isPlainDocument(value: unknown): value is Document {
+  if (typeof value !== "object" || value == null || Array.isArray(value)) {
+    return false;
+  }
+
+  const prototype = Object.getPrototypeOf(value);
+
+  return prototype === Object.prototype || prototype === null;
+}
+
 function translateCatalogError(error: unknown): CommandExecutionError {
   if (!(error instanceof CatalogError)) {
     throw error;
@@ -187,6 +253,37 @@ function translateCatalogError(error: unknown): CommandExecutionError {
     {
       details: {
         catalogErrorCode: error.code,
+      },
+    },
+  );
+}
+
+function translateStorageError(error: unknown): CommandExecutionError {
+  if (!(error instanceof StorageError)) {
+    throw error;
+  }
+
+  if (error.code === StorageErrorCode.DuplicateId) {
+    return new CommandExecutionError(
+      WireErrorCode.DuplicateKey,
+      "DuplicateKey",
+      error.message,
+      {
+        details: {
+          field: "_id",
+          storageErrorCode: error.code,
+        },
+      },
+    );
+  }
+
+  return new CommandExecutionError(
+    WireErrorCode.DocumentValidationFailed,
+    "DocumentValidationFailed",
+    error.message,
+    {
+      details: {
+        storageErrorCode: error.code,
       },
     },
   );
