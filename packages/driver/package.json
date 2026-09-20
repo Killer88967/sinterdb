@@ -30,6 +30,9 @@
   "dependencies": {
     "sinterdb-protocol": "workspace:^"
   },
+  "devDependencies": {
+    "@sinterdb-internal/test-utils": "workspace:^"
+  },
   "engines": {
     "node": ">=24.0.0"
   },
