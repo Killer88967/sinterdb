@@ -1,3 +1,5 @@
+import { InMemoryCollection } from "@sinterdb-internal/storage";
+
 export const CatalogErrorCode = {
   InvalidDatabaseName: "INVALID_DATABASE_NAME",
   InvalidCollectionName: "INVALID_COLLECTION_NAME",
@@ -25,7 +27,7 @@ export interface CreatedCollection {
 
 interface DatabaseEntry {
   readonly name: string;
-  readonly collections: Set<string>;
+  readonly collections: Map<string, InMemoryCollection>;
 }
 
 export class InMemoryCatalog {
@@ -64,7 +66,7 @@ export class InMemoryCatalog {
       return [];
     }
 
-    return sortNames(database.collections);
+    return sortNames(database.collections.keys());
   }
 
   public hasCollection(databaseName: string, collectionName: string): boolean {
@@ -76,6 +78,37 @@ export class InMemoryCatalog {
     );
   }
 
+  public getCollection(
+    databaseName: string,
+    collectionName: string,
+  ): InMemoryCollection | undefined {
+    validateDatabaseName(databaseName);
+    validateCollectionName(collectionName);
+
+    return this.databases.get(databaseName)?.collections.get(collectionName);
+  }
+
+  public getOrCreateCollection(
+    databaseName: string,
+    collectionName: string,
+  ): InMemoryCollection {
+    validateDatabaseName(databaseName);
+    validateCollectionName(collectionName);
+
+    const database = this.getOrCreateDatabase(databaseName);
+    const existing = database.collections.get(collectionName);
+
+    if (existing !== undefined) {
+      return existing;
+    }
+
+    const collection = new InMemoryCollection();
+
+    database.collections.set(collectionName, collection);
+
+    return collection;
+  }
+
   public createCollection(
     databaseName: string,
     collectionName: string,
@@ -83,25 +116,18 @@ export class InMemoryCatalog {
     validateDatabaseName(databaseName);
     validateCollectionName(collectionName);
 
-    let database = this.databases.get(databaseName);
-
-    if (database === undefined) {
-      database = {
-        name: databaseName,
-        collections: new Set(),
-      };
-
-      this.databases.set(databaseName, database);
-    }
+    const database = this.getOrCreateDatabase(databaseName);
 
     if (database.collections.has(collectionName)) {
       throw new CatalogError(
         CatalogErrorCode.NamespaceConflict,
-        `Collection ${JSON.stringify(`${databaseName},${collectionName}`)} already exists.`,
+        `Collection ${JSON.stringify(
+          `${databaseName}.${collectionName}`,
+        )} already exists.`,
       );
     }
 
-    database.collections.add(collectionName);
+    database.collections.set(collectionName, new InMemoryCollection());
 
     return {
       database: database.name,
@@ -110,7 +136,30 @@ export class InMemoryCatalog {
   }
 
   public clear(): void {
+    for (const database of this.databases.values()) {
+      for (const collection of database.collections.values()) {
+        collection.clear();
+      }
+    }
+
     this.databases.clear();
+  }
+
+  private getOrCreateDatabase(name: string): DatabaseEntry {
+    const existing = this.databases.get(name);
+
+    if (existing !== undefined) {
+      return existing;
+    }
+
+    const database: DatabaseEntry = {
+      name,
+      collections: new Map(),
+    };
+
+    this.databases.set(name, database);
+
+    return database;
   }
 }
 
