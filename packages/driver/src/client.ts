@@ -1,6 +1,5 @@
 import { performance } from "node:perf_hooks";
 import { createConnection, type Socket } from "node:net";
-
 import { MessageKind, ProtocolCapability } from "sinterdb-protocol";
 
 import {
@@ -17,6 +16,8 @@ import {
 } from "./errors.js";
 import { performClientHandshake, type ServerHandshake } from "./handshake.js";
 import { RequestDispatcher } from "./request-dispatcher.js";
+import { SinterDatabase } from "./database.js";
+import { SinterNamespaceError } from "./namespace.js";
 
 export const DEFAULT_CONNECT_TIMEOUT_MS = 10_000;
 export const DEFAULT_REQUEST_TIMEOUT_MS = 10_000;
@@ -155,6 +156,18 @@ export class SinterClient {
     }
 
     return parsePingResult(response.payload.value, sentAt, roundTripTimeMS);
+  }
+
+  public db(name?: string): SinterDatabase {
+    const selectedName = name ?? this.target.database;
+
+    if (selectedName === undefined) {
+      throw new SinterNamespaceError(
+        "No database was selected in the connection string or db() call.",
+      );
+    }
+
+    return new SinterDatabase(this, selectedName);
   }
 
   public async close(): Promise<void> {
