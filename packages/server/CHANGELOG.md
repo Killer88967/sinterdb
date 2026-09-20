@@ -1,5 +1,12 @@
 # @sinterdb-internal/server
 
+## 0.0.4
+
+### Patch Changes
+
+- sinterdb-protocol@0.0.4
+  - @sinterdb-internal/storage@0.0.4
+
 ## 0.0.3
 
 ### Patch Changes

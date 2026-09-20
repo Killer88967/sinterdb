@@ -1,6 +1,6 @@
 {
   "name": "sinterdb-workspace",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "description": "A document-oriented database, its official Node.js driver, and supporting packages.",
   "author": "Killer88967",

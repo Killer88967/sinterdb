@@ -25,7 +25,7 @@ export const DEFAULT_CONNECT_TIMEOUT_MS = 10_000;
 export const DEFAULT_REQUEST_TIMEOUT_MS = 10_000;
 export const DEFAULT_SOCKET_TIMEOUT_MS = 0;
 export const DRIVER_PRODUCT = "sinterdb-node-driver";
-export const DRIVER_PRODUCT_VERSION = "0.0.3";
+export const DRIVER_PRODUCT_VERSION = "0.0.4";
 
 const MAX_TIMEOUT_MS = 2_147_483_647;
 
