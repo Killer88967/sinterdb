@@ -2,6 +2,7 @@ import {
   MessageKind,
   type MessageKind as MessageKindValue,
 } from "./constants.js";
+import { CustomId } from "./custom-id.js";
 import { decodeDocument } from "./document-decoder.js";
 import { encodeDocument } from "./document-encoder.js";
 import type { Document } from "./document.js";
@@ -194,7 +195,8 @@ function isDocument(value: unknown): value is Document {
     value === null ||
     Array.isArray(value) ||
     value instanceof Date ||
-    value instanceof Uint8Array
+    value instanceof Uint8Array ||
+    value instanceof CustomId
   ) {
     return false;
   }

@@ -1,3 +1,5 @@
+import { CustomId } from "./custom-id.js";
+
 export interface Document {
   [key: string]: DocumentValue;
 }
@@ -10,6 +12,7 @@ export type DocumentValue =
   | string
   | Date
   | Uint8Array
+  | CustomId
   | DocumentValue[]
   | Document;
 
@@ -26,6 +29,7 @@ export const ValueTag = {
   DateTime: 0x09,
   Array: 0x0a,
   Document: 0x0b,
+  CustomId: 0x0c,
 } as const;
 
 export type ValueTag = (typeof ValueTag)[keyof typeof ValueTag];

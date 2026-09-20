@@ -1,12 +1,13 @@
 import { BinaryReader } from "./binary-reader.js";
 import { MAX_PAYLOAD_SIZE } from "./constants.js";
+import { CUSTOM_ID_BYTE_LENGTH, CustomId } from "./custom-id.js";
+import { ProtocolError, ProtocolErrorCode } from "./errors.js";
 import {
   MAX_DOCUMENT_DEPTH,
   ValueTag,
   type Document,
   type DocumentValue,
 } from "./document.js";
-import { ProtocolError, ProtocolErrorCode } from "./errors.js";
 
 const decoder = new TextDecoder("utf-8", { fatal: true });
 
@@ -94,6 +95,9 @@ function readValue(reader: BinaryReader, depth: number): DocumentValue {
 
     case ValueTag.DateTime:
       return readDate(reader);
+
+    case ValueTag.CustomId:
+      return CustomId.fromBytes(reader.readBytes(CUSTOM_ID_BYTE_LENGTH));
 
     case ValueTag.Array:
       return readArray(reader, depth);
@@ -199,6 +203,7 @@ function isDocument(value: DocumentValue): value is Document {
     value !== null &&
     !Array.isArray(value) &&
     !(value instanceof Date) &&
-    !(value instanceof Uint8Array)
+    !(value instanceof Uint8Array) &&
+    !(value instanceof CustomId)
   );
 }

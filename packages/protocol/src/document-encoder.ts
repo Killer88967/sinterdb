@@ -1,3 +1,4 @@
+import { CustomId } from "./custom-id.js";
 import { BinaryWriter } from "./binary-writer.js";
 import {
   MAX_DOCUMENT_DEPTH,
@@ -75,6 +76,12 @@ function writeValue(
   if (value instanceof Uint8Array) {
     writer.writeUint8(ValueTag.Binary);
     writeLengthPrefixedBytes(writer, value);
+    return;
+  }
+
+  if (value instanceof CustomId) {
+    writer.writeUint8(ValueTag.CustomId);
+    writer.writeBytes(value.toBytes());
     return;
   }
 

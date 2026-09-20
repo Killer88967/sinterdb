@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 import { MessageKind } from "./constants.js";
+import { CustomId } from "./custom-id.js";
 import { decodeDocumentValue } from "./document-decoder.js";
 import { encodeDocumentValue } from "./document-encoder.js";
 import type { DocumentValue } from "./document.js";
@@ -38,6 +39,7 @@ const valueCases: ReadonlyArray<readonly [name: string, value: DocumentValue]> =
     ["unix-epoch", new Date(0)],
     ["array-null-true", [null, true]],
     ["simple-document", { a: 1 }],
+    ["custom-id", CustomId.fromHexString("00112233445566778899aabbccddeeff")],
   ];
 
 describe("protocol v1 golden fixtures", () => {
@@ -50,7 +52,14 @@ describe("protocol v1 golden fixtures", () => {
     const expected = hexToBytes(getFixture(fixtures.values, name));
 
     expect(encodeDocumentValue(value)).toEqual(expected);
-    expect(decodeDocumentValue(expected)).toEqual(value);
+
+    const decoded = decodeDocumentValue(expected);
+
+    if (value instanceof CustomId) {
+      expect(decoded).toBeInstanceOf(CustomId);
+    }
+
+    expect(decoded).toEqual(value);
   });
 
   it("matches the null-result message fixture", () => {

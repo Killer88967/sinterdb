@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { CustomId } from "./custom-id.js";
 import {
   MAX_DOCUMENT_DEPTH,
   ValueTag,
@@ -22,6 +23,7 @@ describe("document value model", () => {
       DateTime: 0x09,
       Array: 0x0a,
       Document: 0x0b,
+      CustomId: 0x0c,
     });
   });
 
@@ -41,6 +43,7 @@ describe("document value model", () => {
       stringValue: "SinterDB",
       dateValue: new Date("2026-09-17T00:00:00.000Z"),
       binaryValue: new Uint8Array([1, 2, 3]),
+      customIdValue: CustomId.fromHexString("00112233445566778899aabbccddeeff"),
       arrayValue: [1, "two", false],
       documentValue: {
         nested: true,
