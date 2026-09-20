@@ -1,5 +1,8 @@
+import { performance } from "node:perf_hooks";
 import { createConnection, type Socket } from "node:net";
-import { ProtocolCapability } from "sinterdb-protocol";
+
+import { MessageKind, ProtocolCapability } from "sinterdb-protocol";
+
 import {
   type ParsedSinterConnectionString,
   parseSinterConnectionString,
@@ -13,15 +16,18 @@ import {
   SinterProtocolError,
 } from "./errors.js";
 import { performClientHandshake, type ServerHandshake } from "./handshake.js";
+import { RequestDispatcher } from "./request-dispatcher.js";
 
 export const DEFAULT_CONNECT_TIMEOUT_MS = 10_000;
+export const DEFAULT_REQUEST_TIMEOUT_MS = 10_000;
 export const DRIVER_PRODUCT = "sinterdb-node-driver";
 export const DRIVER_PRODUCT_VERSION = "0.0.3";
 
-const MAX_CONNECT_TIMEOUT_MS = 2_147_483_647;
+const MAX_TIMEOUT_MS = 2_147_483_647;
 
 export interface SinterClientOptions {
   readonly connectTimeoutMS?: number;
+  readonly requestTimeoutMS?: number;
 }
 
 export interface SinterServerInfo {
@@ -29,6 +35,13 @@ export interface SinterServerInfo {
   readonly product: string;
   readonly productVersion: string;
   readonly capabilities: readonly string[];
+}
+
+export interface SinterPingResult {
+  readonly ok: true;
+  readonly sentAt: Date;
+  readonly receivedAt: Date;
+  readonly roundTripTimeMS: number;
 }
 
 export const SinterClientState = {
@@ -45,18 +58,29 @@ export type SinterClientState =
 export class SinterClient {
   public readonly target: ParsedSinterConnectionString;
   public readonly connectTimeoutMS: number;
+  public readonly requestTimeoutMS: number;
 
   private currentState: SinterClientState = SinterClientState.New;
   private socket: Socket | undefined;
   private pendingConnection: Promise<this> | undefined;
   private negotiatedServer: SinterServerInfo | undefined;
+  private requestDispatcher: RequestDispatcher | undefined;
 
   public constructor(
     connectionString: string,
     options: SinterClientOptions = {},
   ) {
     this.target = parseSinterConnectionString(connectionString);
-    this.connectTimeoutMS = resolveConnectTimeout(options);
+    this.connectTimeoutMS = resolveTimeout(
+      "connectTimeoutMS",
+      options.connectTimeoutMS,
+      DEFAULT_CONNECT_TIMEOUT_MS,
+    );
+    this.requestTimeoutMS = resolveTimeout(
+      "requestTimeoutMS",
+      options.requestTimeoutMS,
+      DEFAULT_REQUEST_TIMEOUT_MS,
+    );
   }
 
   public get state(): SinterClientState {
@@ -113,6 +137,26 @@ export class SinterClient {
     return connection;
   }
 
+  public async ping(): Promise<SinterPingResult> {
+    const dispatcher = this.getRequestDispatcher();
+    const sentAt = new Date();
+    const startedAt = performance.now();
+
+    const response = await dispatcher.request(MessageKind.Ping, {
+      sentAt,
+    });
+
+    const roundTripTimeMS = performance.now() - startedAt;
+
+    if (response.kind !== MessageKind.Result) {
+      throw new SinterProtocolError(
+        "The server did not return a result for the ping request.",
+      );
+    }
+
+    return parsePingResult(response.payload.value, sentAt, roundTripTimeMS);
+  }
+
   public async close(): Promise<void> {
     if (this.currentState === SinterClientState.Closed) {
       return;
@@ -120,6 +164,16 @@ export class SinterClient {
 
     this.currentState = SinterClientState.Closing;
     this.negotiatedServer = undefined;
+
+    const dispatcher = this.requestDispatcher;
+    this.requestDispatcher = undefined;
+
+    dispatcher?.close(
+      new SinterClientStateError(
+        SinterErrorCode.ClientClosed,
+        "The client closed before the request completed.",
+      ),
+    );
 
     const socket = this.socket;
     this.socket = undefined;
@@ -172,6 +226,7 @@ export class SinterClient {
         }
 
         this.negotiatedServer = undefined;
+        this.requestDispatcher = undefined;
 
         if (this.currentState === SinterClientState.Connecting) {
           this.currentState = SinterClientState.New;
@@ -204,6 +259,10 @@ export class SinterClient {
           product: handshake.product,
           productVersion: handshake.productVersion,
           capabilities: handshake.capabilities,
+        });
+
+        this.requestDispatcher = new RequestDispatcher(socket, {
+          requestTimeoutMS: this.requestTimeoutMS,
         });
 
         this.currentState = SinterClientState.Connected;
@@ -261,8 +320,7 @@ export class SinterClient {
 
   private attachSocketLifecycle(socket: Socket): void {
     socket.on("error", () => {
-      // The close event performs the state transition. Pending operations
-      // will receive detailed connection errors when request support lands.
+      // RequestDispatcher reports the actual connection failure.
     });
 
     socket.once("close", () => {
@@ -273,29 +331,96 @@ export class SinterClient {
       this.socket = undefined;
       this.negotiatedServer = undefined;
 
+      this.requestDispatcher?.close(
+        new SinterConnectionError(
+          "The database connection closed unexpectedly.",
+        ),
+      );
+      this.requestDispatcher = undefined;
+
       if (this.currentState !== SinterClientState.Closing) {
         this.currentState = SinterClientState.Closed;
       }
     });
   }
+
+  private getRequestDispatcher(): RequestDispatcher {
+    if (
+      this.currentState !== SinterClientState.Connected ||
+      this.requestDispatcher === undefined
+    ) {
+      throw new SinterClientStateError(
+        SinterErrorCode.ClientNotConnected,
+        "The SinterDB client is not connected.",
+      );
+    }
+
+    return this.requestDispatcher;
+  }
 }
 
-function resolveConnectTimeout(options: SinterClientOptions): number {
-  if (options.connectTimeoutMS === undefined) {
-    return DEFAULT_CONNECT_TIMEOUT_MS;
+function resolveTimeout(
+  name: "connectTimeoutMS" | "requestTimeoutMS",
+  value: number | undefined,
+  defaultValue: number,
+): number {
+  if (value === undefined) {
+    return defaultValue;
   }
 
-  const timeout = options.connectTimeoutMS;
-
-  if (
-    !Number.isSafeInteger(timeout) ||
-    timeout < 1 ||
-    timeout > MAX_CONNECT_TIMEOUT_MS
-  ) {
+  if (!Number.isSafeInteger(value) || value < 1 || value > MAX_TIMEOUT_MS) {
     throw new SinterClientOptionsError(
-      `connectTimeoutMS must be an integer between 1 and ${MAX_CONNECT_TIMEOUT_MS}.`,
+      `${name} must be an integer between 1 and ${MAX_TIMEOUT_MS}.`,
     );
   }
 
-  return timeout;
+  return value;
+}
+
+function parsePingResult(
+  value: unknown,
+  expectedSentAt: Date,
+  roundTripTimeMS: number,
+): SinterPingResult {
+  if (
+    typeof value !== "object" ||
+    value === null ||
+    Array.isArray(value) ||
+    value instanceof Date ||
+    value instanceof Uint8Array
+  ) {
+    throw new SinterProtocolError(
+      "The server returned an invalid ping result.",
+    );
+  }
+
+  const result = value as Record<string, unknown>;
+  const ok = result["ok"];
+  const sentAt = result["sentAt"];
+  const receivedAt = result["receivedAt"];
+
+  if (
+    ok !== true ||
+    !(sentAt instanceof Date) ||
+    !(receivedAt instanceof Date) ||
+    !Number.isFinite(sentAt.getTime()) ||
+    !Number.isFinite(receivedAt.getTime())
+  ) {
+    throw new SinterProtocolError(
+      "The server returned an invalid ping result.",
+    );
+  }
+
+  if (sentAt.getTime() !== expectedSentAt.getTime()) {
+    throw new SinterProtocolError(
+      "The ping result did not contain the original timestamp.",
+    );
+  }
+
+  return Object.freeze({
+    ok: true,
+    sentAt,
+    receivedAt,
+    roundTripTimeMS,
+  });
 }
