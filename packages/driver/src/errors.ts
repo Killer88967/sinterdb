@@ -5,6 +5,7 @@ export const SinterErrorCode = {
   ClientNotConnected: "CLIENT_NOT_CONNECTED",
   ConnectionFailed: "CONNECTION_FAILED",
   ConnectionTimeout: "CONNECTION_TIMEOUT",
+  RequestTimeout: "REQUEST_TIMEOUT",
   ProtocolViolation: "PROTOCOL_VIOLATION",
   ServerError: "SERVER_ERROR",
 } as const;
@@ -63,6 +64,12 @@ export class SinterConnectionError extends SinterError {
 export class SinterConnectionTimeoutError extends SinterConnectionError {
   public override readonly code: typeof SinterErrorCode.ConnectionTimeout =
     SinterErrorCode.ConnectionTimeout;
+}
+
+export class SinterRequestTimeoutError extends SinterError {
+  public constructor(message: string, options?: ErrorOptions) {
+    super(SinterErrorCode.RequestTimeout, message, options);
+  }
 }
 
 export class SinterProtocolError extends SinterError {
