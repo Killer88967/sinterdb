@@ -1,3 +1,4 @@
+import { EventEmitter } from "node:events";
 import { performance } from "node:perf_hooks";
 import { createConnection, type Socket } from "node:net";
 import { MessageKind, ProtocolCapability } from "sinterdb-protocol";
@@ -6,6 +7,7 @@ import {
   type ParsedSinterConnectionString,
   parseSinterConnectionString,
 } from "./connection-string.js";
+import { SinterDatabase } from "./database.js";
 import {
   SinterClientOptionsError,
   SinterClientStateError,
@@ -15,9 +17,8 @@ import {
   SinterProtocolError,
 } from "./errors.js";
 import { performClientHandshake, type ServerHandshake } from "./handshake.js";
-import { RequestDispatcher } from "./request-dispatcher.js";
-import { SinterDatabase } from "./database.js";
 import { SinterNamespaceError } from "./namespace.js";
+import { RequestDispatcher } from "./request-dispatcher.js";
 
 export const DEFAULT_CONNECT_TIMEOUT_MS = 10_000;
 export const DEFAULT_REQUEST_TIMEOUT_MS = 10_000;
@@ -45,6 +46,13 @@ export interface SinterPingResult {
   readonly roundTripTimeMS: number;
 }
 
+export interface SinterClientEvents {
+  connecting: [client: SinterClient];
+  connected: [client: SinterClient];
+  closed: [client: SinterClient];
+  error: [error: Error];
+}
+
 export const SinterClientState = {
   New: "new",
   Connecting: "connecting",
@@ -56,7 +64,7 @@ export const SinterClientState = {
 export type SinterClientState =
   (typeof SinterClientState)[keyof typeof SinterClientState];
 
-export class SinterClient {
+export class SinterClient extends EventEmitter<SinterClientEvents> {
   public readonly target: ParsedSinterConnectionString;
   public readonly connectTimeoutMS: number;
   public readonly requestTimeoutMS: number;
@@ -71,6 +79,8 @@ export class SinterClient {
     connectionString: string,
     options: SinterClientOptions = {},
   ) {
+    super();
+
     this.target = parseSinterConnectionString(connectionString);
     this.connectTimeoutMS = resolveTimeout(
       "connectTimeoutMS",
@@ -118,6 +128,7 @@ export class SinterClient {
     }
 
     this.currentState = SinterClientState.Connecting;
+    this.emit("connecting", this);
 
     const connection = this.openSocket();
     this.pendingConnection = connection;
@@ -192,7 +203,7 @@ export class SinterClient {
     this.socket = undefined;
 
     if (socket === undefined || socket.destroyed) {
-      this.currentState = SinterClientState.Closed;
+      this.transitionToClosed();
       return;
     }
 
@@ -201,7 +212,7 @@ export class SinterClient {
       socket.destroy();
     });
 
-    this.currentState = SinterClientState.Closed;
+    this.transitionToClosed();
   }
 
   private openSocket(): Promise<this> {
@@ -241,8 +252,16 @@ export class SinterClient {
         this.negotiatedServer = undefined;
         this.requestDispatcher = undefined;
 
+        const shouldEmitError =
+          this.currentState !== SinterClientState.Closing &&
+          this.currentState !== SinterClientState.Closed;
+
         if (this.currentState === SinterClientState.Connecting) {
           this.currentState = SinterClientState.New;
+        }
+
+        if (shouldEmitError) {
+          this.emitDriverError(error);
         }
 
         reject(error);
@@ -280,6 +299,7 @@ export class SinterClient {
 
         this.currentState = SinterClientState.Connected;
         this.attachSocketLifecycle(socket);
+        this.emit("connected", this);
         resolve(this);
       };
 
@@ -332,8 +352,8 @@ export class SinterClient {
   }
 
   private attachSocketLifecycle(socket: Socket): void {
-    socket.on("error", () => {
-      // RequestDispatcher reports the actual connection failure.
+    socket.on("error", (error) => {
+      this.emitDriverError(error);
     });
 
     socket.once("close", () => {
@@ -351,9 +371,7 @@ export class SinterClient {
       );
       this.requestDispatcher = undefined;
 
-      if (this.currentState !== SinterClientState.Closing) {
-        this.currentState = SinterClientState.Closed;
-      }
+      this.transitionToClosed();
     });
   }
 
@@ -369,6 +387,21 @@ export class SinterClient {
     }
 
     return this.requestDispatcher;
+  }
+
+  private transitionToClosed(): void {
+    if (this.currentState === SinterClientState.Closed) {
+      return;
+    }
+
+    this.currentState = SinterClientState.Closed;
+    this.emit("closed", this);
+  }
+
+  private emitDriverError(error: Error): void {
+    if (this.listenerCount("error") > 0) {
+      this.emit("error", error);
+    }
   }
 }
 
