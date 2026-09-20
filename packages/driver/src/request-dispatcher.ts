@@ -186,7 +186,16 @@ export class RequestDispatcher {
     clearTimeout(pending.timeout);
 
     if (message.kind === MessageKind.Error) {
-      pending.reject(new SinterServerError(message.payload.message));
+      pending.reject(
+        new SinterServerError(message.payload.message, {
+          wireCode: message.payload.code,
+          serverErrorName: message.payload.name,
+          retryable: message.payload.retryable,
+          ...(message.payload.details === undefined
+            ? {}
+            : { details: message.payload.details }),
+        }),
+      );
       return;
     }
 

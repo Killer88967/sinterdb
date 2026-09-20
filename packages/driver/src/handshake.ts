@@ -1,4 +1,5 @@
 import type { Socket } from "node:net";
+
 import {
   encodeMessage,
   HandshakeRole,
@@ -116,7 +117,16 @@ export function performClientHandshake(
             return;
           }
 
-          fail(new SinterServerError(message.payload.message));
+          fail(
+            new SinterServerError(message.payload.message, {
+              wireCode: message.payload.code,
+              serverErrorName: message.payload.name,
+              retryable: message.payload.retryable,
+              ...(message.payload.details === undefined
+                ? {}
+                : { details: message.payload.details }),
+            }),
+          );
           return;
         }
 

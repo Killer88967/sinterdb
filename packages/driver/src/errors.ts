@@ -1,3 +1,5 @@
+import type { Document } from "sinterdb-protocol";
+
 export const SinterErrorCode = {
   InvalidConnectionString: "INVALID_CONNECTION_STRING",
   InvalidClientOptions: "INVALID_CLIENT_OPTIONS",
@@ -14,6 +16,13 @@ export const SinterErrorCode = {
 
 export type SinterErrorCode =
   (typeof SinterErrorCode)[keyof typeof SinterErrorCode];
+
+export interface SinterServerErrorOptions extends ErrorOptions {
+  readonly wireCode?: number;
+  readonly serverErrorName?: string;
+  readonly retryable?: boolean;
+  readonly details?: Document;
+}
 
 export class SinterError extends Error {
   public readonly code: SinterErrorCode;
@@ -86,8 +95,18 @@ export class SinterProtocolError extends SinterError {
 }
 
 export class SinterServerError extends SinterError {
-  public constructor(message: string, options?: ErrorOptions) {
+  public readonly wireCode: number | undefined;
+  public readonly serverErrorName: string | undefined;
+  public readonly retryable: boolean;
+  public readonly details: Document | undefined;
+
+  public constructor(message: string, options: SinterServerErrorOptions = {}) {
     super(SinterErrorCode.ServerError, message, options);
+
+    this.wireCode = options.wireCode;
+    this.serverErrorName = options.serverErrorName;
+    this.retryable = options.retryable ?? false;
+    this.details = options.details;
   }
 }
 

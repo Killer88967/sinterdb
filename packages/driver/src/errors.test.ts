@@ -71,4 +71,23 @@ describe("driver errors", () => {
     expect(protocolError.name).toBe("SinterProtocolError");
     expect(serverError.name).toBe("SinterServerError");
   });
+
+  it("preserves server error metadata", () => {
+    const error = new SinterServerError("The identifier already exists.", {
+      wireCode: 4001,
+      serverErrorName: "DuplicateKey",
+      retryable: false,
+      details: {
+        field: "_id",
+      },
+    });
+
+    expect(error.code).toBe(SinterErrorCode.ServerError);
+    expect(error.wireCode).toBe(4001);
+    expect(error.serverErrorName).toBe("DuplicateKey");
+    expect(error.retryable).toBe(false);
+    expect(error.details).toEqual({
+      field: "_id",
+    });
+  });
 });
