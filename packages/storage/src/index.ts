@@ -1,6 +1,10 @@
-/**
- * SinterDB durable-storage engine.
- *
- * Persistent storage begins in version 0.0.8.
- */
-export {};
+export {
+  InMemoryCollection,
+  StorageError,
+  StorageErrorCode,
+} from "./in-memory-collection.js";
+
+export type {
+  StorageErrorCode as StorageErrorCodeValue,
+  StorageInsertOneResult,
+} from "./in-memory-collection.js";
