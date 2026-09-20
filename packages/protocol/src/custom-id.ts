@@ -59,8 +59,7 @@ export class CustomId {
     let milliseconds = 0n;
 
     for (let index = 0; index < TIMESTAMP_BYTE_LENGTH; index += 1) {
-      milliseconds =
-        (milliseconds << 8n) | BigInt(this.bytes[index] ?? 0);
+      milliseconds = (milliseconds << 8n) | BigInt(this.bytes[index] ?? 0);
     }
 
     return new Date(Number(milliseconds));
@@ -71,9 +70,7 @@ export class CustomId {
       return false;
     }
 
-    return this.bytes.every(
-      (byte, index) => byte === other.bytes[index],
-    );
+    return this.bytes.every((byte, index) => byte === other.bytes[index]);
   }
 
   public toBytes(): Uint8Array {
@@ -96,11 +93,7 @@ export class CustomId {
 }
 
 function writeTimestamp(target: Uint8Array, value: number): void {
-  if (
-    !Number.isSafeInteger(value) ||
-    value < 0 ||
-    value > MAX_TIMESTAMP
-  ) {
+  if (!Number.isSafeInteger(value) || value < 0 || value > MAX_TIMESTAMP) {
     throw new RangeError(
       `CustomId timestamp must be an integer between 0 and ${MAX_TIMESTAMP}.`,
     );
