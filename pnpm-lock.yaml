@@ -244,6 +244,10 @@ importers:
         version: link:../protocol
 
   packages/storage:
+    dependencies:
+      sinterdb-protocol:
+        specifier: workspace:^
+        version: link:../protocol
     devDependencies:
       vitest:
         specifier: 'catalog:'
