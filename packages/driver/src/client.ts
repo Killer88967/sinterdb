@@ -1,4 +1,5 @@
 import { createConnection, type Socket } from "node:net";
+import { ProtocolCapability } from "sinterdb-protocol";
 import {
   type ParsedSinterConnectionString,
   parseSinterConnectionString,
@@ -9,13 +10,25 @@ import {
   SinterConnectionError,
   SinterConnectionTimeoutError,
   SinterErrorCode,
+  SinterProtocolError,
 } from "./errors.js";
+import { performClientHandshake, type ServerHandshake } from "./handshake.js";
 
 export const DEFAULT_CONNECT_TIMEOUT_MS = 10_000;
+export const DRIVER_PRODUCT = "sinterdb-node-driver";
+export const DRIVER_PRODUCT_VERSION = "0.0.3";
+
 const MAX_CONNECT_TIMEOUT_MS = 2_147_483_647;
 
 export interface SinterClientOptions {
   readonly connectTimeoutMS?: number;
+}
+
+export interface SinterServerInfo {
+  readonly protocolVersion: number;
+  readonly product: string;
+  readonly productVersion: string;
+  readonly capabilities: readonly string[];
 }
 
 export const SinterClientState = {
@@ -36,6 +49,7 @@ export class SinterClient {
   private currentState: SinterClientState = SinterClientState.New;
   private socket: Socket | undefined;
   private pendingConnection: Promise<this> | undefined;
+  private negotiatedServer: SinterServerInfo | undefined;
 
   public constructor(
     connectionString: string,
@@ -51,6 +65,10 @@ export class SinterClient {
 
   public get connected(): boolean {
     return this.currentState === SinterClientState.Connected;
+  }
+
+  public get serverInfo(): SinterServerInfo | undefined {
+    return this.negotiatedServer;
   }
 
   public connect(): Promise<this> {
@@ -101,6 +119,7 @@ export class SinterClient {
     }
 
     this.currentState = SinterClientState.Closing;
+    this.negotiatedServer = undefined;
 
     const socket = this.socket;
     this.socket = undefined;
@@ -129,55 +148,89 @@ export class SinterClient {
 
       this.socket = socket;
 
-      const timeout = setTimeout(() => {
-        cleanup();
+      let settled = false;
+      let timeout: ReturnType<typeof setTimeout>;
+
+      const cleanupConnectionListeners = (): void => {
+        socket.off("connect", onConnect);
+        socket.off("error", onError);
+        socket.off("close", onClose);
+      };
+
+      const finishFailure = (error: Error): void => {
+        if (settled) {
+          return;
+        }
+
+        settled = true;
+        clearTimeout(timeout);
+        cleanupConnectionListeners();
         socket.destroy();
+
+        if (this.socket === socket) {
+          this.socket = undefined;
+        }
+
+        this.negotiatedServer = undefined;
 
         if (this.currentState === SinterClientState.Connecting) {
           this.currentState = SinterClientState.New;
         }
 
-        this.socket = undefined;
+        reject(error);
+      };
 
-        reject(
-          new SinterConnectionTimeoutError(
-            `Timed out while connecting to ${host}:${port}.`,
-          ),
-        );
-      }, this.connectTimeoutMS);
-
-      const onConnect = (): void => {
-        cleanup();
+      const finishSuccess = (handshake: ServerHandshake): void => {
+        if (settled) {
+          return;
+        }
 
         if (this.currentState !== SinterClientState.Connecting) {
-          socket.destroy();
-
-          reject(
+          finishFailure(
             new SinterClientStateError(
               SinterErrorCode.ClientClosed,
               "The client was closed while connecting.",
             ),
           );
-
           return;
         }
+
+        settled = true;
+        clearTimeout(timeout);
+        cleanupConnectionListeners();
+
+        this.negotiatedServer = Object.freeze({
+          protocolVersion: handshake.protocolVersion,
+          product: handshake.product,
+          productVersion: handshake.productVersion,
+          capabilities: handshake.capabilities,
+        });
 
         this.currentState = SinterClientState.Connected;
         this.attachSocketLifecycle(socket);
         resolve(this);
       };
 
+      const onConnect = (): void => {
+        cleanupConnectionListeners();
+
+        void performClientHandshake(socket, {
+          product: DRIVER_PRODUCT,
+          productVersion: DRIVER_PRODUCT_VERSION,
+          capabilities: [ProtocolCapability.TypedDocuments],
+        }).then(finishSuccess, (error: unknown) => {
+          finishFailure(
+            error instanceof Error
+              ? error
+              : new SinterProtocolError(
+                  "The client handshake failed with an unknown error.",
+                ),
+          );
+        });
+      };
+
       const onError = (cause: Error): void => {
-        cleanup();
-        socket.destroy();
-
-        if (this.currentState === SinterClientState.Connecting) {
-          this.currentState = SinterClientState.New;
-        }
-
-        this.socket = undefined;
-
-        reject(
+        finishFailure(
           new SinterConnectionError(`Could not connect to ${host}:${port}.`, {
             cause,
           }),
@@ -185,38 +238,31 @@ export class SinterClient {
       };
 
       const onClose = (): void => {
-        cleanup();
-
-        if (this.currentState === SinterClientState.Connecting) {
-          this.currentState = SinterClientState.New;
-        }
-
-        this.socket = undefined;
-
-        reject(
+        finishFailure(
           new SinterConnectionError(
             `The connection to ${host}:${port} closed before it was established.`,
           ),
         );
       };
 
-      const cleanup = (): void => {
-        clearTimeout(timeout);
-        socket.off("connect", onConnect);
-        socket.off("error", onError);
-        socket.off("close", onClose);
-      };
-
       socket.once("connect", onConnect);
       socket.once("error", onError);
       socket.once("close", onClose);
+
+      timeout = setTimeout(() => {
+        finishFailure(
+          new SinterConnectionTimeoutError(
+            `Timed out while connecting to ${host}:${port}.`,
+          ),
+        );
+      }, this.connectTimeoutMS);
     });
   }
 
   private attachSocketLifecycle(socket: Socket): void {
     socket.on("error", () => {
-      // The close event performs the state transition. Later this will
-      // also surface the failure to pending driver operations.
+      // The close event performs the state transition. Pending operations
+      // will receive detailed connection errors when request support lands.
     });
 
     socket.once("close", () => {
@@ -225,6 +271,7 @@ export class SinterClient {
       }
 
       this.socket = undefined;
+      this.negotiatedServer = undefined;
 
       if (this.currentState !== SinterClientState.Closing) {
         this.currentState = SinterClientState.Closed;
