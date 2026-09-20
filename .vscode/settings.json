@@ -90,8 +90,8 @@
   "files.exclude": {
     "apps": true,
     "packages/driver": true,
-    "packages/protocol": false,
-    "packages/server": true,
+    "packages/protocol": true,
+    "packages/server": false,
     "packages/storage": true,
     "packages/test-utils": true
   }

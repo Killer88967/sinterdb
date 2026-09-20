@@ -38,12 +38,18 @@ describe("InMemoryCatalog", () => {
   it("returns database and collection names in deterministic order", () => {
     const catalog = new InMemoryCatalog();
 
-    catalog.createCollection("zeta", "events");
-    catalog.createCollection("alpha", "users");
-    catalog.createCollection("alpha", "accounts");
+    catalog.createCollection("middle", "middle");
+    catalog.createCollection("zeta", "zeta");
+    catalog.createCollection("alpha", "alpha");
+    catalog.createCollection("middle", "zeta");
+    catalog.createCollection("middle", "alpha");
 
-    expect(catalog.listDatabases()).toEqual(["alpha", "zeta"]);
-    expect(catalog.listCollections("alpha")).toEqual(["accounts", "users"]);
+    expect(catalog.listDatabases()).toEqual(["alpha", "middle", "zeta"]);
+    expect(catalog.listCollections("middle")).toEqual([
+      "alpha",
+      "middle",
+      "zeta",
+    ]);
   });
 
   it("returns an empty collection list for an unknown database", () => {

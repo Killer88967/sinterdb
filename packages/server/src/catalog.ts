@@ -148,7 +148,7 @@ function sortNames(names: Iterable<string>): string[] {
       return -1;
     }
 
-    if (left < right) {
+    if (left > right) {
       return 1;
     }
 
