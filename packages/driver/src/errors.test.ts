@@ -19,6 +19,7 @@ describe("driver errors", () => {
       ClientNotConnected: "CLIENT_NOT_CONNECTED",
       ConnectionFailed: "CONNECTION_FAILED",
       ConnectionTimeout: "CONNECTION_TIMEOUT",
+      SocketTimeout: "SOCKET_TIMEOUT",
       RequestTimeout: "REQUEST_TIMEOUT",
       ProtocolViolation: "PROTOCOL_VIOLATION",
       ServerError: "SERVER_ERROR",

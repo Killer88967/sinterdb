@@ -15,6 +15,7 @@ import {
   SinterConnectionTimeoutError,
   SinterErrorCode,
   SinterProtocolError,
+  SinterSocketTimeoutError,
 } from "./errors.js";
 import { performClientHandshake, type ServerHandshake } from "./handshake.js";
 import { SinterNamespaceError } from "./namespace.js";
@@ -22,6 +23,7 @@ import { RequestDispatcher } from "./request-dispatcher.js";
 
 export const DEFAULT_CONNECT_TIMEOUT_MS = 10_000;
 export const DEFAULT_REQUEST_TIMEOUT_MS = 10_000;
+export const DEFAULT_SOCKET_TIMEOUT_MS = 0;
 export const DRIVER_PRODUCT = "sinterdb-node-driver";
 export const DRIVER_PRODUCT_VERSION = "0.0.3";
 
@@ -30,6 +32,7 @@ const MAX_TIMEOUT_MS = 2_147_483_647;
 export interface SinterClientOptions {
   readonly connectTimeoutMS?: number;
   readonly requestTimeoutMS?: number;
+  readonly socketTimeoutMS?: number;
 }
 
 export interface SinterServerInfo {
@@ -68,6 +71,7 @@ export class SinterClient extends EventEmitter<SinterClientEvents> {
   public readonly target: ParsedSinterConnectionString;
   public readonly connectTimeoutMS: number;
   public readonly requestTimeoutMS: number;
+  public readonly socketTimeoutMS: number;
 
   private currentState: SinterClientState = SinterClientState.New;
   private socket: Socket | undefined;
@@ -91,6 +95,12 @@ export class SinterClient extends EventEmitter<SinterClientEvents> {
       "requestTimeoutMS",
       options.requestTimeoutMS,
       DEFAULT_REQUEST_TIMEOUT_MS,
+    );
+    this.socketTimeoutMS = resolveTimeout(
+      "socketTimeoutMS",
+      options.socketTimeoutMS,
+      DEFAULT_SOCKET_TIMEOUT_MS,
+      0,
     );
   }
 
@@ -285,6 +295,7 @@ export class SinterClient extends EventEmitter<SinterClientEvents> {
         settled = true;
         clearTimeout(timeout);
         cleanupConnectionListeners();
+        socket.setTimeout(this.socketTimeoutMS);
 
         this.negotiatedServer = Object.freeze({
           protocolVersion: handshake.protocolVersion,
@@ -352,6 +363,23 @@ export class SinterClient extends EventEmitter<SinterClientEvents> {
   }
 
   private attachSocketLifecycle(socket: Socket): void {
+    socket.on("timeout", () => {
+      if (this.socket !== socket) {
+        return;
+      }
+
+      const error = new SinterSocketTimeoutError(
+        `The connection was inactive for ${this.socketTimeoutMS}ms.`,
+      );
+
+      this.emitDriverError(error);
+
+      this.requestDispatcher?.close(error);
+      this.requestDispatcher = undefined;
+
+      socket.destroy();
+    });
+
     socket.on("error", (error) => {
       this.emitDriverError(error);
     });
@@ -406,17 +434,22 @@ export class SinterClient extends EventEmitter<SinterClientEvents> {
 }
 
 function resolveTimeout(
-  name: "connectTimeoutMS" | "requestTimeoutMS",
+  name: "connectTimeoutMS" | "requestTimeoutMS" | "socketTimeoutMS",
   value: number | undefined,
   defaultValue: number,
+  minimum = 1,
 ): number {
   if (value === undefined) {
     return defaultValue;
   }
 
-  if (!Number.isSafeInteger(value) || value < 1 || value > MAX_TIMEOUT_MS) {
+  if (
+    !Number.isSafeInteger(value) ||
+    value < minimum ||
+    value > MAX_TIMEOUT_MS
+  ) {
     throw new SinterClientOptionsError(
-      `${name} must be an integer between 1 and ${MAX_TIMEOUT_MS}.`,
+      `${name} must be an integer between ${minimum} and ${MAX_TIMEOUT_MS}.`,
     );
   }
 
