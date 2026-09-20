@@ -21,6 +21,7 @@ describe("driver errors", () => {
       ConnectionTimeout: "CONNECTION_TIMEOUT",
       SocketTimeout: "SOCKET_TIMEOUT",
       RequestTimeout: "REQUEST_TIMEOUT",
+      IncompatibleProtocol: "INCOMPATIBLE_PROTOCOL",
       ProtocolViolation: "PROTOCOL_VIOLATION",
       ServerError: "SERVER_ERROR",
     });

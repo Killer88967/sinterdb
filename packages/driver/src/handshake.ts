@@ -1,5 +1,4 @@
 import type { Socket } from "node:net";
-
 import {
   encodeMessage,
   HandshakeRole,
@@ -10,6 +9,7 @@ import {
 } from "sinterdb-protocol";
 
 import {
+  SinterCompatibilityError,
   SinterConnectionError,
   SinterProtocolError,
   SinterServerError,
@@ -108,6 +108,14 @@ export function performClientHandshake(
         }
 
         if (message.kind === MessageKind.Error) {
+          if (
+            message.payload.name === "UnsupportedProtocolVersion" ||
+            message.payload.name === "UnsupportedCapabilities"
+          ) {
+            fail(new SinterCompatibilityError(message.payload.message));
+            return;
+          }
+
           fail(new SinterServerError(message.payload.message));
           return;
         }
@@ -132,8 +140,22 @@ export function performClientHandshake(
 
         if (message.payload.protocolVersion !== PROTOCOL_VERSION) {
           fail(
-            new SinterProtocolError(
-              `The server selected unsupported protocol version ${message.payload.protocolVersion}.`,
+            new SinterCompatibilityError(
+              `The server selected protocol version ${message.payload.protocolVersion}, but the driver requires version ${PROTOCOL_VERSION}.`,
+            ),
+          );
+          return;
+        }
+
+        const requiredCapabilities = options.capabilities ?? [];
+        const missingCapabilities = requiredCapabilities.filter(
+          (capability) => !message.payload.capabilities.includes(capability),
+        );
+
+        if (missingCapabilities.length > 0) {
+          fail(
+            new SinterCompatibilityError(
+              `The server does not support the required capabilities: ${missingCapabilities.join(", ")}.`,
             ),
           );
           return;

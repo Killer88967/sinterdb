@@ -7,6 +7,7 @@ export const SinterErrorCode = {
   ConnectionTimeout: "CONNECTION_TIMEOUT",
   SocketTimeout: "SOCKET_TIMEOUT",
   RequestTimeout: "REQUEST_TIMEOUT",
+  IncompatibleProtocol: "INCOMPATIBLE_PROTOCOL",
   ProtocolViolation: "PROTOCOL_VIOLATION",
   ServerError: "SERVER_ERROR",
 } as const;
@@ -88,4 +89,9 @@ export class SinterServerError extends SinterError {
   public constructor(message: string, options?: ErrorOptions) {
     super(SinterErrorCode.ServerError, message, options);
   }
+}
+
+export class SinterCompatibilityError extends SinterServerError {
+  public override readonly code: typeof SinterErrorCode.IncompatibleProtocol =
+    SinterErrorCode.IncompatibleProtocol;
 }
