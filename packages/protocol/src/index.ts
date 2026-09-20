@@ -23,6 +23,11 @@ export {
 export { RequestIdGenerator } from "./request-id.js";
 export { decodeMessage, encodeMessage } from "./message-frame.js";
 export { MessageStreamDecoder } from "./message-stream-decoder.js";
+export {
+  CUSTOM_ID_BYTE_LENGTH,
+  CUSTOM_ID_HEX_LENGTH,
+  CustomId,
+} from "./custom-id.js";
 
 export type {
   FrameFlag as FrameFlagValue,

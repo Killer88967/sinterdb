@@ -48,6 +48,9 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Format
+        run: pnpm format
+
       - name: Check formatting
         run: pnpm format:check
 
