@@ -9,7 +9,11 @@ import {
   SinterClientState,
   type SinterPingResult,
 } from "./client.js";
-import type { SinterCollection, InsertOneResult } from "./collection.js";
+import type {
+  InsertOneResult,
+  SinterCollection,
+  WithId,
+} from "./collection.js";
 import { SinterServerError } from "./errors.js";
 
 describe("SinterClient integration", () => {
@@ -95,7 +99,7 @@ describe("SinterClient integration", () => {
     });
   });
 
-  it("inserts a typed document through the server", async () => {
+  it("inserts and reads a typed document through the server", async () => {
     await withTestServer(async ({ server, uri }) => {
       const client = new SinterClient(`${uri}/application`);
 
@@ -135,6 +139,23 @@ describe("SinterClient integration", () => {
         if (storedId instanceof CustomId) {
           expect(storedId.equals(result.insertedId)).toBe(true);
         }
+
+        const found = await users.findOne({
+          _id: result.insertedId,
+        });
+
+        expectTypeOf(found).toEqualTypeOf<WithId<UserDocument> | null>();
+
+        expect(found).not.toBeNull();
+        expect(found?.name).toBe("Ada");
+        expect(found?.age).toBe(36);
+        expect(found?._id.equals(result.insertedId)).toBe(true);
+
+        const missing = await users.findOne({
+          name: "Grace",
+        });
+
+        expect(missing).toBeNull();
       } finally {
         await client.close();
       }

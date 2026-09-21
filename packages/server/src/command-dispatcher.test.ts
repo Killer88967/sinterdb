@@ -283,6 +283,153 @@ describe("CommandDispatcher", () => {
       WireErrorCode.InvalidRequest,
     );
   });
+
+  it("finds a document using equality filters", () => {
+    const catalog = new InMemoryCatalog();
+    const dispatcher = new CommandDispatcher(catalog);
+    const id = CustomId.fromHexString("00112233445566778899aabbccddeeff");
+
+    dispatcher.dispatch({
+      command: ServerCommand.InsertOne,
+      database: "app",
+      parameters: {
+        collection: "users",
+        document: {
+          _id: id,
+          name: "Ada",
+          active: true,
+        },
+      },
+    });
+
+    expect(
+      dispatcher.dispatch({
+        command: ServerCommand.FindOne,
+        database: "app",
+        parameters: {
+          collection: "users",
+          filter: {
+            active: true,
+          },
+        },
+      }),
+    ).toEqual({
+      document: {
+        _id: id,
+        name: "Ada",
+        active: true,
+      },
+    });
+  });
+
+  it("returns null when findOne has no match", () => {
+    const dispatcher = createDispatcher();
+
+    dispatcher.dispatch({
+      command: ServerCommand.InsertOne,
+      database: "app",
+      parameters: {
+        collection: "users",
+        document: {
+          name: "Ada",
+        },
+      },
+    });
+
+    expect(
+      dispatcher.dispatch({
+        command: ServerCommand.FindOne,
+        database: "app",
+        parameters: {
+          collection: "users",
+          filter: {
+            name: "Grace",
+          },
+        },
+      }),
+    ).toEqual({
+      document: null,
+    });
+  });
+
+  it("returns null without creating a missing collection", () => {
+    const catalog = new InMemoryCatalog();
+    const dispatcher = new CommandDispatcher(catalog);
+
+    expect(
+      dispatcher.dispatch({
+        command: ServerCommand.FindOne,
+        database: "app",
+        parameters: {
+          collection: "users",
+          filter: {},
+        },
+      }),
+    ).toEqual({
+      document: null,
+    });
+
+    expect(catalog.hasDatabase("app")).toBe(false);
+    expect(catalog.hasCollection("app", "users")).toBe(false);
+  });
+
+  it("reports invalid find filters", () => {
+    const dispatcher = createDispatcher();
+
+    dispatcher.dispatch({
+      command: ServerCommand.InsertOne,
+      database: "app",
+      parameters: {
+        collection: "users",
+        document: {
+          name: "Ada",
+        },
+      },
+    });
+
+    expectCommandError(
+      () =>
+        dispatcher.dispatch({
+          command: ServerCommand.FindOne,
+          database: "app",
+          parameters: {
+            collection: "users",
+            filter: {
+              value: undefined,
+            } as never,
+          },
+        }),
+      WireErrorCode.DocumentValidationFailed,
+    );
+  });
+
+  it("requires a findOne collection", () => {
+    expectCommandError(
+      () =>
+        createDispatcher().dispatch({
+          command: ServerCommand.FindOne,
+          database: "app",
+          parameters: {
+            filter: {},
+          },
+        }),
+      WireErrorCode.InvalidRequest,
+    );
+  });
+
+  it("requires a findOne filter", () => {
+    expectCommandError(
+      () =>
+        createDispatcher().dispatch({
+          command: ServerCommand.FindOne,
+          database: "app",
+          parameters: {
+            collection: "users",
+          },
+        }),
+      WireErrorCode.InvalidRequest,
+    );
+  });
 });
 
 function createDispatcher(): CommandDispatcher {

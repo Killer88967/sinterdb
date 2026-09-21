@@ -8,6 +8,7 @@ import {
   type WireErrorCodeValue,
 } from "sinterdb-protocol";
 import { StorageError, StorageErrorCode } from "@sinterdb-internal/storage";
+
 import {
   CatalogError,
   CatalogErrorCode,
@@ -20,6 +21,7 @@ export const ServerCommand = {
   CreateCollection: "createCollection",
   ListCollections: "listCollections",
   InsertOne: "insertOne",
+  FindOne: "findOne",
 } as const;
 
 export type ServerCommand = (typeof ServerCommand)[keyof typeof ServerCommand];
@@ -69,6 +71,9 @@ export class CommandDispatcher {
 
       case ServerCommand.InsertOne:
         return this.insertOne(command);
+
+      case ServerCommand.FindOne:
+        return this.findOne(command);
 
       default:
         throw new CommandExecutionError(
@@ -134,7 +139,6 @@ export class CommandDispatcher {
     }
   }
 
-  // TODO: Finish
   private insertOne(command: CommandEnvelope): Document {
     const databaseName = requireDatabase(command);
     const collectionName = requireStringParameter(
@@ -153,6 +157,38 @@ export class CommandDispatcher {
       return {
         acknowledged: true,
         insertedId: result.insertedId,
+      };
+    } catch (error: unknown) {
+      if (error instanceof CatalogError) {
+        throw translateCatalogError(error);
+      }
+
+      throw translateStorageError(error);
+    }
+  }
+
+  private findOne(command: CommandEnvelope): Document {
+    const databaseName = requireDatabase(command);
+    const collectionName = requireStringParameter(
+      command.parameters,
+      "collection",
+    );
+    const filter = requireDocumentParameter(command.parameters, "filter");
+
+    try {
+      const collection = this.catalog.getCollection(
+        databaseName,
+        collectionName,
+      );
+
+      if (collection === undefined) {
+        return {
+          document: null,
+        };
+      }
+
+      return {
+        document: collection.findOne(filter) ?? null,
       };
     } catch (error: unknown) {
       if (error instanceof CatalogError) {

@@ -178,4 +178,137 @@ describe("InMemoryCollection", () => {
 
     expect(collection.documentCount).toBe(0);
   });
+
+  it("finds the first document matching an equality filter", () => {
+    const collection = new InMemoryCollection();
+
+    collection.insertOne({
+      name: "Ada",
+      active: true,
+    });
+
+    collection.insertOne({
+      name: "Grace",
+      active: false,
+    });
+
+    const found = collection.findOne({
+      active: false,
+    });
+
+    expect(found?.["name"]).toBe("Grace");
+  });
+
+  it("finds a document by CustomId", () => {
+    const collection = new InMemoryCollection();
+    const id = CustomId.fromHexString("00112233445566778899aabbccddeeff");
+
+    collection.insertOne({
+      _id: id,
+      name: "Ada",
+    });
+
+    const found = collection.findOne({
+      _id: id,
+    });
+
+    expect(found?.["name"]).toBe("Ada");
+
+    const foundId = found?.["_id"];
+
+    expect(foundId).toBeInstanceOf(CustomId);
+
+    if (foundId instanceof CustomId) {
+      expect(foundId.equals(id)).toBe(true);
+    }
+  });
+
+  it("applies additional filters when finding by CustomId", () => {
+    const collection = new InMemoryCollection();
+    const id = CustomId.fromHexString("00112233445566778899aabbccddeeff");
+
+    collection.insertOne({
+      _id: id,
+      name: "Ada",
+    });
+
+    expect(
+      collection.findOne({
+        _id: id,
+        name: "Grace",
+      }),
+    ).toBeUndefined();
+  });
+
+  it("compares nested values using canonical equality", () => {
+    const collection = new InMemoryCollection();
+
+    collection.insertOne({
+      name: "Ada",
+      profile: {
+        active: true,
+        level: 5,
+      },
+      createdAt: new Date("2026-09-21T00:00:00.000Z"),
+      data: new Uint8Array([1, 2, 3]),
+    });
+
+    const found = collection.findOne({
+      profile: {
+        level: 5,
+        active: true,
+      },
+      createdAt: new Date("2026-09-21T00:00:00.000Z"),
+      data: new Uint8Array([1, 2, 3]),
+    });
+
+    expect(found?.["name"]).toBe("Ada");
+  });
+
+  it("returns the first document for an empty filter", () => {
+    const collection = new InMemoryCollection();
+
+    collection.insertOne({
+      name: "first",
+    });
+
+    collection.insertOne({
+      name: "second",
+    });
+
+    expect(collection.findOne({})?.["name"]).toBe("first");
+  });
+
+  it("returns undefined when no document matches", () => {
+    const collection = new InMemoryCollection();
+
+    collection.insertOne({
+      name: "Ada",
+    });
+
+    expect(
+      collection.findOne({
+        name: "Grace",
+      }),
+    ).toBeUndefined();
+  });
+
+  it("rejects filters that cannot be encoded", () => {
+    const collection = new InMemoryCollection();
+    const invalid = {
+      value: undefined,
+    } as unknown as Document;
+
+    expect(() => collection.findOne(invalid)).toThrow(StorageError);
+
+    try {
+      collection.findOne(invalid);
+    } catch (error: unknown) {
+      expect(error).toBeInstanceOf(StorageError);
+
+      if (error instanceof StorageError) {
+        expect(error.code).toBe(StorageErrorCode.InvalidFilter);
+      }
+    }
+  });
 });

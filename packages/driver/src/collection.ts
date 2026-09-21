@@ -8,6 +8,14 @@ export type OptionalId<TDocument extends object> = Omit<TDocument, "_id"> & {
   readonly _id?: CustomId;
 };
 
+export type WithId<TDocument extends object> = Omit<TDocument, "_id"> & {
+  readonly _id: CustomId;
+};
+
+export type EqualityFilter<TDocument extends object> = {
+  readonly [Key in keyof TDocument]?: TDocument[Key];
+};
+
 export interface InsertOneResult {
   readonly acknowledged: true;
   readonly insertedId: CustomId;
@@ -44,6 +52,21 @@ export class SinterCollection<TDocument extends object = Document> {
 
     return parseInsertOneResult(value);
   }
+
+  public async findOne(
+    filter: EqualityFilter<TDocument> = {} as EqualityFilter<TDocument>,
+  ): Promise<WithId<TDocument> | null> {
+    const value = await this.database.client.executeCommand(
+      this.database.name,
+      "findOne",
+      {
+        collection: this.name,
+        filter: filter as unknown as Document,
+      },
+    );
+
+    return parseFindOneResult<TDocument>(value);
+  }
 }
 
 function parseInsertOneResult(value: DocumentValue): InsertOneResult {
@@ -64,6 +87,26 @@ function parseInsertOneResult(value: DocumentValue): InsertOneResult {
   });
 }
 
+function parseFindOneResult<TDocument extends object>(
+  value: DocumentValue,
+): WithId<TDocument> | null {
+  if (!isPlainDocument(value) || !Object.hasOwn(value, "document")) {
+    throw invalidFindResult();
+  }
+
+  const document = value["document"];
+
+  if (document === null) {
+    return null;
+  }
+
+  if (!isPlainDocument(document) || !(document["_id"] instanceof CustomId)) {
+    throw invalidFindResult();
+  }
+
+  return document as unknown as WithId<TDocument>;
+}
+
 function isPlainDocument(value: unknown): value is Document {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
     return false;
@@ -77,5 +120,11 @@ function isPlainDocument(value: unknown): value is Document {
 function invalidInsertResult(): SinterProtocolError {
   return new SinterProtocolError(
     "The server returned an invalid insertOne result.",
+  );
+}
+
+function invalidFindResult(): SinterProtocolError {
+  return new SinterProtocolError(
+    "The server returned an invalid findOne result.",
   );
 }

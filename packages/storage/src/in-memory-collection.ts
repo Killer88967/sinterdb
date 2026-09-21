@@ -2,12 +2,15 @@ import {
   CustomId,
   decodeDocument,
   encodeDocument,
+  encodeDocumentValue,
   type Document,
+  type DocumentValue,
 } from "sinterdb-protocol";
 
 export const StorageErrorCode = {
   InvalidDocument: "INVALID_DOCUMENT",
   InvalidDocumentId: "INVALID_DOCUMENT_ID",
+  InvalidFilter: "INVALID_FILTER",
   DuplicateId: "DUPLICATE_ID",
 } as const;
 
@@ -31,6 +34,11 @@ export class StorageError extends Error {
 
 export interface StorageInsertOneResult {
   readonly insertedId: CustomId;
+}
+
+interface CompiledFilterField {
+  readonly name: string;
+  readonly encodedValue: Uint8Array;
 }
 
 export class InMemoryCollection {
@@ -80,6 +88,31 @@ export class InMemoryCollection {
     return {
       insertedId,
     };
+  }
+
+  public findOne(filter: Document): Document | undefined {
+    const fields = compileFilter(filter);
+    const id = filter["_id"];
+
+    if (id instanceof CustomId) {
+      const document = this.findById(id);
+
+      if (document === undefined) {
+        return undefined;
+      }
+
+      return matchesFilter(document, fields) ? document : undefined;
+    }
+
+    for (const encoded of this.documents.values()) {
+      const document = decodeDocument(encoded);
+
+      if (matchesFilter(document, fields)) {
+        return document;
+      }
+    }
+
+    return undefined;
   }
 
   public findById(id: CustomId): Document | undefined {
@@ -134,4 +167,58 @@ function isPlainDocument(value: unknown): value is Document {
   const prototype = Object.getPrototypeOf(value);
 
   return prototype === Object.prototype || prototype === null;
+}
+
+function compileFilter(filter: Document): CompiledFilterField[] {
+  if (!isPlainDocument(filter)) {
+    throw new StorageError(
+      StorageErrorCode.InvalidFilter,
+      "Find filter must be a document.",
+    );
+  }
+
+  try {
+    encodeDocument(filter);
+
+    return Object.keys(filter).map((name) => ({
+      name,
+      encodedValue: encodeDocumentValue(filter[name] as DocumentValue),
+    }));
+  } catch (error: unknown) {
+    throw new StorageError(
+      StorageErrorCode.InvalidFilter,
+      "Find filter could not be encoded.",
+      {
+        cause: error,
+      },
+    );
+  }
+}
+
+function matchesFilter(
+  document: Document,
+  fields: readonly CompiledFilterField[],
+): boolean {
+  for (const field of fields) {
+    if (!Object.hasOwn(document, field.name)) {
+      return false;
+    }
+
+    const value = document[field.name] as DocumentValue;
+    const encodedValue = encodeDocumentValue(value);
+
+    if (!bytesEqual(encodedValue, field.encodedValue)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function bytesEqual(left: Uint8Array, right: Uint8Array): boolean {
+  if (left.byteLength !== right.byteLength) {
+    return false;
+  }
+
+  return left.every((byte, index) => byte === right[index]);
 }
