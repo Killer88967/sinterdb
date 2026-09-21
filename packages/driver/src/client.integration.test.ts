@@ -1,7 +1,7 @@
 import { setTimeout as delay } from "node:timers/promises";
 
 import { withTestServer } from "@sinterdb-internal/test-utils";
-import { PROTOCOL_VERSION } from "sinterdb-protocol";
+import { CustomId, PROTOCOL_VERSION, WireErrorCode } from "sinterdb-protocol";
 import { describe, expect, expectTypeOf, it } from "vitest";
 
 import {
@@ -9,7 +9,8 @@ import {
   SinterClientState,
   type SinterPingResult,
 } from "./client.js";
-import type { SinterCollection } from "./collection.js";
+import type { SinterCollection, InsertOneResult } from "./collection.js";
+import { SinterServerError } from "./errors.js";
 
 describe("SinterClient integration", () => {
   it("connects, pings, selects a database, and closes cleanly", async () => {
@@ -90,6 +91,100 @@ describe("SinterClient integration", () => {
         await waitForConnectionCount(server, 0);
 
         expect(server.activeConnectionCount).toBe(0);
+      }
+    });
+  });
+
+  it("inserts a typed document through the server", async () => {
+    await withTestServer(async ({ server, uri }) => {
+      const client = new SinterClient(`${uri}/application`);
+
+      interface UserDocument {
+        _id: CustomId;
+        name: string;
+        age: number;
+      }
+
+      try {
+        await client.connect();
+
+        const users = client.db().collection<UserDocument>("users");
+
+        const result = await users.insertOne({
+          name: "Ada",
+          age: 36,
+        });
+
+        expectTypeOf(result).toEqualTypeOf<InsertOneResult>();
+        expect(result.acknowledged).toBe(true);
+        expect(result.insertedId).toBeInstanceOf(CustomId);
+
+        const storage = server.catalog.getCollection("application", "users");
+
+        expect(storage).toBeDefined();
+
+        const stored = storage?.findById(result.insertedId);
+
+        expect(stored?.["name"]).toBe("Ada");
+        expect(stored?.["age"]).toBe(36);
+
+        const storedId = stored?.["_id"];
+
+        expect(storedId).toBeInstanceOf(CustomId);
+
+        if (storedId instanceof CustomId) {
+          expect(storedId.equals(result.insertedId)).toBe(true);
+        }
+      } finally {
+        await client.close();
+      }
+
+      await waitForConnectionCount(server, 0);
+
+      expect(server.activeConnectionCount).toBe(0);
+    });
+  });
+
+  it("reports duplicate identifiers through the driver", async () => {
+    await withTestServer(async ({ uri }) => {
+      const client = new SinterClient(`${uri}/application`);
+      const id = CustomId.fromHexString("00112233445566778899aabbccddeeff");
+
+      interface UserDocument {
+        _id: CustomId;
+        name: string;
+      }
+
+      try {
+        await client.connect();
+
+        const users = client.db().collection<UserDocument>("users");
+
+        await users.insertOne({
+          _id: id,
+          name: "first",
+        });
+
+        const error = await users
+          .insertOne({
+            _id: id,
+            name: "second",
+          })
+          .catch((reason: unknown) => reason);
+
+        expect(error).toBeInstanceOf(SinterServerError);
+
+        if (error instanceof SinterServerError) {
+          expect(error.wireCode).toBe(WireErrorCode.DuplicateKey);
+          expect(error.serverErrorName).toBe("DuplicateKey");
+          expect(error.retryable).toBe(false);
+          expect(error.details).toEqual({
+            field: "_id",
+            storageErrorCode: "DUPLICATE_ID",
+          });
+        }
+      } finally {
+        await client.close();
       }
     });
   });

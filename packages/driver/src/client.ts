@@ -1,7 +1,12 @@
 import { EventEmitter } from "node:events";
 import { performance } from "node:perf_hooks";
 import { createConnection, type Socket } from "node:net";
-import { MessageKind, ProtocolCapability } from "sinterdb-protocol";
+import {
+  MessageKind,
+  ProtocolCapability,
+  type Document,
+  type DocumentValue,
+} from "sinterdb-protocol";
 
 import {
   type ParsedSinterConnectionString,
@@ -177,6 +182,28 @@ export class SinterClient extends EventEmitter<SinterClientEvents> {
     }
 
     return parsePingResult(response.payload.value, sentAt, roundTripTimeMS);
+  }
+
+  public async executeCommand(
+    database: string,
+    command: string,
+    parameters: Document,
+  ): Promise<DocumentValue> {
+    const dispatcher = this.getRequestDispatcher();
+
+    const response = await dispatcher.request(MessageKind.Command, {
+      command,
+      database,
+      parameters,
+    });
+
+    if (response.kind !== MessageKind.Result) {
+      throw new SinterProtocolError(
+        `The server did not return a result for command ${JSON.stringify(command)}.`,
+      );
+    }
+
+    return response.payload.value;
   }
 
   public db(name?: string): SinterDatabase {
