@@ -4,7 +4,7 @@ export {
   StorageErrorCode,
   StorageInsertManyError,
 } from "./errors.js";
-import { comileFilter } from "./filter.js";
+import { compileFilter } from "./filter.js";
 
 export type {
   StorageInsertManyResult,
