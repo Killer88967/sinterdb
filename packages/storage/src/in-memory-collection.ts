@@ -107,7 +107,7 @@ export class InMemoryCollection {
     if (id instanceof CustomId) {
       const document = this.findById(id);
 
-      if (documet === undefined) {
+      if (document === undefined) {
         return undefined
       }
 
