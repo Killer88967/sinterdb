@@ -114,7 +114,7 @@ export class InMemoryCollection {
       return matches(document) ? document : undefined;
     }
 
-    for (const encoded of this.documents.value()) {
+    for (const encoded of this.documents.values()) {
       const document = decodeDocument(encoded);
 
       if (matches(document)) {
