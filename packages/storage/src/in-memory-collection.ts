@@ -18,6 +18,19 @@ export const StorageErrorCode = {
 export type StorageErrorCode =
   (typeof StorageErrorCode)[keyof typeof StorageErrorCode];
 
+export interface StorageInsertOneResult {
+  readonly insertedId: CustomId;
+}
+
+export interface StorageInsertManyResult {
+  readonly insertedIds: CustomId[];
+}
+
+interface CompiledFilterField {
+  readonly name: string;
+  readonly encodedValue: Uint8Array;
+}
+
 export class StorageError extends Error {
   public readonly code: StorageErrorCode;
 
@@ -33,17 +46,27 @@ export class StorageError extends Error {
   }
 }
 
-export interface StorageInsertOneResult {
-  readonly insertedId: CustomId;
-}
+export class StorageInsertManyError extends StorageError {
+  public readonly failedIndex: number;
+  public readonly insertedIds: readonly CustomId[]
 
-export interface StorageInsertManyResult {
-  readonly insertedIds: CustomId[];
-}
+  public constructor(
+    failedIndex: number,
+    insertedIds: readonly CustomId[],
+    cause: StorageError,
+  ) {
+    super(
+      cause.code,
+      `Insert failed at batch index ${failedIndex}: ${cause.message}`,
+      {
+        cause,
+      }
+    );
 
-interface CompiledFilterField {
-  readonly name: string;
-  readonly encodedValue: Uint8Array;
+    this.name = "StorageInsertManyError";
+    this.failedIndex = failedIndex;
+    this.insertedIds = Object.freeze([...insertedIds]);
+  }
 }
 
 export class InMemoryCollection {
