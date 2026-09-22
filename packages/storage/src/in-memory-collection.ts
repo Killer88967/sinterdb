@@ -11,6 +11,7 @@ export const StorageErrorCode = {
   InvalidDocument: "INVALID_DOCUMENT",
   InvalidDocumentId: "INVALID_DOCUMENT_ID",
   InvalidFilter: "INVALID_FILTER",
+  InvalidBatch: "INVALID_BATCH",
   DuplicateId: "DUPLICATE_ID",
 } as const;
 
@@ -34,6 +35,10 @@ export class StorageError extends Error {
 
 export interface StorageInsertOneResult {
   readonly insertedId: CustomId;
+}
+
+export interface StorageInsertManyResult {
+  readonly insertedIds: CustomId[];
 }
 
 interface CompiledFilterField {
@@ -88,6 +93,42 @@ export class InMemoryCollection {
     return {
       insertedId,
     };
+  }
+
+  public insertMany(
+    documents: readonly Document[],
+  ): StorageInsertManyResult {
+    if (!Array.isArray(documents) || documents.length === 0) {
+      throw new StorageError(
+        StorageErrorCode.InvalidBatch,
+        "insertMany requires at least one document."
+      );
+    }
+
+    const insertedIds : CustomId[] = [];
+
+    for (let index = 0; index < documents.length; index += 1) {
+      const document = documents[index];
+
+      try {
+        const result = this.insertOne(document as Document);
+        insertedIds.push(result.insertedId);
+      } catch (error: unknown) {
+        if (error instanceof StorageError) {
+          throw new StorageInsertManuError(
+            index,
+            insertedIds,
+            error,
+          );
+        }
+
+        throw error;
+      }
+    }
+
+    return {
+      insertedIds: Object.freeze([...insertedIds]),
+    }
   }
 
   public findOne(filter: Document): Document | undefined {
