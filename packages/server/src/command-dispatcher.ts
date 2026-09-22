@@ -7,7 +7,11 @@ import {
   type DocumentValue,
   type WireErrorCodeValue,
 } from "sinterdb-protocol";
-import { StorageError, StorageErrorCode } from "@sinterdb-internal/storage";
+import {
+  StorageError,
+  StorageErrorCode,
+  StorageInsertManyError,
+} from "@sinterdb-internal/storage";
 
 import {
   CatalogError,
@@ -21,6 +25,7 @@ export const ServerCommand = {
   CreateCollection: "createCollection",
   ListCollections: "listCollections",
   InsertOne: "insertOne",
+  InsertMany: "insertMany",
   FindOne: "findOne",
 } as const;
 
@@ -167,6 +172,38 @@ export class CommandDispatcher {
     }
   }
 
+  private insertMany(command: CommandEnvelope): Document {
+    const databaseName = requireDatabase(command);
+    const collectionName = requireStringParameter(
+      command.parameters,
+      "collection",
+    );
+    const documents = requireDocumentArrayParameter(
+      command.parameters,
+      "documents",
+    );
+
+    try {
+      const collection = this.catalog.getOrCreateCollection(
+        databaseName,
+        collectionName,
+      )
+      const result = collection.insertMany(documents);
+
+      return {
+        acknowledged: true,
+        insertedCount: result.insertedIds.length,
+        insertedIds: [...result.insertedIds],
+      }
+    } catch (error: unkown) {
+      if (error instanceof CatalogError) {
+        throw translateCatalogError(error);
+      }
+
+      throw translateStorageError(error);
+    }
+  }
+
   private findOne(command: CommandEnvelope): Document {
     const databaseName = requireDatabase(command);
     const collectionName = requireStringParameter(
@@ -259,6 +296,32 @@ function requireDocumentParameter(
   return value;
 }
 
+function requireDocumentArrayParameters(
+  parameters: Document,
+  name: string,
+): Document[] {
+  const value = parameters[name]
+
+  if (
+    !Array.isArray(value) ||
+    value.length === 0 ||
+    !value.every(isPlainDocument)
+  ) {
+    throw new CommandExecutionError(
+      WireErrorCode.InvalidRequest,
+      "InvalidRequest",
+      `Command parameter ${JSON.stringify(name)} must be a non-empty array of documents.`,
+      {
+        details: {
+          field: name,
+        }
+      }
+    )
+  }
+
+  return value;
+}
+
 function isPlainDocument(value: unknown): value is Document {
   if (typeof value !== "object" || value == null || Array.isArray(value)) {
     return false;
@@ -294,10 +357,21 @@ function translateCatalogError(error: unknown): CommandExecutionError {
   );
 }
 
-function translateStorageError(error: unknown): CommandExecutionError {
+function translateStorageError(
+  error: unknown,
+): CommandExecutionError {
   if (!(error instanceof StorageError)) {
     throw error;
   }
+
+  const batchDetails: Document =
+    error instanceof StorageInsertManyError
+      ? {
+          failedIndex: error.failedIndex,
+          insertedCount: error.insertedIds.length,
+          insertedIds: [...error.insertedIds],
+        }
+      : {};
 
   if (error.code === StorageErrorCode.DuplicateId) {
     return new CommandExecutionError(
@@ -308,6 +382,7 @@ function translateStorageError(error: unknown): CommandExecutionError {
         details: {
           field: "_id",
           storageErrorCode: error.code,
+          ...batchDetails,
         },
       },
     );
@@ -320,6 +395,7 @@ function translateStorageError(error: unknown): CommandExecutionError {
     {
       details: {
         storageErrorCode: error.code,
+        ...batchDetails,
       },
     },
   );
