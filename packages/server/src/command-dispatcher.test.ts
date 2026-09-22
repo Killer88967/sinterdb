@@ -430,6 +430,144 @@ describe("CommandDispatcher", () => {
       WireErrorCode.InvalidRequest,
     );
   });
+
+  it("inserts an ordered batch of documents", () => {
+    const catalog = new InMemoryCatalog();
+    const dispatcher = new CommandDispatcher(catalog);
+
+    const result = dispatcher.dispatch({
+      command: ServerCommand.InsertMany,
+      database: "app",
+      parameters: {
+        collection: "users",
+        documents: [
+          {
+            name: "Ada",
+          },
+          {
+            name: "Grace",
+          },
+        ],
+      },
+    }) as Document;
+
+    expect(result["acknowledged"]).toBe(true);
+    expect(result["insertedCount"]).toBe(2);
+
+    const insertedIds = result["insertedIds"];
+
+    expect(Array.isArray(insertedIds)).toBe(true);
+
+    if (!Array.isArray(insertedIds)) {
+      throw new Error("Expected insertMany to return inserted IDs.");
+    }
+
+    expect(insertedIds).toHaveLength(2);
+    expect(insertedIds[0]).toBeInstanceOf(CustomId);
+    expect(insertedIds[1]).toBeInstanceOf(CustomId);
+
+    expect(
+      catalog.getCollection("app", "users")?.documentCount,
+    ).toBe(2);
+  });
+
+  it("reports ordered batch progress when an insert fails", () => {
+    const catalog = new InMemoryCatalog();
+    const dispatcher = new CommandDispatcher(catalog);
+    const duplicateId = CustomId.fromHexString(
+      "00112233445566778899aabbccddeeff",
+    );
+    const skippedId = CustomId.fromHexString(
+      "ffeeddccbbaa99887766554433221100",
+    );
+
+    dispatcher.dispatch({
+      command: ServerCommand.InsertOne,
+      database: "app",
+      parameters: {
+        collection: "users",
+        document: {
+          _id: duplicateId,
+          name: "existing",
+        },
+      },
+    });
+
+    let thrown: unknown;
+
+    try {
+      dispatcher.dispatch({
+        command: ServerCommand.InsertMany,
+        database: "app",
+        parameters: {
+          collection: "users",
+          documents: [
+            {
+              name: "inserted",
+            },
+            {
+              _id: duplicateId,
+              name: "duplicate",
+            },
+            {
+              _id: skippedId,
+              name: "skipped",
+            },
+          ],
+        },
+      });
+    } catch (error: unknown) {
+      thrown = error;
+    }
+
+    expect(thrown).toBeInstanceOf(CommandExecutionError);
+
+    if (thrown instanceof CommandExecutionError) {
+      expect(thrown.code).toBe(WireErrorCode.DuplicateKey);
+      expect(thrown.name).toBe("DuplicateKey");
+      expect(thrown.details?.["failedIndex"]).toBe(1);
+      expect(thrown.details?.["insertedCount"]).toBe(1);
+
+      const insertedIds = thrown.details?.["insertedIds"];
+
+      expect(Array.isArray(insertedIds)).toBe(true);
+      expect(insertedIds).toHaveLength(1);
+    }
+
+    const collection = catalog.getCollection("app", "users");
+
+    expect(collection?.documentCount).toBe(2);
+    expect(collection?.findById(skippedId)).toBeUndefined();
+  });
+
+  it("rejects an empty insert batch", () => {
+    expectCommandError(
+      () =>
+        createDispatcher().dispatch({
+          command: ServerCommand.InsertMany,
+          database: "app",
+          parameters: {
+            collection: "users",
+            documents: [],
+          },
+        }),
+      WireErrorCode.InvalidRequest,
+    );
+  });
+
+  it("requires insertMany documents", () => {
+    expectCommandError(
+      () =>
+        createDispatcher().dispatch({
+          command: ServerCommand.InsertMany,
+          database: "app",
+          parameters: {
+            collection: "users",
+          },
+        }),
+      WireErrorCode.InvalidRequest,
+    );
+  });
 });
 
 function createDispatcher(): CommandDispatcher {
