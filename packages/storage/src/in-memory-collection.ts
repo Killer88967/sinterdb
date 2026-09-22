@@ -115,7 +115,7 @@ export class InMemoryCollection {
         insertedIds.push(result.insertedId);
       } catch (error: unknown) {
         if (error instanceof StorageError) {
-          throw new StorageInsertManuError(
+          throw new StorageInsertManyError(
             index,
             insertedIds,
             error,
