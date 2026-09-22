@@ -5,6 +5,7 @@ import {
   InMemoryCollection,
   StorageError,
   StorageErrorCode,
+  StorageInsertManyError,
 } from "./in-memory-collection.js";
 
 describe("InMemoryCollection", () => {
@@ -308,6 +309,148 @@ describe("InMemoryCollection", () => {
 
       if (error instanceof StorageError) {
         expect(error.code).toBe(StorageErrorCode.InvalidFilter);
+      }
+    }
+  });
+
+  it("inserts an ordered batch of documents", () => {
+    const collection = new InMemoryCollection();
+
+    const result = collection.insertMany([
+      {
+        name: "Ada",
+      },
+      {
+        name: "Grace",
+      },
+      {
+        name: "Katherine",
+      },
+    ]);
+
+    expect(result.insertedIds).toHaveLength(3);
+    expect(collection.documentCount).toBe(3);
+
+    expect(
+      collection.findById(result.insertedIds[0] as CustomId)?.[
+        "name"
+      ],
+    ).toBe("Ada");
+
+    expect(
+      collection.findById(result.insertedIds[1] as CustomId)?.[
+        "name"
+      ],
+    ).toBe("Grace");
+
+    expect(
+      collection.findById(result.insertedIds[2] as CustomId)?.[
+        "name"
+      ],
+    ).toBe("Katherine");
+  });
+
+  it("stops an ordered batch at the first failure", () => {
+    const collection = new InMemoryCollection();
+    const duplicateId = CustomId.fromHexString(
+      "00112233445566778899aabbccddeeff",
+    );
+    const skippedId = CustomId.fromHexString(
+      "ffeeddccbbaa99887766554433221100",
+    );
+
+    collection.insertOne({
+      _id: duplicateId,
+      name: "existing",
+    });
+
+    let thrown: unknown;
+
+    try {
+      collection.insertMany([
+        {
+          name: "inserted",
+        },
+        {
+          _id: duplicateId,
+          name: "duplicate",
+        },
+        {
+          _id: skippedId,
+          name: "skipped",
+        },
+      ]);
+    } catch (error: unknown) {
+      thrown = error;
+    }
+
+    expect(thrown).toBeInstanceOf(StorageInsertManyError);
+
+    if (thrown instanceof StorageInsertManyError) {
+      expect(thrown.code).toBe(StorageErrorCode.DuplicateId);
+      expect(thrown.failedIndex).toBe(1);
+      expect(thrown.insertedIds).toHaveLength(1);
+
+      const insertedId = thrown.insertedIds[0];
+
+      expect(insertedId).toBeInstanceOf(CustomId);
+
+      if (insertedId instanceof CustomId) {
+        expect(collection.findById(insertedId)?.["name"]).toBe(
+          "inserted",
+        );
+      }
+    }
+
+    expect(collection.documentCount).toBe(2);
+    expect(collection.findById(skippedId)).toBeUndefined();
+  });
+
+  it("reports an invalid document's batch position", () => {
+    const collection = new InMemoryCollection();
+    const invalid = {
+      value: undefined,
+    } as unknown as Document;
+
+    let thrown: unknown;
+
+    try {
+      collection.insertMany([
+        {
+          name: "inserted",
+        },
+        invalid,
+        {
+          name: "skipped",
+        },
+      ]);
+    } catch (error: unknown) {
+      thrown = error;
+    }
+
+    expect(thrown).toBeInstanceOf(StorageInsertManyError);
+
+    if (thrown instanceof StorageInsertManyError) {
+      expect(thrown.code).toBe(StorageErrorCode.InvalidDocument);
+      expect(thrown.failedIndex).toBe(1);
+      expect(thrown.insertedIds).toHaveLength(1);
+    }
+
+    expect(collection.documentCount).toBe(1);
+  });
+
+  it("rejects an empty insert batch", () => {
+    const collection = new InMemoryCollection();
+
+    expect(() => collection.insertMany([])).toThrow(StorageError);
+
+    try {
+      collection.insertMany([]);
+    } catch (error: unknown) {
+      expect(error).toBeInstanceOf(StorageError);
+
+      if (error instanceof StorageError) {
+        expect(error.code).toBe(StorageErrorCode.InvalidBatch);
       }
     }
   });
