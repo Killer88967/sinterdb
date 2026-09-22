@@ -92,6 +92,15 @@ function compileOperatorDocument(
       case "$lte":
         return compileComparisonPredicate(name, operand);
 
+      case "$in":
+        return compileMembershipPredicate(path, "$in", operand, false);
+
+      case "$nin":
+        return compileMembershipPredicate(path, "$nin", operand, true);
+
+      case "$exists":
+        return compileExistsPredicate(path, operand);
+
       default:
         throw invalidFilter(
           `Filter field ${JSON.stringify(path)} uses unsupported operator ${JSON.stringify(name)}.`,
@@ -159,6 +168,58 @@ function compileComparisonPredicate(
         return comparison <= 0;
     }
   };
+}
+
+function compileMembershipPredicate(
+  path: string,
+  operator: "$in" | "$nin",
+  operand: DocumentValue,
+  negate: boolean,
+): FieldPredicate {
+  if (!Array.isArray(operand)) {
+    throw invalidFilter(
+      `Filter operator ${operator} for field ${JSON.stringify(path)} requires an array.`,
+    );
+  }
+
+  const encodedCandidates = operand.map((candidate) =>
+    encodeDocumentValue(candidate),
+  );
+
+  return (field) => {
+    if (!field.found) {
+      return negate;
+    }
+
+    const directMatch = encodedCandidates.some((candidate) =>
+      canonicalEquals(field.value, candidate),
+    );
+
+    const elementMatch =
+      Array.isArray(field.value) &&
+      field.value.some((element) =>
+        encodedCandidates.some((candidate) =>
+          canonicalEquals(element, candidate),
+        ),
+      );
+
+    const matched = directMatch || elementMatch;
+
+    return negate ? !matched : matched;
+  };
+}
+
+function compileExistsPredicate(
+  path: string,
+  operand: DocumentValue,
+): FieldPredicate {
+  if (typeof operand !== "boolean") {
+    throw invalidFilter(
+      `Filter operator $exists for field ${JSON.stringify(path)} requires a boolean.`,
+    );
+  }
+
+  return (field) => field.found === operand;
 }
 
 function compileFieldPath(path: string): readonly string[] {
