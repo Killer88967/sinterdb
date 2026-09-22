@@ -111,7 +111,7 @@ export class SinterServerError extends SinterError {
 }
 
 export class SinterInsertManyError extends SinterServerError {
-  public readonly failedInde: number;
+  public readonly failedIndex: number;
   public readonly insertedIds: readonly CustomId[];
 
   public constructor(
