@@ -4,11 +4,16 @@ import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { SinterClient } from "./client.js";
 import type {
   EqualityFilter,
+  InsertManyResult,
   InsertOneResult,
   OptionalId,
   WithId,
 } from "./collection.js";
-import { SinterProtocolError } from "./errors.js";
+import {
+  SinterInsertManyError,
+  SinterProtocolError,
+  SinterServerError,
+} from "./errors.js";
 
 interface UserDocument {
   _id: CustomId;
@@ -186,5 +191,128 @@ describe("SinterCollection", () => {
         name: "Ada",
       }),
     ).rejects.toBeInstanceOf(SinterProtocolError);
+  });
+  
+  it("inserts a typed document batch", async () => {
+    const client = new SinterClient(
+      "sinterdb://127.0.0.1/application",
+    );
+    const users = client.db().collection<UserDocument>("users");
+    const firstId = CustomId.fromHexString(
+      "00112233445566778899aabbccddeeff",
+    );
+    const secondId = CustomId.fromHexString(
+      "ffeeddccbbaa99887766554433221100",
+    );
+
+    const executeCommand = vi
+      .spyOn(client, "executeCommand")
+      .mockResolvedValue({
+        acknowledged: true,
+        insertedCount: 2,
+        insertedIds: [firstId, secondId],
+      });
+
+    const result = await users.insertMany([
+      {
+        name: "Ada",
+        age: 36,
+      },
+      {
+        name: "Grace",
+        age: 85,
+      },
+    ]);
+
+    expectTypeOf(result).toEqualTypeOf<InsertManyResult>();
+    expect(result.acknowledged).toBe(true);
+    expect(result.insertedCount).toBe(2);
+    expect(result.insertedIds).toHaveLength(2);
+    expect(result.insertedIds[0]?.equals(firstId)).toBe(true);
+    expect(result.insertedIds[1]?.equals(secondId)).toBe(true);
+
+    expect(executeCommand).toHaveBeenCalledWith(
+      "application",
+      "insertMany",
+      {
+        collection: "users",
+        documents: [
+          {
+            name: "Ada",
+            age: 36,
+          },
+          {
+            name: "Grace",
+            age: 85,
+          },
+        ],
+      },
+    );
+  });
+
+  it("rejects malformed insertMany results", async () => {
+    const client = new SinterClient(
+      "sinterdb://127.0.0.1/application",
+    );
+    const users = client.db().collection<UserDocument>("users");
+
+    vi.spyOn(client, "executeCommand").mockResolvedValue({
+      acknowledged: true,
+      insertedCount: 2,
+      insertedIds: [CustomId.generate()],
+    });
+
+    await expect(
+      users.insertMany([
+        {
+          name: "Ada",
+          age: 36,
+        },
+      ]),
+    ).rejects.toBeInstanceOf(SinterProtocolError);
+  });
+
+  it("reports ordered insertMany progress", async () => {
+    const client = new SinterClient(
+      "sinterdb://127.0.0.1/application",
+    );
+    const users = client.db().collection<UserDocument>("users");
+    const insertedId = CustomId.generate();
+
+    vi.spyOn(client, "executeCommand").mockRejectedValue(
+      new SinterServerError("Insert failed at batch index 1.", {
+        wireCode: 4001,
+        serverErrorName: "DuplicateKey",
+        retryable: false,
+        details: {
+          failedIndex: 1,
+          insertedCount: 1,
+          insertedIds: [insertedId],
+        },
+      }),
+    );
+
+    const error = await users
+      .insertMany([
+        {
+          name: "Ada",
+          age: 36,
+        },
+        {
+          name: "Grace",
+          age: 85,
+        },
+      ])
+      .catch((reason: unknown) => reason);
+
+    expect(error).toBeInstanceOf(SinterInsertManyError);
+
+    if (error instanceof SinterInsertManyError) {
+      expect(error.failedIndex).toBe(1);
+      expect(error.insertedIds).toHaveLength(1);
+      expect(error.insertedIds[0]?.equals(insertedId)).toBe(true);
+      expect(error.wireCode).toBe(4001);
+      expect(error.serverErrorName).toBe("DuplicateKey");
+    }
   });
 });
