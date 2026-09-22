@@ -2,9 +2,7 @@ import {
   CustomId,
   decodeDocument,
   encodeDocument,
-  encodeDocumentValue,
   type Document,
-  type DocumentValue,
 } from "sinterdb-protocol";
 
 import {
@@ -12,6 +10,7 @@ import {
   StorageErrorCode,
   StorageInsertManyError,
 } from "./errors.js";
+import { compileFilter } from "./filter.js";
 
 export interface StorageInsertOneResult {
   readonly insertedId: CustomId;
@@ -21,10 +20,6 @@ export interface StorageInsertManyResult {
   readonly insertedIds: readonly CustomId[];
 }
 
-interface CompiledFilterField {
-  readonly name: string;
-  readonly encodedValue: Uint8Array;
-}
 
 export class InMemoryCollection {
   private readonly documents = new Map<string, Uint8Array>();
@@ -106,23 +101,23 @@ export class InMemoryCollection {
   }
 
   public findOne(filter: Document): Document | undefined {
-    const fields = compileFilter(filter);
+    const matches = compileFilter(filter);
     const id = filter["_id"];
 
     if (id instanceof CustomId) {
       const document = this.findById(id);
 
-      if (document === undefined) {
-        return undefined;
+      if (documet === undefined) {
+        return undefined
       }
 
-      return matchesFilter(document, fields) ? document : undefined;
+      return matches(document) ? document : undefined;
     }
 
-    for (const encoded of this.documents.values()) {
+    for (const encoded of this.documents.value()) {
       const document = decodeDocument(encoded);
 
-      if (matchesFilter(document, fields)) {
+      if (matches(document)) {
         return document;
       }
     }
@@ -182,58 +177,4 @@ function isPlainDocument(value: unknown): value is Document {
   const prototype = Object.getPrototypeOf(value);
 
   return prototype === Object.prototype || prototype === null;
-}
-
-function compileFilter(filter: Document): CompiledFilterField[] {
-  if (!isPlainDocument(filter)) {
-    throw new StorageError(
-      StorageErrorCode.InvalidFilter,
-      "Find filter must be a document.",
-    );
-  }
-
-  try {
-    encodeDocument(filter);
-
-    return Object.keys(filter).map((name) => ({
-      name,
-      encodedValue: encodeDocumentValue(filter[name] as DocumentValue),
-    }));
-  } catch (error: unknown) {
-    throw new StorageError(
-      StorageErrorCode.InvalidFilter,
-      "Find filter could not be encoded.",
-      {
-        cause: error,
-      },
-    );
-  }
-}
-
-function matchesFilter(
-  document: Document,
-  fields: readonly CompiledFilterField[],
-): boolean {
-  for (const field of fields) {
-    if (!Object.hasOwn(document, field.name)) {
-      return false;
-    }
-
-    const value = document[field.name] as DocumentValue;
-    const encodedValue = encodeDocumentValue(value);
-
-    if (!bytesEqual(encodedValue, field.encodedValue)) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-function bytesEqual(left: Uint8Array, right: Uint8Array): boolean {
-  if (left.byteLength !== right.byteLength) {
-    return false;
-  }
-
-  return left.every((byte, index) => byte === right[index]);
 }
