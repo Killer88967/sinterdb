@@ -1,12 +1,12 @@
+export { InMemoryCollection } from "./in-memory-collection.js";
 export {
-  InMemoryCollection,
   StorageError,
   StorageErrorCode,
   StorageInsertManyError,
-} from "./in-memory-collection.js";
+} from "./errors.js";
 
 export type {
-  StorageErrorCode as StorageErrorCodeValue,
   StorageInsertManyResult,
   StorageInsertOneResult,
 } from "./in-memory-collection.js";
+export type { StorageErrorCode as StorageErrorCodeValue } from "./errors.js";
