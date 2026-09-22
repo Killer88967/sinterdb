@@ -23,7 +23,7 @@ export interface StorageInsertOneResult {
 }
 
 export interface StorageInsertManyResult {
-  readonly insertedIds: CustomId[];
+  readonly insertedIds: readonly CustomId[];
 }
 
 interface CompiledFilterField {
