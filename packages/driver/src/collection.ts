@@ -1,4 +1,8 @@
-import { CustomId, type Document, type DocumentValue } from "sinterdb-protocol";
+import {
+  CustomId,
+  type Document,
+  type DocumentValue,
+} from "sinterdb-protocol";
 
 import type { SinterDatabase } from "./database.js";
 import {
@@ -8,11 +12,17 @@ import {
 } from "./errors.js";
 import { validateCollectionName } from "./namespace.js";
 
-export type OptionalId<TDocument extends object> = Omit<TDocument, "_id"> & {
+export type OptionalId<TDocument extends object> = Omit<
+  TDocument,
+  "_id"
+> & {
   readonly _id?: CustomId;
 };
 
-export type WithId<TDocument extends object> = Omit<TDocument, "_id"> & {
+export type WithId<TDocument extends object> = Omit<
+  TDocument,
+  "_id"
+> & {
   readonly _id: CustomId;
 };
 
@@ -31,7 +41,9 @@ export interface InsertManyResult {
   readonly insertedIds: readonly CustomId[];
 }
 
-export class SinterCollection<TDocument extends object = Document> {
+export class SinterCollection<
+  TDocument extends object = Document,
+> {
   declare protected readonly documentType: TDocument;
 
   public readonly name: string;
@@ -63,6 +75,29 @@ export class SinterCollection<TDocument extends object = Document> {
     return parseInsertOneResult(value);
   }
 
+  public async insertMany(
+    documents: readonly OptionalId<TDocument>[],
+  ): Promise<InsertManyResult> {
+    let value: DocumentValue;
+
+    try {
+      value = await this.database.client.executeCommand(
+        this.database.name,
+        "insertMany",
+        {
+          collection: this.name,
+          documents: documents.map(
+            (document) => document as unknown as Document,
+          ),
+        },
+      );
+    } catch (error: unknown) {
+      translateInsertManyFailure(error);
+    }
+
+    return parseInsertManyResult(value);
+  }
+
   public async findOne(
     filter: EqualityFilter<TDocument> = {} as EqualityFilter<TDocument>,
   ): Promise<WithId<TDocument> | null> {
@@ -79,7 +114,9 @@ export class SinterCollection<TDocument extends object = Document> {
   }
 }
 
-function parseInsertOneResult(value: DocumentValue): InsertOneResult {
+function parseInsertOneResult(
+  value: DocumentValue,
+): InsertOneResult {
   if (!isPlainDocument(value)) {
     throw invalidInsertResult();
   }
@@ -87,7 +124,10 @@ function parseInsertOneResult(value: DocumentValue): InsertOneResult {
   const acknowledged = value["acknowledged"];
   const insertedId = value["insertedId"];
 
-  if (acknowledged !== true || !(insertedId instanceof CustomId)) {
+  if (
+    acknowledged !== true ||
+    !(insertedId instanceof CustomId)
+  ) {
     throw invalidInsertResult();
   }
 
@@ -97,7 +137,9 @@ function parseInsertOneResult(value: DocumentValue): InsertOneResult {
   });
 }
 
-function parseInsertManyResult(valie: DocumentValue): InsertManyResult {
+function parseInsertManyResult(
+  value: DocumentValue,
+): InsertManyResult {
   if (!isPlainDocument(value)) {
     throw invalidInsertManyResult();
   }
@@ -113,7 +155,8 @@ function parseInsertManyResult(valie: DocumentValue): InsertManyResult {
     insertedCount < 0 ||
     !Array.isArray(insertedIds) ||
     !insertedIds.every(
-      (insertedId): insertedId is CustomId => insertedId instanceof CustomId,
+      (insertedId): insertedId is CustomId =>
+        insertedId instanceof CustomId,
     ) ||
     insertedIds.length !== insertedCount
   ) {
@@ -121,7 +164,7 @@ function parseInsertManyResult(valie: DocumentValue): InsertManyResult {
   }
 
   return Object.freeze({
-    acknoledged: true,
+    acknowledged: true,
     insertedCount,
     insertedIds: Object.freeze([...insertedIds]),
   });
@@ -130,7 +173,10 @@ function parseInsertManyResult(valie: DocumentValue): InsertManyResult {
 function parseFindOneResult<TDocument extends object>(
   value: DocumentValue,
 ): WithId<TDocument> | null {
-  if (!isPlainDocument(value) || !Object.hasOwn(value, "document")) {
+  if (
+    !isPlainDocument(value) ||
+    !Object.hasOwn(value, "document")
+  ) {
     throw invalidFindResult();
   }
 
@@ -140,7 +186,10 @@ function parseFindOneResult<TDocument extends object>(
     return null;
   }
 
-  if (!isPlainDocument(document) || !(document["_id"] instanceof CustomId)) {
+  if (
+    !isPlainDocument(document) ||
+    !(document["_id"] instanceof CustomId)
+  ) {
     throw invalidFindResult();
   }
 
@@ -148,7 +197,11 @@ function parseFindOneResult<TDocument extends object>(
 }
 
 function isPlainDocument(value: unknown): value is Document {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+  if (
+    typeof value !== "object" ||
+    value === null ||
+    Array.isArray(value)
+  ) {
     return false;
   }
 
@@ -174,13 +227,14 @@ function translateInsertManyFailure(error: unknown): never {
     failedIndex < 0 ||
     !Array.isArray(insertedIds) ||
     !insertedIds.every(
-      (insertedId): insertedId is CustomId => insertedId instanceof CustomId,
+      (insertedId): insertedId is CustomId =>
+        insertedId instanceof CustomId,
     )
   ) {
     throw error;
   }
 
-  throw new SinterInsertManyErro(
+  throw new SinterInsertManyError(
     error,
     failedIndex,
     insertedIds,
