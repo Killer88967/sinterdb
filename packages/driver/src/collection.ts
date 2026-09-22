@@ -1,7 +1,11 @@
 import { CustomId, type Document, type DocumentValue } from "sinterdb-protocol";
 
 import type { SinterDatabase } from "./database.js";
-import { SinterProtocolError } from "./errors.js";
+import {
+  SinterInsertManyError,
+  SinterProtocolError,
+  SinterServerError,
+} from "./errors.js";
 import { validateCollectionName } from "./namespace.js";
 
 export type OptionalId<TDocument extends object> = Omit<TDocument, "_id"> & {
@@ -19,6 +23,12 @@ export type EqualityFilter<TDocument extends object> = {
 export interface InsertOneResult {
   readonly acknowledged: true;
   readonly insertedId: CustomId;
+}
+
+export interface InsertManyResult {
+  readonly acknowledged: true;
+  readonly insertedCount: number;
+  readonly insertedIds: readonly CustomId[];
 }
 
 export class SinterCollection<TDocument extends object = Document> {
@@ -87,6 +97,36 @@ function parseInsertOneResult(value: DocumentValue): InsertOneResult {
   });
 }
 
+function parseInsertManyResult(valie: DocumentValue): InsertManyResult {
+  if (!isPlainDocument(value)) {
+    throw invalidInsertManyResult();
+  }
+
+  const acknowledged = value["acknowledged"];
+  const insertedCount = value["insertedCount"];
+  const insertedIds = value["insertedIds"];
+
+  if (
+    acknowledged !== true ||
+    typeof insertedCount !== "number" ||
+    !Number.isSafeInteger(insertedCount) ||
+    insertedCount < 0 ||
+    !Array.isArray(insertedIds) ||
+    !insertedIds.every(
+      (insertedId): insertedId is CustomId => insertedId instanceof CustomId,
+    ) ||
+    insertedIds.length !== insertedCount
+  ) {
+    throw invalidInsertManyResult();
+  }
+
+  return Object.freeze({
+    acknoledged: true,
+    insertedCount,
+    insertedIds: Object.freeze([...insertedIds]),
+  });
+}
+
 function parseFindOneResult<TDocument extends object>(
   value: DocumentValue,
 ): WithId<TDocument> | null {
@@ -117,9 +157,45 @@ function isPlainDocument(value: unknown): value is Document {
   return prototype === Object.prototype || prototype === null;
 }
 
+function translateInsertManyFailure(error: unknown): never {
+  if (
+    !(error instanceof SinterServerError) ||
+    error.details === undefined
+  ) {
+    throw error;
+  }
+
+  const failedIndex = error.details["failedIndex"];
+  const insertedIds = error.details["insertedIds"];
+
+  if (
+    typeof failedIndex !== "number" ||
+    !Number.isSafeInteger(failedIndex) ||
+    failedIndex < 0 ||
+    !Array.isArray(insertedIds) ||
+    !insertedIds.every(
+      (insertedId): insertedId is CustomId => insertedId instanceof CustomId,
+    )
+  ) {
+    throw error;
+  }
+
+  throw new SinterInsertManyErro(
+    error,
+    failedIndex,
+    insertedIds,
+  );
+}
+
 function invalidInsertResult(): SinterProtocolError {
   return new SinterProtocolError(
     "The server returned an invalid insertOne result.",
+  );
+}
+
+function invalidInsertManyResult(): SinterProtocolError {
+  return new SinterProtocolError(
+    "The server returned an invalid insertMany result.",
   );
 }
 
