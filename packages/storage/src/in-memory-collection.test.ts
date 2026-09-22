@@ -332,21 +332,15 @@ describe("InMemoryCollection", () => {
     expect(collection.documentCount).toBe(3);
 
     expect(
-      collection.findById(result.insertedIds[0] as CustomId)?.[
-        "name"
-      ],
+      collection.findById(result.insertedIds[0] as CustomId)?.["name"],
     ).toBe("Ada");
 
     expect(
-      collection.findById(result.insertedIds[1] as CustomId)?.[
-        "name"
-      ],
+      collection.findById(result.insertedIds[1] as CustomId)?.["name"],
     ).toBe("Grace");
 
     expect(
-      collection.findById(result.insertedIds[2] as CustomId)?.[
-        "name"
-      ],
+      collection.findById(result.insertedIds[2] as CustomId)?.["name"],
     ).toBe("Katherine");
   });
 
@@ -396,9 +390,7 @@ describe("InMemoryCollection", () => {
       expect(insertedId).toBeInstanceOf(CustomId);
 
       if (insertedId instanceof CustomId) {
-        expect(collection.findById(insertedId)?.["name"]).toBe(
-          "inserted",
-        );
+        expect(collection.findById(insertedId)?.["name"]).toBe("inserted");
       }
     }
 

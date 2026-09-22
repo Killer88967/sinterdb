@@ -48,7 +48,7 @@ export class StorageError extends Error {
 
 export class StorageInsertManyError extends StorageError {
   public readonly failedIndex: number;
-  public readonly insertedIds: readonly CustomId[]
+  public readonly insertedIds: readonly CustomId[];
 
   public constructor(
     failedIndex: number,
@@ -60,7 +60,7 @@ export class StorageInsertManyError extends StorageError {
       `Insert failed at batch index ${failedIndex}: ${cause.message}`,
       {
         cause,
-      }
+      },
     );
 
     this.name = "StorageInsertManyError";
@@ -118,17 +118,15 @@ export class InMemoryCollection {
     };
   }
 
-  public insertMany(
-    documents: readonly Document[],
-  ): StorageInsertManyResult {
+  public insertMany(documents: readonly Document[]): StorageInsertManyResult {
     if (!Array.isArray(documents) || documents.length === 0) {
       throw new StorageError(
         StorageErrorCode.InvalidBatch,
-        "insertMany requires at least one document."
+        "insertMany requires at least one document.",
       );
     }
 
-    const insertedIds : CustomId[] = [];
+    const insertedIds: CustomId[] = [];
 
     for (let index = 0; index < documents.length; index += 1) {
       const document = documents[index];
@@ -138,11 +136,7 @@ export class InMemoryCollection {
         insertedIds.push(result.insertedId);
       } catch (error: unknown) {
         if (error instanceof StorageError) {
-          throw new StorageInsertManyError(
-            index,
-            insertedIds,
-            error,
-          );
+          throw new StorageInsertManyError(index, insertedIds, error);
         }
 
         throw error;
@@ -151,7 +145,7 @@ export class InMemoryCollection {
 
     return {
       insertedIds: Object.freeze([...insertedIds]),
-    }
+    };
   }
 
   public findOne(filter: Document): Document | undefined {

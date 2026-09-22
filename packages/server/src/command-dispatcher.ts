@@ -190,14 +190,14 @@ export class CommandDispatcher {
       const collection = this.catalog.getOrCreateCollection(
         databaseName,
         collectionName,
-      )
+      );
       const result = collection.insertMany(documents);
 
       return {
         acknowledged: true,
         insertedCount: result.insertedIds.length,
         insertedIds: [...result.insertedIds],
-      }
+      };
     } catch (error: unknown) {
       if (error instanceof CatalogError) {
         throw translateCatalogError(error);
@@ -303,7 +303,7 @@ function requireDocumentArrayParameter(
   parameters: Document,
   name: string,
 ): Document[] {
-  const value = parameters[name]
+  const value = parameters[name];
 
   if (
     !Array.isArray(value) ||
@@ -317,9 +317,9 @@ function requireDocumentArrayParameter(
       {
         details: {
           field: name,
-        }
-      }
-    )
+        },
+      },
+    );
   }
 
   return value;
@@ -360,9 +360,7 @@ function translateCatalogError(error: unknown): CommandExecutionError {
   );
 }
 
-function translateStorageError(
-  error: unknown,
-): CommandExecutionError {
+function translateStorageError(error: unknown): CommandExecutionError {
   if (!(error instanceof StorageError)) {
     throw error;
   }

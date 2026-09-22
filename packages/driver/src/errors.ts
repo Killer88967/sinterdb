@@ -1,4 +1,4 @@
-import {CustomId, type Document } from "sinterdb-protocol";
+import { CustomId, type Document } from "sinterdb-protocol";
 
 export const SinterErrorCode = {
   InvalidConnectionString: "INVALID_CONNECTION_STRING",
@@ -123,14 +123,14 @@ export class SinterInsertManyError extends SinterServerError {
       cause: serverError,
       retryable: serverError.retryable,
       ...(serverError.wireCode === undefined
-         ? {}
-         : { wireCode: serverError.wireCode }),
+        ? {}
+        : { wireCode: serverError.wireCode }),
       ...(serverError.serverErrorName === undefined
-         ? {}
-         : { serverErrorName: serverError.serverErrorName }),
+        ? {}
+        : { serverErrorName: serverError.serverErrorName }),
       ...(serverError.details === undefined
-         ? {}
-         : { details: serverError.details }),
+        ? {}
+        : { details: serverError.details }),
     });
 
     this.failedIndex = failedIndex;

@@ -192,18 +192,12 @@ describe("SinterCollection", () => {
       }),
     ).rejects.toBeInstanceOf(SinterProtocolError);
   });
-  
+
   it("inserts a typed document batch", async () => {
-    const client = new SinterClient(
-      "sinterdb://127.0.0.1/application",
-    );
+    const client = new SinterClient("sinterdb://127.0.0.1/application");
     const users = client.db().collection<UserDocument>("users");
-    const firstId = CustomId.fromHexString(
-      "00112233445566778899aabbccddeeff",
-    );
-    const secondId = CustomId.fromHexString(
-      "ffeeddccbbaa99887766554433221100",
-    );
+    const firstId = CustomId.fromHexString("00112233445566778899aabbccddeeff");
+    const secondId = CustomId.fromHexString("ffeeddccbbaa99887766554433221100");
 
     const executeCommand = vi
       .spyOn(client, "executeCommand")
@@ -231,29 +225,23 @@ describe("SinterCollection", () => {
     expect(result.insertedIds[0]?.equals(firstId)).toBe(true);
     expect(result.insertedIds[1]?.equals(secondId)).toBe(true);
 
-    expect(executeCommand).toHaveBeenCalledWith(
-      "application",
-      "insertMany",
-      {
-        collection: "users",
-        documents: [
-          {
-            name: "Ada",
-            age: 36,
-          },
-          {
-            name: "Grace",
-            age: 85,
-          },
-        ],
-      },
-    );
+    expect(executeCommand).toHaveBeenCalledWith("application", "insertMany", {
+      collection: "users",
+      documents: [
+        {
+          name: "Ada",
+          age: 36,
+        },
+        {
+          name: "Grace",
+          age: 85,
+        },
+      ],
+    });
   });
 
   it("rejects malformed insertMany results", async () => {
-    const client = new SinterClient(
-      "sinterdb://127.0.0.1/application",
-    );
+    const client = new SinterClient("sinterdb://127.0.0.1/application");
     const users = client.db().collection<UserDocument>("users");
 
     vi.spyOn(client, "executeCommand").mockResolvedValue({
@@ -273,9 +261,7 @@ describe("SinterCollection", () => {
   });
 
   it("reports ordered insertMany progress", async () => {
-    const client = new SinterClient(
-      "sinterdb://127.0.0.1/application",
-    );
+    const client = new SinterClient("sinterdb://127.0.0.1/application");
     const users = client.db().collection<UserDocument>("users");
     const insertedId = CustomId.generate();
 

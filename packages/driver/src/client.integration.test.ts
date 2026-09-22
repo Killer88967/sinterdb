@@ -11,10 +11,11 @@ import {
 } from "./client.js";
 import type {
   InsertOneResult,
+  InsertManyResult,
   SinterCollection,
   WithId,
 } from "./collection.js";
-import { SinterServerError } from "./errors.js";
+import { SinterServerError, SinterInsertManyError } from "./errors.js";
 
 describe("SinterClient integration", () => {
   it("connects, pings, selects a database, and closes cleanly", async () => {
@@ -204,6 +205,146 @@ describe("SinterClient integration", () => {
             storageErrorCode: "DUPLICATE_ID",
           });
         }
+      } finally {
+        await client.close();
+      }
+    });
+  });
+
+  it("inserts and reads an ordered document batch", async () => {
+    await withTestServer(async ({ server, uri }) => {
+      const client = new SinterClient(`${uri}/application`);
+
+      interface UserDocument {
+        _id: CustomId;
+        name: string;
+        age: number;
+      }
+
+      try {
+        await client.connect();
+
+        const users = client.db().collection<UserDocument>("users");
+
+        const result = await users.insertMany([
+          {
+            name: "Ada",
+            age: 36,
+          },
+          {
+            name: "Grace",
+            age: 85,
+          },
+          {
+            name: "Katherine",
+            age: 101,
+          },
+        ]);
+
+        expectTypeOf(result).toEqualTypeOf<InsertManyResult>();
+        expect(result.acknowledged).toBe(true);
+        expect(result.insertedCount).toBe(3);
+        expect(result.insertedIds).toHaveLength(3);
+
+        for (const insertedId of result.insertedIds) {
+          expect(insertedId).toBeInstanceOf(CustomId);
+        }
+
+        const ada = await users.findOne({
+          _id: result.insertedIds[0],
+        });
+
+        const grace = await users.findOne({
+          _id: result.insertedIds[1],
+        });
+
+        const katherine = await users.findOne({
+          _id: result.insertedIds[2],
+        });
+
+        expect(ada?.name).toBe("Ada");
+        expect(grace?.name).toBe("Grace");
+        expect(katherine?.name).toBe("Katherine");
+
+        expect(
+          server.catalog.getCollection("application", "users")?.documentCount,
+        ).toBe(3);
+      } finally {
+        await client.close();
+      }
+    });
+  });
+
+  it("reports ordered batch progress through the driver", async () => {
+    await withTestServer(async ({ server, uri }) => {
+      const client = new SinterClient(`${uri}/application`);
+      const duplicateId = CustomId.fromHexString(
+        "00112233445566778899aabbccddeeff",
+      );
+      const insertedId = CustomId.fromHexString(
+        "11112222333344445555666677778888",
+      );
+      const skippedId = CustomId.fromHexString(
+        "ffeeddccbbaa99887766554433221100",
+      );
+
+      interface UserDocument {
+        _id: CustomId;
+        name: string;
+      }
+
+      try {
+        await client.connect();
+
+        const users = client.db().collection<UserDocument>("users");
+
+        await users.insertOne({
+          _id: duplicateId,
+          name: "existing",
+        });
+
+        const error = await users
+          .insertMany([
+            {
+              _id: insertedId,
+              name: "inserted",
+            },
+            {
+              _id: duplicateId,
+              name: "duplicate",
+            },
+            {
+              _id: skippedId,
+              name: "skipped",
+            },
+          ])
+          .catch((reason: unknown) => reason);
+
+        expect(error).toBeInstanceOf(SinterInsertManyError);
+
+        if (error instanceof SinterInsertManyError) {
+          expect(error.failedIndex).toBe(1);
+          expect(error.insertedIds).toHaveLength(1);
+          expect(error.insertedIds[0]?.equals(insertedId)).toBe(true);
+          expect(error.wireCode).toBe(WireErrorCode.DuplicateKey);
+          expect(error.serverErrorName).toBe("DuplicateKey");
+          expect(error.retryable).toBe(false);
+        }
+
+        const inserted = await users.findOne({
+          _id: insertedId,
+        });
+
+        const skipped = await users.findOne({
+          _id: skippedId,
+        });
+
+        expect(inserted?.name).toBe("inserted");
+        expect(skipped).toBeNull();
+
+        expect(
+          server.catalog.getCollection("application", "users")?.documentCount,
+        ).toBe(2);
       } finally {
         await client.close();
       }

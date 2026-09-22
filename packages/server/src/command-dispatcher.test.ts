@@ -466,9 +466,7 @@ describe("CommandDispatcher", () => {
     expect(insertedIds[0]).toBeInstanceOf(CustomId);
     expect(insertedIds[1]).toBeInstanceOf(CustomId);
 
-    expect(
-      catalog.getCollection("app", "users")?.documentCount,
-    ).toBe(2);
+    expect(catalog.getCollection("app", "users")?.documentCount).toBe(2);
   });
 
   it("reports ordered batch progress when an insert fails", () => {

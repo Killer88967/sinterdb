@@ -1,8 +1,4 @@
-import {
-  CustomId,
-  type Document,
-  type DocumentValue,
-} from "sinterdb-protocol";
+import { CustomId, type Document, type DocumentValue } from "sinterdb-protocol";
 
 import type { SinterDatabase } from "./database.js";
 import {
@@ -12,17 +8,11 @@ import {
 } from "./errors.js";
 import { validateCollectionName } from "./namespace.js";
 
-export type OptionalId<TDocument extends object> = Omit<
-  TDocument,
-  "_id"
-> & {
+export type OptionalId<TDocument extends object> = Omit<TDocument, "_id"> & {
   readonly _id?: CustomId;
 };
 
-export type WithId<TDocument extends object> = Omit<
-  TDocument,
-  "_id"
-> & {
+export type WithId<TDocument extends object> = Omit<TDocument, "_id"> & {
   readonly _id: CustomId;
 };
 
@@ -41,9 +31,7 @@ export interface InsertManyResult {
   readonly insertedIds: readonly CustomId[];
 }
 
-export class SinterCollection<
-  TDocument extends object = Document,
-> {
+export class SinterCollection<TDocument extends object = Document> {
   declare protected readonly documentType: TDocument;
 
   public readonly name: string;
@@ -114,9 +102,7 @@ export class SinterCollection<
   }
 }
 
-function parseInsertOneResult(
-  value: DocumentValue,
-): InsertOneResult {
+function parseInsertOneResult(value: DocumentValue): InsertOneResult {
   if (!isPlainDocument(value)) {
     throw invalidInsertResult();
   }
@@ -124,10 +110,7 @@ function parseInsertOneResult(
   const acknowledged = value["acknowledged"];
   const insertedId = value["insertedId"];
 
-  if (
-    acknowledged !== true ||
-    !(insertedId instanceof CustomId)
-  ) {
+  if (acknowledged !== true || !(insertedId instanceof CustomId)) {
     throw invalidInsertResult();
   }
 
@@ -137,9 +120,7 @@ function parseInsertOneResult(
   });
 }
 
-function parseInsertManyResult(
-  value: DocumentValue,
-): InsertManyResult {
+function parseInsertManyResult(value: DocumentValue): InsertManyResult {
   if (!isPlainDocument(value)) {
     throw invalidInsertManyResult();
   }
@@ -155,8 +136,7 @@ function parseInsertManyResult(
     insertedCount < 0 ||
     !Array.isArray(insertedIds) ||
     !insertedIds.every(
-      (insertedId): insertedId is CustomId =>
-        insertedId instanceof CustomId,
+      (insertedId): insertedId is CustomId => insertedId instanceof CustomId,
     ) ||
     insertedIds.length !== insertedCount
   ) {
@@ -173,10 +153,7 @@ function parseInsertManyResult(
 function parseFindOneResult<TDocument extends object>(
   value: DocumentValue,
 ): WithId<TDocument> | null {
-  if (
-    !isPlainDocument(value) ||
-    !Object.hasOwn(value, "document")
-  ) {
+  if (!isPlainDocument(value) || !Object.hasOwn(value, "document")) {
     throw invalidFindResult();
   }
 
@@ -186,10 +163,7 @@ function parseFindOneResult<TDocument extends object>(
     return null;
   }
 
-  if (
-    !isPlainDocument(document) ||
-    !(document["_id"] instanceof CustomId)
-  ) {
+  if (!isPlainDocument(document) || !(document["_id"] instanceof CustomId)) {
     throw invalidFindResult();
   }
 
@@ -197,11 +171,7 @@ function parseFindOneResult<TDocument extends object>(
 }
 
 function isPlainDocument(value: unknown): value is Document {
-  if (
-    typeof value !== "object" ||
-    value === null ||
-    Array.isArray(value)
-  ) {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
     return false;
   }
 
@@ -211,10 +181,7 @@ function isPlainDocument(value: unknown): value is Document {
 }
 
 function translateInsertManyFailure(error: unknown): never {
-  if (
-    !(error instanceof SinterServerError) ||
-    error.details === undefined
-  ) {
+  if (!(error instanceof SinterServerError) || error.details === undefined) {
     throw error;
   }
 
@@ -227,18 +194,13 @@ function translateInsertManyFailure(error: unknown): never {
     failedIndex < 0 ||
     !Array.isArray(insertedIds) ||
     !insertedIds.every(
-      (insertedId): insertedId is CustomId =>
-        insertedId instanceof CustomId,
+      (insertedId): insertedId is CustomId => insertedId instanceof CustomId,
     )
   ) {
     throw error;
   }
 
-  throw new SinterInsertManyError(
-    error,
-    failedIndex,
-    insertedIds,
-  );
+  throw new SinterInsertManyError(error, failedIndex, insertedIds);
 }
 
 function invalidInsertResult(): SinterProtocolError {
