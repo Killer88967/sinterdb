@@ -299,7 +299,7 @@ function requireDocumentParameter(
   return value;
 }
 
-function requireDocumentArrayParameters(
+function requireDocumentArrayParameter(
   parameters: Document,
   name: string,
 ): Document[] {
