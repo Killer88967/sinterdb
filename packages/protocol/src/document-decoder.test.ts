@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { decodeDocument, decodeDocumentValue } from "./document-decoder.js";
 import { encodeDocument, encodeDocumentValue } from "./document-encoder.js";
 import { ProtocolError, ProtocolErrorCode } from "./errors.js";
+import { MAX_DOCUMENT_DEPTH, ValueTag } from "./document.js";
 
 describe("document decoding", () => {
   it("decodes the simple-document golden bytes", () => {
@@ -87,6 +88,27 @@ describe("document decoding", () => {
     expectProtocolError(
       () => decodeDocument(encoded),
       ProtocolErrorCode.InvalidDocumentValue,
+    );
+  });
+
+  it("rejects encoded values beyond the maximum nesting depth", () => {
+    const arrayCount = MAX_DOCUMENT_DEPTH + 1;
+    const encoded = new Uint8Array(arrayCount * 5 + 1);
+    const view = new DataView(encoded.buffer);
+
+    let offset = 0;
+
+    for (let depth = 0; depth < arrayCount; depth += 1) {
+      encoded[offset] = ValueTag.Array;
+      view.setUint32(offset + 1, 1);
+      offset += 5;
+    }
+
+    encoded[offset] = ValueTag.Null;
+
+    expectProtocolError(
+      () => decodeDocumentValue(encoded),
+      ProtocolErrorCode.DocumentTooDeep,
     );
   });
 });

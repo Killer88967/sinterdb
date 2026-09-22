@@ -2,8 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import { encodeDocument, encodeDocumentValue } from "./document-encoder.js";
 import { decodeDocument } from "./document-decoder.js";
-import { type DocumentValue } from "./document.js";
+import { MAX_DOCUMENT_DEPTH, type DocumentValue } from "./document.js";
 import { ProtocolError, ProtocolErrorCode } from "./errors.js";
+import { MAX_PAYLOAD_SIZE } from "./constants.js";
 
 describe("document encoding", () => {
   it("matches the golden bytes for a simple document", () => {
@@ -105,6 +106,28 @@ describe("document encoding", () => {
       "\uE000",
       "\u{10000}",
     ]);
+  });
+
+  it("rejects values larger than the maximum payload", () => {
+    const oversized = new Uint8Array(MAX_PAYLOAD_SIZE);
+
+    expectProtocolError(
+      () => encodeDocumentValue(oversized),
+      ProtocolErrorCode.PayloadTooLarge,
+    );
+  });
+
+  it("rejects values beyond the maximum nesting depth", () => {
+    let value: DocumentValue = null;
+
+    for (let depth = 0; depth <= MAX_DOCUMENT_DEPTH; depth += 1) {
+      value = [value];
+    }
+
+    expectProtocolError(
+      () => encodeDocumentValue(value),
+      ProtocolErrorCode.DocumentTooDeep,
+    );
   });
 });
 

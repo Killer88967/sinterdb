@@ -141,6 +141,7 @@ Every encoded value begins with a one-byte type tag.
 | `0x09` | DateTime | Signed 64-bit Unix epoch milliseconds         |
 | `0x0a` | Array    | UInt32 item count followed by encoded values  |
 | `0x0b` | Document | UInt32 field count followed by encoded fields |
+| `0x0c` | CustomId | 16-byte SinterDB document identifier          |
 
 Unknown type tags MUST be rejected.
 
@@ -261,13 +262,30 @@ custom class instances, and other unsupported values MUST be rejected.
 Cyclic arrays and documents MUST be rejected. Repeated non-cyclic values MAY
 be encoded independently.
 
-### 4.8 Nesting limit
+### 4.8 Custom identifiers
+
+A `CustomId` is encoded as exactly 16 bytes:
+
+| Size | Field                                      |
+| ---: | ------------------------------------------ |
+|    6 | Unsigned Unix epoch timestamp milliseconds |
+|   10 | Cryptographically random bytes             |
+
+The timestamp uses big-endian byte order.
+
+The canonical text representation is a lowercase, 32-character hexadecimal
+string. Text parsing MAY accept uppercase hexadecimal character, but string
+serialization MUST produce lowercase characters.
+
+Binary decoding MUST preserve all 16 identifier bytes exactly.
+
+### 4.9 Nesting limit
 
 The maximum document and array nesting depth is `100`.
 
 Values exceeding that depth MUST be rejected by both encoders and decoders.
 
-### 4.9 Complete-value requirement
+### 4.10 Complete-value requirement
 
 A standalone value decoder MUST consume the complete provided byte sequence.
 
