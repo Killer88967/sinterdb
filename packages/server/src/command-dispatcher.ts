@@ -198,7 +198,7 @@ export class CommandDispatcher {
         insertedCount: result.insertedIds.length,
         insertedIds: [...result.insertedIds],
       }
-    } catch (error: unkown) {
+    } catch (error: unknown) {
       if (error instanceof CatalogError) {
         throw translateCatalogError(error);
       }
