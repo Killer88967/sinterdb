@@ -1,12 +1,12 @@
 import { CustomId, type Document } from "sinterdb-protocol";
 import { describe, expect, it } from "vitest";
 
+import { InMemoryCollection } from "./in-memory-collection.js";
 import {
-  InMemoryCollection,
   StorageError,
   StorageErrorCode,
   StorageInsertManyError,
-} from "./in-memory-collection.js";
+} from "./errors.js"
 
 describe("InMemoryCollection", () => {
   it("starts empty", () => {
