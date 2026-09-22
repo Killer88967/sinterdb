@@ -77,6 +77,9 @@ export class CommandDispatcher {
       case ServerCommand.InsertOne:
         return this.insertOne(command);
 
+      case ServerCommand.InsertMany:
+        return this.insertMany(command);
+
       case ServerCommand.FindOne:
         return this.findOne(command);
 
