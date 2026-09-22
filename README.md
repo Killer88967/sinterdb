@@ -8,7 +8,7 @@
 A document-oriented database, its official Node.js driver, and supporting packages.
 
 > [!WARNING]
-> SinterDB is in early development. The current server supports protocol handshakes, ping requests, and an in-memory database and collection catalog, but it does not yet store documents or persist data.
+> SinterDB is in early development. The server can store and retrieve documents in memory, but data is not yet persisted and is lost when the server stops. APIs and protocol details may change before `1.0.0`.
 
 ## Project Goals
 
@@ -79,6 +79,12 @@ pnpm install --frozen-lockfile
 Run the complete validation suite:
 
 ```sh
+pnpm all
+```
+
+The individual validation commands are:
+
+```sh
 pnpm format:check
 pnpm lint
 pnpm typecheck
@@ -96,14 +102,14 @@ pnpm clean
 
 Build and start the development server:
 
-```bash
+```sh
 pnpm --filter sinterdb-server build
 node apps/server-cli/dist/index.js
 ```
 
 Use a custom address:
 
-```bash
+```sh
 node apps/server-cli/dist/index.js \
   --host 127.0.0.1 \
   --port 5000
@@ -111,15 +117,16 @@ node apps/server-cli/dist/index.js \
 
 Display the available options:
 
-```bash
+```sh
 node apps/server-cli/dist/index.js --help
 ```
 
-The server emits newline-delimited JSON lifecycle logs and shuts down gracefully on `SIGINT` or `SIGTERM`.
+The server emits newline-delimited JSON lifecycle logs and shuts down gracefully
+on `SIGINT` or `SIGTERM`.
 
 ## Development Status
 
-The current milestone is `0.0.3 — Server Lifecycle and In-Memory Catalog`.
+The current milestone is `0.0.5 — Insert and Point Read`.
 
 Implemented so far:
 
@@ -127,17 +134,25 @@ Implemented so far:
 - TypeScript builds and declarations
 - Binary wire framing
 - Deterministic typed document encoding
+- Custom identifier generation and binary serialization
 - Incremental protocol stream decoding
-- Protocol handshakes and capability advertisement
+- Protocol handshakes and capability negotiation
 - TCP server and session lifecycle
+- Official Node.js driver connection lifecycle
+- Driver lifecycle events and error hierarchy
 - Ping requests
-- In-memory database and collection catalog
-- Initial server commands
+- Typed database and collection handles
+- In-memory document storage
+- `insertOne` and ordered `insertMany`
+- `findOne` with equality filters
+- Duplicate identifier detection
+- Document-size and nesting validation
 - Structured server logging
 - Temporary-port test-server utilities
+- End-to-end driver and server integration tests
 - Graceful signal shutdown
 
-The next milestone, `0.0.4`, introduces the first functional `SinterClient`.
+The next milestone, `0.0.6`, introduces filters and cursors.
 
 See [ROADMAP.md](./ROADMAP.md) for the complete development plan.
 
