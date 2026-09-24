@@ -20,7 +20,6 @@ export interface StorageInsertManyResult {
   readonly insertedIds: readonly CustomId[];
 }
 
-
 export class InMemoryCollection {
   private readonly documents = new Map<string, Uint8Array>();
 
@@ -108,7 +107,7 @@ export class InMemoryCollection {
       const document = this.findById(id);
 
       if (document === undefined) {
-        return undefined
+        return undefined;
       }
 
       return matches(document) ? document : undefined;

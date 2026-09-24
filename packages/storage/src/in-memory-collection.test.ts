@@ -6,7 +6,7 @@ import {
   StorageError,
   StorageErrorCode,
   StorageInsertManyError,
-} from "./errors.js"
+} from "./errors.js";
 
 describe("InMemoryCollection", () => {
   it("starts empty", () => {

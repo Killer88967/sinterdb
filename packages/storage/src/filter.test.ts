@@ -276,17 +276,11 @@ describe("compileFilter", () => {
   });
 
   it("compares CustomId values lexicographically", () => {
-    const boundary = CustomId.fromHexString(
-      "00112233445566778899aabbccddeeff",
-    );
+    const boundary = CustomId.fromHexString("00112233445566778899aabbccddeeff");
 
-    const greater = CustomId.fromHexString(
-      "10112233445566778899aabbccddeeff",
-    );
+    const greater = CustomId.fromHexString("10112233445566778899aabbccddeeff");
 
-    const lower = CustomId.fromHexString(
-      "00012233445566778899aabbccddeeff",
-    );
+    const lower = CustomId.fromHexString("00012233445566778899aabbccddeeff");
 
     const matches = compileFilter({
       _id: {

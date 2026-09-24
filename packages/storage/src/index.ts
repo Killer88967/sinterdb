@@ -11,4 +11,4 @@ export type {
   StorageInsertOneResult,
 } from "./in-memory-collection.js";
 export type { StorageErrorCode as StorageErrorCodeValue } from "./errors.js";
-export type { CompiledFilter} from "./filter.js";
+export type { CompiledFilter } from "./filter.js";
