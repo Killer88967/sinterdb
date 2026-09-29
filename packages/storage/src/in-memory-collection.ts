@@ -124,6 +124,18 @@ export class InMemoryCollection {
     return undefined;
   }
 
+  public *find(filter: Document): IterableIterator<Document> {
+    const matches = compileFilter(filter);
+
+    for (const encoded of this.documents.values()) {
+      const document = decodeDocument(encoded);
+
+      if (matches(document)) {
+        yield document;
+      }
+    }
+  }
+
   public findById(id: CustomId): Document | undefined {
     if (!(id instanceof CustomId)) {
       throw new TypeError("Document ID must be a CustomId.");

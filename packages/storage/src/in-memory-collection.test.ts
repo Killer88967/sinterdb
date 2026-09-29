@@ -446,4 +446,130 @@ describe("InMemoryCollection", () => {
       }
     }
   });
+
+  it("finds all documents matching a filter", () => {
+    const collection = new InMemoryCollection();
+
+    collection.insertMany([
+      {
+        name: "Ada",
+        active: true,
+        age: 36,
+      },
+      {
+        name: "Grace",
+        active: false,
+        age: 40,
+      },
+      {
+        name: "Katherine",
+        active: true,
+        age: 28,
+      },
+    ]);
+
+    const documents = [...collection.find({ active: true })];
+
+    expect(documents).toHaveLength(2);
+    expect(documents.map((document) => document["name"])).toEqual([
+      "Ada",
+      "Katherine",
+    ]);
+  });
+
+  it("supports filter operators when finding multiple documents", () => {
+    const collection = new InMemoryCollection();
+
+    collection.insertMany([
+      {
+        name: "Ada",
+        age: 17,
+      },
+      {
+        name: "Grace",
+        age: 36,
+      },
+      {
+        name: "Katherine",
+        age: 65,
+      },
+    ]);
+
+    const documents = [
+      ...collection.find({
+        age: {
+          $gte: 18,
+          $lt: 65,
+        },
+      }),
+    ];
+
+    expect(documents).toHaveLength(1);
+    expect(documents[0]?.["name"]).toBe("Grace");
+  });
+
+  it("returns every document for an empty find filter", () => {
+    const collection = new InMemoryCollection();
+
+    collection.insertMany([
+      {
+        name: "Ada",
+      },
+      {
+        name: "Grace",
+      },
+      {
+        name: "Katherine",
+      },
+    ]);
+
+    const documents = [...collection.find({})];
+
+    expect(documents.map((document) => document["name"])).toEqual([
+      "Ada",
+      "Grace",
+      "Katherine",
+    ]);
+  });
+
+  it("returns no documents when find matches nothing", () => {
+    const collection = new InMemoryCollection();
+
+    collection.insertMany([
+      {
+        name: "Ada",
+      },
+      {
+        name: "Grace",
+      },
+    ]);
+
+    const documents = [
+      ...collection.find({
+        name: "Katherine",
+      }),
+    ];
+
+    expect(documents).toEqual([]);
+  });
+
+  it("does not expose mutable stored document references through find", () => {
+    const collection = new InMemoryCollection();
+
+    collection.insertOne({
+      name: "Ada",
+    });
+
+    const first = [...collection.find({})][0];
+
+    if (first === undefined) {
+      throw new Error("Expected a matching document.");
+    }
+
+    first["name"] = "Grace";
+
+    const second = [...collection.find({})][0];
+
+    expect(second?.["name"]).toBe("Ada");
+  });
 });
