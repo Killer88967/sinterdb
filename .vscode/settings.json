@@ -1,9 +1,25 @@
 {
-    "chat.mcp.discovery.enabled": {
-        "claude-desktop": false,
-        "copilot": false,
-        "windsurf": false,
-        "cursor-global": false,
-        "cursor-workspace": false
-    }
+  "explorer.compactFolders": false,
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/.jj": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/*.crswap": true,
+    "**/driver/": true,
+    "**/protocol/": true,
+    "**/server/": false,
+    "**/storage/": true,
+    "**/test-utils/": true,
+    "apps": true,
+  },
+  "chat.mcp.discovery.enabled": {
+    "claude-desktop": false,
+    "copilot": false,
+    "windsurf": false,
+    "cursor-global": false,
+    "cursor-workspace": false,
+  },
 }

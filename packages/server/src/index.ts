@@ -18,6 +18,11 @@ export {
   SERVER_PRODUCT_VERSION,
   ServerCommand,
 } from "./command-dispatcher.js";
+export {
+  CursorManager,
+  CursorNotFound,
+  DEFAULT_CURSOR_BATCH_SIZE,
+} from "./cursor-manager.js";
 
 export type {
   ServerConfig,
@@ -38,3 +43,4 @@ export type {
   CreatedCollection,
 } from "./catalog.js";
 export type { ServerCommand as ServerCommandValue } from "./command-dispatcher.js";
+export type { CursorBatch } from "./cursor-manager.js";
