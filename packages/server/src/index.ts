@@ -20,8 +20,9 @@ export {
 } from "./command-dispatcher.js";
 export {
   CursorManager,
-  CursorNotFound,
+  CursorNotFoundError,
   DEFAULT_CURSOR_BATCH_SIZE,
+  DEFAULT_CURSOR_IDLE_TIMEOUT_MS,
 } from "./cursor-manager.js";
 
 export type {
@@ -43,4 +44,4 @@ export type {
   CreatedCollection,
 } from "./catalog.js";
 export type { ServerCommand as ServerCommandValue } from "./command-dispatcher.js";
-export type { CursorBatch } from "./cursor-manager.js";
+export type { CursorBatch, CursorManagerOptions } from "./cursor-manager.js";

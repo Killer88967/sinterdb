@@ -84,6 +84,39 @@ describe("CursorManager", () => {
     expect(manager.activeCursorCount).toBe(0);
   });
 
+  it("expires idle cursors", () => {
+    let now = 0;
+    const manager = new CursorManager({ idleTimeoutMS: 1_000, now: () => now });
+
+    const opened = manager.open([{ a: 1 }, { a: 2 }, { a: 3 }], 1);
+    const cursorId = opened.cursorId as number;
+
+    now = 1_000;
+
+    expect(manager.sweepExpired()).toBe(1);
+    expect(manager.activeCursorCount).toBe(0);
+    expect(() => manager.getMore(cursorId)).toThrow(CursorNotFoundError);
+  });
+
+  it("refreshes the idle timer when a cursor is used", () => {
+    let now = 0;
+    const manager = new CursorManager({ idleTimeoutMS: 1_000, now: () => now });
+
+    const opened = manager.open([{ a: 1 }, { a: 2 }, { a: 3 }], 1);
+    const cursorId = opened.cursorId as number;
+
+    now = 600;
+    manager.getMore(cursorId, 1);
+
+    now = 1_200;
+    expect(manager.sweepExpired()).toBe(0);
+    expect(manager.activeCursorCount).toBe(1);
+  });
+
+  it("rejects an invalid idle timeout", () => {
+    expect(() => new CursorManager({ idleTimeoutMS: 0 })).toThrow(TypeError);
+  });
+
   it.each([0, -1, 1.5, Number.NaN])(
     "rejects invalid batch size %s",
     (batchSize) => {

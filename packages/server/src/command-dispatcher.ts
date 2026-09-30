@@ -20,7 +20,7 @@ import {
 } from "./catalog.js";
 import {
   CursorManager,
-  CursorNotFound,
+  CursorNotFoundError,
   type CursorBatch,
 } from "./cursor-manager.js";
 
@@ -295,7 +295,7 @@ export class CommandDispatcher {
     try {
       return toBatchDocument(cursors.getMore(cursorId, batchSize));
     } catch (error: unknown) {
-      if (error instanceof CursorNotFound) {
+      if (error instanceof CursorNotFoundError) {
         throw new CommandExecutionError(
           WireErrorCode.CursorNotFound,
           "CursorNotFound",

@@ -23,6 +23,8 @@ import {
 } from "./command-dispatcher.js";
 import { CursorManager } from "./cursor-manager.js";
 
+const CURSOR_SWEEP_INTERVAL_MS = 30_000;
+
 export const ServerSessionState = {
   AwaitingHandshake: "awaiting-handshake",
   Ready: "ready",
@@ -43,6 +45,7 @@ export interface ServerSessionOptions {
 export class ServerSession {
   private readonly decoder = new MessageStreamDecoder();
   private readonly cursors = new CursorManager();
+  private readonly sweepTimer: ReturnType<typeof setInterval>;
   private readonly dispatcher: CommandDispatcher;
   private readonly product: string;
   private readonly productVersion: string;
@@ -58,6 +61,10 @@ export class ServerSession {
     this.product = options.product ?? SERVER_PRODUCT;
     this.productVersion = options.productVersion ?? SERVER_PRODUCT_VERSION;
     this.onError = options.onError ?? (() => undefined);
+    this.sweepTimer = setInterval(() => {
+      this.cursors.sweepExpired();
+    }, CURSOR_SWEEP_INTERVAL_MS);
+    this.sweepTimer.unref();
 
     socket.on("data", (chunk) => {
       if (typeof chunk === "string") {
@@ -72,6 +79,7 @@ export class ServerSession {
     socket.on("error", (error) => this.onError(error));
 
     socket.once("close", () => {
+      clearInterval(this.sweepTimer);
       this.cursors.clear();
       this.decoder.reset();
       this.currentState = ServerSessionState.Closed;

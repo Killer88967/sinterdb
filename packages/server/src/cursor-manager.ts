@@ -1,21 +1,43 @@
 import type { Document } from "sinterdb-protocol";
 
 export const DEFAULT_CURSOR_BATCH_SIZE = 100;
+export const DEFAULT_CURSOR_IDLE_TIMEOUT_MS = 10 * 60 * 1000;
 
 export interface CursorBatch {
   readonly cursorId: number | null;
   readonly documents: readonly Document[];
 }
 
+export interface CursorManagerOptions {
+  readonly idleTimeoutMS?: number;
+  readonly now?: () => number;
+}
+
 interface CursorState {
   readonly iterator: Iterator<Document>;
   buffered: Document | undefined;
   exhausted: boolean;
+  lastUsed: number;
 }
 
 export class CursorManager {
   private readonly cursors = new Map<number, CursorState>();
   private nextCursorId = 1;
+  private readonly idleTimeoutMS: number;
+  private readonly now: () => number;
+
+  public constructor(options: CursorManagerOptions = {}) {
+    const timeout = options.idleTimeoutMS ?? DEFAULT_CURSOR_IDLE_TIMEOUT_MS;
+
+    if (!Number.isSafeInteger(timeout) || timeout <= 0) {
+      throw new TypeError(
+        "Cursor idle timeout must be a positive safe integer.",
+      );
+    }
+
+    this.idleTimeoutMS = timeout;
+    this.now = options.now ?? Date.now();
+  }
 
   public get activeCursorCount(): number {
     return this.cursors.size;
@@ -26,11 +48,13 @@ export class CursorManager {
     batchSize = DEFAULT_CURSOR_BATCH_SIZE,
   ): CursorBatch {
     validateBatchSize(batchSize);
+    this.sweepExpired();
 
     const state: CursorState = {
       iterator: documents[Symbol.iterator](),
       buffered: undefined,
       exhausted: false,
+      lastUsed: this.now(),
     };
 
     const documentsBatch = takeBatch(state, batchSize);
@@ -58,12 +82,15 @@ export class CursorManager {
   ): CursorBatch {
     validateCursorId(cursorId);
     validateBatchSize(batchSize);
+    this.sweepExpired();
 
     const state = this.cursors.get(cursorId);
 
     if (state === undefined) {
-      throw new CursorNotFound(cursorId);
+      throw new CursorNotFoundError(cursorId);
     }
+
+    state.lastUsed = this.now();
 
     const documents = takeBatch(state, batchSize);
 
@@ -80,6 +107,20 @@ export class CursorManager {
       cursorId,
       documents: Object.freeze(documents),
     };
+  }
+
+  public sweepExpired(): number {
+    const cutoff = this.now() - this.idleTimeoutMS;
+    let removed = 0;
+
+    for (const [cursorId, state] of this.cursors) {
+      if (state.lastUsed <= cutoff) {
+        this.cursors.delete(cursorId);
+        removed += 1;
+      }
+    }
+
+    return removed;
   }
 
   public close(cursorId: number): boolean {
@@ -120,7 +161,7 @@ export class CursorManager {
   }
 }
 
-export class CursorNotFound extends Error {
+export class CursorNotFoundError extends Error {
   public readonly cursorId: number;
 
   public constructor(cursorId: number) {
