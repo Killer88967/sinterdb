@@ -36,7 +36,7 @@ export class CursorManager {
     }
 
     this.idleTimeoutMS = timeout;
-    this.now = options.now ?? Date.now();
+    this.now = options.now ?? Date.now;
   }
 
   public get activeCursorCount(): number {
