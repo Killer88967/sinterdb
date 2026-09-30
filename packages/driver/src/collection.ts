@@ -7,6 +7,7 @@ import {
   SinterServerError,
 } from "./errors.js";
 import { validateCollectionName } from "./namespace.js";
+import { FindCursor } from "./cursor.js";
 
 export type OptionalId<TDocument extends object> = Omit<TDocument, "_id"> & {
   readonly _id?: CustomId;
@@ -99,6 +100,23 @@ export class SinterCollection<TDocument extends object = Document> {
     );
 
     return parseFindOneResult<TDocument>(value);
+  }
+
+  public find(
+    filter: EqualityFilter<TDocument> = {},
+    options: { batchSize?: number } = {},
+  ): FindCursor<TDocument> {
+    return new FindCursor<TDocument>(
+      (command, parameters) =>
+        this.database.client.executeCommand(
+          this.database.name,
+          command,
+          parameters,
+        ),
+      this.name,
+      filter as unknown as Document,
+      options.batchSize,
+    );
   }
 }
 

@@ -409,7 +409,13 @@ across a connection use numeric `WireErrorCode` values.
 | 4000 | `DocumentValidationFailed` |
 | 4001 | `DuplicateKey`             |
 
-### 6.5 Internal errors
+### 6.5 Cursor errors
+
+| Code | Name             |
+| ---: | ---------------- |
+| 5000 | `CursorNotFound` |
+
+### 6.6 Internal errors
 
 | Code | Name            |
 | ---: | --------------- |

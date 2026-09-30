@@ -38,6 +38,7 @@ describe("WireErrorCode", () => {
       NamespaceConflict: 3001,
       DocumentValidationFailed: 4000,
       DuplicateKey: 4001,
+      CursorNotFound: 5000,
       InternalError: 9000,
     });
   });

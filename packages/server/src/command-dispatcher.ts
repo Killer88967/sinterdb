@@ -18,6 +18,11 @@ import {
   CatalogErrorCode,
   type InMemoryCatalog,
 } from "./catalog.js";
+import {
+  CursorManager,
+  CursorNotFound,
+  type CursorBatch,
+} from "./cursor-manager.js";
 
 export const ServerCommand = {
   ServerInfo: "serverInfo",
@@ -27,6 +32,9 @@ export const ServerCommand = {
   InsertOne: "insertOne",
   InsertMany: "insertMany",
   FindOne: "findOne",
+  Find: "find",
+  GetMore: "getMore",
+  CloseCursor: "closeCursor",
 } as const;
 
 export type ServerCommand = (typeof ServerCommand)[keyof typeof ServerCommand];
@@ -58,7 +66,10 @@ export class CommandExecutionError extends Error {
 }
 
 export class CommandDispatcher {
-  public constructor(private readonly catalog: InMemoryCatalog) {}
+  public constructor(
+    private readonly catalog: InMemoryCatalog,
+    private readonly cursors: CursorManager = new CursorManager(),
+  ) {}
 
   public dispatch(command: CommandEnvelope): DocumentValue {
     switch (command.command) {
@@ -82,6 +93,15 @@ export class CommandDispatcher {
 
       case ServerCommand.FindOne:
         return this.findOne(command);
+
+      case ServerCommand.Find:
+        return this.find(command);
+
+      case ServerCommand.GetMore:
+        return this.getMore(command);
+
+      case ServerCommand.CloseCursor:
+        return this.closeCursor(command);
 
       default:
         throw new CommandExecutionError(
@@ -238,6 +258,85 @@ export class CommandDispatcher {
       throw translateStorageError(error);
     }
   }
+
+  private find(command: CommandEnvelope): Document {
+    const databaseName = requireDatabase(command);
+    const collectionName = requireStringParameter(
+      command.parameters,
+      "collection",
+    );
+    const filter = requireDocumentParameter(command.parameters, "filter");
+    const batchSize = optionalBatchSize(command.parameters);
+
+    try {
+      const collection = this.catalog.getCollection(
+        databaseName,
+        collectionName,
+      );
+
+      if (collection === undefined) {
+        return { cursorId: null, documents: [] };
+      }
+
+      return toBatchDocument(this.cursors.open(collection.find(filter)));
+    } catch (error: unknown) {
+      if (error instanceof CatalogError) {
+        throw translateCatalogError(error);
+      }
+
+      throw translateStorageError(error);
+    }
+  }
+
+  private getMore(command: CommandEnvelope): Document {
+    const cursorId = requireCursorId(command.parameters);
+    const batchSize = optionalBatchSize(command.parameters);
+
+    try {
+      return toBatchDocument(this.cursors.getMore(cursorId, batchSize));
+    } catch (error: unknown) {
+      if (error instanceof CursorNotFound) {
+        throw new CommandExecutionError(
+          WireErrorCode.CursorNotFound,
+          "CursorNotFound",
+          error.message,
+          { details: { cursorId: error.cursorId } },
+        );
+      }
+
+      throw translateStorageError(error);
+    }
+  }
+
+  private closeCursor(command: CommandEnvelope): Document {
+    const cursorId = requireCursorId(command.parameters);
+
+    return { closed: this.cursors.close(cursorId) };
+  }
+}
+
+const MAX_CURSOR_BATCH_SIZE = 10_000;
+
+function toBatchDocument(batch: CursorBatch): Document {
+  return {
+    cursorId: batch.cursorId,
+    documents: [...batch.documents],
+  };
+}
+
+function requireCursorId(parameters: Document): number {
+  const value = parameters["cursorId"];
+
+  if (typeof value !== "number" || !Number.isSafeInteger(value) || value <= 0) {
+    throw new CommandExecutionError(
+      WireErrorCode.InvalidRequest,
+      "InvalidRequest",
+      'Command parameter "cursorId" must be a positive integer.',
+      { details: { field: "cursorId" } },
+    );
+  }
+
+  return value;
 }
 
 function requireDatabase(command: CommandEnvelope): string {
@@ -400,4 +499,28 @@ function translateStorageError(error: unknown): CommandExecutionError {
       },
     },
   );
+}
+
+function optionalBatchSize(parameters: Document): number | undefined {
+  const value = parameters["batchSize"];
+
+  if (value === undefined) {
+    return undefined;
+  }
+
+  if (
+    typeof value !== "number" ||
+    !Number.isSafeInteger(value) ||
+    value <= 0 ||
+    value > MAX_CURSOR_BATCH_SIZE
+  ) {
+    throw new CommandExecutionError(
+      WireErrorCode.InvalidRequest,
+      "InvalidRequest",
+      `Command parameter "batchSize" must be an integer between 1 and ${MAX_CURSOR_BATCH_SIZE}.`,
+      { details: { field: "batchSize" } },
+    );
+  }
+
+  return value;
 }
