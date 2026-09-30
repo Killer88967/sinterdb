@@ -1,4 +1,4 @@
-import { Document } from "sinterdb-protocol";
+import type { Document } from "sinterdb-protocol";
 
 export const DEFAULT_CURSOR_BATCH_SIZE = 100;
 
