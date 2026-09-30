@@ -31,9 +31,9 @@
     "**/.DS_Store": true,
     "**/Thumbs.db": true,
     "**/*.crswap": true,
-    "**/driver/": false,
+    "**/driver/": true,
     "**/protocol/": true,
-    "**/server/": true,
+    "**/server/": false,
     "**/storage/": true,
     "**/test-utils/": true,
     "apps": true

@@ -14,12 +14,14 @@ import {
   type Document,
   type ErrorEnvelope,
 } from "sinterdb-protocol";
+
 import {
   CommandExecutionError,
   SERVER_PRODUCT,
   SERVER_PRODUCT_VERSION,
   type CommandDispatcher,
 } from "./command-dispatcher.js";
+import { CursorManager } from "./cursor-manager.js";
 
 export const ServerSessionState = {
   AwaitingHandshake: "awaiting-handshake",
@@ -40,6 +42,7 @@ export interface ServerSessionOptions {
 
 export class ServerSession {
   private readonly decoder = new MessageStreamDecoder();
+  private readonly cursors = new CursorManager();
   private readonly dispatcher: CommandDispatcher;
   private readonly product: string;
   private readonly productVersion: string;
@@ -69,6 +72,7 @@ export class ServerSession {
     socket.on("error", (error) => this.onError(error));
 
     socket.once("close", () => {
+      this.cursors.clear();
       this.decoder.reset();
       this.currentState = ServerSessionState.Closed;
     });
@@ -175,7 +179,7 @@ export class ServerSession {
 
   private handleCommand(requestId: number, command: CommandEnvelope): void {
     try {
-      const value = this.dispatcher.dispatch(command);
+      const value = this.dispatcher.dispatch(command, this.cursors);
 
       this.send(MessageKind.Result, requestId, {
         value,

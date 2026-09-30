@@ -15,6 +15,7 @@ import {
   SERVER_PRODUCT_VERSION,
   ServerCommand,
 } from "./command-dispatcher.js";
+import { CursorManager } from "./cursor-manager.js";
 
 describe("CommandDispatcher", () => {
   it("returns server information", () => {
@@ -565,6 +566,45 @@ describe("CommandDispatcher", () => {
         }),
       WireErrorCode.InvalidRequest,
     );
+  });
+
+  it("does not share cursors between sessions", () => {
+    const catalog = new InMemoryCatalog();
+    const dispatcher = new CommandDispatcher(catalog);
+    const sessionA = new CursorManager();
+    const sessionB = new CursorManager();
+
+    dispatcher.dispatch(
+      {
+        command: "insertMany",
+        database: "app",
+        parameters: {
+          collection: "users",
+          documents: [{ n: 1 }, { n: 2 }, { n: 3 }],
+        },
+      },
+      sessionA,
+    );
+
+    const opened = dispatcher.dispatch(
+      {
+        command: "find",
+        database: "app",
+        parameters: { collection: "users", filter: {}, batchSize: 1 },
+      },
+      sessionA,
+    ) as { cursorId: number };
+
+    expect(() =>
+      dispatcher.dispatch(
+        {
+          command: "getMore",
+          database: "app",
+          parameters: { cursorId: opened.cursorId },
+        },
+        sessionB,
+      ),
+    ).toThrow(/does not exist/);
   });
 });
 

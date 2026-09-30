@@ -66,12 +66,12 @@ export class CommandExecutionError extends Error {
 }
 
 export class CommandDispatcher {
-  public constructor(
-    private readonly catalog: InMemoryCatalog,
-    private readonly cursors: CursorManager = new CursorManager(),
-  ) {}
+  public constructor(private readonly catalog: InMemoryCatalog) {}
 
-  public dispatch(command: CommandEnvelope): DocumentValue {
+  public dispatch(
+    command: CommandEnvelope,
+    cursors: CursorManager = new CursorManager(),
+  ): DocumentValue {
     switch (command.command) {
       case ServerCommand.ServerInfo:
         return this.serverInfo();
@@ -95,13 +95,13 @@ export class CommandDispatcher {
         return this.findOne(command);
 
       case ServerCommand.Find:
-        return this.find(command);
+        return this.find(command, cursors);
 
       case ServerCommand.GetMore:
-        return this.getMore(command);
+        return this.getMore(command, cursors);
 
       case ServerCommand.CloseCursor:
-        return this.closeCursor(command);
+        return this.closeCursor(command, cursors);
 
       default:
         throw new CommandExecutionError(
@@ -259,7 +259,7 @@ export class CommandDispatcher {
     }
   }
 
-  private find(command: CommandEnvelope): Document {
+  private find(command: CommandEnvelope, cursors: CursorManager): Document {
     const databaseName = requireDatabase(command);
     const collectionName = requireStringParameter(
       command.parameters,
@@ -278,7 +278,7 @@ export class CommandDispatcher {
         return { cursorId: null, documents: [] };
       }
 
-      return toBatchDocument(this.cursors.open(collection.find(filter)));
+      return toBatchDocument(cursors.open(collection.find(filter), batchSize));
     } catch (error: unknown) {
       if (error instanceof CatalogError) {
         throw translateCatalogError(error);
@@ -288,12 +288,12 @@ export class CommandDispatcher {
     }
   }
 
-  private getMore(command: CommandEnvelope): Document {
+  private getMore(command: CommandEnvelope, cursors: CursorManager): Document {
     const cursorId = requireCursorId(command.parameters);
     const batchSize = optionalBatchSize(command.parameters);
 
     try {
-      return toBatchDocument(this.cursors.getMore(cursorId, batchSize));
+      return toBatchDocument(cursors.getMore(cursorId, batchSize));
     } catch (error: unknown) {
       if (error instanceof CursorNotFound) {
         throw new CommandExecutionError(
@@ -308,10 +308,13 @@ export class CommandDispatcher {
     }
   }
 
-  private closeCursor(command: CommandEnvelope): Document {
+  private closeCursor(
+    command: CommandEnvelope,
+    cursors: CursorManager,
+  ): Document {
     const cursorId = requireCursorId(command.parameters);
 
-    return { closed: this.cursors.close(cursorId) };
+    return { closed: cursors.close(cursorId) };
   }
 }
 
