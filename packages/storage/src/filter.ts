@@ -277,7 +277,7 @@ function compileNotPredicate(
   path: string,
   operand: DocumentValue,
 ): FieldPredicate {
-  if (!isPlainDocument(operand)) {
+  if (!isOperatorDocument(operand)) {
     throw invalidFilter(
       `Filter operator $not for field ${JSON.stringify(path)} requires an operator document.`,
     );
