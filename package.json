@@ -30,7 +30,7 @@
     "pack:server": "pnpm --filter sinterdb-server pack --pack-destination ./release",
     "release:prepare": "pnpm clean:release && pnpm all && pnpm pack:all",
     "release:npm": "pnpm build && changeset publish",
-    "release:github": "gh release create v$(node -p \"require('./packages/driver/package.json').version\") release/*.tgz --title \"SinterDB v$(node -p \"require('./packages/driver/package.json').version\")\" --notes-file RELEASE_NOTES.md",
+    "release:github": "gh release create v$(node -p \"require('./packages/driver/package.json').version\") release/*.tgz --title \"SinterDB v$(node -p \"require('./packages/driver/package.json').version\")\" --notes-file release/RELEASE_NOTES.md",
     "release": "pnpm release:npm"
   },
   "devDependencies": {
