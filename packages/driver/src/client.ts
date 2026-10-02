@@ -13,6 +13,7 @@ import {
   type ParsedSinterConnectionString,
 } from "./connection-string.js";
 import { SinterDatabase } from "./database.js";
+import { parseNameList } from "./list-result.js";
 import {
   SinterClientOptionsError,
   SinterClientStateError,
@@ -30,7 +31,7 @@ export const DEFAULT_CONNECT_TIMEOUT_MS = 10_000;
 export const DEFAULT_REQUEST_TIMEOUT_MS = 10_000;
 export const DEFAULT_SOCKET_TIMEOUT_MS = 0;
 export const DRIVER_PRODUCT = "sinterdb-node-driver";
-export const DRIVER_PRODUCT_VERSION = "0.0.5";
+export const DRIVER_PRODUCT_VERSION = "0.0.6";
 
 const MAX_TIMEOUT_MS = 2_147_483_647;
 
@@ -185,7 +186,7 @@ export class SinterClient extends EventEmitter<SinterClientEvents> {
   }
 
   public async executeCommand(
-    database: string,
+    database: string | undefined,
     command: string,
     parameters: Document,
   ): Promise<DocumentValue> {
@@ -193,7 +194,7 @@ export class SinterClient extends EventEmitter<SinterClientEvents> {
 
     const response = await dispatcher.request(MessageKind.Command, {
       command,
-      database,
+      ...(database === undefined ? {} : { database }),
       parameters,
     });
 
@@ -204,6 +205,12 @@ export class SinterClient extends EventEmitter<SinterClientEvents> {
     }
 
     return response.payload.value;
+  }
+
+  public async listDatabases(): Promise<string[]> {
+    const value = await this.executeCommand(undefined, "listDatabases", {});
+
+    return parseNameList(value, "databases", "listDatabases");
   }
 
   public db(name?: string): SinterDatabase {

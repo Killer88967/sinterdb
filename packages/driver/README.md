@@ -179,27 +179,72 @@ try {
 
 ## Find One
 
-`findOne()` supports top-level equality filters:
+`findOne()` accepts the same filters as `find()`, described below.
+
+## Find
+
+`find()` returns a `FindCursor` that fetches results from the server in
+bounded batches:
 
 ```ts
-const user = await users.findOne({
-  email: "ada@example.com",
-});
-
-if (user !== null) {
-  console.log(user._id);
+for await (const user of users.find({ active: true }, { batchSize: 100 })) {
   console.log(user.name);
 }
+
+const everyone = await users.find().toArray();
 ```
 
-An empty filter returns the first stored document:
+Breaking out of a `for await` loop and calling `toArray()` both close the
+server-side cursor. Cursors belong to the connection that opened them and
+are released when the connection closes or after ten minutes without use.
+
+### Options
 
 ```ts
-const firstUser = await users.findOne();
+const page = await users
+  .find(
+    { active: true },
+    {
+      sort: [
+        ["age", -1],
+        ["name", 1],
+      ],
+      skip: 20,
+      limit: 10,
+      batchSize: 50,
+    },
+  )
+  .toArray();
 ```
 
-Equality comparisons support all SinterDB document values, including
-`CustomId`, dates, binary values, arrays, nested documents, and bigints.
+- `sort` is an ordered list of `[path, 1 | -1]` pairs. Earlier pairs take
+  priority.
+- `skip` must be a non-negative integer.
+- `limit` must be a positive integer.
+- `batchSize` controls how many documents each round trip returns.
+
+Values of different types sort in this order: missing, `null`, numbers and
+bigints, strings, binary values, `CustomId`, booleans, then dates.
+
+### Filter operators
+
+| Operator                     | Meaning                           |
+| ---------------------------- | --------------------------------- |
+| `$eq`, `$ne`                 | Equality and inequality           |
+| `$gt`, `$gte`, `$lt`, `$lte` | Comparison                        |
+| `$in`, `$nin`                | Membership, including array items |
+| `$exists`                    | Field presence                    |
+| `$not`                       | Negates a field operator document |
+| `$and`, `$or`, `$nor`        | Logical combination of filters    |
+
+## Listing Namespaces
+
+```ts
+const databases = await client.listDatabases();
+const collections = await client.db().listCollections();
+```
+
+Both return names in sorted order.
 
 ## CustomId
 
@@ -273,7 +318,7 @@ try {
 
 ## Current Scope
 
-Version `0.0.5` provides:
+Version `0.0.6` provides:
 
 - `SinterClient`
 - `sinterdb://` connection-string parsing
@@ -284,9 +329,13 @@ Version `0.0.5` provides:
 - Typed `SinterDatabase` and `SinterCollection<TDocument>` handles
 - `insertOne()`
 - Ordered `insertMany()`
-- `findOne()` with equality filters
+- `findOne()` and `find()` with typed filters
+- Equality, comparison, membership, existence, logical, and nested-field operators
+- `FindCursor` with `for await...of`, `next()`, `hasNext()`, `toArray()`, and `close()`
+- `sort`, `skip`, `limit`, and `batchSize` options
+- `listDatabases()` and `listCollections()`
 - Duplicate `_id` detection
 - Document-size and nesting validation
 - In-memory collection storage
 
-Advanced filters and cursors are planned for version `0.0.6`.
+Updates, replacements, and deletes are panned for version `0.0.7`.

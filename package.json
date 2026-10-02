@@ -1,6 +1,6 @@
 {
   "name": "sinterdb-workspace",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "private": true,
   "description": "A document-oriented database, its official Node.js driver, and supporting packages.",
   "author": "Killer88967",
@@ -13,31 +13,24 @@
   },
   "scripts": {
     "all": "pnpm clean && pnpm build && pnpm typecheck && pnpm format && pnpm lint && pnpm test && pnpm format:check",
-
     "build": "pnpm --recursive build",
     "typecheck": "pnpm --recursive typecheck",
     "lint": "eslint .",
     "test": "pnpm --recursive test",
     "test:watch": "pnpm --recursive --parallel test:watch",
-
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-
     "clean": "pnpm --recursive run clean",
     "clean:release": "rimraf release",
-
     "changeset": "changeset",
     "version-packages": "changeset version",
-
-    "pack": "pnpm pack:driver && pnpm pack:protocol && pnpm pack:server",
-    "pack:driver": "pnpm --filter sinterdb pack --pack-destination ../../release",
-    "pack:protocol": "pnpm --filter sinterdb-protocol pack --pack-destination ../../release",
-    "pack:server": "pnpm --filter sinterdb-server pack --pack-destination ../../release",
-
-    "release:prepare": "pnpm clean:release && pnpm all && mkdir -p release && pnpm pack",
+    "pack:all": "pnpm pack:driver && pnpm pack:protocol && pnpm pack:server",
+    "pack:driver": "pnpm --filter sinterdb pack --pack-destination ./release",
+    "pack:protocol": "pnpm --filter sinterdb-protocol pack --pack-destination ./release",
+    "pack:server": "pnpm --filter sinterdb-server pack --pack-destination ./release",
+    "release:prepare": "pnpm clean:release && pnpm all && pnpm pack:all",
     "release:npm": "pnpm build && changeset publish",
-    "release:github": "gh release create v$(node -p \"require('./packages/driver/package.json').version\") release/*.zip release/README.md --title \"SinterDB v$(node -p \\\"require('./packages/driver/package.json').version\\\")\" --notes-file release/README.md"
-
+    "release:github": "gh release create v$(node -p \"require('./packages/driver/package.json').version\") release/*.tgz --title \"SinterDB v$(node -p \"require('./packages/driver/package.json').version\")\" --notes-file RELEASE_NOTES.md",
     "release": "pnpm release:npm"
   },
   "devDependencies": {

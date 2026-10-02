@@ -33,7 +33,7 @@ Usage:
 
 Options:
   --host <host>       Address to listen on
-  --port <port>       TCP port to listen on
+  -p, --port <port>   TCP port to listen on
   -h, --help          Show the help message
   -v, --version       Show the server version
 ```
@@ -69,7 +69,7 @@ Lifecycle events are written as newline-delimited JSON:
     "host": "127.0.0.1",
     "port": 4721,
     "family": "IPv4",
-    "version": "0.0.3"
+    "version": "0.0.6"
   }
 }
 ```
@@ -88,7 +88,12 @@ After completing the protocol handshake, clients can use:
 - `serverInfo`
 - `listDatabases`
 - `createCollection`
-- `listCollections`
+- `insertOne`
+- `insertMany`
+- `findOne`
+- `find`
+- `getMore`
+- `closeCursor`
 
 ## License
 

@@ -7,7 +7,7 @@ Usage:
 
 Options:
   --host <host>       Address to listen on
-  --port <port>       TCP port to listen on
+  -p, --port <port>   TCP port to listen on
   -h, --help          Show this help message
   -v, --version       Show the server version
 

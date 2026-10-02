@@ -20,8 +20,13 @@ Internal server implementation for the SinterDB document database.
 - `listDatabases`
 - `createCollection`
 - `listCollections`
+- `insertOne` and ordered `insertMany`
+- `findOne`
+- `find` with filters, `sort`, `skip`, and `limit`
+- `getMore` and `closeCursor`
+- Session-scoped cursors with idle timeout
 - Structured wire errors
-- Graceful connection shutdown
+- Graceful connection shutdown with a force-close timeout
 
 ## Example
 
@@ -40,6 +45,8 @@ console.log(address);
 await server.stop();
 ```
 
+`stop()` closes active connection and destroys any socket that has not closed after five seconds. Pass `{ timeoutMS }` to change the delay
+
 Port `0` asks the operating system to select an available temporary port.
 
 ## Package Boundaries
@@ -50,7 +57,7 @@ The public executable is distributed separately as `sinterdb-server`.
 
 ## Current Limitations
 
-The server currently stores only database and collection metadata in memory. It does not yet support document insertion, querying, persistence, indexes, authentication, or transactions.
+The server stores all data in memory. It does not yet support updates, deletes, persistence, indexes, authentication, or transactions.
 
 ## License
 

@@ -126,7 +126,7 @@ on `SIGINT` or `SIGTERM`.
 
 ## Development Status
 
-The current milestone is `0.0.5 — Insert and Point Read`.
+The current milestone is `0.0.6 — Filters and Cursors`.
 
 Implemented so far:
 
@@ -144,7 +144,13 @@ Implemented so far:
 - Typed database and collection handles
 - In-memory document storage
 - `insertOne` and ordered `insertMany`
-- `findOne` with equality filters
+- `findOne` and `find` with equality, comparison, membership, existence,
+  logical, and nested-field filters
+- Server-side cursors with batching, idle timeout, and explicit close
+- `FindCursor` with `for await...of`, `next`, `hasNext`, `toArray`, and `close`
+- `sort`, `skip`, and `limit`
+- Typed `Filter<TDocument>` and `Sort<TDocument>` APIs
+- `listDatabases` and `listCollections`
 - Duplicate identifier detection
 - Document-size and nesting validation
 - Structured server logging
@@ -152,7 +158,7 @@ Implemented so far:
 - End-to-end driver and server integration tests
 - Graceful signal shutdown
 
-The next milestone, `0.0.6`, introduces filters and cursors.
+The next milestone, `0.0.7`, introduces updates, replacements, and deletes.
 
 See [ROADMAP.md](./ROADMAP.md) for the complete development plan.
 

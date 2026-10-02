@@ -111,7 +111,7 @@ export function performClientHandshake(
         if (message.kind === MessageKind.Error) {
           if (
             message.payload.name === "UnsupportedProtocolVersion" ||
-            message.payload.name === "UnsupportedCapabilities"
+            message.payload.name === "UnsupportedCapability"
           ) {
             fail(new SinterCompatibilityError(message.payload.message));
             return;

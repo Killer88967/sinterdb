@@ -2,6 +2,7 @@ import type { Document } from "sinterdb-protocol";
 import type { SinterClient } from "./client.js";
 import { SinterCollection } from "./collection.js";
 import { validateDatabaseName } from "./namespace.js";
+import { parseNameList } from "./list-result.js";
 
 export class SinterDatabase {
   public readonly name: string;
@@ -18,5 +19,15 @@ export class SinterDatabase {
     name: string,
   ): SinterCollection<TDocument> {
     return new SinterCollection<TDocument>(this, name);
+  }
+
+  public async listCollections(): Promise<string[]> {
+    const value = await this.client.executeCommand(
+      this.name,
+      "listCollections",
+      {},
+    );
+
+    return parseNameList(value, "collections", "listCollections");
   }
 }

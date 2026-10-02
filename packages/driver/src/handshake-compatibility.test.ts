@@ -53,6 +53,36 @@ describe("handshake compatibility", () => {
     }
   });
 
+  it("maps an unsupported-capability response to a compatibility error", async () => {
+    const { server, port } = await startHandshakeServer((request) =>
+      encodeMessage({
+        kind: MessageKind.Error,
+        requestId: request.requestId,
+        payload: {
+          code: WireErrorCode.UnsupportedCapability,
+          name: "UnsupportedCapability",
+          message: "A required capability is not supported.",
+          retryable: false,
+        },
+      }),
+    );
+
+    const socket = await connectToServer(port);
+
+    try {
+      await expect(
+        performClientHandshake(socket, {
+          product: "sinterdb",
+          productVersion: "0.0.6",
+          capabilities: [ProtocolCapability.TypedDocuments],
+        }),
+      ).rejects.toBeInstanceOf(SinterCompatibilityError);
+    } finally {
+      await closeSocket(socket);
+      await stopServer(server);
+    }
+  });
+
   it("rejects a server missing a required capability", async () => {
     const { server, port } = await startHandshakeServer((request) =>
       encodeMessage({

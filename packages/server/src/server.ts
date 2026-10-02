@@ -16,6 +16,8 @@ import { ServerSession } from "./session.js";
 import { InMemoryCatalog } from "./catalog.js";
 import { CommandDispatcher } from "./command-dispatcher.js";
 
+export const DEFAULT_STOP_TIMEOUT_MS = 5_000;
+
 export const SinterServerState = {
   Stopped: "stopped",
   Starting: "starting",
@@ -30,6 +32,13 @@ export interface SinterServerAddress {
   host: string;
   port: number;
   family: string;
+}
+
+export interface SinterServerStopOptions {
+  /**
+   * Time to wait for clients to close before their sockets are destroyed.
+   */
+  readonly timeoutMS?: number;
 }
 
 export class ServerLifecycleError extends Error {
@@ -111,7 +120,13 @@ export class SinterServer extends EventEmitter {
     }
   }
 
-  public async stop(): Promise<void> {
+  public async stop(options: SinterServerStopOptions = {}): Promise<void> {
+    const timeoutMS = options.timeoutMS ?? DEFAULT_STOP_TIMEOUT_MS;
+
+    if (!Number.isSafeInteger(timeoutMS) || timeoutMS <= 0) {
+      throw new TypeError("Stop timeout must be a positive safe integer.");
+    }
+
     if (this.currentState === SinterServerState.Stopped) {
       return;
     }
@@ -134,7 +149,7 @@ export class SinterServer extends EventEmitter {
     this.currentState = SinterServerState.Stopping;
 
     const server = this.netServer;
-    const operation = this.close(server);
+    const operation = this.close(server, timeoutMS);
 
     this.stopOperation = operation;
 
@@ -161,7 +176,7 @@ export class SinterServer extends EventEmitter {
     });
   }
 
-  private async close(server: NetServer): Promise<void> {
+  private async close(server: NetServer, timeoutMS: number): Promise<void> {
     const sockets = [...this.sockets];
     const socketClosures = sockets.map(waitForSocketClose);
 
@@ -180,7 +195,19 @@ export class SinterServer extends EventEmitter {
       socket.end();
     }
 
-    await Promise.all([serverClosed, ...socketClosures]);
+    const forceTimer = setTimeout(() => {
+      for (const socket of sockets) {
+        if (!socket.destroyed) {
+          socket.destroy();
+        }
+      }
+    }, timeoutMS);
+
+    try {
+      await Promise.all([serverClosed, ...socketClosures]);
+    } finally {
+      clearTimeout(forceTimer);
+    }
   }
 }
 
