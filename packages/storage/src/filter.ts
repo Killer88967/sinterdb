@@ -94,7 +94,7 @@ function compileLogicalOperator(
     !operand.every(isPlainDocument)
   ) {
     throw invalidFilter(
-      `Filter operand ${name} requires a non-empty array of filter documents.`,
+      `Filter operator ${name} requires a non-empty array of filter documents.`,
     );
   }
 
@@ -103,10 +103,12 @@ function compileLogicalOperator(
   switch (name) {
     case "$and":
       return (document) => clauses.every((matches) => matches(document));
+
     case "$or":
-      return (document) => clauses.every((matches) => matches(document));
+      return (document) => clauses.some((matches) => matches(document));
+
     case "$nor":
-      return (document) => !clauses.every((matches) => matches(document));
+      return (document) => !clauses.some((matches) => matches(document));
   }
 }
 
