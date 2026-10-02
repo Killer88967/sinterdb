@@ -1,7 +1,7 @@
 # SinterDB
 
-[![CI](https://img.shields.io/github/actions/workflow/status/Killer88967/sinterdb/ci.yml?branch=main&label=CI)](https://github.com/Killer88967/sinterdb/actions/workflows/ci.yml)
-[![License](https://img.shields.io/github/license/Killer88967/sinterdb)](LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/SinterDB/sinterdb/ci.yml?branch=main&label=CI)](https://github.com/SinterDB/sinterdb/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/SinterDB/sinterdb)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D24-339933?logo=node.js&logoColor=white)](package.json)
 [![TypeScript](https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
