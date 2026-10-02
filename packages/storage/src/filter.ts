@@ -33,14 +33,10 @@ export function compileFilter(filter: Document): CompiledFilter {
     throw invalidFilter("Find filter must be a document.");
   }
 
-  let fields: readonly CompiledField[];
-
   try {
     encodeDocument(filter);
 
-    fields = Object.keys(filter).map((path) =>
-      compileField(path, filter[path] as DocumentValue),
-    );
+    return compileClauses(filter);
   } catch (error: unknown) {
     if (error instanceof StorageError) {
       throw error;
@@ -48,8 +44,26 @@ export function compileFilter(filter: Document): CompiledFilter {
 
     throw invalidFilter("Find filter could not be encoded.", error);
   }
+}
 
-  return (document) => matchesCompiledFilter(document, fields);
+function compileClauses(filter: Document): CompiledFilter {
+  const fields: CompiledField[] = [];
+  const logical: CompiledFilter[] = [];
+
+  for (const key of Object.keys(filter)) {
+    const value = filter[key] as DocumentValue;
+
+    if (key.startsWith("$")) {
+      logical.push(compileLogicalOperator(key, value));
+      continue;
+    }
+
+    fields.push(compileField(key, value));
+  }
+
+  return (document) =>
+    matchesCompiledFilter(document, fields) &&
+    logical.every((matches) => matches(document));
 }
 
 function compileField(path: string, value: DocumentValue): CompiledField {
@@ -62,6 +76,38 @@ function compileField(path: string, value: DocumentValue): CompiledField {
     segments,
     predicates,
   };
+}
+
+function compileLogicalOperator(
+  name: string,
+  operand: DocumentValue,
+): CompiledFilter {
+  if (name !== "$and" && name !== "$or" && name !== "$nor") {
+    throw invalidFilter(
+      `Filter uses unsupported top-level operator ${JSON.stringify(name)}.`,
+    );
+  }
+
+  if (
+    !Array.isArray(operand) ||
+    operand.length === 0 ||
+    !operand.every(isPlainDocument)
+  ) {
+    throw invalidFilter(
+      `Filter operand ${name} requires a non-empty array of filter documents.`,
+    );
+  }
+
+  const clauses = operand.map((clause) => compileClauses(clause as Document));
+
+  switch (name) {
+    case "$and":
+      return (document) => clauses.every((matches) => matches(document));
+    case "$or":
+      return (document) => clauses.every((matches) => matches(document));
+    case "$nor":
+      return (document) => !clauses.every((matches) => matches(document));
+  }
 }
 
 function compileOperatorDocument(
@@ -100,6 +146,9 @@ function compileOperatorDocument(
 
       case "$exists":
         return compileExistsPredicate(path, operand);
+
+      case "$not":
+        return compileNotPredicate(path, operand);
 
       default:
         throw invalidFilter(
@@ -220,6 +269,21 @@ function compileExistsPredicate(
   }
 
   return (field) => field.found === operand;
+}
+
+function compileNotPredicate(
+  path: string,
+  operand: DocumentValue,
+): FieldPredicate {
+  if (!isPlainDocument(operand)) {
+    throw invalidFilter(
+      `Filter operator $not for field ${JSON.stringify(path)} requires an operator document.`,
+    );
+  }
+
+  const predicates = compileOperatorDocument(path, operand);
+
+  return (field) => !predicates.every((predicate) => predicate(field));
 }
 
 function compileFieldPath(path: string): readonly string[] {

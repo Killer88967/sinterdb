@@ -353,6 +353,192 @@ describe("compileFilter", () => {
       StorageErrorCode.InvalidFilter,
     );
   });
+
+  it("supports $in and $nin", () => {
+    const inColors = compileFilter({ color: { $in: ["red", "blue"] } });
+    const notInColors = compileFilter({ color: { $nin: ["red", "blue"] } });
+
+    expect(inColors({ color: "red" })).toBe(true);
+    expect(inColors({ color: "green" })).toBe(false);
+    expect(inColors({})).toBe(false);
+
+    expect(notInColors({ color: "green" })).toBe(true);
+    expect(notInColors({ color: "red" })).toBe(false);
+    expect(notInColors({})).toBe(true);
+  });
+
+  it("matches $in and $nin against array elements", () => {
+    const hasTag = compileFilter({ tags: { $in: ["db"] } });
+    const lacksTag = compileFilter({ tags: { $nin: ["db"] } });
+
+    expect(hasTag({ tags: ["node", "db"] })).toBe(true);
+    expect(hasTag({ tags: ["node"] })).toBe(false);
+    expect(lacksTag({ tags: ["node"] })).toBe(true);
+    expect(lacksTag({ tags: ["node", "db"] })).toBe(false);
+  });
+
+  it("rejects non-array $in and $nin operands", () => {
+    expectStorageError(
+      () => compileFilter({ color: { $in: "red" } }),
+      StorageErrorCode.InvalidFilter,
+    );
+
+    expectStorageError(
+      () => compileFilter({ color: { $nin: { color: "red" } } }),
+      StorageErrorCode.InvalidFilter,
+    );
+  });
+
+  it("supports $exists", () => {
+    const present = compileFilter({ email: { $exists: true } });
+    const absent = compileFilter({ email: { $exists: false } });
+
+    expect(present({ email: "ada@example.com" })).toBe(true);
+    expect(present({ email: null })).toBe(true);
+    expect(present({})).toBe(false);
+
+    expect(absent({})).toBe(true);
+    expect(absent({ email: "ada@example.com" })).toBe(false);
+  });
+
+  it("supports $exists on nested paths", () => {
+    const matches = compileFilter({ "profile.bio": { $exists: true } });
+
+    expect(matches({ profile: { bio: "hi" } })).toBe(true);
+    expect(matches({ profile: {} })).toBe(false);
+    expect(matches({ profile: "text" })).toBe(false);
+  });
+
+  it("rejects a non-boolean $exists operand", () => {
+    expectStorageError(
+      () => compileFilter({ email: { $exists: 1 } }),
+      StorageErrorCode.InvalidFilter,
+    );
+  });
+
+  it("supports $and", () => {
+    const matches = compileFilter({
+      $and: [{ age: { $gte: 18 } }, { active: true }],
+    });
+
+    expect(matches({ age: 20, active: true })).toBe(true);
+    expect(matches({ age: 20, active: false })).toBe(false);
+    expect(matches({ age: 10, active: true })).toBe(false);
+  });
+
+  it("supports $or", () => {
+    const matches = compileFilter({
+      $or: [{ role: "admin" }, { age: { $gte: 65 } }],
+    });
+
+    expect(matches({ role: "admin", age: 20 })).toBe(true);
+    expect(matches({ role: "user", age: 70 })).toBe(true);
+    expect(matches({ role: "user", age: 20 })).toBe(false);
+  });
+
+  it("supports $nor", () => {
+    const matches = compileFilter({
+      $nor: [{ role: "admin" }, { banned: true }],
+    });
+
+    expect(matches({ role: "user", banned: false })).toBe(true);
+    expect(matches({ role: "admin" })).toBe(false);
+    expect(matches({ role: "user", banned: true })).toBe(false);
+  });
+
+  it("combines logical operators with field conditions", () => {
+    const matches = compileFilter({
+      active: true,
+      $or: [{ role: "admin" }, { role: "owner" }],
+    });
+
+    expect(matches({ active: true, role: "owner" })).toBe(true);
+    expect(matches({ active: false, role: "owner" })).toBe(false);
+    expect(matches({ active: true, role: "user" })).toBe(false);
+  });
+
+  it("supports nested logical operators", () => {
+    const matches = compileFilter({
+      $or: [
+        { $and: [{ role: "user" }, { age: { $lt: 13 } }] },
+        { role: "admin" },
+      ],
+    });
+
+    expect(matches({ role: "user", age: 10 })).toBe(true);
+    expect(matches({ role: "user", age: 30 })).toBe(false);
+    expect(matches({ role: "admin", age: 30 })).toBe(true);
+  });
+
+  it("rejects malformed logical operands", () => {
+    for (const operator of ["$and", "$or", "$nor"]) {
+      expectStorageError(
+        () => compileFilter({ [operator]: [] }),
+        StorageErrorCode.InvalidFilter,
+      );
+
+      expectStorageError(
+        () => compileFilter({ [operator]: { a: 1 } }),
+        StorageErrorCode.InvalidFilter,
+      );
+
+      expectStorageError(
+        () => compileFilter({ [operator]: [{ a: 1 }, 5] }),
+        StorageErrorCode.InvalidFilter,
+      );
+    }
+  });
+
+  it("rejects unsupported top-level operators", () => {
+    expectStorageError(
+      () => compileFilter({ $where: "true" }),
+      StorageErrorCode.InvalidFilter,
+    );
+  });
+
+  it("rejects invalid clauses inside logical operators", () => {
+    expectStorageError(
+      () => compileFilter({ $or: [{ age: { $around: 1 } }] }),
+      StorageErrorCode.InvalidFilter,
+    );
+  });
+
+  it("supports $not", () => {
+    const matches = compileFilter({ age: { $not: { $gt: 18 } } });
+
+    expect(matches({ age: 10 })).toBe(true);
+    expect(matches({ age: 18 })).toBe(true);
+    expect(matches({ age: 30 })).toBe(false);
+    expect(matches({})).toBe(true);
+    expect(matches({ age: "old" })).toBe(true);
+  });
+
+  it("supports $not with multiple operators", () => {
+    const matches = compileFilter({
+      age: { $not: { $gte: 10, $lt: 20 } },
+    });
+
+    expect(matches({ age: 15 })).toBe(false);
+    expect(matches({ age: 5 })).toBe(true);
+    expect(matches({ age: 25 })).toBe(true);
+  });
+
+  it("rejects $not without an operator document", () => {
+    expectStorageError(
+      () => compileFilter({ age: { $not: 5 } }),
+      StorageErrorCode.InvalidFilter,
+    );
+
+    expectStorageError(
+      () => compileFilter({ age: { $not: {} } }),
+      StorageErrorCode.InvalidFilter,
+    );
+
+    expectStorageError(
+      () => compileFilter({ age: { $not: { value: 5 } } }),
+      StorageErrorCode.InvalidFilter,
+    );
+  });
 });
 
 function expectStorageError(
