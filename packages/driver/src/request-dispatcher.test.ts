@@ -16,11 +16,11 @@ import {
 } from "sinterdb-protocol";
 import { describe, expect, it } from "vitest";
 
+import { SinterRequestTimeoutError, SinterServerError } from "./errors.js";
 import {
   RequestDispatcher,
   type RequestDispatcherOptions,
 } from "./request-dispatcher.js";
-import { SinterRequestTimeoutError, SinterServerError } from "./errors.js";
 
 describe("RequestDispatcher", () => {
   it("routes a result to its request", async () => {

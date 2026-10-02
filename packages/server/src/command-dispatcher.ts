@@ -1,4 +1,9 @@
 import {
+  StorageError,
+  StorageErrorCode,
+  StorageInsertManyError,
+} from "@sinterdb-internal/storage";
+import {
   PROTOCOL_VERSION,
   ProtocolCapability,
   WireErrorCode,
@@ -7,11 +12,6 @@ import {
   type DocumentValue,
   type WireErrorCodeValue,
 } from "sinterdb-protocol";
-import {
-  StorageError,
-  StorageErrorCode,
-  StorageInsertManyError,
-} from "@sinterdb-internal/storage";
 
 import {
   CatalogError,

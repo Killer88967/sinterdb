@@ -1,5 +1,6 @@
 import { CustomId, type Document, type DocumentValue } from "sinterdb-protocol";
 
+import { FindCursor } from "./cursor.js";
 import type { SinterDatabase } from "./database.js";
 import {
   SinterInsertManyError,
@@ -7,7 +8,6 @@ import {
   SinterServerError,
 } from "./errors.js";
 import { validateCollectionName } from "./namespace.js";
-import { FindCursor } from "./cursor.js";
 
 export type OptionalId<TDocument extends object> = Omit<TDocument, "_id"> & {
   readonly _id?: CustomId;

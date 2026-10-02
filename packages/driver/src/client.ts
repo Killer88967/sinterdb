@@ -1,6 +1,6 @@
 import { EventEmitter } from "node:events";
-import { performance } from "node:perf_hooks";
 import { createConnection, type Socket } from "node:net";
+import { performance } from "node:perf_hooks";
 import {
   MessageKind,
   ProtocolCapability,
@@ -9,8 +9,8 @@ import {
 } from "sinterdb-protocol";
 
 import {
-  type ParsedSinterConnectionString,
   parseSinterConnectionString,
+  type ParsedSinterConnectionString,
 } from "./connection-string.js";
 import { SinterDatabase } from "./database.js";
 import {

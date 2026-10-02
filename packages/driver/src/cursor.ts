@@ -1,7 +1,7 @@
 import { CustomId, type Document, type DocumentValue } from "sinterdb-protocol";
 
-import { SinterProtocolError } from "./errors.js";
 import type { WithId } from "./collection.js";
+import { SinterProtocolError } from "./errors.js";
 
 export type CursorExecutor = (
   command: string,

@@ -18,11 +18,11 @@ import {
 } from "sinterdb-protocol";
 import { describe, expect, it } from "vitest";
 
+import { SinterProtocolError, SinterServerError } from "./errors.js";
 import {
   CLIENT_HANDSHAKE_REQUEST_ID,
   performClientHandshake,
 } from "./handshake.js";
-import { SinterProtocolError, SinterServerError } from "./errors.js";
 
 describe("performClientHandshake", () => {
   it("negotiates a server handshake", async () => {

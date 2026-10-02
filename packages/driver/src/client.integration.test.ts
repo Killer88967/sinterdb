@@ -10,12 +10,12 @@ import {
   type SinterPingResult,
 } from "./client.js";
 import type {
-  InsertOneResult,
   InsertManyResult,
+  InsertOneResult,
   SinterCollection,
   WithId,
 } from "./collection.js";
-import { SinterServerError, SinterInsertManyError } from "./errors.js";
+import { SinterInsertManyError, SinterServerError } from "./errors.js";
 
 describe("SinterClient integration", () => {
   it("connects, pings, selects a database, and closes cleanly", async () => {
