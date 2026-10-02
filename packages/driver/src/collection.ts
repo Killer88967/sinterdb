@@ -7,6 +7,7 @@ import {
   SinterProtocolError,
   SinterServerError,
 } from "./errors.js";
+import type { Filter } from "./filter.js";
 import { validateCollectionName } from "./namespace.js";
 
 export type OptionalId<TDocument extends object> = Omit<TDocument, "_id"> & {
@@ -88,7 +89,7 @@ export class SinterCollection<TDocument extends object = Document> {
   }
 
   public async findOne(
-    filter: EqualityFilter<TDocument> = {} as EqualityFilter<TDocument>,
+    filter: Filter<TDocument> = {} as Filter<TDocument>,
   ): Promise<WithId<TDocument> | null> {
     const value = await this.database.client.executeCommand(
       this.database.name,
@@ -103,7 +104,7 @@ export class SinterCollection<TDocument extends object = Document> {
   }
 
   public find(
-    filter: EqualityFilter<TDocument> = {},
+    filter: Filter<TDocument> = {} as Filter<TDocument>,
     options: { batchSize?: number } = {},
   ): FindCursor<TDocument> {
     return new FindCursor<TDocument>(
