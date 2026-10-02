@@ -4,6 +4,7 @@ export const StorageErrorCode = {
   InvalidDocument: "INVALID_DOCUMENT",
   InvalidDocumentId: "INVALID_DOCUMENT_ID",
   InvalidFilter: "INVALID_FILTER",
+  InvalidFindOptions: "INVALID_FIND_OPTIONS",
   InvalidBatch: "INVALID_BATCH",
   DuplicateId: "DUPLICATE_ID",
 } as const;

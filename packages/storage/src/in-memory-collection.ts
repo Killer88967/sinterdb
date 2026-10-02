@@ -11,6 +11,7 @@ import {
   StorageInsertManyError,
 } from "./errors.js";
 import { compileFilter } from "./filter.js";
+import { compileSort, type SortSpecification } from "./sort.js";
 
 export interface StorageInsertOneResult {
   readonly insertedId: CustomId;
@@ -18,6 +19,12 @@ export interface StorageInsertOneResult {
 
 export interface StorageInsertManyResult {
   readonly insertedIds: readonly CustomId[];
+}
+
+export interface StorageFindOptions {
+  readonly sort?: SortSpecification;
+  readonly skip?: number;
+  readonly limit?: number;
 }
 
 export class InMemoryCollection {
@@ -124,16 +131,17 @@ export class InMemoryCollection {
     return undefined;
   }
 
-  public *find(filter: Document): IterableIterator<Document> {
+  public find(
+    filter: Document,
+    options: StorageFindOptions = {},
+  ): IterableIterator<Document> {
     const matches = compileFilter(filter);
+    const sorter =
+      options.sort === undefined ? undefined : compileSort(options.sort);
+    const skip = validateSkip(options.skip);
+    const limit = validateLimit(options.limit);
 
-    for (const encoded of this.documents.values()) {
-      const document = decodeDocument(encoded);
-
-      if (matches(document)) {
-        yield document;
-      }
-    }
+    return this.scan(matches, sorter, skip, limit);
   }
 
   public findById(id: CustomId): Document | undefined {
@@ -161,6 +169,84 @@ export class InMemoryCollection {
   public clear(): void {
     this.documents.clear();
   }
+
+  private *scan(
+    matches: (document: Document) => boolean,
+    sorter: ((document: readonly Document[]) => Document[]) | undefined,
+    skip: number,
+    limit: number | undefined,
+  ): IterableIterator<Document> {
+    if (sorter === undefined) {
+      let skipped = 0;
+      let yielded = 0;
+
+      for (const encoded of this.documents.values()) {
+        if (limit !== undefined && yielded >= limit) {
+          return;
+        }
+
+        const document = decodeDocument(encoded);
+
+        if (!matches(document)) {
+          continue;
+        }
+
+        if (skipped < skip) {
+          skipped += 1;
+          continue;
+        }
+
+        yielded += 1;
+        yield document;
+      }
+
+      return;
+    }
+
+    const matched: Document[] = [];
+
+    for (const encoded of this.documents.values()) {
+      const document = decodeDocument(encoded);
+
+      if (matches(document)) {
+        matched.push(document);
+      }
+    }
+
+    const ordered = sorter(matched);
+
+    yield* ordered.slice(skip, limit === undefined ? undefined : skip + limit);
+  }
+}
+
+function validateSkip(skip: number | undefined): number {
+  if (skip === undefined) {
+    return 0;
+  }
+
+  if (!Number.isSafeInteger(skip) || skip < 0) {
+    throw new StorageError(
+      StorageErrorCode.InvalidFindOptions,
+      "Skip must be a non-negative safe integer.",
+    );
+  }
+
+  return skip;
+}
+
+function validateLimit(limit: number | undefined): number | undefined {
+  if (limit === undefined) {
+    return undefined;
+  }
+
+  if (!Number.isSafeInteger(limit) || limit < 1) {
+    throw new StorageError(
+      StorageErrorCode.InvalidFindOptions,
+      "Limit must be a positive safe integer.",
+    );
+  }
+
+  return limit;
 }
 
 function resolveDocumentId(document: Document): CustomId {

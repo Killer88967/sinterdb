@@ -2,6 +2,8 @@ import {
   StorageError,
   StorageErrorCode,
   StorageInsertManyError,
+  type SortSpecification,
+  type StorageFindOptions,
 } from "@sinterdb-internal/storage";
 import {
   PROTOCOL_VERSION,
@@ -267,6 +269,7 @@ export class CommandDispatcher {
     );
     const filter = requireDocumentParameter(command.parameters, "filter");
     const batchSize = optionalBatchSize(command.parameters);
+    const findOptions = parseFindOptions(command.parameters);
 
     try {
       const collection = this.catalog.getCollection(
@@ -278,7 +281,9 @@ export class CommandDispatcher {
         return { cursorId: null, documents: [] };
       }
 
-      return toBatchDocument(cursors.open(collection.find(filter), batchSize));
+      return toBatchDocument(
+        cursors.open(collection.find(filter, findOptions), batchSize),
+      );
     } catch (error: unknown) {
       if (error instanceof CatalogError) {
         throw translateCatalogError(error);
@@ -502,6 +507,56 @@ function translateStorageError(error: unknown): CommandExecutionError {
       },
     },
   );
+}
+
+function parseFindOptions(parameters: Document): StorageFindOptions {
+  const sort = parameters["sort"];
+  const skip = optionalIntegerParameter(parameters, "skip", 0);
+  const limit = optionalIntegerParameter(parameters, "limit", 1);
+
+  if (sort !== undefined && !Array.isArray(sort)) {
+    throw new CommandExecutionError(
+      WireErrorCode.InvalidRequest,
+      "InvalidRequest",
+      'Command parameter "sort" must be an array of [path, direction] pairs.',
+      { details: { field: "sort" } },
+    );
+  }
+
+  return {
+    ...(sort === undefined
+      ? {}
+      : { sort: sort as unknown as SortSpecification }),
+    ...(skip === undefined ? {} : { skip }),
+    ...(limit === undefined ? {} : { limit }),
+  };
+}
+
+function optionalIntegerParameter(
+  parameters: Document,
+  name: string,
+  minimum: number,
+): number | undefined {
+  const value = parameters[name];
+
+  if (value === undefined) {
+    return undefined;
+  }
+
+  if (
+    typeof value !== "number" ||
+    !Number.isSafeInteger(value) ||
+    value < minimum
+  ) {
+    throw new CommandExecutionError(
+      WireErrorCode.InvalidRequest,
+      "InvalidRequest",
+      `Command parameter ${JSON.stringify(name)} must be an integer of at least ${minimum}.`,
+      { details: { field: name } },
+    );
+  }
+
+  return value;
 }
 
 function optionalBatchSize(parameters: Document): number | undefined {

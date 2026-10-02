@@ -7,7 +7,7 @@ import {
   SinterProtocolError,
   SinterServerError,
 } from "./errors.js";
-import type { Filter } from "./filter.js";
+import type { Filter, Sort } from "./filter.js";
 import { validateCollectionName } from "./namespace.js";
 
 export type OptionalId<TDocument extends object> = Omit<TDocument, "_id"> & {
@@ -21,6 +21,13 @@ export type WithId<TDocument extends object> = Omit<TDocument, "_id"> & {
 export type EqualityFilter<TDocument extends object> = {
   readonly [Key in keyof TDocument]?: TDocument[Key];
 };
+
+export interface findOptions<TDocument extends object = Document> {
+  readonly batchSize?: number;
+  readonly sort?: Sort<TDocument>;
+  readonly skip?: number;
+  readonly limit?: number;
+}
 
 export interface InsertOneResult {
   readonly acknowledged: true;
@@ -105,7 +112,7 @@ export class SinterCollection<TDocument extends object = Document> {
 
   public find(
     filter: Filter<TDocument> = {} as Filter<TDocument>,
-    options: { batchSize?: number } = {},
+    options: findOptions<TDocument> = {},
   ): FindCursor<TDocument> {
     return new FindCursor<TDocument>(
       (command, parameters) =>
@@ -117,6 +124,11 @@ export class SinterCollection<TDocument extends object = Document> {
       this.name,
       filter as unknown as Document,
       options.batchSize,
+      {
+        ...(options.sort === undefined ? {} : { sort: options.sort }),
+        ...(options.skip === undefined ? {} : { skip: options.skip }),
+        ...(options.limit === undefined ? {} : { limit: options.limit }),
+      },
     );
   }
 }

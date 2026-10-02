@@ -2,11 +2,18 @@ import { CustomId, type Document, type DocumentValue } from "sinterdb-protocol";
 
 import type { WithId } from "./collection.js";
 import { SinterProtocolError } from "./errors.js";
+import type { SortDirection } from "./filter.js";
 
 export type CursorExecutor = (
   command: string,
   parameters: Document,
 ) => Promise<DocumentValue>;
+
+export interface FindQueryOptions {
+  readonly sort?: readonly (readonly [string, SortDirection])[];
+  readonly skip?: number;
+  readonly limit?: number;
+}
 
 export class FindCursor<
   TDocument extends object = Document,
@@ -20,6 +27,7 @@ export class FindCursor<
     private readonly collection: string,
     private readonly filter: Document,
     private readonly batchSize: number | undefined,
+    private readonly query: FindQueryOptions = {},
   ) {}
 
   public async hasNext(): Promise<boolean> {
@@ -96,6 +104,18 @@ export class FindCursor<
             collection: this.collection,
             filter: this.filter,
             ...size,
+            ...(this.query.sort === undefined
+              ? {}
+              : {
+                  sort: this.query.sort.map(([path, direction]) => [
+                    path,
+                    direction,
+                  ]),
+                }),
+            ...(this.query.skip === undefined ? {} : { skip: this.query.skip }),
+            ...(this.query.limit === undefined
+              ? {}
+              : { limit: this.query.limit }),
           })
         : await this.execute("getMore", {
             cursorId: this.cursorId as number,

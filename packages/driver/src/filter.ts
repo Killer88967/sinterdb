@@ -30,7 +30,7 @@ export type FilterOperators<TValue> = {
 
 type MaxPathDepth = 5;
 
-type FilterPaths<
+export type FilterPaths<
   TDocument,
   TDepth extends readonly unknown[] = [],
 > = TDepth["length"] extends MaxPathDepth
@@ -69,3 +69,10 @@ export type Filter<TDocument extends object> = {
   readonly $or?: readonly Filter<TDocument>[];
   readonly $nor?: readonly Filter<TDocument>[];
 };
+
+export type SortDirection = 1 | -1;
+
+export type Sort<TDocument extends object> = readonly (readonly [
+  path: FilterPaths<TDocument> | "_id",
+  direction: SortDirection,
+])[];
