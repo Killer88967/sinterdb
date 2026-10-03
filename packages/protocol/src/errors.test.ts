@@ -38,6 +38,8 @@ describe("WireErrorCode", () => {
       NamespaceConflict: 3001,
       DocumentValidationFailed: 4000,
       DuplicateKey: 4001,
+      InvalidUpdate: 4002,
+      ImmutableId: 4003,
       CursorNotFound: 5000,
       InternalError: 9000,
     });
