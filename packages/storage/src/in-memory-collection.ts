@@ -12,6 +12,11 @@ import {
 } from "./errors.js";
 import { compileFilter } from "./filter.js";
 import { compileSort, type SortSpecification } from "./sort.js";
+import {
+  compileUpdate,
+  seedDocumentFromFilter,
+  type CompiledUpdate,
+} from "./update.js";
 
 export interface StorageInsertOneResult {
   readonly insertedId: CustomId;
@@ -25,6 +30,26 @@ export interface StorageFindOptions {
   readonly sort?: SortSpecification;
   readonly skip?: number;
   readonly limit?: number;
+}
+
+export interface StorageUpdateOptions {
+  readonly upsert?: boolean;
+}
+
+export interface StorageUpdateResult {
+  readonly matchedCount: number;
+  readonly modifiedCount: number;
+  readonly upsertedId?: CustomId;
+}
+
+export interface StorageDeleteResult {
+  readonly deletedCount: number;
+}
+
+interface LocatedDocument {
+  readonly key: string;
+  readonly encoded: Uint8Array;
+  readonly document: Document;
 }
 
 export class InMemoryCollection {
@@ -144,6 +169,162 @@ export class InMemoryCollection {
     return this.scan(matches, sorter, skip, limit);
   }
 
+  public deleteOne(filter: Document): StorageDeleteResult {
+    const located = this.locate(filter, compileFilter(filter));
+
+    if (located === undefined) {
+      return { deletedCount: 0 };
+    }
+
+    this.documents.delete(located.key);
+
+    return { deletedCount: 1 };
+  }
+
+  public deleteMany(filter: Document): StorageDeleteResult {
+    const matches = compileFilter(filter);
+    const keys: string[] = [];
+
+    for (const [key, encoded] of this.documents) {
+      if (matches(decodeDocument(encoded))) {
+        keys.push(key);
+      }
+    }
+
+    for (const key of keys) {
+      this.documents.delete(key);
+    }
+
+    return { deletedCount: keys.length };
+  }
+
+  public replaceOne(
+    filter: Document,
+    replacement: Document,
+    options: StorageUpdateOptions = {},
+  ): StorageUpdateResult {
+    const matches = compileFilter(filter);
+    const upsert = validateUpsert(options.upsert);
+
+    validateReplacement(replacement);
+
+    const located = this.locate(filter, matches);
+
+    if (located === undefined) {
+      if (!upsert) {
+        return { matchedCount: 0, modifiedCount: 0 };
+      }
+
+      const filterId = filter["_id"];
+      const requested = replacement["_id"];
+
+      if (
+        Object.hasOwn(replacement, "_id") &&
+        filterId instanceof CustomId &&
+        !(requested instanceof CustomId && requested.equals(filterId))
+      ) {
+        throw immutableId();
+      }
+
+      const document: Document = Object.hasOwn(replacement, "_id")
+        ? replacement
+        : filterId instanceof CustomId
+          ? { ...replacement, _id: filterId }
+          : replacement;
+
+      return {
+        matchedCount: 0,
+        modifiedCount: 0,
+        upsertedId: this.insertOne(document).insertedId,
+      };
+    }
+
+    const existingId = located.document["_id"] as CustomId;
+
+    if (
+      Object.hasOwn(replacement, "_id") &&
+      !(
+        replacement["_id"] instanceof CustomId &&
+        replacement["_id"].equals(existingId)
+      )
+    ) {
+      throw immutableId();
+    }
+
+    const encoded = encodeStoredDocument({ ...replacement, _id: existingId });
+    const modified = !bytesEqual(encoded, located.encoded);
+
+    if (modified) {
+      this.documents.set(located.key, encoded);
+    }
+
+    return { matchedCount: 1, modifiedCount: modified ? 1 : 0 };
+  }
+
+  public updateOne(
+    filter: Document,
+    update: Document,
+    options: StorageUpdateOptions = {},
+  ): StorageUpdateResult {
+    const matches = compileFilter(filter);
+    const apply = compileUpdate(update);
+    const upsert = validateUpsert(options.upsert);
+    const located = this.locate(filter, matches);
+
+    if (located === undefined) {
+      return this.upsertFromUpdate(filter, apply, upsert);
+    }
+
+    const pending = prepareUpdate(located, apply);
+
+    if (pending !== undefined) {
+      this.documents.set(pending.key, pending.encoded);
+    }
+
+    return {
+      matchedCount: 1,
+      modifiedCount: pending === undefined ? 0 : 1,
+    };
+  }
+
+  public updateMany(
+    filter: Document,
+    update: Document,
+    options: StorageUpdateOptions = {},
+  ): StorageUpdateResult {
+    const matches = compileFilter(filter);
+    const apply = compileUpdate(update);
+    const upsert = validateUpsert(options.upsert);
+    const pending: { key: string; encoded: Uint8Array }[] = [];
+    let matched = 0;
+
+    for (const [key, encoded] of this.documents) {
+      const document = decodeDocument(encoded);
+
+      if (!matches(document)) {
+        continue;
+      }
+
+      matched += 1;
+
+      const prepared = prepareUpdate({ key, encoded, document }, apply);
+
+      if (prepared !== undefined) {
+        pending.push(prepared);
+      }
+    }
+
+    if (matched === 0) {
+      return this.upsertFromUpdate(filter, apply, upsert);
+    }
+
+    for (const entry of pending) {
+      this.documents.set(entry.key, entry.encoded);
+    }
+
+    return { matchedCount: matched, modifiedCount: pending.length };
+  }
+
   public findById(id: CustomId): Document | undefined {
     if (!(id instanceof CustomId)) {
       throw new TypeError("Document ID must be a CustomId.");
@@ -168,6 +349,56 @@ export class InMemoryCollection {
 
   public clear(): void {
     this.documents.clear();
+  }
+
+  private upsertFromUpdate(
+    filter: Document,
+    apply: CompiledUpdate,
+    upsert: boolean,
+  ): StorageUpdateResult {
+    if (!upsert) {
+      return { matchedCount: 0, modifiedCount: 0 };
+    }
+
+    const seed = seedDocumentFromFilter(filter);
+
+    apply(seed);
+
+    return {
+      matchedCount: 0,
+      modifiedCount: 0,
+      upsertedId: this.insertOne(seed).insertedId,
+    };
+  }
+
+  private locate(
+    filter: Document,
+    matches: (document: Document) => boolean,
+  ): LocatedDocument | undefined {
+    const id = filter["_id"];
+
+    if (id instanceof CustomId) {
+      const key = id.toHexString();
+      const encoded = this.documents.get(key);
+
+      if (encoded === undefined) {
+        return undefined;
+      }
+
+      const document = decodeDocument(encoded);
+
+      return matches(document) ? { key, encoded, document } : undefined;
+    }
+
+    for (const [key, encoded] of this.documents) {
+      const document = decodeDocument(encoded);
+
+      if (matches(document)) {
+        return { key, encoded, document };
+      }
+    }
+
+    return undefined;
   }
 
   private *scan(
@@ -217,6 +448,77 @@ export class InMemoryCollection {
 
     yield* ordered.slice(skip, limit === undefined ? undefined : skip + limit);
   }
+}
+
+function prepareUpdate(
+  located: LocatedDocument,
+  apply: CompiledUpdate,
+): { key: string; encoded: Uint8Array } | undefined {
+  apply(located.document);
+
+  const encoded = encodeStoredDocument(located.document);
+
+  return bytesEqual(encoded, located.encoded)
+    ? undefined
+    : { key: located.key, encoded };
+}
+
+function encodeStoredDocument(document: Document): Uint8Array {
+  try {
+    return encodeDocument(document);
+  } catch (error: unknown) {
+    throw new StorageError(
+      StorageErrorCode.InvalidDocument,
+      "Document could not be encoded.",
+      { cause: error },
+    );
+  }
+}
+
+function validateReplacement(replacement: Document): void {
+  if (!isPlainDocument(replacement)) {
+    throw new StorageError(
+      StorageErrorCode.InvalidDocument,
+      "Replacement must be a document.",
+    );
+  }
+
+  if (Object.keys(replacement).some((key) => key.startsWith("$"))) {
+    throw new StorageError(
+      StorageErrorCode.InvalidDocument,
+      "Replacement documents cannot contain update operators.",
+    );
+  }
+}
+
+function validateUpsert(upsert: boolean | undefined): boolean {
+  if (upsert === undefined) {
+    return false;
+  }
+
+  if (typeof upsert !== "boolean") {
+    throw new StorageError(
+      StorageErrorCode.InvalidUpdate,
+      "The upsert option must be a boolean.",
+    );
+  }
+
+  return upsert;
+}
+
+function immutableId(): StorageError {
+  return new StorageError(
+    StorageErrorCode.ImmutableId,
+    "The _id field cannot be modified.",
+  );
+}
+
+function bytesEqual(left: Uint8Array, right: Uint8Array): boolean {
+  if (left.byteLength !== right.byteLength) {
+    return false;
+  }
+
+  return left.every((byte, index) => byte === right[index]);
 }
 
 function validateSkip(skip: number | undefined): number {

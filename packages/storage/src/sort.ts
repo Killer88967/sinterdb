@@ -55,6 +55,16 @@ export function compileSort(specification: SortSpecification): CompiledSort {
   };
 }
 
+export function compareDocumentValues(
+  left: DocumentValue,
+  right: DocumentValue,
+): number {
+  return compareSortValues(
+    { rank: rankOf(left), value: left },
+    { rank: rankOf(right), value: right },
+  );
+}
+
 function parseSortSpecification(
   specification: SortSpecification,
 ): readonly SortKey[] {
