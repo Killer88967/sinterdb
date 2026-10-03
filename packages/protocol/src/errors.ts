@@ -14,6 +14,8 @@ export const WireErrorCode = {
 
   DocumentValidationFailed: 4000,
   DuplicateKey: 4001,
+  InvalidUpdate: 4002,
+  ImmutableId: 4003,
 
   CursorNotFound: 5000,
 
