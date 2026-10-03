@@ -408,6 +408,8 @@ across a connection use numeric `WireErrorCode` values.
 | ---: | -------------------------- |
 | 4000 | `DocumentValidationFailed` |
 | 4001 | `DuplicateKey`             |
+| 4002 | `InvalidUpdate`            |
+| 4003 | `ImmutableId`              |
 
 ### 6.5 Cursor errors
 
