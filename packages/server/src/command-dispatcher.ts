@@ -658,7 +658,7 @@ function translateStorageError(error: unknown): CommandExecutionError {
 
 function toWriteResult(result: StorageUpdateResult): Document {
   return {
-    acknowledge: true,
+    acknowledged: true,
     matchedCount: result.matchedCount,
     modifiedCount: result.modifiedCount,
     upsertedId: result.upsertedId ?? null,

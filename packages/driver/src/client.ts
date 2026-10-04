@@ -13,7 +13,6 @@ import {
   type ParsedSinterConnectionString,
 } from "./connection-string.js";
 import { SinterDatabase } from "./database.js";
-import { parseNameList } from "./list-result.js";
 import {
   SinterClientOptionsError,
   SinterClientStateError,
@@ -24,6 +23,7 @@ import {
   SinterSocketTimeoutError,
 } from "./errors.js";
 import { performClientHandshake, type ServerHandshake } from "./handshake.js";
+import { parseNameList } from "./list-result.js";
 import { SinterNamespaceError } from "./namespace.js";
 import { RequestDispatcher } from "./request-dispatcher.js";
 

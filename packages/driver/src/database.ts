@@ -1,8 +1,8 @@
 import type { Document } from "sinterdb-protocol";
 import type { SinterClient } from "./client.js";
 import { SinterCollection } from "./collection.js";
-import { validateDatabaseName } from "./namespace.js";
 import { parseNameList } from "./list-result.js";
+import { validateDatabaseName } from "./namespace.js";
 
 export class SinterDatabase {
   public readonly name: string;
