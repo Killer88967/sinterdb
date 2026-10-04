@@ -9,10 +9,19 @@ export const StorageErrorCode = {
   InvalidUpdate: "INVALID_UPDATE",
   ImmutableId: "IMMUTABLE_ID",
   DuplicateId: "DUPLICATE_ID",
+  Corruption: "CORRUPTION",
+  Io: "IO_ERROR",
+  Closed: "CLOSED",
 } as const;
 
 export type StorageErrorCode =
   (typeof StorageErrorCode)[keyof typeof StorageErrorCode];
+
+export interface StorageCorruptionDetails {
+  readonly file: string;
+  readonly offset: number;
+  readonly lsn?: bigint;
+}
 
 export class StorageError extends Error {
   public readonly code: StorageErrorCode;
@@ -49,5 +58,20 @@ export class StorageInsertManyError extends StorageError {
     this.name = "StorageInsertManyError";
     this.failedIndex = failedIndex;
     this.insertedIds = Object.freeze([...insertedIds]);
+  }
+}
+
+export class StorageCorruptionError extends StorageError {
+  public readonly file: string;
+  public readonly offset: number;
+  public readonly lsn: bigint | undefined;
+
+  public constructor(message: string, details: StorageCorruptionDetails) {
+    super(StorageErrorCode.Corruption, message);
+
+    this.name = "StorageCorruptionError";
+    this.file = details.file;
+    this.offset = details.offset;
+    this.lsn = details.lsn;
   }
 }
