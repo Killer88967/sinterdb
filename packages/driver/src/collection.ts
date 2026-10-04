@@ -9,6 +9,12 @@ import {
 } from "./errors.js";
 import type { Filter, Sort } from "./filter.js";
 import { validateCollectionName } from "./namespace.js";
+import type {
+  DeleteResult,
+  UpdateFilter,
+  UpdateOptions,
+  UpdateResult,
+} from "./update.js";
 
 export type OptionalId<TDocument extends object> = Omit<TDocument, "_id"> & {
   readonly _id?: CustomId;
@@ -110,6 +116,49 @@ export class SinterCollection<TDocument extends object = Document> {
     return parseFindOneResult<TDocument>(value);
   }
 
+  public async deleteOne(filter: Filter<TDocument>): Promise<DeleteResult> {
+    return this.runDelete("deleteOne", filter);
+  }
+
+  public async deleteMany(filter: Filter<TDocument>): Promise<DeleteResult> {
+    return this.runDelete("deleteMany", filter);
+  }
+
+  public async replaceOne(
+    filter: Filter<TDocument>,
+    replacement: OptionalId<TDocument>,
+    options: UpdateOptions = {},
+  ): Promise<UpdateResult> {
+    const value = await this.database.client.executeCommand(
+      this.database.name,
+      "replaceOne",
+      {
+        collection: this.name,
+        filter: filter as unknown as Document,
+        replacement: replacement as unknown as Document,
+        ...(options.upsert === undefined ? {} : { upsert: options.upsert }),
+      },
+    );
+
+    return parseUpdateResult(value, "replaceOne");
+  }
+
+  public async updateOne(
+    filter: Filter<TDocument>,
+    update: UpdateFilter<TDocument>,
+    options: UpdateOptions = {},
+  ): Promise<UpdateResult> {
+    return this.runUpdate("updateOne", filter, update, options);
+  }
+
+  public async updateMany(
+    filter: Filter<TDocument>,
+    update: UpdateFilter<TDocument>,
+    options: UpdateOptions = {},
+  ): Promise<UpdateResult> {
+    return this.runUpdate("updateMany", filter, update, options);
+  }
+
   public find(
     filter: Filter<TDocument> = {} as Filter<TDocument>,
     options: findOptions<TDocument> = {},
@@ -130,6 +179,42 @@ export class SinterCollection<TDocument extends object = Document> {
         ...(options.limit === undefined ? {} : { limit: options.limit }),
       },
     );
+  }
+
+  private async runDelete(
+    command: "deleteOne" | "deleteMany",
+    filter: Filter<TDocument>,
+  ): Promise<DeleteResult> {
+    const value = await this.database.client.executeCommand(
+      this.database.name,
+      command,
+      {
+        collection: this.name,
+        filter: filter as unknown as Document,
+      },
+    );
+
+    return parseDeleteResult(value, command);
+  }
+
+  private async runUpdate(
+    command: "updateOne" | "updateMany",
+    filter: Filter<TDocument>,
+    update: UpdateFilter<TDocument>,
+    options: UpdateOptions,
+  ): Promise<UpdateResult> {
+    const value = await this.database.client.executeCommand(
+      this.database.name,
+      command,
+      {
+        collection: this.name,
+        filter: filter as unknown as Document,
+        update: update as unknown as Document,
+        ...(options.upsert === undefined ? {} : { upsert: options.upsert }),
+      },
+    );
+
+    return parseUpdateResult(value, command);
   }
 }
 
@@ -201,6 +286,57 @@ function parseFindOneResult<TDocument extends object>(
   return document as unknown as WithId<TDocument>;
 }
 
+function parseUpdateResult(
+  value: DocumentValue,
+  command: string,
+): UpdateResult {
+  if (!isPlainDocument(value)) {
+    throw invalidWriteResult(command);
+  }
+
+  const matchedCount = value["matchedCount"];
+  const modifiedCount = value["modifiedCount"];
+  const upsertedId = value["upsertedId"];
+
+  if (
+    value["acknowledged"] !== true ||
+    !isCount(matchedCount) ||
+    !isCount(modifiedCount) ||
+    modifiedCount > matchedCount ||
+    !(upsertedId === null || upsertedId instanceof CustomId)
+  ) {
+    throw invalidWriteResult(command);
+  }
+
+  return Object.freeze({
+    acknowledged: true,
+    matchedCount,
+    modifiedCount,
+    upsertedId,
+  });
+}
+
+function parseDeleteResult(
+  value: DocumentValue,
+  command: string,
+): DeleteResult {
+  if (!isPlainDocument(value)) {
+    throw invalidWriteResult(command);
+  }
+
+  const deletedCount = value["deletedCount"];
+
+  if (value["acknowledged"] !== true || !isCount(deletedCount)) {
+    throw invalidWriteResult(command);
+  }
+
+  return Object.freeze({ acknowledged: true, deletedCount });
+}
+
+function isCount(value: unknown): value is number {
+  return typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
+}
+
 function isPlainDocument(value: unknown): value is Document {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
     return false;
@@ -249,5 +385,11 @@ function invalidInsertManyResult(): SinterProtocolError {
 function invalidFindResult(): SinterProtocolError {
   return new SinterProtocolError(
     "The server returned an invalid findOne result.",
+  );
+}
+
+function invalidWriteResult(command: string): SinterProtocolError {
+  return new SinterProtocolError(
+    `The server returned an invalid ${command} result.`,
   );
 }

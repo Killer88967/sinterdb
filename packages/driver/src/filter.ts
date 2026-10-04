@@ -1,10 +1,11 @@
 import type { CustomId } from "sinterdb-protocol";
 
-type ComparableValue = string | number | bigint | Date | Uint8Array | CustomId;
+export type ComparableValue =
+  string | number | bigint | Date | Uint8Array | CustomId;
 
 type AtomicValue = ComparableValue | boolean | null;
 
-type ElementOf<TValue> = TValue extends readonly (infer TElement)[]
+export type ElementOf<TValue> = TValue extends readonly (infer TElement)[]
   ? TElement
   : TValue;
 
@@ -48,7 +49,7 @@ export type FilterPaths<
       }[keyof TDocument & string]
     : never;
 
-type FilterPathValue<
+export type FilterPathValue<
   TDocument,
   TPath extends string,
 > = TPath extends keyof TDocument
