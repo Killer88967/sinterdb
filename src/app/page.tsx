@@ -2,7 +2,7 @@ const features = [
   {
     title: "TypeScript-first",
     description:
-      "Typed database and collection handles, filters, sorting, and cursor APIs for Node.js.",
+      "Typed database and collection handles, filters, updates, sorting, and cursor APIs for Node.js.",
   },
   {
     title: "Document-oriented",
@@ -10,9 +10,9 @@ const features = [
       "Store structured documents with deterministic binary encoding and custom identifiers.",
   },
   {
-    title: "Server-side cursors",
+    title: "Typed CRUD APIs",
     description:
-      "Batch results efficiently with async iteration, explicit close, and idle timeouts.",
+      "Insert, query, update, replace, and delete documents through a TypeScript-first Node.js API.",
   },
   {
     title: "Open source",
@@ -22,12 +22,12 @@ const features = [
 ];
 
 const currentFeatures = [
-  "Nested document filters",
-  "Comparison and membership operators",
-  "Logical and existence filters",
-  "sort, skip, and limit",
-  "Async iterable FindCursor",
-  "Cursor batching and idle timeout",
+  "updateOne and updateMany",
+  "replaceOne",
+  "deleteOne and deleteMany",
+  "$set, $unset, $inc, $min, and $max",
+  "$push, $pull, and $addToSet",
+  "Upserts and typed UpdateFilter APIs",
 ];
 
 export default function Home() {
@@ -90,7 +90,7 @@ export default function Home() {
           </nav>
 
           <span className="rounded-full border border-white/10 bg-white/4 px-3 py-1 font-mono text-[11px] text-zinc-400">
-            v0.0.6
+            v0.0.7
           </span>
         </div>
       </header>
@@ -108,7 +108,8 @@ export default function Home() {
               px-3 py-1.5 font-mono text-xs text-orange-300"
             >
               <span className="size-1.5 rounded-full bg-orange-400 shadow-[0_0_14px_rgba(251,146,60,0.9)]" />
-              v0.0.6 · Filters &amp; Cursors
+
+              v0.0.7 · Updates, Replacements &amp; Deletes
             </div>
 
             <h1
@@ -179,17 +180,19 @@ export default function Home() {
 const db = client.db("app");
 const users = db.collection<User>("users");
 
-const cursor = users
-  .find({
-    active: true,
-    age: { $gte: 18 },
-  })
-  .sort({ age: -1 })
-  .limit(10);
+await users.updateOne(
+  { name: "Kage" },
+  {
+    $set: { active: true },
+    $inc: { age: 1 },
+  },
+);
 
-for await (const user of cursor) {
-  console.log(user.name);
-}`}</code>
+const result = await users.deleteMany({
+  active: false,
+});
+
+console.log(result.deletedCount);`}</code>
               </pre>
             </div>
           </div>
@@ -240,8 +243,9 @@ for await (const user of cursor) {
               </h2>
 
               <p className="mt-5 max-w-md text-sm leading-7 text-zinc-500 sm:text-base">
-                SinterDB is still early. Version 0.0.6 focuses on query filters,
-                server-side cursors, and the typed driver APIs around them.
+                SinterDB is still early. Version 0.0.7 expands the document API
+                with updates, replacements, deletes, upserts, and typed update
+                operators.
               </p>
             </div>
 
@@ -253,7 +257,7 @@ for await (const user of cursor) {
                   </p>
 
                   <h3 className="mt-2 text-xl font-semibold text-white">
-                    0.0.6 · Filters &amp; Cursors
+                    0.0.7 · Updates, Replacements &amp; Deletes
                   </h3>
                 </div>
 
@@ -281,12 +285,12 @@ for await (const user of cursor) {
                   </p>
 
                   <p className="mt-1 text-sm font-medium text-zinc-300">
-                    v0.0.7 · Updates, replacements &amp; deletes
+                    v0.0.8 · Durable storage &amp; recovery
                   </p>
                 </div>
 
                 <a
-                  href="https://github.com/SinterDB/sinterdb/blob/main/ROADMAP.md#007--updates-replacements-and-deletes"
+                  href="https://github.com/SinterDB/sinterdb/blob/main/ROADMAP.md#008--durable-storage-and-recovery"
                   target="_blank"
                   rel="noreferrer"
                   className="text-sm font-medium text-orange-400 transition hover:text-orange-300"
