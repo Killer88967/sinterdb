@@ -237,6 +237,111 @@ bigints, strings, binary values, `CustomId`, booleans, then dates.
 | `$not`                       | Negates a field operator document |
 | `$and`, `$or`, `$nor`        | Logical combination of filters    |
 
+## Update
+
+`updateOne()` changes the first matching document and `updateMany()` changes
+every match. Both take a filter, an update document, and optional options:
+
+```ts
+const result = await users.updateOne(
+  { email: "ada@example.com" },
+  {
+    $set: { "profile.bio": "Mathematician" },
+    $inc: { loginCount: 1 },
+    $push: { tags: "pioneer" },
+  },
+);
+
+console.log(result.matchedCount, result.modifiedCount);
+```
+
+Updates may only contain operators. Use `replaceOne()` to replace a document.
+
+| Operator    | Meaning                                              |
+| ----------- | ---------------------------------------------------- |
+| `$set`      | Set a field, creating intermediate documents         |
+| `$unset`    | Remove a field                                       |
+| `$inc`      | Add to a number or bigint, creating the field        |
+| `$min`      | Lower a field to the value if the value is smaller   |
+| `$max`      | Raise a field to the value if the value is larger    |
+| `$push`     | Append a value to an array, creating the array       |
+| `$addToSet` | Append a value only if the array does not contain it |
+| `$pull`     | Remove every equal value from an array               |
+
+Rules:
+
+- Field paths may use dots, such as `"profile.stats.level"`. Paths walk
+  documents, not arrays.
+- Two operators in one update cannot target the same path or overlapping
+  paths.
+- `$inc` requires numbers or bigints and does not mix the two.
+- `$min` and `$max` use the same type ordering as `sort`.
+- `_id` cannot be modified.
+- `updateOne()` modifies a document atomically. `updateMany()` is
+  all-or-nothing: if one document fails, none are changed.
+
+`UpdateFilter<TDocument>` checks field paths and value types, so `$inc` is only
+offered for numeric fields and `$push` only for array fields.
+
+### Results
+
+```ts
+interface UpdateResult {
+  readonly acknowledged: true;
+  readonly matchedCount: number;
+  readonly modifiedCount: number;
+  readonly upsertedId: CustomId | null;
+}
+```
+
+`modifiedCount` only counts documents whose stored value actually changed, so
+setting a field to its current value matches but does not modify.
+
+### Upsert
+
+Pass `{ upsert: true }` to insert a document when nothing matches:
+
+```ts
+const result = await users.updateOne(
+  { email: "grace@example.com" },
+  { $set: { name: "Grace" } },
+  { upsert: true },
+);
+
+console.log(result.upsertedId);
+```
+
+The new document starts from the filter's top-level equality fields (and
+`$eq` values), then the update is applied. An `_id` in the filter is reused;
+otherwise one is generated.
+
+## Replace One
+
+`replaceOne()` replaces the first matching document while keeping its `_id`:
+
+```ts
+await users.replaceOne(
+  { email: "ada@example.com" },
+  { email: "ada@example.com", name: "Ada Lovelace" },
+);
+```
+
+The replacement may repeat the existing `_id` but may not change it, and it
+cannot contain operators. It also supports `{ upsert: true }` and returns an
+`UpdateResult`.
+
+## Delete
+
+```ts
+const one = await users.deleteOne({ email: "ada@example.com" });
+const many = await users.deleteMany({ active: false });
+
+console.log(one.deletedCount, many.deletedCount);
+```
+
+Both require a filter and return a `DeleteResult`. Pass an empty filter
+explicitly, as in `deleteMany({})`, to delete every document.
+
 ## Listing Namespaces
 
 ```ts
@@ -316,9 +421,18 @@ try {
 }
 ```
 
+Server rejections of write commands carry a wire code and name:
+
+| Name                       | Cause                                               |
+| -------------------------- | --------------------------------------------------- |
+| `DuplicateKey`             | An inserted or updated `_id` already exists         |
+| `InvalidUpdate`            | A malformed, conflicting, or type-mismatched update |
+| `ImmutableId`              | An update or replacement tried to change `_id`      |
+| `DocumentValidationFailed` | An invalid document, replacement, or filter         |
+
 ## Current Scope
 
-Version `0.0.6` provides:
+Version `0.0.7` provides:
 
 - `SinterClient`
 - `sinterdb://` connection-string parsing
@@ -334,8 +448,13 @@ Version `0.0.6` provides:
 - `FindCursor` with `for await...of`, `next()`, `hasNext()`, `toArray()`, and `close()`
 - `sort`, `skip`, `limit`, and `batchSize` options
 - `listDatabases()` and `listCollections()`
+- `updateOne()` and `updateMany()` with `$set`, `$unset`, `$inc`, `$min`, `$max`, `$push`, `$addToSet`, and `$pull`
+- `replaceOne()`, `deleteOne()`, and `deleteMany()`
+- Upserts, `UpdateResult`, and `DeleteResult`
+- Typed `UpdateFilter<TDocument>`
 - Duplicate `_id` detection
+- Immutable `_id` enforcement
 - Document-size and nesting validation
 - In-memory collection storage
 
-Updates, replacements, and deletes are panned for version `0.0.7`.
+Durable storage and recovery are planned for version `0.0.8`.

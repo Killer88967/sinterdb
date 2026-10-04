@@ -69,7 +69,7 @@ Lifecycle events are written as newline-delimited JSON:
     "host": "127.0.0.1",
     "port": 4721,
     "family": "IPv4",
-    "version": "0.0.6"
+    "version": "0.0.7"
   }
 }
 ```
@@ -88,12 +88,18 @@ After completing the protocol handshake, clients can use:
 - `serverInfo`
 - `listDatabases`
 - `createCollection`
+- `listCollections`
 - `insertOne`
 - `insertMany`
 - `findOne`
 - `find`
 - `getMore`
 - `closeCursor`
+- `updateOne`
+- `updateMany`
+- `replaceOne`
+- `deleteOne`
+- `deleteMany`
 
 ## License
 

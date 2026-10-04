@@ -24,6 +24,10 @@ Internal server implementation for the SinterDB document database.
 - `findOne`
 - `find` with filters, `sort`, `skip`, and `limit`
 - `getMore` and `closeCursor`
+- `updateOne`, `updateMany`, and `replaceOne` with upserts
+- `deleteOne` and `deleteMany`
+- Update operators: `$set`, `$unset`, `$inc`, `$min`, `$max`, `$push`, `$pull`, and `$addToSet`
+- Immutable `_id` enforcement and all-or-nothing `updateMany`
 - Session-scoped cursors with idle timeout
 - Structured wire errors
 - Graceful connection shutdown with a force-close timeout
@@ -45,7 +49,7 @@ console.log(address);
 await server.stop();
 ```
 
-`stop()` closes active connection and destroys any socket that has not closed after five seconds. Pass `{ timeoutMS }` to change the delay
+`stop()` closes active connections and destroys any socket that has not closed after five seconds. Pass `{ timeoutMS }` to change the delay.
 
 Port `0` asks the operating system to select an available temporary port.
 
@@ -57,7 +61,7 @@ The public executable is distributed separately as `sinterdb-server`.
 
 ## Current Limitations
 
-The server stores all data in memory. It does not yet support updates, deletes, persistence, indexes, authentication, or transactions.
+The server stores all data in memory. It does not yet support persistence, indexes, authentication, or transactions.
 
 ## License
 

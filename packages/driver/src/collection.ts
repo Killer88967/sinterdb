@@ -28,7 +28,7 @@ export type EqualityFilter<TDocument extends object> = {
   readonly [Key in keyof TDocument]?: TDocument[Key];
 };
 
-export interface findOptions<TDocument extends object = Document> {
+export interface FindOptions<TDocument extends object = Document> {
   readonly batchSize?: number;
   readonly sort?: Sort<TDocument>;
   readonly skip?: number;
@@ -161,7 +161,7 @@ export class SinterCollection<TDocument extends object = Document> {
 
   public find(
     filter: Filter<TDocument> = {} as Filter<TDocument>,
-    options: findOptions<TDocument> = {},
+    options: FindOptions<TDocument> = {},
   ): FindCursor<TDocument> {
     return new FindCursor<TDocument>(
       (command, parameters) =>

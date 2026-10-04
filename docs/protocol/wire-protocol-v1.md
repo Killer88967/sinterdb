@@ -372,6 +372,51 @@ stream.
 Unknown numeric wire error codes MUST remain decodable so newer servers can
 communicate with older clients.
 
+### 5.8 Command reference
+
+Commands are sent in a Command payload (section 5.3) and answered with a Result
+payload (section 5.4). Commands marked "database" require the `database` field.
+Database and collection names are created on first write.
+
+| Command            | Database | Parameters                                                            | Result                                                         |
+| ------------------ | -------- | --------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `serverInfo`       | No       | none                                                                  | `product`, `productVersion`, `protocolVersion`, `capabilities` |
+| `listDatabases`    | No       | none                                                                  | `databases`: array of names                                    |
+| `createCollection` | Yes      | `name`                                                                | `database`, `collection`, `created`                            |
+| `listCollections`  | Yes      | none                                                                  | `database`, `collections`: array of names                      |
+| `insertOne`        | Yes      | `collection`, `document`                                              | `acknowledged`, `insertedId`                                   |
+| `insertMany`       | Yes      | `collection`, `documents`                                             | `acknowledged`, `insertedCount`, `insertedIds`                 |
+| `findOne`          | Yes      | `collection`, `filter`                                                | `document`: document or `null`                                 |
+| `find`             | Yes      | `collection`, `filter`, optional `batchSize`, `sort`, `skip`, `limit` | `cursorId` (number or `null`), `documents`                     |
+| `getMore`          | Yes      | `cursorId`, optional `batchSize`                                      | `cursorId` (number or `null`), `documents`                     |
+| `closeCursor`      | Yes      | `cursorId`                                                            | `closed`: boolean                                              |
+| `replaceOne`       | Yes      | `collection`, `filter`, `replacement`, optional `upsert`              | `acknowledged`, `matchedCount`, `modifiedCount`, `upsertedId`  |
+| `updateOne`        | Yes      | `collection`, `filter`, `update`, optional `upsert`                   | `acknowledged`, `matchedCount`, `modifiedCount`, `upsertedId`  |
+| `updateMany`       | Yes      | `collection`, `filter`, `update`, optional `upsert`                   | `acknowledged`, `matchedCount`, `modifiedCount`, `upsertedId`  |
+| `deleteOne`        | Yes      | `collection`, `filter`                                                | `acknowledged`, `deletedCount`                                 |
+| `deleteMany`       | Yes      | `collection`, `filter`                                                | `acknowledged`, `deletedCount`                                 |
+
+Notes:
+
+- `sort` is an ordered array of `[path, direction]` pairs where direction is
+  `1` or `-1`. An array is used because document key order is not preserved on
+  the wire.
+- `skip` is a non-negative integer. `limit` is a positive integer. `batchSize`
+  is an integer from 1 to 10,000.
+- A `cursorId` of `null` means the result set is exhausted and no cursor
+  remains. Cursors belong to the connection that opened them, expire after ten
+  minutes without use, and are released when the connection closes. Using an
+  unknown cursor returns `CursorNotFound`.
+- `upsertedId` is `null` unless a document was inserted.
+- `updateMany` is all-or-nothing: if any matched document cannot be updated,
+  no document is changed.
+- Updates may only contain `$set`, `$unset`, `$inc`, `$min`, `$max`, `$push`,
+  `$pull`, and `$addToSet`. Any other update document returns `InvalidUpdate`.
+  A change to `_id` returns `ImmutableId`.
+- `updateOne`, `updateMany`, `replaceOne`, `deleteOne`, and `deleteMany` do not
+  create a collection. `updateOne`, `updateMany`, and `replaceOne` create it
+  only when `upsert` is `true` and a document is inserted.
+
 ## 6. Wire Error Codes
 
 Local codec failures use string-based `ProtocolErrorCode` values. Errors sent

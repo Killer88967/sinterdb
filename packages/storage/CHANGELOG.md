@@ -1,5 +1,33 @@
 # @sinterdb-internal/storage
 
+## 0.0.7
+
+### Patch Changes
+
+- Complete the basic CRUD surface with updates, replacements, and deletes.
+
+  - Add `updateOne()` and `updateMany()` with the `$set`, `$unset`, `$inc`,
+    `$min`, `$max`, `$push`, `$pull`, and `$addToSet` operators.
+  - Add `replaceOne()`, `deleteOne()`, and `deleteMany()`.
+  - Add upsert support for updates and replacements.
+  - Add `UpdateResult` and `DeleteResult` with matched, modified, upserted, and
+    deleted counts. `modifiedCount` only counts documents whose stored value
+    changed.
+  - Add typed `UpdateFilter<TDocument>` so operators only accept compatible
+    fields and value types.
+  - Enforce immutable `_id` values for updates and replacements.
+  - Apply `updateMany` all-or-nothing so a failure never leaves a partially
+    updated set of documents.
+  - Add the `updateOne`, `updateMany`, `replaceOne`, `deleteOne`, and
+    `deleteMany` server commands.
+  - Add the `InvalidUpdate` (4002) and `ImmutableId` (4003) wire error codes.
+  - Add a command reference to the wire protocol document.
+  - Rename the exported `findOptions` interface to `FindOptions`.
+  - Type-check test files in CI and align editor and build configurations.
+
+- Updated dependencies
+  - sinterdb-protocol@0.0.7
+
 ## 0.0.6
 
 ### Patch Changes

@@ -126,7 +126,7 @@ on `SIGINT` or `SIGTERM`.
 
 ## Development Status
 
-The current milestone is `0.0.6 — Filters and Cursors`.
+The current milestone is `0.0.7 — Updates, Replacements, and Deletes`.
 
 Implemented so far:
 
@@ -151,6 +151,12 @@ Implemented so far:
 - `sort`, `skip`, and `limit`
 - Typed `Filter<TDocument>` and `Sort<TDocument>` APIs
 - `listDatabases` and `listCollections`
+- `updateOne` and `updateMany` with `$set`, `$unset`, `$inc`, `$min`, `$max`,
+  `$push`, `$pull`, and `$addToSet`
+- `replaceOne`, `deleteOne`, and `deleteMany`
+- Upserts and matched, modified, deleted, and upserted result counts
+- Immutable `_id` enforcement and all-or-nothing multi-document updates
+- Typed `UpdateFilter<TDocument>` API
 - Duplicate identifier detection
 - Document-size and nesting validation
 - Structured server logging
@@ -158,7 +164,7 @@ Implemented so far:
 - End-to-end driver and server integration tests
 - Graceful signal shutdown
 
-The next milestone, `0.0.7`, introduces updates, replacements, and deletes.
+The next milestone, `0.0.8`, introduces durable storage and recovery.
 
 See [ROADMAP.md](./ROADMAP.md) for the complete development plan.
 
