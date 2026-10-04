@@ -1,0 +1,79 @@
+name: Feature request
+description: Suggest an idea or improvement for SinterDB
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement to SinterDB.
+
+        Please explain the problem you are trying to solve and how the proposed feature would help.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      description: Which part of SinterDB would this feature affect?
+      options:
+        - Server
+        - Driver
+        - Storage
+        - Protocol
+        - CLI
+        - Tests
+        - Documentation
+        - Build / Tooling
+        - Multiple areas
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What problem or limitation are you trying to solve?
+      placeholder: Describe the current limitation or use case.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: Describe how you would like SinterDB to handle this.
+    validations:
+      required: true
+
+  - type: textarea
+    id: example
+    attributes:
+      label: Example
+      description: |
+        If applicable, provide an example of how the feature could work,
+        including example APIs, commands, queries, or configuration.
+      render: text
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Have you considered any alternative approaches or workarounds?
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Add any other information, screenshots, references, or implementation ideas.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues and did not find an existing request for this feature.
+          required: true
+        - label: This request is related to SinterDB or one of its components.
+          required: true
