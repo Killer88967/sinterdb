@@ -1,0 +1,116 @@
+name: Bug report
+description: Report a reproducible problem in SinterDB
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug.
+
+        Please provide as much detail as possible so the issue can be reproduced and investigated.
+
+        For security vulnerabilities, do not open a public issue. Use GitHub Private Vulnerability Reporting instead.
+
+  - type: input
+    id: version
+    attributes:
+      label: SinterDB version
+      description: Which version of SinterDB are you using?
+      placeholder: "0.0.6"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      description: Which part of SinterDB appears to be affected?
+      options:
+        - Server
+        - Driver
+        - Storage
+        - Protocol
+        - CLI
+        - Tests
+        - Documentation
+        - Build / Tooling
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe the problem clearly and concisely.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Provide the smallest set of steps needed to reproduce the issue.
+      placeholder: |
+        1. Start SinterDB with ...
+        2. Run ...
+        3. Send ...
+        4. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What happened instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Provide any relevant environment details.
+      placeholder: |
+        OS: Ubuntu 24.04
+        Node.js: 26.x
+        pnpm: 12.x
+        Runtime: Node.js
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or error output
+      description: Paste any relevant logs, stack traces, or error messages here.
+      render: shell
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Add any other information that may help investigate the issue.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues and did not find an existing report for this problem.
+          required: true
+        - label: I am not reporting a security vulnerability.
+          required: true
+        - label: I have included enough information to reproduce the issue.
+          required: true
