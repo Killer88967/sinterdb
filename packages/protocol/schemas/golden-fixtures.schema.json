@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/Killer88967/sinterdb/blob/main/packages/protocol/schemas/golden-fixtures.schema.json",
+  "$id": "https://github.com/SinterDB/sinterdb/blob/main/packages/protocol/schemas/golden-fixtures.schema.json",
   "title": "SinterDB Golden Protocol Fixtures",
   "description": "Golden-byte fixtures for a version of the SinterDB wire protocol.",
   "type": "object",

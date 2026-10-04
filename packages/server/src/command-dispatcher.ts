@@ -1,9 +1,12 @@
 import {
+  compileFilter,
+  compileUpdate,
   StorageError,
   StorageErrorCode,
   StorageInsertManyError,
   type SortSpecification,
   type StorageFindOptions,
+  type StorageUpdateResult,
 } from "@sinterdb-internal/storage";
 import {
   PROTOCOL_VERSION,
@@ -33,6 +36,11 @@ export const ServerCommand = {
   ListCollections: "listCollections",
   InsertOne: "insertOne",
   InsertMany: "insertMany",
+  DeleteOne: "deleteOne",
+  DeleteMany: "deleteMany",
+  ReplaceOne: "replaceOne",
+  UpdateOne: "updateOne",
+  UpdateMany: "updateMany",
   FindOne: "findOne",
   Find: "find",
   GetMore: "getMore",
@@ -95,6 +103,21 @@ export class CommandDispatcher {
 
       case ServerCommand.FindOne:
         return this.findOne(command);
+
+      case ServerCommand.DeleteOne:
+        return this.deleteDocuments(command, false);
+
+      case ServerCommand.DeleteMany:
+        return this.deleteDocuments(command, true);
+
+      case ServerCommand.ReplaceOne:
+        return this.replaceOne(command);
+
+      case ServerCommand.UpdateOne:
+        return this.updateDocuments(command, false);
+
+      case ServerCommand.UpdateMany:
+        return this.updateDocuments(command, true);
 
       case ServerCommand.Find:
         return this.find(command, cursors);
@@ -166,6 +189,112 @@ export class CommandDispatcher {
       };
     } catch (error: unknown) {
       throw translateCatalogError(error);
+    }
+  }
+
+  private deleteDocuments(command: CommandEnvelope, many: boolean): Document {
+    const databaseName = requireDatabase(command);
+    const collectionName = requireStringParameter(
+      command.parameters,
+      "collection",
+    );
+    const filter = requireDocumentParameter(command.parameters, "filter");
+
+    try {
+      const collection = this.catalog.getCollection(
+        databaseName,
+        collectionName,
+      );
+
+      if (collection === undefined) {
+        compileFilter(filter);
+
+        return { acknowledged: true, deletedCount: 0 };
+      }
+
+      const result = many
+        ? collection.deleteMany(filter)
+        : collection.deleteOne(filter);
+
+      return { acknowledged: true, deletedCount: result.deletedCount };
+    } catch (error: unknown) {
+      if (error instanceof CatalogError) {
+        throw translateCatalogError(error);
+      }
+
+      throw translateStorageError(error);
+    }
+  }
+
+  private replaceOne(command: CommandEnvelope): Document {
+    const databaseName = requireDatabase(command);
+    const collectionName = requireStringParameter(
+      command.parameters,
+      "collection",
+    );
+    const filter = requireDocumentParameter(command.parameters, "filter");
+    const replacement = requireDocumentParameter(
+      command.parameters,
+      "replacement",
+    );
+    const upsert = optionalBooleanParameter(command.parameters, "upsert");
+
+    try {
+      const collection = upsert
+        ? this.catalog.getOrCreateCollection(databaseName, collectionName)
+        : this.catalog.getCollection(databaseName, collectionName);
+
+      if (collection === undefined) {
+        compileFilter(filter);
+
+        return toWriteResult({ matchedCount: 0, modifiedCount: 0 });
+      }
+
+      return toWriteResult(
+        collection.replaceOne(filter, replacement, { upsert }),
+      );
+    } catch (error: unknown) {
+      if (error instanceof CatalogError) {
+        throw translateCatalogError(error);
+      }
+
+      throw translateStorageError(error);
+    }
+  }
+
+  /** @deprecated */
+  private updateDocuments(command: CommandEnvelope, many: boolean): Document {
+    const databaseName = requireDatabase(command);
+    const collectionName = requireStringParameter(
+      command.parameters,
+      "collection",
+    );
+    const filter = requireDocumentParameter(command.parameters, "filter");
+    const update = requireDocumentParameter(command.parameters, "update");
+    const upsert = optionalBooleanParameter(command.parameters, "upsert");
+    try {
+      const collection = upsert
+        ? this.catalog.getOrCreateCollection(databaseName, collectionName)
+        : this.catalog.getCollection(databaseName, collectionName);
+
+      if (collection === undefined) {
+        compileFilter(filter);
+        compileUpdate(update);
+
+        return toWriteResult({ matchedCount: 0, modifiedCount: 0 });
+      }
+
+      return toWriteResult(
+        many
+          ? collection.updateMany(filter, update, { upsert })
+          : collection.updateOne(filter, update, { upsert }),
+      );
+    } catch (error: unknown) {
+      if (error instanceof CatalogError) {
+        throw translateCatalogError(error);
+      }
+
+      throw translateStorageError(error);
     }
   }
 
@@ -496,6 +625,24 @@ function translateStorageError(error: unknown): CommandExecutionError {
     );
   }
 
+  if (error.code === StorageErrorCode.InvalidUpdate) {
+    return new CommandExecutionError(
+      WireErrorCode.InvalidUpdate,
+      "InvalidUpdate",
+      error.message,
+      { details: { storageErrorCode: error.code } },
+    );
+  }
+
+  if (error.code === StorageErrorCode.ImmutableId) {
+    return new CommandExecutionError(
+      WireErrorCode.ImmutableId,
+      "ImmutableId",
+      error.message,
+      { details: { field: "_id", storageErrorCode: error.code } },
+    );
+  }
+
   return new CommandExecutionError(
     WireErrorCode.DocumentValidationFailed,
     "DocumentValidationFailed",
@@ -507,6 +654,34 @@ function translateStorageError(error: unknown): CommandExecutionError {
       },
     },
   );
+}
+
+function toWriteResult(result: StorageUpdateResult): Document {
+  return {
+    acknowledge: true,
+    matchedCount: result.matchedCount,
+    modifiedCount: result.modifiedCount,
+    upsertedId: result.upsertedId ?? null,
+  };
+}
+
+function optionalBooleanParameter(parameters: Document, name: string): boolean {
+  const value = parameters[name];
+
+  if (value === undefined) {
+    return false;
+  }
+
+  if (typeof value !== "boolean") {
+    throw new CommandExecutionError(
+      WireErrorCode.InvalidRequest,
+      "InvalidRequest",
+      `Command parameter ${JSON.stringify(name)} must be a boolean.`,
+      { details: { field: name } },
+    );
+  }
+
+  return value;
 }
 
 function parseFindOptions(parameters: Document): StorageFindOptions {

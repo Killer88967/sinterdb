@@ -71,7 +71,7 @@ sinterdb/
 Clone the repository and install its dependencies:
 
 ```sh
-git clone https://github.com/Killer88967/sinterdb.git
+git clone https://github.com/SinterDB/sinterdb.git
 cd sinterdb
 pnpm install --frozen-lockfile
 ```

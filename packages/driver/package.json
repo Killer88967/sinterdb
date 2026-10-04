@@ -51,11 +51,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Killer88967/sinterdb.git",
+    "url": "git+https://github.com/SinterDB/sinterdb.git",
     "directory": "packages/driver"
   },
-  "homepage": "https://github.com/Killer88967/sinterdb#readme",
+  "homepage": "https://github.com/SinterDB/sinterdb#readme",
   "bugs": {
-    "url": "https://github.com/Killer88967/sinterdb/issues"
+    "url": "https://github.com/SinterDB/sinterdb/issues"
   }
 }
