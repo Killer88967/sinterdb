@@ -1,5 +1,5 @@
 import { withTestServer } from "@sinterdb-internal/test-utils";
-import { CustomId, WireErrorCode } from "sinterdb-protocol";
+import { CustomId, WireErrorCode, type DocumentValue } from "sinterdb-protocol";
 import { describe, expect, it, vi } from "vitest";
 
 import { SinterClient } from "./client.js";
@@ -328,13 +328,14 @@ describe("write result validation", () => {
     const client = new SinterClient("sinterdb://localhost/application");
     const collection = client.db().collection<Person>("people");
     const execute = vi.spyOn(client, "executeCommand");
-
-    for (const value of [
+    const malformedDeletes: DocumentValue[] = [
       null,
       { acknowledged: true },
       { acknowledged: true, deletedCount: -1 },
       { acknowledged: false, deletedCount: 1 },
-    ]) {
+    ];
+
+    for (const value of malformedDeletes) {
       execute.mockResolvedValueOnce(value);
 
       await expect(collection.deleteOne({})).rejects.toThrow(
