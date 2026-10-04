@@ -73,7 +73,7 @@ describe("handshake compatibility", () => {
       await expect(
         performClientHandshake(socket, {
           product: "sinterdb",
-          productVersion: "0.0.6",
+          productVersion: "0.0.7",
           capabilities: [ProtocolCapability.TypedDocuments],
         }),
       ).rejects.toBeInstanceOf(SinterCompatibilityError);

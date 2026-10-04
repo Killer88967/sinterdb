@@ -18,7 +18,7 @@ body:
     attributes:
       label: SinterDB version
       description: Which version of SinterDB are you using?
-      placeholder: "0.0.6"
+      placeholder: "0.0.7"
     validations:
       required: true
 

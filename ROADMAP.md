@@ -738,7 +738,7 @@ The roadmap should be mirrored into these milestones:
 3. `0.0.3 — Server Lifecycle`
 4. `0.0.4 — Driver Connection`
 5. `0.0.5 — Insert and Read`
-6. `0.0.6 — Queries and Cursors`
+6. `0.0.6 — Filters and Cursors`
 7. `0.0.7 — Complete CRUD`
 8. `0.0.8 — Persistence`
 9. `0.0.9 — Indexes`
