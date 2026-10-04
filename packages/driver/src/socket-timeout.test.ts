@@ -85,7 +85,7 @@ async function startTestServer(): Promise<{
   const server = createServer((socket) => {
     const decoder = new MessageStreamDecoder();
 
-    socket.on("data", (chunk) => {
+    socket.on("data", (chunk: Buffer) => {
       const messages = decoder.push(chunk);
 
       for (const message of messages) {

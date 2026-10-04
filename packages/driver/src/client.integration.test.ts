@@ -251,15 +251,15 @@ describe("SinterClient integration", () => {
         }
 
         const ada = await users.findOne({
-          _id: result.insertedIds[0],
+          _id: result.insertedIds[0] as CustomId,
         });
 
         const grace = await users.findOne({
-          _id: result.insertedIds[1],
+          _id: result.insertedIds[1] as CustomId,
         });
 
         const katherine = await users.findOne({
-          _id: result.insertedIds[2],
+          _id: result.insertedIds[2] as CustomId,
         });
 
         expect(ada?.name).toBe("Ada");

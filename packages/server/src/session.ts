@@ -66,7 +66,7 @@ export class ServerSession {
     }, CURSOR_SWEEP_INTERVAL_MS);
     this.sweepTimer.unref();
 
-    socket.on("data", (chunk) => {
+    socket.on("data", (chunk: Buffer) => {
       if (typeof chunk === "string") {
         this.handleProtocolFailure(
           new TypeError("SinterDB sockets must provide binary data."),
