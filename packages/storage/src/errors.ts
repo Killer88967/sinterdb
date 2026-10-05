@@ -12,6 +12,8 @@ export const StorageErrorCode = {
   Corruption: "CORRUPTION",
   Io: "IO_ERROR",
   Closed: "CLOSED",
+  Locked: "LOCKED",
+  UnsupportedFormat: "UNSUPPORTED_FORMAT",
 } as const;
 
 export type StorageErrorCode =

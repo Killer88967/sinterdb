@@ -17,8 +17,16 @@ export {
   WriteAheadLog,
   syncDirectory,
 } from "./wal/index.js";
+export {
+  STORAGE_FORMAT,
+  STORAGE_FORMAT_VERSION,
+  StorageEngine,
+} from "./engine/index.js";
 
 export type {
+  CollectionJournal,
+  InMemoryCollectionOptions,
+  JournalOperation,
   StorageDeleteResult,
   StorageFindOptions,
   StorageInsertManyResult,
@@ -35,3 +43,4 @@ export type {
   WalRecord,
   WriteAheadLogOptions,
 } from "./wal/index.js";
+export type { StorageEngineOptions } from "./engine/index.js";

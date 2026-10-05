@@ -1,0 +1,112 @@
+import { describe, expect, it } from "vitest";
+
+import { StorageError, StorageErrorCode } from "../errors.js";
+import {
+  decodeOperations,
+  encodeOperations,
+  type Operation,
+} from "./operations.js";
+
+const id = (seed: number): Uint8Array =>
+  Uint8Array.from({ length: 16 }, (_, index) => (seed + index) % 256);
+
+describe("operation codec", () => {
+  const operations: Operation[] = [
+    { kind: "createCollection", database: "app", collection: "users" },
+    {
+      kind: "put",
+      database: "app",
+      collection: "users",
+      id: id(1),
+      document: Uint8Array.from([1, 2, 3, 4]),
+    },
+    { kind: "delete", database: "app", collection: "users", id: id(9) },
+    {
+      kind: "put",
+      database: "datenbank-ü",
+      collection: "コレクション",
+      id: id(200),
+      document: new Uint8Array(),
+    },
+  ];
+
+  it("round-trips every operation kind", () => {
+    expect(decodeOperations(encodeOperations(operations))).toEqual(operations);
+  });
+
+  it("round-trips an empty transaction", () => {
+    expect(decodeOperations(encodeOperations([]))).toEqual([]);
+  });
+
+  it("round-trips large documents", () => {
+    const document = new Uint8Array(3 * 1024 * 1024).fill(7);
+    const decoded = decodeOperations(
+      encodeOperations([
+        { kind: "put", database: "a", collection: "b", id: id(0), document },
+      ]),
+    );
+
+    expect((decoded[0] as { document: Uint8Array }).document).toHaveLength(
+      document.byteLength,
+    );
+  });
+
+  it("rejects every truncation of an encoded transaction", () => {
+    const encoded = encodeOperations(operations);
+
+    for (let length = 0; length < encoded.byteLength; length += 1) {
+      expect(
+        () => decodeOperations(encoded.subarray(0, length)),
+        `length ${length}`,
+      ).toThrow(StorageError);
+    }
+  });
+
+  it("rejects trailing bytes and unknown kinds", () => {
+    const encoded = encodeOperations(operations);
+
+    expect(() =>
+      decodeOperations(Buffer.concat([encoded, Buffer.from([0])])),
+    ).toThrow(StorageError);
+
+    const unknown = Buffer.from([0, 0, 0, 1, 99]);
+
+    expect(() => decodeOperations(unknown)).toThrow(StorageError);
+  });
+
+  it("reports malformed records as corruption", () => {
+    try {
+      decodeOperations(Buffer.from([0, 0, 0, 1]));
+      throw new Error("Expected an error.");
+    } catch (error: unknown) {
+      expect((error as StorageError).code).toBe(StorageErrorCode.Corruption);
+    }
+  });
+
+  it("rejects invalid names and ids when encoding", () => {
+    expect(() =>
+      encodeOperations([
+        { kind: "createCollection", database: "", collection: "x" },
+      ]),
+    ).toThrow(RangeError);
+
+    expect(() =>
+      encodeOperations([
+        {
+          kind: "delete",
+          database: "a",
+          collection: "b",
+          id: new Uint8Array(3),
+        },
+      ]),
+    ).toThrow(RangeError);
+  });
+
+  it("rejects names that are not valid UTF-8", () => {
+    const encoded = Buffer.from(encodeOperations(operations));
+
+    encoded[6] = 0xff;
+
+    expect(() => decodeOperations(encoded)).toThrow(StorageError);
+  });
+});

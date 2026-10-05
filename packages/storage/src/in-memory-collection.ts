@@ -46,6 +46,37 @@ export interface StorageDeleteResult {
   readonly deletedCount: number;
 }
 
+export type JournalOperation =
+  | {
+      readonly kind: "put";
+      readonly key: string;
+      readonly document: Uint8Array;
+    }
+  | { readonly kind: "delete"; readonly key: string };
+
+export interface CollectionJournal {
+  /**
+   * Durably records the operations as one atomic unit. It must throw if they
+   * cannot be recorded, in which case the collection is left unchanged.
+   */
+  commit(operations: readonly JournalOperation[]): void;
+}
+
+export interface InMemoryCollectionOptions {
+  readonly journal?: CollectionJournal;
+  /**
+   * Previously recovered documents keyed by hexadecimal `_id`. The collection
+   * takes ownership of the map.
+   */
+  readonly documents?: Map<string, Uint8Array>;
+}
+
+interface PreparedInsert {
+  readonly id: CustomId;
+  readonly key: string;
+  readonly encoded: Uint8Array;
+}
+
 interface LocatedDocument {
   readonly key: string;
   readonly encoded: Uint8Array;
@@ -53,51 +84,28 @@ interface LocatedDocument {
 }
 
 export class InMemoryCollection {
-  private readonly documents = new Map<string, Uint8Array>();
+  private readonly documents: Map<string, Uint8Array>;
+  private readonly journal: CollectionJournal | undefined;
+
+  public constructor(options: InMemoryCollectionOptions = {}) {
+    this.documents = options.documents ?? new Map<string, Uint8Array>();
+    this.journal = options.journal;
+  }
 
   public get documentCount(): number {
     return this.documents.size;
   }
 
   public insertOne(document: Document): StorageInsertOneResult {
-    if (!isPlainDocument(document)) {
-      throw new StorageError(
-        StorageErrorCode.InvalidDocument,
-        "Inserted value must be a document.",
-      );
-    }
+    const prepared = this.prepareInsert(document, undefined);
 
-    const insertedId = resolveDocumentId(document);
-    const key = insertedId.toHexString();
-
-    if (this.documents.has(key)) {
-      throw new StorageError(
-        StorageErrorCode.DuplicateId,
-        `A document with _id ${JSON.stringify(key)} already exists.`,
-      );
-    }
-
-    let encoded: Uint8Array;
-
-    try {
-      encoded = encodeDocument({
-        ...document,
-        _id: insertedId,
-      });
-    } catch (error: unknown) {
-      throw new StorageError(
-        StorageErrorCode.InvalidDocument,
-        "Document could not be encoded.",
-        {
-          cause: error,
-        },
-      );
-    }
-
-    this.documents.set(key, encoded);
+    this.commit([
+      { kind: "put", key: prepared.key, document: prepared.encoded },
+    ]);
+    this.documents.set(prepared.key, prepared.encoded);
 
     return {
-      insertedId,
+      insertedId: prepared.id,
     };
   }
 
@@ -109,25 +117,55 @@ export class InMemoryCollection {
       );
     }
 
-    const insertedIds: CustomId[] = [];
+    const accepted: PreparedInsert[] = [];
+    const pending = new Set<string>();
+    let failure: { index: number; error: StorageError } | undefined;
 
     for (let index = 0; index < documents.length; index += 1) {
-      const document = documents[index];
-
       try {
-        const result = this.insertOne(document as Document);
-        insertedIds.push(result.insertedId);
+        const prepared = this.prepareInsert(
+          documents[index] as Document,
+          pending,
+        );
+
+        accepted.push(prepared);
+        pending.add(prepared.key);
       } catch (error: unknown) {
         if (error instanceof StorageError) {
-          throw new StorageInsertManyError(index, insertedIds, error);
+          failure = { index, error };
+          break;
         }
 
         throw error;
       }
     }
 
+    if (accepted.length > 0) {
+      this.commit(
+        accepted.map((entry) => ({
+          kind: "put" as const,
+          key: entry.key,
+          document: entry.encoded,
+        })),
+      );
+
+      for (const entry of accepted) {
+        this.documents.set(entry.key, entry.encoded);
+      }
+    }
+
+    const insertedIds = accepted.map((entry) => entry.id);
+
+    if (failure !== undefined) {
+      throw new StorageInsertManyError(
+        failure.index,
+        insertedIds,
+        failure.error,
+      );
+    }
+
     return {
-      insertedIds: Object.freeze([...insertedIds]),
+      insertedIds: Object.freeze(insertedIds),
     };
   }
 
@@ -176,6 +214,7 @@ export class InMemoryCollection {
       return { deletedCount: 0 };
     }
 
+    this.commit([{ kind: "delete", key: located.key }]);
     this.documents.delete(located.key);
 
     return { deletedCount: 1 };
@@ -189,6 +228,10 @@ export class InMemoryCollection {
       if (matches(decodeDocument(encoded))) {
         keys.push(key);
       }
+    }
+
+    if (keys.length > 0) {
+      this.commit(keys.map((key) => ({ kind: "delete" as const, key })));
     }
 
     for (const key of keys) {
@@ -255,6 +298,7 @@ export class InMemoryCollection {
     const modified = !bytesEqual(encoded, located.encoded);
 
     if (modified) {
+      this.commit([{ kind: "put", key: located.key, document: encoded }]);
       this.documents.set(located.key, encoded);
     }
 
@@ -278,6 +322,9 @@ export class InMemoryCollection {
     const pending = prepareUpdate(located, apply);
 
     if (pending !== undefined) {
+      this.commit([
+        { kind: "put", key: pending.key, document: pending.encoded },
+      ]);
       this.documents.set(pending.key, pending.encoded);
     }
 
@@ -318,6 +365,16 @@ export class InMemoryCollection {
       return this.upsertFromUpdate(filter, apply, upsert);
     }
 
+    if (pending.length > 0) {
+      this.commit(
+        pending.map((entry) => ({
+          kind: "put" as const,
+          key: entry.key,
+          document: entry.encoded,
+        })),
+      );
+    }
+
     for (const entry of pending) {
       this.documents.set(entry.key, entry.encoded);
     }
@@ -348,6 +405,10 @@ export class InMemoryCollection {
   }
 
   public clear(): void {
+    if (this.journal !== undefined) {
+      throw new Error("A durable collection cannot be cleared.");
+    }
+
     this.documents.clear();
   }
 
@@ -399,6 +460,51 @@ export class InMemoryCollection {
     }
 
     return undefined;
+  }
+
+  private prepareInsert(
+    document: Document,
+    pending: ReadonlySet<string> | undefined,
+  ): PreparedInsert {
+    if (!isPlainDocument(document)) {
+      throw new StorageError(
+        StorageErrorCode.InvalidDocument,
+        "Inserted value must be a document.",
+      );
+    }
+
+    const id = resolveDocumentId(document);
+    const key = id.toHexString();
+
+    if (this.documents.has(key) || pending?.has(key) === true) {
+      throw new StorageError(
+        StorageErrorCode.DuplicateId,
+        `A document with _id ${JSON.stringify(key)} already exists.`,
+      );
+    }
+
+    let encoded: Uint8Array;
+
+    try {
+      encoded = encodeDocument({
+        ...document,
+        _id: id,
+      });
+    } catch (error: unknown) {
+      throw new StorageError(
+        StorageErrorCode.InvalidDocument,
+        "Document could not be encoded.",
+        {
+          cause: error,
+        },
+      );
+    }
+
+    return { id, key, encoded };
+  }
+
+  private commit(operations: readonly JournalOperation[]): void {
+    this.journal?.commit(operations);
   }
 
   private *scan(
