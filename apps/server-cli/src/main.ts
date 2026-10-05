@@ -32,6 +32,12 @@ async function startServer(
   const config: ServerConfigInput = {
     ...(command.host === undefined ? {} : { host: command.host }),
     ...(command.port === undefined ? {} : { port: command.port }),
+    ...(command.dataDir === undefined
+      ? {}
+      : { dataDirectory: command.dataDir }),
+    ...(command.durability === undefined
+      ? {}
+      : { durability: command.durability }),
   };
 
   const server = new SinterServer(config);
@@ -98,5 +104,14 @@ async function startServer(
     port: address.port,
     family: address.family,
     version: SERVER_PRODUCT_VERSION,
+    ...(server.config.dataDirectory === undefined
+      ? { storage: "memory" }
+      : {
+          storage: "memory",
+          dataDirectory: server.config.dataDirectory,
+          durability: server.config.dataDirectory,
+          databases: server.catalog.databaseCount,
+          collections: server.catalog.collectionCount,
+        }),
   });
 }

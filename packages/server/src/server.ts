@@ -12,6 +12,7 @@ import {
   type ServerConfigInput,
   type ServerEnvironment,
 } from "./config.js";
+import { StorageEngine } from "@sinterdb-internal/storage";
 import { ServerSession } from "./session.js";
 import { InMemoryCatalog } from "./catalog.js";
 import { CommandDispatcher } from "./command-dispatcher.js";
@@ -54,11 +55,12 @@ export class ServerLifecycleError extends Error {
 
 export class SinterServer extends EventEmitter {
   public readonly config: Readonly<ServerConfig>;
-  public readonly catalog: InMemoryCatalog;
 
+  private currentCatalog: InMemoryCatalog | undefined;
+  private engine: StorageEngine | undefined;
   private netServer: NetServer | undefined;
   private readonly sockets = new Set<Socket>();
-  private readonly dispatcher: CommandDispatcher;
+  private dispatcher: CommandDispatcher | undefined;
   private currentState: SinterServerState = SinterServerState.Stopped;
   private currentAddress: SinterServerAddress | undefined;
   private stopOperation: Promise<void> | undefined;
@@ -70,8 +72,27 @@ export class SinterServer extends EventEmitter {
     super();
 
     this.config = resolveServerConfig(input, environment);
-    this.catalog = new InMemoryCatalog();
-    this.dispatcher = new CommandDispatcher(this.catalog);
+
+    if (this.config.dataDirectory === undefined) {
+      this.currentCatalog = new InMemoryCatalog();
+      this.dispatcher = new CommandDispatcher(this.currentCatalog);
+    }
+  }
+
+  /**
+   * The catalog of databases and collections. A server with a data directory
+   * only has one once it has started, because starting is when the data is
+   * recovered.
+   */
+  public get catalog(): InMemoryCatalog {
+    if (this.currentCatalog === undefined) {
+      throw new ServerLifecycleError(
+        this.currentState,
+        "The catalog is not available until the server has started.",
+      );
+    }
+
+    return this.currentCatalog;
   }
 
   public get state(): SinterServerState {
@@ -96,6 +117,22 @@ export class SinterServer extends EventEmitter {
 
     this.currentState = SinterServerState.Starting;
 
+    if (this.config.dataDirectory !== undefined) {
+      try {
+        this.engine = StorageEngine.open({
+          directory: this.config.dataDirectory,
+          durability: this.config.durability,
+        });
+      } catch (error: unknown) {
+        this.currentState = SinterServerState.Stopped;
+
+        throw error;
+      }
+
+      this.currentCatalog = new InMemoryCatalog(this.engine);
+      this.dispatcher = new CommandDispatcher(this.currentCatalog);
+    }
+
     const server = createServer((socket) => {
       this.trackSocket(socket);
     });
@@ -115,6 +152,7 @@ export class SinterServer extends EventEmitter {
       this.netServer = undefined;
       this.currentAddress = undefined;
       this.currentState = SinterServerState.Stopped;
+      this.releaseEngine();
 
       throw error;
     }
@@ -153,21 +191,49 @@ export class SinterServer extends EventEmitter {
 
     this.stopOperation = operation;
 
+    let failure: unknown;
+
     try {
       await operation;
+    } catch (error: unknown) {
+      failure = error;
     } finally {
       this.netServer = undefined;
       this.currentAddress = undefined;
       this.stopOperation = undefined;
       this.currentState = SinterServerState.Stopped;
     }
+
+    try {
+      this.releaseEngine();
+    } catch (error: unknown) {
+      failure ??= error;
+    }
+
+    if (failure !== undefined) {
+      throw failure;
+    }
+  }
+
+  private releaseEngine(): void {
+    const engine = this.engine;
+
+    if (engine === undefined) {
+      return;
+    }
+
+    this.engine = undefined;
+    this.currentCatalog = undefined;
+    this.dispatcher = undefined;
+
+    engine.close();
   }
 
   private trackSocket(socket: Socket): void {
     this.sockets.add(socket);
 
     new ServerSession(socket, {
-      dispatcher: this.dispatcher,
+      dispatcher: this.dispatcher as CommandDispatcher,
       onError: (error) => this.emit("error", error),
     });
 

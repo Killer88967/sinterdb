@@ -8,12 +8,24 @@ Usage:
 Options:
   --host <host>       Address to listen on
   -p, --port <port>   TCP port to listen on
+  --data-dir <path>   Store data durably in this directory
+  --durability <mode> How writes are acknowledged: fsync (default) or buffered
   -h, --help          Show this help message
   -v, --version       Show the server version
 
+Without --data-dir all data is kept in memory and lost on shutdown.
+
+Durability modes (with --data-dir):
+  fsync     A write is acknowledged after it reaches stable storage. It
+            survives a crash or power loss.
+  buffered  A write is acknowledged after it reaches the operating system. It
+            survives a server crash but can be lost on power loss.
+
 Environment:
-  SINTERDB_HOST        Default listening address
-  SINTERDB_PORT        Default listening port
+  SINTERDB_HOST          Default listening address
+  SINTERDB_PORT          Default listening port
+  SINTERDB_DATA_DIR      Default data directory
+  SINTERDB_DURABILITY    Default durability mode
 `;
 
 export type CliCommand =
@@ -21,6 +33,8 @@ export type CliCommand =
       kind: "start";
       host?: string;
       port?: string;
+      dataDir?: string;
+      durability?: string;
     }
   | {
       kind: "help";
@@ -52,6 +66,12 @@ export function parseCliArguments(arguments_: readonly string[]): CliCommand {
           type: "string",
           short: "p",
         },
+        "data-dir": {
+          type: "string",
+        },
+        durability: {
+          type: "string",
+        },
         help: {
           type: "boolean",
           short: "h",
@@ -74,6 +94,8 @@ export function parseCliArguments(arguments_: readonly string[]): CliCommand {
   const version = readBooleanOption(parsed.values, "version");
   const host = readStringOption(parsed.values, "host");
   const port = readStringOption(parsed.values, "port");
+  const dataDir = readStringOption(parsed.values, "data-dir");
+  const durability = readStringOption(parsed.values, "durability");
 
   if (help && version) {
     throw new CliUsageError("--help and --version cannot be used together.");
@@ -95,6 +117,8 @@ export function parseCliArguments(arguments_: readonly string[]): CliCommand {
     kind: "start",
     ...(host === undefined ? {} : { host }),
     ...(port === undefined ? {} : { port }),
+    ...(dataDir === undefined ? {} : { dataDir }),
+    ...(durability === undefined ? {} : { durability }),
   };
 }
 

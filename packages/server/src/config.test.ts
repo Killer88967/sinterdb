@@ -12,6 +12,7 @@ describe("resolveServerConfig", () => {
     expect(resolveServerConfig({}, {})).toEqual({
       host: DEFAULT_SERVER_HOST,
       port: DEFAULT_SERVER_PORT,
+      durability: "fsync",
     });
   });
 
@@ -27,6 +28,7 @@ describe("resolveServerConfig", () => {
     ).toEqual({
       host: "0.0.0.0",
       port: 5000,
+      durability: "fsync",
     });
   });
 
@@ -45,6 +47,7 @@ describe("resolveServerConfig", () => {
     ).toEqual({
       host: "127.0.0.1",
       port: 6000,
+      durability: "fsync",
     });
   });
 
@@ -81,5 +84,69 @@ describe("resolveServerConfig", () => {
     }
 
     throw new Error("Expected invalid server configuration.");
+  });
+});
+
+describe("resolveServerConfig storage options", () => {
+  it("keeps the server in memory without a data directory", () => {
+    expect(resolveServerConfig({}, {})).not.toHaveProperty("dataDirectory");
+  });
+
+  it("reads the data directory and durability from input", () => {
+    expect(
+      resolveServerConfig(
+        { dataDirectory: "  /var/lib/sinterdb  ", durability: "buffered" },
+        {},
+      ),
+    ).toMatchObject({
+      dataDirectory: "/var/lib/sinterdb",
+      durability: "buffered",
+    });
+  });
+
+  it("reads the data directory and durability from the environment", () => {
+    expect(
+      resolveServerConfig(
+        {},
+        { SINTERDB_DATA_DIR: "/data", SINTERDB_DURABILITY: "buffered" },
+      ),
+    ).toMatchObject({ dataDirectory: "/data", durability: "buffered" });
+  });
+
+  it("defaults to fsync durability with a data directory", () => {
+    expect(resolveServerConfig({ dataDirectory: "/data" }, {})).toMatchObject({
+      durability: "fsync",
+    });
+  });
+
+  it("gives explicit input precedence over the environment", () => {
+    expect(
+      resolveServerConfig(
+        { dataDirectory: "/explicit", durability: "fsync" },
+        { SINTERDB_DATA_DIR: "/env", SINTERDB_DURABILITY: "buffered" },
+      ),
+    ).toMatchObject({ dataDirectory: "/explicit", durability: "fsync" });
+  });
+
+  it("rejects an empty data directory", () => {
+    expect(() => resolveServerConfig({ dataDirectory: "   " }, {})).toThrow(
+      ServerConfigurationError,
+    );
+  });
+
+  it("rejects an unknown durability mode", () => {
+    expect(() =>
+      resolveServerConfig({ dataDirectory: "/data", durability: "fast" }, {}),
+    ).toThrow(ServerConfigurationError);
+  });
+
+  it("rejects a durability mode without a data directory", () => {
+    try {
+      resolveServerConfig({ durability: "fsync" }, {});
+      throw new Error("Expected a configuration error.");
+    } catch (error: unknown) {
+      expect(error).toBeInstanceOf(ServerConfigurationError);
+      expect((error as ServerConfigurationError).option).toBe("durability");
+    }
   });
 });

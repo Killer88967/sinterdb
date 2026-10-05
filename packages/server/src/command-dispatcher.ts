@@ -643,6 +643,21 @@ function translateStorageError(error: unknown): CommandExecutionError {
     );
   }
 
+  if (
+    error.code === StorageErrorCode.Io ||
+    error.code === StorageErrorCode.Closed ||
+    error.code === StorageErrorCode.Corruption ||
+    error.code === StorageErrorCode.Locked ||
+    error.code === StorageErrorCode.UnsupportedFormat
+  ) {
+    return new CommandExecutionError(
+      WireErrorCode.InternalError,
+      "InternalError",
+      "The server could not persist the operation. Its outcome is unknown.",
+      { details: { storageErrorCode: error.code } },
+    );
+  }
+
   return new CommandExecutionError(
     WireErrorCode.DocumentValidationFailed,
     "DocumentValidationFailed",

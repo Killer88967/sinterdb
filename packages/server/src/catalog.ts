@@ -1,4 +1,4 @@
-import { InMemoryCollection } from "@sinterdb-internal/storage";
+import { InMemoryCollection, StorageEngine } from "@sinterdb-internal/storage";
 
 export const CatalogErrorCode = {
   InvalidDatabaseName: "INVALID_DATABASE_NAME",
@@ -20,6 +20,8 @@ export class CatalogError extends Error {
   }
 }
 
+const MAX_NAME_BYTES = 255;
+
 export interface CreatedCollection {
   database: string;
   collection: string;
@@ -33,11 +35,29 @@ interface DatabaseEntry {
 export class InMemoryCatalog {
   private readonly databases = new Map<string, DatabaseEntry>();
 
+  /**
+   * Without an engine every collection lives only in memory. With one, the
+   * engine owns the collection and every change is made durable first.
+   */
+  public constructor(private readonly engine?: StorageEngine) {}
+
   public get databaseCount(): number {
-    return this.databases.size;
+    return this.engine === undefined
+      ? this.databases.size
+      : this.engine.listDatabases().length;
   }
 
   public get collectionCount(): number {
+    if (this.engine !== undefined) {
+      let total = 0;
+
+      for (const database of this.engine.listDatabases()) {
+        total += this.engine.listCollections(database).length;
+      }
+
+      return total;
+    }
+
     let count = 0;
 
     for (const database of this.databases.values()) {
@@ -48,17 +68,28 @@ export class InMemoryCatalog {
   }
 
   public listDatabases(): string[] {
+    if (this.engine !== undefined) {
+      return sortNames(this.engine.listDatabases());
+    }
     return sortNames(this.databases.keys());
   }
 
   public hasDatabase(name: string): boolean {
     validateDatabaseName(name);
 
+    if (this.engine !== undefined) {
+      return this.engine.listCollections(name).length > 0;
+    }
+
     return this.databases.has(name);
   }
 
   public listCollections(databaseName: string): string[] {
     validateDatabaseName(databaseName);
+
+    if (this.engine !== undefined) {
+      return sortNames(this.engine.listCollections(databaseName));
+    }
 
     const database = this.databases.get(databaseName);
 
@@ -73,6 +104,12 @@ export class InMemoryCatalog {
     validateDatabaseName(databaseName);
     validateCollectionName(collectionName);
 
+    if (this.engine !== undefined) {
+      return (
+        this.engine.getCollection(databaseName, collectionName) !== undefined
+      );
+    }
+
     return (
       this.databases.get(databaseName)?.collections.has(collectionName) ?? false
     );
@@ -85,6 +122,10 @@ export class InMemoryCatalog {
     validateDatabaseName(databaseName);
     validateCollectionName(collectionName);
 
+    if (this.engine !== undefined) {
+      return this.engine.getCollection(databaseName, collectionName);
+    }
+
     return this.databases.get(databaseName)?.collections.get(collectionName);
   }
 
@@ -94,6 +135,10 @@ export class InMemoryCatalog {
   ): InMemoryCollection {
     validateDatabaseName(databaseName);
     validateCollectionName(collectionName);
+
+    if (this.engine !== undefined) {
+      return this.engine.openCollection(databaseName, collectionName);
+    }
 
     const database = this.getOrCreateDatabase(databaseName);
     const existing = database.collections.get(collectionName);
@@ -116,6 +161,23 @@ export class InMemoryCatalog {
     validateDatabaseName(databaseName);
     validateCollectionName(collectionName);
 
+    if (this.engine !== undefined) {
+      if (
+        this.engine.getCollection(databaseName, collectionName) !== undefined
+      ) {
+        throw new CatalogError(
+          CatalogErrorCode.NamespaceConflict,
+          `Collection ${JSON.stringify(
+            `${databaseName}.${collectionName}`,
+          )} already exists.`,
+        );
+      }
+
+      this.engine.openCollection(databaseName, collectionName);
+
+      return { database: databaseName, collection: collectionName };
+    }
+
     const database = this.getOrCreateDatabase(databaseName);
 
     if (database.collections.has(collectionName)) {
@@ -136,6 +198,10 @@ export class InMemoryCatalog {
   }
 
   public clear(): void {
+    if (this.engine !== undefined) {
+      throw new Error("A durable catalog cannot be cleared.");
+    }
+
     for (const database of this.databases.values()) {
       for (const collection of database.collections.values()) {
         collection.clear();
@@ -187,6 +253,13 @@ function validateName(
     throw new CatalogError(
       errorCode,
       `${capitalize(kind)} name cannot contain a null character.`,
+    );
+  }
+
+  if (Buffer.byteLength(name, "utf8") > MAX_NAME_BYTES) {
+    throw new CatalogError(
+      errorCode,
+      `${capitalize(kind)} name cannot be longer than ${MAX_NAME_BYTES} bytes.`,
     );
   }
 }

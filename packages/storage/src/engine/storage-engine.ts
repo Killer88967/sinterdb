@@ -193,7 +193,22 @@ export class StorageEngine {
       );
     }
 
-    this.log.append(RecordType.Transaction, encodeOperations(operations));
+    let payload: Uint8Array;
+
+    try {
+      payload = encodeOperations(operations);
+      this.log.append(RecordType.Transaction, payload);
+    } catch (error: unknown) {
+      if (error instanceof RangeError) {
+        throw new StorageError(
+          StorageErrorCode.InvalidBatch,
+          `The operation is too large to record: ${error.message}`,
+          { cause: error },
+        );
+      }
+
+      throw error;
+    }
   }
 
   private replay(): void {

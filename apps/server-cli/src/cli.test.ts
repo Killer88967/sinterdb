@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { CliUsageError, parseCliArguments } from "./cli.js";
+import { CliUsageError, parseCliArguments, HELP_TEXT } from "./cli.js";
 
 describe("parseCliArguments", () => {
   it("starts with environment-backed defaults", () => {
@@ -50,5 +50,47 @@ describe("parseCliArguments", () => {
     expect(() => parseCliArguments(["--help", "--version"])).toThrow(
       CliUsageError,
     );
+  });
+
+  it("parses the data directory and durability options", () => {
+    expect(
+      parseCliArguments([
+        "--data-dir",
+        "/var/lib/sinterdb",
+        "--durability",
+        "buffered",
+      ]),
+    ).toEqual({
+      kind: "start",
+      dataDir: "/var/lib/sinterdb",
+      durability: "buffered",
+    });
+  });
+
+  it("parses the data directory on its own", () => {
+    expect(parseCliArguments(["--data-dir", "./data"])).toEqual({
+      kind: "start",
+      dataDir: "./data",
+    });
+  });
+
+  it("rejects storage options without values", () => {
+    expect(() => parseCliArguments(["--data-dir"])).toThrow(CliUsageError);
+    expect(() => parseCliArguments(["--durability"])).toThrow(CliUsageError);
+  });
+
+  it("documents every option and environment variable", () => {
+    for (const text of [
+      "--host",
+      "-p, --port",
+      "--data-dir",
+      "--durability",
+      "SINTERDB_DATA_DIR",
+      "SINTERDB_DURABILITY",
+      "fsync",
+      "buffered",
+    ]) {
+      expect(HELP_TEXT).toContain(text);
+    }
   });
 });
