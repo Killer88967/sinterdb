@@ -38,6 +38,9 @@ async function startServer(
     ...(command.durability === undefined
       ? {}
       : { durability: command.durability }),
+    ...(command.checkpointBytes === undefined
+      ? {}
+      : { checkpointThresholdBytes: command.checkpointBytes }),
   };
 
   const server = new SinterServer(config);
@@ -107,11 +110,19 @@ async function startServer(
     ...(server.config.dataDirectory === undefined
       ? { storage: "memory" }
       : {
-          storage: "memory",
+          storage: "disk",
           dataDirectory: server.config.dataDirectory,
           durability: server.config.dataDirectory,
           databases: server.catalog.databaseCount,
           collections: server.catalog.collectionCount,
+          checkpointLsn: String(server.recovery?.checkpointLsn ?? 0n),
+          replayedRecord: server.recovery?.replayedRecords ?? 0,
+          skippedCheckpoints: server.recovery?.skippedCheckpoints.map(
+            (entry) => ({
+              file: entry.file,
+              reason: entry.reason,
+            }),
+          ),
         }),
   });
 }

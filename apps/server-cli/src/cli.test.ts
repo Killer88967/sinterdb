@@ -74,6 +74,21 @@ describe("parseCliArguments", () => {
     });
   });
 
+  it("parses the checkpoint threshold", () => {
+    expect(
+      parseCliArguments([
+        "--data-dir",
+        "./data",
+        "--checkpoint-bytes",
+        "1048576",
+      ]),
+    ).toEqual({
+      kind: "start",
+      dataDir: "./data",
+      checkpointBytes: "1048576",
+    });
+  });
+
   it("rejects storage options without values", () => {
     expect(() => parseCliArguments(["--data-dir"])).toThrow(CliUsageError);
     expect(() => parseCliArguments(["--durability"])).toThrow(CliUsageError);
@@ -85,8 +100,10 @@ describe("parseCliArguments", () => {
       "-p, --port",
       "--data-dir",
       "--durability",
+      "--checkpoint-bytes",
       "SINTERDB_DATA_DIR",
       "SINTERDB_DURABILITY",
+      "SINTERDB_CHECKPOINT_BYTES",
       "fsync",
       "buffered",
     ]) {

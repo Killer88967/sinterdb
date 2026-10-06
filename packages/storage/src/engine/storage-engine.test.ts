@@ -353,7 +353,7 @@ describe("log records", () => {
 
 describe("crash recovery", () => {
   it("drops an incomplete trailing transaction", () => {
-    let engine = open();
+    let engine = open({ checkpointOnClose: false });
     const users = engine.openCollection("app", "users");
 
     users.insertOne({ name: "one" });

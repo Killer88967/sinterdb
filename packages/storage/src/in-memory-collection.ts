@@ -92,6 +92,14 @@ export class InMemoryCollection {
     this.journal = options.journal;
   }
 
+  /**
+   * Every stored document as its hexadecimal `_id` and encoded bytes. The
+   * bytes are never modified in place, so they are safe to keep.
+   */
+  public entries(): IterableIterator<[string, Uint8Array]> {
+    return this.documents.entries();
+  }
+
   public get documentCount(): number {
     return this.documents.size;
   }

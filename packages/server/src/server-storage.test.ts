@@ -194,6 +194,65 @@ describe("SinterServer with a data directory", () => {
   });
 });
 
+describe("checkpoints and recovery reports", () => {
+  it("reports what recovery did", async () => {
+    const first = create();
+
+    expect(first.recovery).toBeUndefined();
+
+    await first.start();
+
+    expect(first.recovery).toMatchObject({
+      checkpointLsn: 0n,
+      replayedRecords: 0,
+      skippedCheckpoints: [],
+    });
+
+    first.catalog.getOrCreateCollection("app", "users").insertOne({ n: 1 });
+    await first.stop();
+
+    expect(first.recovery).toBeUndefined();
+
+    const second = create();
+
+    await second.start();
+
+    expect(second.recovery?.checkpointLsn).toBeGreaterThan(0n);
+    expect(second.recovery?.replayedRecords).toBe(0);
+  });
+
+  it("checkpoints automatically and recovers from the snapshot", async () => {
+    const first = new SinterServer(
+      { port: 0, dataDirectory: directory, checkpointThresholdBytes: 1500 },
+      {},
+    );
+
+    servers.push(first);
+    await first.start();
+
+    const items = first.catalog.getOrCreateCollection("app", "items");
+
+    for (let index = 0; index < 120; index += 1) {
+      items.insertOne({ index, padding: "x".repeat(30) });
+    }
+
+    expect(readdirSync(join(directory, "checkpoints")).length).toBeGreaterThan(
+      0,
+    );
+
+    await first.stop();
+
+    const second = create();
+
+    await second.start();
+
+    expect(second.recovery?.checkpointLsn).toBeGreaterThan(0n);
+    expect(second.catalog.getCollection("app", "items")?.documentCount).toBe(
+      120,
+    );
+  });
+});
+
 describe("durable catalog", () => {
   it("rejects names that cannot be recorded", async () => {
     const server = create();

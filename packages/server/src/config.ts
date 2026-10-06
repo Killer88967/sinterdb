@@ -13,6 +13,11 @@ export interface ServerConfig {
    */
   dataDirectory?: string;
   durability: DurabilityMode;
+  /**
+   * Bytes of log written between automatic checkpoints. The storage engine's
+   * default applies when it is not set.
+   */
+  checkpointThresholdBytes?: number;
 }
 
 export interface ServerConfigInput {
@@ -20,6 +25,7 @@ export interface ServerConfigInput {
   port?: number | string;
   dataDirectory?: string;
   durability?: string;
+  checkpointThresholdBytes?: number | string;
 }
 
 export type ServerEnvironment = Readonly<{
@@ -27,10 +33,11 @@ export type ServerEnvironment = Readonly<{
   SINTERDB_PORT?: string;
   SINTERDB_DATA_DIR?: string;
   SINTERDB_DURABILITY?: string;
+  SINTERDB_CHECKPOINT_BYTES?: string;
 }>;
 
 export type ServerConfigurationOption =
-  "host" | "port" | "dataDirectory" | "durability";
+  "host" | "port" | "dataDirectory" | "durability" | "checkpointThresholdBytes";
 
 export class ServerConfigurationError extends Error {
   public readonly option: ServerConfigurationOption;
@@ -61,11 +68,25 @@ export function resolveServerConfig(
     );
   }
 
+  const checkpointThresholdBytes = resolveCheckpointThreshold(
+    input.checkpointThresholdBytes ?? environment.SINTERDB_CHECKPOINT_BYTES,
+  );
+
+  if (checkpointThresholdBytes !== undefined && dataDirectory === undefined) {
+    throw new ServerConfigurationError(
+      "checkpointThresholdBytes",
+      "A checkpoint threshold only applies when a date directory is configured.",
+    );
+  }
+
   return {
     host,
     port,
     ...(dataDirectory === undefined ? {} : { dataDirectory }),
     durability: resolveDurability(requestDurability),
+    ...(checkpointThresholdBytes === undefined
+      ? {}
+      : { checkpointThresholdBytes }),
   };
 }
 
@@ -133,6 +154,30 @@ function resolveDurability(value: string | undefined): DurabilityMode {
   }
 
   return mode;
+}
+
+function resolveCheckpointThreshold(
+  value: number | string | undefined,
+): number | undefined {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  const bytes =
+    typeof value === "number"
+      ? value
+      : value.trim().length === 0
+        ? Number.NaN
+        : Number(value);
+
+  if (!Number.isSafeInteger(bytes) || bytes < 1) {
+    throw new ServerConfigurationError(
+      "checkpointThresholdBytes",
+      `Checkpoint threshold must be a positive integer number of bytes; received ${JSON.stringify(value)}.`,
+    );
+  }
+
+  return bytes;
 }
 
 function invalidPort(value: number | string): ServerConfigurationError {

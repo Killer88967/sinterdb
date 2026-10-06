@@ -150,6 +150,14 @@ export class WriteAheadLog {
     return this.nextLsn - 1n;
   }
 
+  /**
+   * The log sequence number of the oldest record still available. It is
+   * greater than 1 once old segments have been removed.
+   */
+  public get firstLsn(): bigint {
+    return (this.segments[0] as SegmentInfo).firstLsn;
+  }
+
   public get segmentCount(): number {
     return this.segments.length;
   }

@@ -10,6 +10,8 @@ Options:
   -p, --port <port>   TCP port to listen on
   --data-dir <path>   Store data durably in this directory
   --durability <mode> How writes are acknowledged: fsync (default) or buffered
+  --checkpoint-bytes <n>
+                      Bytes of log between automatic checkpoints (default 64 MiB)
   -h, --help          Show this help message
   -v, --version       Show the server version
 
@@ -26,6 +28,9 @@ Environment:
   SINTERDB_PORT          Default listening port
   SINTERDB_DATA_DIR      Default data directory
   SINTERDB_DURABILITY    Default durability mode
+  SINTERDB_CHECKPOINT_BYTES
+                         Default bytes of log between checkpoints
+
 `;
 
 export type CliCommand =
@@ -35,6 +40,7 @@ export type CliCommand =
       port?: string;
       dataDir?: string;
       durability?: string;
+      checkpointBytes?: string;
     }
   | {
       kind: "help";
@@ -72,6 +78,9 @@ export function parseCliArguments(arguments_: readonly string[]): CliCommand {
         durability: {
           type: "string",
         },
+        "checkpoint-bytes": {
+          type: "string",
+        },
         help: {
           type: "boolean",
           short: "h",
@@ -96,6 +105,7 @@ export function parseCliArguments(arguments_: readonly string[]): CliCommand {
   const port = readStringOption(parsed.values, "port");
   const dataDir = readStringOption(parsed.values, "data-dir");
   const durability = readStringOption(parsed.values, "durability");
+  const checkpointBytes = readStringOption(parsed.values, "checkpoint-bytes");
 
   if (help && version) {
     throw new CliUsageError("--help and --version cannot be used together.");
@@ -119,6 +129,7 @@ export function parseCliArguments(arguments_: readonly string[]): CliCommand {
     ...(port === undefined ? {} : { port }),
     ...(dataDir === undefined ? {} : { dataDir }),
     ...(durability === undefined ? {} : { durability }),
+    ...(checkpointBytes === undefined ? {} : { checkpointBytes }),
   };
 }
 

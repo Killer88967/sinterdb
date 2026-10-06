@@ -18,6 +18,7 @@ export {
   syncDirectory,
 } from "./wal/index.js";
 export {
+  DEFAULT_CHECKPOINT_THRESHOLD_BYTES,
   STORAGE_FORMAT,
   STORAGE_FORMAT_VERSION,
   StorageEngine,
@@ -43,4 +44,10 @@ export type {
   WalRecord,
   WriteAheadLogOptions,
 } from "./wal/index.js";
-export type { StorageEngineOptions } from "./engine/index.js";
+export type {
+  CheckpointResult,
+  CheckpointStage,
+  RecoveryReport,
+  SkippedCheckpoint,
+  StorageEngineOptions,
+} from "./engine/index.js";

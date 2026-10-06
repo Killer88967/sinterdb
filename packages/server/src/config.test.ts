@@ -150,3 +150,59 @@ describe("resolveServerConfig storage options", () => {
     }
   });
 });
+
+describe("resolveServerConfig checkpoint threshold", () => {
+  it("leaves the threshold unset by default", () => {
+    expect(
+      resolveServerConfig({ dataDirectory: "/data" }, {}),
+    ).not.toHaveProperty("checkpointThresholdBytes");
+  });
+
+  it("reads the threshold from input and the environment", () => {
+    expect(
+      resolveServerConfig(
+        { dataDirectory: "/data", checkpointThresholdBytes: 4096 },
+        {},
+      ),
+    ).toMatchObject({ checkpointThresholdBytes: 4096 });
+
+    expect(
+      resolveServerConfig(
+        { dataDirectory: "/data" },
+        { SINTERDB_CHECKPOINT_BYTES: "8192" },
+      ),
+    ).toMatchObject({ checkpointThresholdBytes: 8192 });
+
+    expect(
+      resolveServerConfig(
+        { dataDirectory: "/data", checkpointThresholdBytes: "1024" },
+        {},
+      ),
+    ).toMatchObject({ checkpointThresholdBytes: 1024 });
+  });
+
+  it("rejects values that are not positive integers", () => {
+    for (const value of [0, -1, 1.5, "abc", "", "  ", "1e400", Number.NaN]) {
+      expect(
+        () =>
+          resolveServerConfig(
+            { dataDirectory: "/data", checkpointThresholdBytes: value },
+            {},
+          ),
+        String(value),
+      ).toThrow(ServerConfigurationError);
+    }
+  });
+
+  it("rejects a threshold without a data directory", () => {
+    try {
+      resolveServerConfig({ checkpointThresholdBytes: 4096 }, {});
+      throw new Error("Expected a configuration error.");
+    } catch (error: unknown) {
+      expect(error).toBeInstanceOf(ServerConfigurationError);
+      expect((error as ServerConfigurationError).option).toBe(
+        "checkpointThresholdBytes",
+      );
+    }
+  });
+});

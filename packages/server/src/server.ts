@@ -12,7 +12,7 @@ import {
   type ServerConfigInput,
   type ServerEnvironment,
 } from "./config.js";
-import { StorageEngine } from "@sinterdb-internal/storage";
+import { StorageEngine, type RecoveryReport } from "@sinterdb-internal/storage";
 import { ServerSession } from "./session.js";
 import { InMemoryCatalog } from "./catalog.js";
 import { CommandDispatcher } from "./command-dispatcher.js";
@@ -80,6 +80,15 @@ export class SinterServer extends EventEmitter {
   }
 
   /**
+   * What the storage engine did when it started: which snapshot it used, any
+   * damaged snapshots it skipped, and how much log it replayed. It is only
+   * available while a server with a data directory is running.
+   */
+  public get recovery(): RecoveryReport | undefined {
+    return this.engine?.recovery;
+  }
+
+  /**
    * The catalog of databases and collections. A server with a data directory
    * only has one once it has started, because starting is when the data is
    * recovered.
@@ -122,6 +131,11 @@ export class SinterServer extends EventEmitter {
         this.engine = StorageEngine.open({
           directory: this.config.dataDirectory,
           durability: this.config.durability,
+          ...(this.config.checkpointThresholdBytes === undefined
+            ? {}
+            : {
+                checkpointThresholdBytes: this.config.checkpointThresholdBytes,
+              }),
         });
       } catch (error: unknown) {
         this.currentState = SinterServerState.Stopped;
