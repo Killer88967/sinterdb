@@ -3,7 +3,7 @@
 Command-line server for SinterDB. The package installs the `sinterd` executable.
 
 > [!WARNING]
-> SinterDB is under active development. The current server uses an in-memory catalog and is not ready for production data.
+> SinterDB is under active development and is not ready for production data. Without `--data-dir` the server keeps all data in memory and loses it on shutdown.
 
 ## Development
 
@@ -34,6 +34,10 @@ Usage:
 Options:
   --host <host>       Address to listen on
   -p, --port <port>   TCP port to listen on
+  --data-dir <path>   Store data durably in this directory
+  --durability <mode> How writes are acknowledged: fsync (default) or buffered
+  --checkpoint-bytes <n>
+                      Bytes of log between automatic checkpoints (default 64 MiB)
   -h, --help          Show the help message
   -v, --version       Show the server version
 ```
@@ -48,12 +52,32 @@ Port `0` asks the operating system to select an available temporary port.
 
 ## Environment Variables
 
-| Variable        | Purpose           | Default     |
-| --------------- | ----------------- | ----------- |
-| `SINTERDB_HOST` | Listening address | `127.0.0.1` |
-| `SINTERDB_PORT` | TCP port          | `4721`      |
+| Variable                    | Purpose                          | Default     |
+| --------------------------- | -------------------------------- | ----------- |
+| `SINTERDB_HOST`             | Listening address                | `127.0.0.1` |
+| `SINTERDB_PORT`             | TCP port                         | `4721`      |
+| `SINTERDB_DATA_DIR`         | Data directory                   | none        |
+| `SINTERDB_DURABILITY`       | `fsync` or `buffered`            | `fsync`     |
+| `SINTERDB_CHECKPOINT_BYTES` | Bytes of log between checkpoints | 64 MiB      |
 
 Command-line options take precedence over environment variables.
+
+## Durable Storage
+
+```bash
+sinterd --data-dir /var/lib/sinterdb
+```
+
+With a data directory, acknowledged writes survive restarts and crashes. See
+[Durable Storage](../../docs/storage.md) for the durability modes, checkpoints,
+recovery, and backups.
+
+| Mode       | A write is acknowledged when...                 | Survives a power loss |
+| ---------- | ----------------------------------------------- | --------------------- |
+| `fsync`    | it has been flushed to stable storage (default) | Yes                   |
+| `buffered` | it has reached the operating system             | No                    |
+
+`--durability` and `--checkpoint-bytes` require `--data-dir`.
 
 ## Structured Logging
 
@@ -69,16 +93,24 @@ Lifecycle events are written as newline-delimited JSON:
     "host": "127.0.0.1",
     "port": 4721,
     "family": "IPv4",
-    "version": "0.0.7"
+    "version": "0.0.8",
+    "storage": "disk",
+    "dataDirectory": "/var/lib/sinterdb",
+    "durability": "fsync",
+    "databases": 1,
+    "collections": 2,
+    "checkpointLsn": "1042",
+    "replayedRecords": 0,
+    "skippedCheckpoints": []
   }
 }
 ```
 
 ## Shutdown
 
-`SIGINT` and `SIGTERM` stop the listener, close active connections, and allow the process to exit cleanly.
+`SIGINT` and `SIGTERM` stop the listener, close active connections, write a final checkpoint when a data directory is in use, and allow the process to exit cleanly.
 
-Press `Ctrl+C` during local development to initiate shutdown.
+A process that is killed instead of stopped is recovered on the next start. The server takes over the lock the dead process left behind.
 
 ## Current Commands
 

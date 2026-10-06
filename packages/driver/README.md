@@ -4,7 +4,7 @@ The official Node.js driver for the SinterDB document database.
 
 > [!WARNING]
 > SinterDB is under active development and is not ready for production use.
-> Data is currently stored in memory and is lost when the server stops.
+> Data is durable only when the server runs with a data directory. Otherwise it is kept in memory and lost when the server stops.
 
 ## Installation
 
@@ -432,7 +432,7 @@ Server rejections of write commands carry a wire code and name:
 
 ## Current Scope
 
-Version `0.0.7` provides:
+Version `0.0.8` provides:
 
 - `SinterClient`
 - `sinterdb://` connection-string parsing
@@ -455,6 +455,6 @@ Version `0.0.7` provides:
 - Duplicate `_id` detection
 - Immutable `_id` enforcement
 - Document-size and nesting validation
-- In-memory collection storage
+- Durable storage when connected to a server started with a data directory
 
-Durable storage and recovery are planned for version `0.0.8`.
+Durable storage and recovery are planned for version `0.0.9`.

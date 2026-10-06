@@ -1,5 +1,41 @@
 # @sinterdb-internal/test-utils
 
+## 0.0.8
+
+### Patch Changes
+
+- Add durable storage and crash recovery.
+
+  - Add the `--data-dir`, `--durability`, and `--checkpoint-bytes` server options
+    and the `SINTERDB_DATA_DIR`, `SINTERDB_DURABILITY`, and
+    `SINTERDB_CHECKPOINT_BYTES` environment variables. Without a data directory the
+    server still keeps all data in memory.
+  - Write every change to a checksummed write-ahead log before applying it.
+    Operations that change several documents are a single log record, so they stay
+    all-or-nothing across a crash.
+  - Add the `fsync` (default) and `buffered` acknowledgement modes.
+  - Recover on startup by loading the newest valid snapshot and replaying the log
+    after it. An incomplete final record from a crash is dropped. Damage anywhere
+    else stops startup with an error that names the file, offset, and sequence
+    number.
+  - Add checkpoints and log compaction. Two snapshots and the log since the older
+    one are kept, so a damaged newest snapshot never loses data. A final
+    checkpoint is written on clean shutdown.
+  - Add a data directory layout with `manifest.json`, a storage format version, and
+    a process lock that is taken over when the previous holder has died.
+  - Report recovery details in the `server.started` log.
+  - Return `InternalError` when the server cannot persist a write, instead of a
+    document validation error.
+  - Limit database and collection names to 255 bytes.
+  - `SinterServer.catalog` is only available after `start()` when a data directory
+    is configured, and `SinterServer.recovery` reports what recovery did.
+  - Add crash tests that kill the server with `SIGKILL` during writes and at each
+    checkpoint stage, and tests that damage log, snapshot, and manifest files.
+  - Add the Durable Storage documentation.
+
+- Updated dependencies
+  - @sinterdb-internal/server@0.0.8
+
 ## 0.0.7
 
 ### Patch Changes

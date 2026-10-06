@@ -413,6 +413,9 @@ Notes:
 - Updates may only contain `$set`, `$unset`, `$inc`, `$min`, `$max`, `$push`,
   `$pull`, and `$addToSet`. Any other update document returns `InvalidUpdate`.
   A change to `_id` returns `ImmutableId`.
+- When a server with durable storage cannot record a write, it returns
+  `InternalError` (9000). The outcome of that write is unknown until the server
+  restarts and recovers.
 - `updateOne`, `updateMany`, `replaceOne`, `deleteOne`, and `deleteMany` do not
   create a collection. `updateOne`, `updateMany`, and `replaceOne` create it
   only when `upsert` is `true` and a document is inserted.

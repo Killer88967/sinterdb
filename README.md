@@ -8,7 +8,7 @@
 A document-oriented database, its official Node.js driver, and supporting packages.
 
 > [!WARNING]
-> SinterDB is in early development. The server can store and retrieve documents in memory, but data is not yet persisted and is lost when the server stops. APIs and protocol details may change before `1.0.0`.
+> SinterDB is in early development. The server can keep its data durably in a data directory (`--data-dir`) and recover it after a restart or crash. Without a data directory it keeps everything in memory and loses it on shutdown. The whole dataset must fit in memory, and APIs and protocol details may change before `1.0.0`.
 
 ## Project Goals
 
@@ -115,6 +115,15 @@ node apps/server-cli/dist/index.js \
   --port 5000
 ```
 
+Store data durably by giving the server a data directory:
+
+```sh
+node apps/server-cli/dist/index.js --data-dir ./data
+```
+
+See [Durable Storage](./docs/storage.md) for durability modes, checkpoints, and
+recovery.
+
 Display the available options:
 
 ```sh
@@ -126,7 +135,7 @@ on `SIGINT` or `SIGTERM`.
 
 ## Development Status
 
-The current milestone is `0.0.7 — Updates, Replacements, and Deletes`.
+The current milestone is `0.0.8 — Durable Storage and Recovery`.
 
 Implemented so far:
 
@@ -157,6 +166,12 @@ Implemented so far:
 - Upserts and matched, modified, deleted, and upserted result counts
 - Immutable `_id` enforcement and all-or-nothing multi-document updates
 - Typed `UpdateFilter<TDocument>` API
+- Durable storage with a write-ahead log, atomic multi-document writes, and
+  configurable `fsync` or `buffered` acknowledgement
+- Checkpoints, log compaction, and startup recovery from snapshots
+- Data directory locking and storage format versioning
+- Crash tests that terminate the server with `SIGKILL` during writes and
+  during checkpoints
 - Duplicate identifier detection
 - Document-size and nesting validation
 - Structured server logging
@@ -164,7 +179,7 @@ Implemented so far:
 - End-to-end driver and server integration tests
 - Graceful signal shutdown
 
-The next milestone, `0.0.8`, introduces durable storage and recovery.
+The next milestone, `0.0.9`, introduces indexes and query planning.
 
 See [ROADMAP.md](./ROADMAP.md) for the complete development plan.
 
