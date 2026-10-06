@@ -112,11 +112,11 @@ async function startServer(
       : {
           storage: "disk",
           dataDirectory: server.config.dataDirectory,
-          durability: server.config.dataDirectory,
+          durability: server.config.durability,
           databases: server.catalog.databaseCount,
           collections: server.catalog.collectionCount,
           checkpointLsn: String(server.recovery?.checkpointLsn ?? 0n),
-          replayedRecord: server.recovery?.replayedRecords ?? 0,
+          replayedRecords: server.recovery?.replayedRecords ?? 0,
           skippedCheckpoints: server.recovery?.skippedCheckpoints.map(
             (entry) => ({
               file: entry.file,
