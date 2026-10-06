@@ -3,6 +3,7 @@ import {
   decodeDocument,
   encodeDocument,
   type Document,
+  type DocumentValue,
 } from "sinterdb-protocol";
 
 import {
@@ -11,6 +12,19 @@ import {
   StorageInsertManyError,
 } from "./errors.js";
 import { compileFilter } from "./filter.js";
+import {
+  ID_INDEX_NAME,
+  IndexSet,
+  candidateKeys,
+  idIndexSpec,
+  normalizeIndexSpec,
+  planQuery,
+  type CreateIndexInput,
+  type DocumentChange,
+  type IndexIssue,
+  type IndexSpec,
+  type QueryPlan,
+} from "./indexing/index.js";
 import { compileSort, type SortSpecification } from "./sort.js";
 import {
   compileUpdate,
@@ -69,6 +83,34 @@ export interface InMemoryCollectionOptions {
    * takes ownership of the map.
    */
   readonly documents?: Map<string, Uint8Array>;
+  /** Indexes to build over the recovered documents. */
+  readonly indexes?: readonly IndexSpec[];
+}
+
+export interface IndexInfo extends IndexSpec {}
+
+export interface ExplainResult {
+  readonly stage: "COLLSCAN" | "IDLOOKUP" | "IXSCAN";
+  readonly index?: string;
+  readonly field?: string;
+  readonly access?: "equality" | "in" | "range";
+  readonly lower?: {
+    readonly value: DocumentValue;
+    readonly inclusive: boolean;
+  };
+  readonly upper?: {
+    readonly value: DocumentValue;
+    readonly inclusive: boolean;
+  };
+  readonly estimatedCandidates: number;
+  readonly documents: number;
+}
+
+export interface IndexValidationReport {
+  readonly valid: boolean;
+  readonly indexes: number;
+  readonly documents: number;
+  readonly issues: readonly IndexIssue[];
 }
 
 interface PreparedInsert {
@@ -86,10 +128,17 @@ interface LocatedDocument {
 export class InMemoryCollection {
   private readonly documents: Map<string, Uint8Array>;
   private readonly journal: CollectionJournal | undefined;
+  private readonly indexes = new IndexSet();
+  private sequence: Map<string, number> | undefined;
+  private nextSequence = 1;
 
   public constructor(options: InMemoryCollectionOptions = {}) {
     this.documents = options.documents ?? new Map<string, Uint8Array>();
     this.journal = options.journal;
+
+    for (const spec of options.indexes ?? []) {
+      this.buildIndex(spec);
+    }
   }
 
   /**
@@ -106,11 +155,19 @@ export class InMemoryCollection {
 
   public insertOne(document: Document): StorageInsertOneResult {
     const prepared = this.prepareInsert(document, undefined);
+    const rollback = this.trackInsert(prepared);
 
-    this.commit([
-      { kind: "put", key: prepared.key, document: prepared.encoded },
-    ]);
-    this.documents.set(prepared.key, prepared.encoded);
+    try {
+      this.commit([
+        { kind: "put", key: prepared.key, document: prepared.encoded },
+      ]);
+    } catch (error: unknown) {
+      rollback();
+
+      throw error;
+    }
+
+    this.put(prepared.key, prepared.encoded);
 
     return {
       insertedId: prepared.id,
@@ -126,6 +183,7 @@ export class InMemoryCollection {
     }
 
     const accepted: PreparedInsert[] = [];
+    const rollbacks: (() => void)[] = [];
     const pending = new Set<string>();
     let failure: { index: number; error: StorageError } | undefined;
 
@@ -136,6 +194,7 @@ export class InMemoryCollection {
           pending,
         );
 
+        rollbacks.push(this.trackInsert(prepared));
         accepted.push(prepared);
         pending.add(prepared.key);
       } catch (error: unknown) {
@@ -149,16 +208,24 @@ export class InMemoryCollection {
     }
 
     if (accepted.length > 0) {
-      this.commit(
-        accepted.map((entry) => ({
-          kind: "put" as const,
-          key: entry.key,
-          document: entry.encoded,
-        })),
-      );
+      try {
+        this.commit(
+          accepted.map((entry) => ({
+            kind: "put" as const,
+            key: entry.key,
+            document: entry.encoded,
+          })),
+        );
+      } catch (error: unknown) {
+        for (const rollback of rollbacks.reverse()) {
+          rollback();
+        }
+
+        throw error;
+      }
 
       for (const entry of accepted) {
-        this.documents.set(entry.key, entry.encoded);
+        this.put(entry.key, entry.encoded);
       }
     }
 
@@ -191,7 +258,7 @@ export class InMemoryCollection {
       return matches(document) ? document : undefined;
     }
 
-    for (const encoded of this.documents.values()) {
+    for (const [, encoded] of this.candidates(filter)) {
       const document = decodeDocument(encoded);
 
       if (matches(document)) {
@@ -212,7 +279,7 @@ export class InMemoryCollection {
     const skip = validateSkip(options.skip);
     const limit = validateLimit(options.limit);
 
-    return this.scan(matches, sorter, skip, limit);
+    return this.scan(filter, matches, sorter, skip, limit);
   }
 
   public deleteOne(filter: Document): StorageDeleteResult {
@@ -222,8 +289,19 @@ export class InMemoryCollection {
       return { deletedCount: 0 };
     }
 
-    this.commit([{ kind: "delete", key: located.key }]);
-    this.documents.delete(located.key);
+    const rollback = this.trackChanges([
+      { key: located.key, before: located.document },
+    ]);
+
+    try {
+      this.commit([{ kind: "delete", key: located.key }]);
+    } catch (error: unknown) {
+      rollback();
+
+      throw error;
+    }
+
+    this.remove(located.key);
 
     return { deletedCount: 1 };
   }
@@ -231,19 +309,35 @@ export class InMemoryCollection {
   public deleteMany(filter: Document): StorageDeleteResult {
     const matches = compileFilter(filter);
     const keys: string[] = [];
+    const changes: DocumentChange[] = [];
+    const indexed = !this.indexes.isEmpty;
 
-    for (const [key, encoded] of this.documents) {
-      if (matches(decodeDocument(encoded))) {
+    for (const [key, encoded] of this.candidates(filter)) {
+      const document = decodeDocument(encoded);
+
+      if (matches(document)) {
         keys.push(key);
+
+        if (indexed) {
+          changes.push({ key, before: document });
+        }
       }
     }
 
-    if (keys.length > 0) {
-      this.commit(keys.map((key) => ({ kind: "delete" as const, key })));
+    const rollback = this.trackChanges(changes);
+
+    try {
+      if (keys.length > 0) {
+        this.commit(keys.map((key) => ({ kind: "delete" as const, key })));
+      }
+    } catch (error: unknown) {
+      rollback();
+
+      throw error;
     }
 
     for (const key of keys) {
-      this.documents.delete(key);
+      this.remove(key);
     }
 
     return { deletedCount: keys.length };
@@ -306,8 +400,23 @@ export class InMemoryCollection {
     const modified = !bytesEqual(encoded, located.encoded);
 
     if (modified) {
-      this.commit([{ kind: "put", key: located.key, document: encoded }]);
-      this.documents.set(located.key, encoded);
+      const rollback = this.trackChanges([
+        {
+          key: located.key,
+          before: located.document,
+          after: decodeDocument(encoded),
+        },
+      ]);
+
+      try {
+        this.commit([{ kind: "put", key: located.key, document: encoded }]);
+      } catch (error: unknown) {
+        rollback();
+
+        throw error;
+      }
+
+      this.put(located.key, encoded);
     }
 
     return { matchedCount: 1, modifiedCount: modified ? 1 : 0 };
@@ -327,13 +436,31 @@ export class InMemoryCollection {
       return this.upsertFromUpdate(filter, apply, upsert);
     }
 
+    const before = this.indexes.isEmpty
+      ? undefined
+      : decodeDocument(located.encoded);
     const pending = prepareUpdate(located, apply);
 
     if (pending !== undefined) {
-      this.commit([
-        { kind: "put", key: pending.key, document: pending.encoded },
+      const rollback = this.trackChanges([
+        {
+          key: pending.key,
+          ...(before === undefined ? {} : { before }),
+          after: decodeDocument(pending.encoded),
+        },
       ]);
-      this.documents.set(pending.key, pending.encoded);
+
+      try {
+        this.commit([
+          { kind: "put", key: pending.key, document: pending.encoded },
+        ]);
+      } catch (error: unknown) {
+        rollback();
+
+        throw error;
+      }
+
+      this.put(pending.key, pending.encoded);
     }
 
     return {
@@ -351,9 +478,11 @@ export class InMemoryCollection {
     const apply = compileUpdate(update);
     const upsert = validateUpsert(options.upsert);
     const pending: { key: string; encoded: Uint8Array }[] = [];
+    const changes: DocumentChange[] = [];
+    const indexed = !this.indexes.isEmpty;
     let matched = 0;
 
-    for (const [key, encoded] of this.documents) {
+    for (const [key, encoded] of this.candidates(filter)) {
       const document = decodeDocument(encoded);
 
       if (!matches(document)) {
@@ -362,10 +491,19 @@ export class InMemoryCollection {
 
       matched += 1;
 
+      const before = indexed ? decodeDocument(encoded) : undefined;
       const prepared = prepareUpdate({ key, encoded, document }, apply);
 
       if (prepared !== undefined) {
         pending.push(prepared);
+
+        if (before !== undefined) {
+          changes.push({
+            key,
+            before,
+            after: decodeDocument(prepared.encoded),
+          });
+        }
       }
     }
 
@@ -373,21 +511,89 @@ export class InMemoryCollection {
       return this.upsertFromUpdate(filter, apply, upsert);
     }
 
-    if (pending.length > 0) {
-      this.commit(
-        pending.map((entry) => ({
-          kind: "put" as const,
-          key: entry.key,
-          document: entry.encoded,
-        })),
-      );
+    const rollback = this.trackChanges(changes);
+
+    try {
+      if (pending.length > 0) {
+        this.commit(
+          pending.map((entry) => ({
+            kind: "put" as const,
+            key: entry.key,
+            document: entry.encoded,
+          })),
+        );
+      }
+    } catch (error: unknown) {
+      rollback();
+
+      throw error;
     }
 
     for (const entry of pending) {
-      this.documents.set(entry.key, entry.encoded);
+      this.put(entry.key, entry.encoded);
     }
 
     return { matchedCount: matched, modifiedCount: pending.length };
+  }
+
+  /**
+   * Builds an index over the existing documents. Returns whether it was newly
+   * created: asking for an identical index again succeeds without changes.
+   */
+  public createIndex(input: CreateIndexInput): {
+    name: string;
+    created: boolean;
+  } {
+    const spec = normalizeIndexSpec(input);
+    const created = this.buildIndex(spec);
+
+    return { name: spec.name, created };
+  }
+
+  public dropIndex(name: string): void {
+    if (name === ID_INDEX_NAME) {
+      throw new StorageError(
+        StorageErrorCode.InvalidIndex,
+        "The _id index cannot be dropped.",
+      );
+    }
+
+    if (!this.indexes.has(name)) {
+      throw new StorageError(
+        StorageErrorCode.IndexNotFound,
+        `There is no index named ${JSON.stringify(name)}.`,
+      );
+    }
+
+    this.indexes.drop(name);
+
+    if (this.indexes.isEmpty) {
+      this.sequence = undefined;
+    }
+  }
+
+  /** The `_id` index followed by the other indexes in creation order. */
+  public listIndexes(): IndexInfo[] {
+    return [idIndexSpec(), ...this.indexes.specs()];
+  }
+
+  /** Describes how a query would be run without running it. */
+  public explain(filter: Document): ExplainResult {
+    compileFilter(filter);
+
+    return describePlan(this.plan(filter), this.documents.size);
+  }
+
+  /** Rebuilds every index from the documents and reports any difference. */
+  public validateIndexes(): IndexValidationReport {
+    const issues = this.indexes.validate(() => this.decodedEntries());
+
+    return {
+      valid: issues.length === 0,
+      indexes: this.indexes.all().length,
+      documents: this.documents.size,
+      issues,
+    };
   }
 
   public findById(id: CustomId): Document | undefined {
@@ -418,6 +624,8 @@ export class InMemoryCollection {
     }
 
     this.documents.clear();
+    this.indexes.clear();
+    this.sequence = undefined;
   }
 
   private upsertFromUpdate(
@@ -459,7 +667,7 @@ export class InMemoryCollection {
       return matches(document) ? { key, encoded, document } : undefined;
     }
 
-    for (const [key, encoded] of this.documents) {
+    for (const [key, encoded] of this.candidates(filter)) {
       const document = decodeDocument(encoded);
 
       if (matches(document)) {
@@ -468,6 +676,91 @@ export class InMemoryCollection {
     }
 
     return undefined;
+  }
+
+  private plan(filter: Document): QueryPlan {
+    return planQuery(filter, this.indexes.all(), this.documents.size);
+  }
+
+  /**
+   * The documents a filter could match, in insertion order. An index narrows
+   * them, and the caller still applies the full filter to each one.
+   */
+  private *candidates(
+    filter: Document,
+  ): IterableIterator<[string, Uint8Array]> {
+    const plan = this.indexes.isEmpty ? undefined : this.plan(filter);
+
+    if (plan === undefined || plan.stage === "COLLSCAN") {
+      yield* this.documents;
+
+      return;
+    }
+
+    const sequence = this.sequence as Map<string, number>;
+    const keys = [...candidateKeys(plan)]
+      .filter((key) => this.documents.has(key))
+      .sort(
+        (left, right) =>
+          (sequence.get(left) as number) - (sequence.get(right) as number),
+      );
+
+    for (const key of keys) {
+      const encoded = this.documents.get(key);
+
+      if (encoded !== undefined) {
+        yield [key, encoded];
+      }
+    }
+  }
+
+  private *decodedEntries(): IterableIterator<[string, Document]> {
+    for (const [key, encoded] of this.documents) {
+      yield [key, decodeDocument(encoded)];
+    }
+  }
+
+  private buildIndex(spec: IndexSpec): boolean {
+    const result = this.indexes.create(spec, this.decodedEntries());
+
+    if (result === "created" && this.sequence === undefined) {
+      this.sequence = new Map();
+
+      for (const key of this.documents.keys()) {
+        this.sequence.set(key, this.nextSequence);
+        this.nextSequence += 1;
+      }
+    }
+
+    return result === "created";
+  }
+
+  private put(key: string, encoded: Uint8Array): void {
+    if (this.sequence !== undefined && !this.documents.has(key)) {
+      this.sequence.set(key, this.nextSequence);
+      this.nextSequence += 1;
+    }
+
+    this.documents.set(key, encoded);
+  }
+
+  private remove(key: string): void {
+    this.documents.delete(key);
+    this.sequence?.delete(key);
+  }
+
+  private trackInsert(prepared: PreparedInsert): () => void {
+    if (this.indexes.isEmpty) {
+      return noop;
+    }
+
+    return this.indexes.applyChanges([
+      { key: prepared.key, after: decodeDocument(prepared.encoded) },
+    ]);
+  }
+
+  private trackChanges(changes: readonly DocumentChange[]): () => void {
+    return this.indexes.applyChanges(changes);
   }
 
   private prepareInsert(
@@ -516,6 +809,7 @@ export class InMemoryCollection {
   }
 
   private *scan(
+    filter: Document,
     matches: (document: Document) => boolean,
     sorter: ((document: readonly Document[]) => Document[]) | undefined,
     skip: number,
@@ -525,7 +819,7 @@ export class InMemoryCollection {
       let skipped = 0;
       let yielded = 0;
 
-      for (const encoded of this.documents.values()) {
+      for (const [, encoded] of this.candidates(filter)) {
         if (limit !== undefined && yielded >= limit) {
           return;
         }
@@ -550,7 +844,7 @@ export class InMemoryCollection {
 
     const matched: Document[] = [];
 
-    for (const encoded of this.documents.values()) {
+    for (const [, encoded] of this.candidates(filter)) {
       const document = decodeDocument(encoded);
 
       if (matches(document)) {
@@ -633,6 +927,50 @@ function bytesEqual(left: Uint8Array, right: Uint8Array): boolean {
   }
 
   return left.every((byte, index) => byte === right[index]);
+}
+
+function noop(): void {
+  // Nothing was changed.
+}
+
+function describePlan(plan: QueryPlan, documents: number): ExplainResult {
+  if (plan.stage === "COLLSCAN") {
+    return {
+      stage: "COLLSCAN",
+      estimatedCandidates: plan.estimated,
+      documents,
+    };
+  }
+
+  if (plan.stage === "IDLOOKUP") {
+    return {
+      stage: "IDLOOKUP",
+      index: ID_INDEX_NAME,
+      field: "_id",
+      access: "equality",
+      estimatedCandidates: plan.estimated,
+      documents,
+    };
+  }
+
+  const base = {
+    stage: "IXSCAN" as const,
+    index: plan.index.spec.name,
+    field: plan.index.spec.field,
+    estimatedCandidates: plan.estimated,
+    documents,
+  };
+
+  if (plan.access.kind === "range") {
+    return {
+      ...base,
+      access: "range",
+      ...(plan.access.lower === undefined ? {} : { lower: plan.access.lower }),
+      ...(plan.access.upper === undefined ? {} : { upper: plan.access.upper }),
+    };
+  }
+
+  return { ...base, access: plan.viaMembership ? "in" : "equality" };
 }
 
 function validateSkip(skip: number | undefined): number {

@@ -8,6 +8,7 @@ export {
 export { compileFilter } from "./filter.js";
 export { compileSort } from "./sort.js";
 export { compileUpdate } from "./update.js";
+export { ID_INDEX_NAME, MAX_INDEXES_PER_COLLECTION } from "./indexing/index.js";
 export {
   DEFAULT_SEGMENT_SIZE_BYTES,
   MAX_RECORD_PAYLOAD_SIZE,
@@ -26,6 +27,9 @@ export {
 
 export type {
   CollectionJournal,
+  ExplainResult,
+  IndexInfo,
+  IndexValidationReport,
   InMemoryCollectionOptions,
   JournalOperation,
   StorageDeleteResult,
@@ -39,6 +43,11 @@ export type { StorageErrorCode as StorageErrorCodeValue } from "./errors.js";
 export type { CompiledFilter } from "./filter.js";
 export type { CompiledSort, SortDirection, SortSpecification } from "./sort.js";
 export type { CompiledUpdate } from "./update.js";
+export type {
+  CreateIndexInput,
+  IndexIssue,
+  IndexSpec,
+} from "./indexing/index.js";
 export type {
   DurabilityMode,
   WalRecord,

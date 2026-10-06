@@ -13,7 +13,7 @@ interface CompiledField {
   readonly predicates: readonly FieldPredicate[];
 }
 
-type ResolvedField =
+export type ResolvedField =
   | {
       readonly found: true;
       readonly value: DocumentValue;
@@ -329,7 +329,7 @@ function matchesCompiledFilter(
   return true;
 }
 
-function resolveField(
+export function resolveField(
   document: Document,
   segments: readonly string[],
 ): ResolvedField {
@@ -374,7 +374,7 @@ function canonicalEquals(
   return bytesEqual(encodeDocumentValue(actual), encodedExpected);
 }
 
-function isComparableValue(value: DocumentValue): boolean {
+export function isComparableValue(value: DocumentValue): boolean {
   if (typeof value === "string" || typeof value === "bigint") {
     return true;
   }
@@ -390,7 +390,7 @@ function isComparableValue(value: DocumentValue): boolean {
   return value instanceof Uint8Array || value instanceof CustomId;
 }
 
-function compareValues(
+export function compareValues(
   actual: DocumentValue,
   expected: DocumentValue,
 ): number | undefined {
@@ -487,7 +487,7 @@ function compareBytes(left: Uint8Array, right: Uint8Array): number {
   return comparePrimitive(left.byteLength, right.byteLength);
 }
 
-function isOperatorDocument(value: DocumentValue): value is Document {
+export function isOperatorDocument(value: DocumentValue): value is Document {
   return (
     isPlainDocument(value) &&
     Object.keys(value).some((name) => name.startsWith("$"))

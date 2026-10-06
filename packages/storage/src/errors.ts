@@ -13,6 +13,10 @@ export const StorageErrorCode = {
   Io: "IO_ERROR",
   Closed: "CLOSED",
   Locked: "LOCKED",
+  DuplicateKey: "DUPLICATE_KEY",
+  InvalidIndex: "INVALID_INDEX",
+  IndexNotFound: "INDEX_NOT_FOUND",
+  IndexConflict: "INDEX_CONFLICT",
   UnsupportedFormat: "UNSUPPORTED_FORMAT",
 } as const;
 
