@@ -8,6 +8,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { crc32 } from "node:zlib";
 
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
@@ -46,6 +47,7 @@ function collection(
     collection: name,
     documents,
     documentCount: documents.length,
+    indexes: [],
   };
 }
 
@@ -53,6 +55,72 @@ function write(lsn: bigint, collections: CheckpointCollection[]): string {
   const file = writeCheckpoint(directory, lsn, collections, () => undefined);
 
   return join(directory, file);
+}
+
+function name(value: string): Buffer {
+  const bytes = Buffer.from(value, "utf8");
+  const encoded = Buffer.alloc(2 + bytes.byteLength);
+
+  encoded.writeUInt16BE(bytes.byteLength, 0);
+  encoded.set(bytes, 2);
+
+  return encoded;
+}
+
+function buildSnapshot(
+  version: number,
+  lsn: bigint,
+  collections: {
+    database: string;
+    collection: string;
+    indexes?: Buffer[];
+    documents: [string, Uint8Array][];
+  }[],
+): Buffer {
+  const parts: Buffer[] = [];
+  const header = Buffer.alloc(24);
+
+  Buffer.from("SINTSNP\0", "latin1").copy(header, 0);
+  header.writeUInt32BE(version, 8);
+  header.writeBigUInt64BE(lsn, 12);
+  header.writeUInt32BE(collections.length, 20);
+  parts.push(header);
+
+  for (const entry of collections) {
+    parts.push(name(entry.database), name(entry.collection));
+
+    if (version >= 2) {
+      const count = Buffer.alloc(2);
+
+      count.writeUInt16BE(entry.indexes?.length ?? 0, 0);
+      parts.push(count, ...(entry.indexes ?? []));
+    }
+
+    const documentCount = Buffer.alloc(4);
+
+    documentCount.writeUInt32BE(entry.documents.length, 0);
+    parts.push(documentCount);
+
+    for (const [documentKey, document] of entry.documents) {
+      const prefix = Buffer.alloc(20);
+
+      Buffer.from(documentKey, "hex").copy(prefix, 0);
+      prefix.writeUInt32BE(document.byteLength, 16);
+      parts.push(prefix, Buffer.from(document));
+    }
+  }
+
+  const body = Buffer.concat(parts);
+  const footer = Buffer.alloc(12);
+
+  footer.writeUInt32BE(crc32(body), 0);
+  Buffer.from("SINTEND\0", "latin1").copy(footer, 4);
+
+  return Buffer.concat([body, footer]);
+}
+
+function indexBytes(indexName: string, field: string, flags: number): Buffer {
+  return Buffer.concat([name(indexName), name(field), Buffer.from([flags])]);
 }
 
 describe("checkpoint files", () => {
@@ -186,5 +254,153 @@ describe("checkpoint files", () => {
 
     expect(() => readCheckpoint(path)).toThrow(CheckpointDamagedError);
     expect(existsSync(path)).toBe(true);
+  });
+});
+
+describe("checkpoint index definitions", () => {
+  it("round-trips index definitions", () => {
+    const path = write(9n, [
+      {
+        ...collection("app", "users", [[key(1), Uint8Array.of(1)]]),
+        indexes: [
+          {
+            name: "email_1",
+            field: "email",
+            direction: 1,
+            unique: true,
+            sparse: false,
+          },
+          {
+            name: "by_level",
+            field: "profile.level",
+            direction: -1,
+            unique: false,
+            sparse: true,
+          },
+        ],
+      },
+      collection("app", "plain", []),
+    ]);
+
+    const read = readCheckpoint(path);
+
+    expect(read.collections[0]?.indexes).toEqual([
+      {
+        name: "email_1",
+        field: "email",
+        direction: 1,
+        unique: true,
+        sparse: false,
+      },
+      {
+        name: "by_level",
+        field: "profile.level",
+        direction: -1,
+        unique: false,
+        sparse: true,
+      },
+    ]);
+    expect(read.collections[1]?.indexes).toEqual([]);
+  });
+
+  it("still reads snapshots written before indexes existed", () => {
+    const path = join(directory, checkpointFileName(4n));
+
+    writeFileSync(
+      path,
+      buildSnapshot(1, 4n, [
+        {
+          database: "app",
+          collection: "users",
+          documents: [[key(1), Uint8Array.from([1, 2])]],
+        },
+      ]),
+    );
+
+    const read = readCheckpoint(path);
+
+    expect(read.lsn).toBe(4n);
+    expect(read.collections[0]?.indexes).toEqual([]);
+    expect([...(read.collections[0]?.documents.keys() ?? [])]).toEqual([
+      key(1),
+    ]);
+  });
+
+  it("reads a version 2 snapshot built by hand", () => {
+    const path = join(directory, checkpointFileName(5n));
+
+    writeFileSync(
+      path,
+      buildSnapshot(2, 5n, [
+        {
+          database: "app",
+          collection: "users",
+          indexes: [indexBytes("age_1", "age", 0)],
+          documents: [],
+        },
+      ]),
+    );
+
+    expect(readCheckpoint(path).collections[0]?.indexes).toEqual([
+      {
+        name: "age_1",
+        field: "age",
+        direction: 1,
+        unique: false,
+        sparse: false,
+      },
+    ]);
+  });
+
+  it("rejects an invalid index definition even when the checksum is valid", () => {
+    const path = join(directory, checkpointFileName(6n));
+
+    writeFileSync(
+      path,
+      buildSnapshot(2, 6n, [
+        {
+          database: "app",
+          collection: "users",
+          indexes: [indexBytes("bad", "$field", 0)],
+          documents: [],
+        },
+      ]),
+    );
+
+    expect(() => readCheckpoint(path)).toThrow(CheckpointDamagedError);
+  });
+
+  it("rejects a snapshot from a newer format", () => {
+    const path = join(directory, checkpointFileName(7n));
+
+    writeFileSync(path, buildSnapshot(3, 7n, []));
+
+    expect(() => readCheckpoint(path)).toThrow(CheckpointDamagedError);
+  });
+
+  it("rejects every truncation of a snapshot with indexes", () => {
+    const path = write(8n, [
+      {
+        ...collection("app", "users", [[key(1), Uint8Array.of(1, 2, 3)]]),
+        indexes: [
+          {
+            name: "email_1",
+            field: "email",
+            direction: 1,
+            unique: true,
+            sparse: false,
+          },
+        ],
+      },
+    ]);
+    const original = readFileSync(path);
+
+    for (let length = 0; length < original.byteLength; length += 1) {
+      writeFileSync(path, original.subarray(0, length));
+
+      expect(() => readCheckpoint(path), `length ${length}`).toThrow(
+        CheckpointDamagedError,
+      );
+    }
   });
 });

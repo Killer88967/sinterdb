@@ -43,6 +43,18 @@ interface Row {
 }
 
 type Model = Map<number, Row>;
+
+interface State {
+  rows: Model;
+  indexes: Set<string>;
+}
+
+const TRACKED_INDEXES = ["key_1", "group_1", "v_idx"];
+
+function emptyState(): State {
+  return { rows: new Map(), indexes: new Set() };
+}
+
 type Durability = "fsync" | "buffered";
 
 interface WorkerConfig {
@@ -95,12 +107,33 @@ function createRandom(seed: number): () => number {
   };
 }
 
-function cloneModel(model: Model): Model {
-  return new Map([...model].map(([key, row]) => [key, { ...row }]));
+function cloneState(state: State): State {
+  return {
+    rows: new Map([...state.rows].map(([key, row]) => [key, { ...row }])),
+    indexes: new Set(state.indexes),
+  };
 }
 
-function applyOperation(model: Model, operation: Operation): void {
+function applyOperation(state: State, operation: Operation): void {
+  const model = state.rows;
+
   switch (operation.kind) {
+    case "ensureKeyIndex":
+      state.indexes.add("key_1");
+      break;
+
+    case "ensureGroupIndex":
+      state.indexes.add("group_1");
+      break;
+
+    case "createValueIndex":
+      state.indexes.add("v_idx");
+      break;
+
+    case "dropValueIndex":
+      state.indexes.delete("v_idx");
+      break;
+
     case "insert":
       model.set(operation.key as number, {
         group: operation.group as number,
@@ -168,12 +201,21 @@ function applyOperation(model: Model, operation: Operation): void {
   }
 }
 
-function serialize(model: Model): string {
-  return JSON.stringify([...model].sort((left, right) => left[0] - right[0]));
+function serialize(state: State): string {
+  return JSON.stringify({
+    rows: [...state.rows].sort((left, right) => left[0] - right[0]),
+    indexes: [...state.indexes].sort(),
+  });
 }
 
-function readModel(engine: StorageEngine): Model {
+function readState(engine: StorageEngine): State {
   const model: Model = new Map();
+  const collection = engine.getCollection("crash", "items");
+  const indexes = new Set(
+    (collection?.listIndexes() ?? [])
+      .map((index) => index.name)
+      .filter((name) => TRACKED_INDEXES.includes(name)),
+  );
 
   for (const document of engine.getCollection("crash", "items")?.find({}) ??
     []) {
@@ -190,7 +232,7 @@ function readModel(engine: StorageEngine): Model {
     });
   }
 
-  return model;
+  return { rows: model, indexes };
 }
 
 function runWorker(config: WorkerConfig, stop: Stop): Promise<WorkerResult> {
@@ -232,7 +274,7 @@ function runWorker(config: WorkerConfig, stop: Stop): Promise<WorkerResult> {
         buffer = buffer.slice(newline + 1);
 
         if (line.startsWith("BEGIN ")) {
-          const [, index, json] = /^BEGIN (\d+) (.*)$/.exec(line) as string[];
+          const [, index, json] = /^BEGIN (-?\d+) (.*)$/.exec(line) as string[];
 
           begun.set(Number(index), JSON.parse(json as string) as Operation);
         } else if (line.startsWith("ACK ")) {
@@ -277,49 +319,110 @@ function runWorker(config: WorkerConfig, stop: Stop): Promise<WorkerResult> {
   });
 }
 
-function describeState(model: Model): string {
-  return `${model.size} rows: ${serialize(model).slice(0, 400)}`;
+function describeState(state: State): string {
+  return `${state.rows.size} rows: ${serialize(state).slice(0, 500)}`;
+}
+
+function checkRecoveredQueries(engine: StorageEngine, state: State): void {
+  const collection = engine.getCollection("crash", "items");
+
+  if (collection === undefined) {
+    return;
+  }
+
+  const rows = [...state.rows];
+
+  for (let group = 0; group < 5; group += 1) {
+    const found = [...collection.find({ group })]
+      .map((document) => document["key"] as number)
+      .sort((left, right) => left - right);
+    const expected = rows
+      .filter(([, row]) => row.group === group)
+      .map(([key]) => key)
+      .sort((left, right) => left - right);
+
+    expect(found, `group ${group}`).toEqual(expected);
+  }
+
+  const range = [...collection.find({ key: { $gte: 10, $lt: 30 } })].map(
+    (document) => document["key"] as number,
+  );
+
+  expect(range.sort((left, right) => left - right)).toEqual(
+    rows
+      .map(([key]) => key)
+      .filter((key) => key >= 10 && key < 30)
+      .sort((left, right) => left - right),
+  );
+
+  const present = rows[0];
+
+  if (state.indexes.has("key_1") && present !== undefined) {
+    const before = collection.documentCount;
+
+    expect(() =>
+      collection.insertOne({ key: present[0], group: 0, v: 0 }),
+    ).toThrow(StorageError);
+    expect(collection.documentCount).toBe(before);
+  }
 }
 
 function verifyRecovery(
   directory: string,
-  previous: Model,
+  previous: State,
   result: WorkerResult,
   label: string,
-): { model: Model; applied: Operation[] } {
-  const acknowledged = cloneModel(previous);
+): { model: State; applied: Operation[] } {
+  const acknowledged = cloneState(previous);
 
   for (const operation of result.acked) {
     applyOperation(acknowledged, operation);
   }
 
-  let withInflight: Model | undefined;
+  let withInflight: State | undefined;
 
   if (result.inflight !== undefined) {
-    withInflight = cloneModel(acknowledged);
+    withInflight = cloneState(acknowledged);
     applyOperation(withInflight, result.inflight);
   }
 
   const engine = StorageEngine.open({ directory, checkpointOnClose: false });
-  let recovered: Model;
+  let recovered: State;
+  let matched: { model: State; applied: Operation[] } | undefined;
 
   try {
-    recovered = readModel(engine);
+    recovered = readState(engine);
+
+    const actualState = serialize(recovered);
+
+    if (actualState === serialize(acknowledged)) {
+      matched = { model: acknowledged, applied: result.acked };
+    } else if (
+      withInflight !== undefined &&
+      actualState === serialize(withInflight)
+    ) {
+      matched = {
+        model: withInflight,
+        applied: [...result.acked, result.inflight as Operation],
+      };
+    }
+
+    for (const entry of engine.validateIndexes()) {
+      expect(
+        entry.report,
+        `${label}: indexes of ${entry.database}.${entry.collection}`,
+      ).toMatchObject({ valid: true, issues: [] });
+    }
+
+    if (matched !== undefined) {
+      checkRecoveredQueries(engine, matched.model);
+    }
   } finally {
     engine.close();
   }
 
-  const actual = serialize(recovered);
-
-  if (actual === serialize(acknowledged)) {
-    return { model: acknowledged, applied: result.acked };
-  }
-
-  if (withInflight !== undefined && actual === serialize(withInflight)) {
-    return {
-      model: withInflight,
-      applied: [...result.acked, result.inflight as Operation],
-    };
+  if (matched !== undefined) {
+    return matched;
   }
 
   throw new Error(
@@ -341,9 +444,9 @@ interface RoundsOptions {
 
 async function runRounds(
   options: RoundsOptions,
-): Promise<{ model: Model; history: Operation[]; kills: number }> {
+): Promise<{ model: State; history: Operation[]; kills: number }> {
   const random = createRandom(options.seed);
-  let model: Model = new Map();
+  let model: State = emptyState();
   const history: Operation[] = [];
   let kills = 0;
 
@@ -496,7 +599,7 @@ describe("killing the process in the middle of a checkpoint", () => {
 
           const afterCrash = verifyRecovery(
             directory,
-            new Map(),
+            emptyState(),
             first,
             `crash at ${stage}`,
           );
@@ -601,7 +704,7 @@ describe("damaged files after a crash", () => {
       });
 
       const validStates = new Set<string>();
-      const replay: Model = new Map();
+      const replay: State = emptyState();
 
       validStates.add(serialize(replay));
 
@@ -634,7 +737,14 @@ describe("damaged files after a crash", () => {
             checkpointOnClose: false,
           });
 
-          const state = serialize(readModel(engine));
+          const recoveredState = readState(engine);
+          const state = serialize(recoveredState);
+
+          for (const entry of engine.validateIndexes()) {
+            expect(entry.report, `${label}: indexes`).toMatchObject({
+              valid: true,
+            });
+          }
 
           expect(
             validStates.has(state),

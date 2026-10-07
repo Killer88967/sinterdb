@@ -12,9 +12,20 @@ import {
 import { join } from "node:path";
 
 import { syncDirectory } from "../wal/index.js";
-import { ID_BYTE_LENGTH, MAX_NAME_BYTE_LENGTH } from "./operations.js";
+import { type IndexSpec } from "../indexing/spec.js";
+import {
+  ID_BYTE_LENGTH,
+  MAX_NAME_BYTE_LENGTH,
+  encodeIndexSpec,
+  readIndexSpec,
+} from "./operations.js";
 
-export const CHECKPOINT_FORMAT_VERSION = 1;
+/**
+ * Version 1 had no index definitions. Version 2 stores them before each
+ * collection's documents. Both can be read; new snapshots use version 2.
+ */
+export const CHECKPOINT_FORMAT_VERSION = 2;
+const OLDEST_READABLE_VERSION = 1;
 
 const MAGIC = Buffer.from("SINTSNP\0", "latin1");
 const END_MAGIC = Buffer.from("SINTEND\0", "latin1");
@@ -35,12 +46,14 @@ export interface CheckpointCollection {
   readonly collection: string;
   readonly documents: Iterable<[string, Uint8Array]>;
   readonly documentCount: number;
+  readonly indexes: readonly IndexSpec[];
 }
 
 export interface RecoveredCollection {
   readonly database: string;
   readonly collection: string;
   readonly documents: Map<string, Uint8Array>;
+  readonly indexes: IndexSpec[];
 }
 
 export interface ReadCheckpoint {
@@ -149,6 +162,15 @@ export function writeCheckpoint(
       add(encodeName(collection.database));
       add(encodeName(collection.collection));
 
+      const indexCount = Buffer.alloc(2);
+
+      indexCount.writeUint16BE(collection.indexes.length, 0);
+      add(indexCount);
+
+      for (const index of collection.indexes) {
+        add(encodeIndexSpec(index));
+      }
+
       const count = Buffer.alloc(4);
 
       count.writeUInt32BE(collection.documentCount, 0);
@@ -223,7 +245,10 @@ export function readCheckpoint(path: string): ReadCheckpoint {
 
   const version = bytes.readUInt32BE(8);
 
-  if (version !== CHECKPOINT_FORMAT_VERSION) {
+  if (
+    version < OLDEST_READABLE_VERSION ||
+    version > CHECKPOINT_FORMAT_VERSION
+  ) {
     throw new CheckpointDamagedError(
       `The snapshot uses unsupported format version ${version}.`,
     );
@@ -239,6 +264,22 @@ export function readCheckpoint(path: string): ReadCheckpoint {
   for (let index = 0; index < count; index += 1) {
     const database = reader.name();
     const collection = reader.name();
+    const indexes: IndexSpec[] = [];
+
+    if (version >= 2) {
+      const indexCount = reader.u16();
+
+      for (let position = 0; position < indexCount; position += 1) {
+        try {
+          indexes.push(readIndexSpec(reader));
+        } catch (error: unknown) {
+          throw new CheckpointDamagedError(
+            `The snapshot contains an invalid index definition: ${(error as Error).message}`,
+          );
+        }
+      }
+    }
+
     const documentCount = reader.u32();
     const documents = new Map<string, Uint8Array>();
 
@@ -249,7 +290,7 @@ export function readCheckpoint(path: string): ReadCheckpoint {
       documents.set(key, new Uint8Array(document));
     }
 
-    collections.push({ database, collection, documents });
+    collections.push({ database, collection, documents, indexes });
   }
 
   if (reader.offset !== footerStart) {
@@ -266,6 +307,16 @@ class SnapshotReader {
     private readonly buffer: Buffer,
     private readonly end: number,
   ) {}
+
+  public u8(): number {
+    this.require(1);
+
+    const value = this.buffer.readUint8(this.offset);
+
+    this.offset += 1;
+
+    return value;
+  }
 
   public u16(): number {
     this.require(2);

@@ -10,8 +10,10 @@ import { join } from "node:path";
 import {
   InMemoryCollection,
   type CollectionJournal,
+  type IndexValidationReport,
   type JournalOperation,
 } from "../in-memory-collection.js";
+import { sameDefinition, type IndexSpec } from "../indexing/spec.js";
 import {
   StorageCorruptionError,
   StorageError,
@@ -43,7 +45,11 @@ import {
 } from "./operations.js";
 
 export const STORAGE_FORMAT = "sinterdb-data";
-export const STORAGE_FORMAT_VERSION = 1;
+/**
+ * Version 2 adds index definitions to the log and to snapshots. Version 1
+ * directories are upgraded in place when they are opened.
+ */
+export const STORAGE_FORMAT_VERSION = 2;
 
 export const DEFAULT_CHECKPOINT_THRESHOLD_BYTES = 64 * 1024 * 1024;
 
@@ -89,7 +95,20 @@ export interface RecoveryReport {
   /** Newer snapshots that were damaged and therefore not used. */
   readonly skippedCheckpoints: readonly SkippedCheckpoint[];
   readonly replayedRecords: number;
+  /** Indexes rebuilt from the documents. Their contents are never stored. */
+  readonly rebuiltIndexes: number;
   readonly lastLsn: bigint;
+}
+
+export interface CollectionIndexReport {
+  readonly database: string;
+  readonly collection: string;
+  readonly report: IndexValidationReport;
+}
+
+interface RecoveredState {
+  readonly documents: Map<string, Uint8Array>;
+  indexes: IndexSpec[];
 }
 
 interface Settings {
@@ -102,6 +121,8 @@ interface Manifest {
   readonly format: string;
   readonly formatVersion: number;
   readonly createdAt: string;
+  readonly upgradedFrom?: number;
+  readonly upgradedAt?: string;
 }
 
 const SUBDIRECTORIES = ["wal", "segments", "indexes", "checkpoints"] as const;
@@ -121,6 +142,7 @@ export class StorageEngine {
     checkpointFile: undefined,
     skippedCheckpoints: [],
     replayedRecords: 0,
+    rebuiltIndexes: 0,
     lastLsn: 0n,
   };
 
@@ -249,6 +271,19 @@ export class StorageEngine {
     return this.register(database, collection, new Map());
   }
 
+  /** Rebuilds every index in every collection and reports any difference. */
+  public validateIndexes(): CollectionIndexReport[] {
+    const reports: CollectionIndexReport[] = [];
+
+    for (const [database, byName] of this.databases) {
+      for (const [collection, store] of byName) {
+        reports.push({ database, collection, report: store.validateIndexes() });
+      }
+    }
+
+    return reports;
+  }
+
   public close(): void {
     if (this.closed) {
       return;
@@ -311,6 +346,7 @@ export class StorageEngine {
           collection,
           documents: store.entries(),
           documentCount: store.documentCount,
+          indexes: store.indexSpec(),
         });
         documents += store.documentCount;
       }
@@ -354,6 +390,7 @@ export class StorageEngine {
     database: string,
     collection: string,
     documents: Map<string, Uint8Array>,
+    indexes: readonly IndexSpec[] = [],
   ): InMemoryCollection {
     const journal: CollectionJournal = {
       commit: (operations) => {
@@ -365,7 +402,7 @@ export class StorageEngine {
       },
     };
 
-    const created = new InMemoryCollection({ journal, documents });
+    const created = new InMemoryCollection({ journal, documents, indexes });
     let collections = this.databases.get(database);
 
     if (collections === undefined) {
@@ -487,7 +524,7 @@ export class StorageEngine {
       );
     }
 
-    const recovered = new Map<string, Map<string, Map<string, Uint8Array>>>();
+    const recovered = new Map<string, Map<string, RecoveredState>>();
 
     for (const entry of base?.collections ?? []) {
       let collections = recovered.get(entry.database);
@@ -497,7 +534,10 @@ export class StorageEngine {
         recovered.set(entry.database, collections);
       }
 
-      collections.set(entry.collection, entry.documents);
+      collections.set(entry.collection, {
+        documents: entry.documents,
+        indexes: [...entry.indexes],
+      });
     }
 
     let replayed = 0;
@@ -526,9 +566,24 @@ export class StorageEngine {
       }
     }
 
+    let rebuilt = 0;
+
     for (const [database, collections] of recovered) {
-      for (const [collection, documents] of collections) {
-        this.register(database, collection, documents);
+      for (const [collection, state] of collections) {
+        try {
+          this.register(database, collection, state.documents, state.indexes);
+        } catch (error: unknown) {
+          if (error instanceof StorageError) {
+            throw new StorageCorruptionError(
+              `The index definitions of collections "${database}.${collection}" cannot be rebuilt from its document: ${error.message} The data in ${this.root} is inconsistent. Restore the data directory from a backup.`,
+              { file: this.root, offset: 0 },
+            );
+          }
+
+          throw error;
+        }
+
+        rebuilt += state.indexes.length;
       }
     }
 
@@ -538,12 +593,13 @@ export class StorageEngine {
       checkpointFile: baseFile,
       skippedCheckpoints: skipped,
       replayedRecords: replayed,
+      rebuiltIndexes: rebuilt,
       lastLsn: this.log.lastLsn,
     };
   }
 
   private applyRecovered(
-    recovered: Map<string, Map<string, Map<string, Uint8Array>>>,
+    recovered: Map<string, Map<string, RecoveredState>>,
     operation: Operation,
     record: WalRecord,
   ): void {
@@ -556,29 +612,64 @@ export class StorageEngine {
       }
 
       if (!collections.has(operation.collection)) {
-        collections.set(operation.collection, new Map());
+        collections.set(operation.collection, {
+          documents: new Map(),
+          indexes: [],
+        });
       }
 
       return;
     }
 
-    const documents = recovered
-      .get(operation.database)
-      ?.get(operation.collection);
+    const state = recovered.get(operation.database)?.get(operation.collection);
 
-    if (documents === undefined) {
+    if (state === undefined) {
       throw this.corrupt(
         record,
         `It refers to collection "${operation.database}.${operation.collection}", which was never created.`,
       );
     }
 
+    if (operation.kind === "createIndex") {
+      const existing = state.indexes.find(
+        (index) => index.name === operation.index.name,
+      );
+
+      if (existing === undefined) {
+        state.indexes.push(operation.index);
+      } else if (!sameDefinition(existing, operation.index)) {
+        throw this.corrupt(
+          record,
+          `It creates index "${operation.index.name}" with a definition that conflicts with the existing index of that name.`,
+        );
+      }
+
+      return;
+    }
+
+    if (operation.kind === "dropIndex") {
+      const position = state.indexes.findIndex(
+        (index) => index.name === operation.name,
+      );
+
+      if (position < 0) {
+        throw this.corrupt(
+          record,
+          `It drops index "${operation.name}", which does not exist.`,
+        );
+      }
+
+      state.indexes.splice(position, 1);
+
+      return;
+    }
+
     const key = Buffer.from(operation.id).toString("hex");
 
     if (operation.kind === "put") {
-      documents.set(key, operation.document);
+      state.documents.set(key, operation.document);
     } else {
-      documents.delete(key);
+      state.documents.delete(key);
     }
   }
 
@@ -597,6 +688,14 @@ function toOperation(
   collection: string,
   operation: JournalOperation,
 ): Operation {
+  if (operation.kind === "createIndex") {
+    return { kind: "createIndex", database, collection, index: operation.spec };
+  }
+
+  if (operation.kind === "dropIndex") {
+    return { kind: "dropIndex", database, collection, name: operation.name };
+  }
+
   const id = Buffer.from(operation.key, "hex");
 
   return operation.kind === "put"
@@ -649,6 +748,30 @@ function prepareManifest(root: string): void {
       `The manifest ${path} has no valid format version.`,
       { file: path, offset: 0 },
     );
+  }
+
+  if (!Number.isInteger(manifest.formatVersion) || manifest.formatVersion < 1) {
+    throw new StorageCorruptionError(
+      `The manifest ${path} has an invalid format version.`,
+      { file: path, offset: 0 },
+    );
+  }
+
+  if (manifest.formatVersion < STORAGE_FORMAT_VERSION) {
+    // Glider servers cannot read what this version writes, so mark the
+    // directory before anything is written to it.
+    const upgraded: Manifest = {
+      format: STORAGE_FORMAT,
+      formatVersion: STORAGE_FORMAT_VERSION,
+      createdAt:
+        typeof manifest.createdAt === "string"
+          ? manifest.createdAt
+          : new Date().toISOString(),
+      upgradedFrom: manifest.formatVersion,
+      upgradedAt: new Date().toISOString(),
+    };
+
+    writeFileAtomic(root, path, `${JSON.stringify(upgraded, null, 2)}\n`);
   }
 
   if (manifest.formatVersion > STORAGE_FORMAT_VERSION) {

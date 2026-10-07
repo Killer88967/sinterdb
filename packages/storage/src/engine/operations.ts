@@ -1,3 +1,4 @@
+import { normalizeIndexSpec, type IndexSpec } from "../indexing/spec.js";
 import { StorageError, StorageErrorCode } from "../errors.js";
 
 export const RecordType = {
@@ -11,6 +12,8 @@ const OperationKind = {
   CreateCollection: 1,
   Put: 2,
   Delete: 3,
+  CreateIndex: 4,
+  DropIndex: 5,
 } as const;
 
 export type Operation =
@@ -31,6 +34,18 @@ export type Operation =
       readonly database: string;
       readonly collection: string;
       readonly id: Uint8Array;
+    }
+  | {
+      readonly kind: "createIndex";
+      readonly database: string;
+      readonly collection: string;
+      readonly index: IndexSpec;
+    }
+  | {
+      readonly kind: "dropIndex";
+      readonly database: string;
+      readonly collection: string;
+      readonly name: string;
     };
 
 const encoder = new TextEncoder();
@@ -69,6 +84,24 @@ export function encodeOperations(operations: readonly Operation[]): Uint8Array {
           encodeName(operation.database),
           encodeName(operation.collection),
           encodeId(operation.id),
+        );
+        break;
+
+      case "createIndex":
+        parts.push(
+          Uint8Array.of(OperationKind.CreateIndex),
+          encodeName(operation.database),
+          encodeName(operation.collection),
+          encodeIndexSpec(operation.index),
+        );
+        break;
+
+      case "dropIndex":
+        parts.push(
+          Uint8Array.of(OperationKind.DropIndex),
+          encodeName(operation.database),
+          encodeName(operation.collection),
+          encodeName(operation.name),
         );
         break;
     }
@@ -113,6 +146,24 @@ export function decodeOperations(payload: Uint8Array): Operation[] {
         });
         break;
 
+      case OperationKind.CreateIndex:
+        operations.push({
+          kind: "createIndex",
+          database: reader.name(),
+          collection: reader.name(),
+          index: readIndexSpec(reader),
+        });
+        break;
+
+      case OperationKind.DropIndex:
+        operations.push({
+          kind: "dropIndex",
+          database: reader.name(),
+          collection: reader.name(),
+          name: reader.name(),
+        });
+        break;
+
       default:
         throw malformed(`Unknown operation kind ${kind}.`);
     }
@@ -123,7 +174,47 @@ export function decodeOperations(payload: Uint8Array): Operation[] {
   return operations;
 }
 
-function encodeName(name: string): Uint8Array {
+const UNIQUE_FLAG = 1;
+const SPARSE_FLAG = 2;
+const DESCENDING_FLAG = 4;
+
+export function encodeIndexSpec(spec: IndexSpec): Uint8Array {
+  const flags =
+    (spec.unique ? UNIQUE_FLAG : 0) |
+    (spec.sparse ? SPARSE_FLAG : 0) |
+    (spec.direction === -1 ? DESCENDING_FLAG : 0);
+
+  return Buffer.concat([
+    encodeName(spec.name),
+    encodeName(spec.field),
+    Uint8Array.of(flags),
+  ]);
+}
+
+export function readIndexSpec(reader: {
+  name(): string;
+  u8(): number;
+}): IndexSpec {
+  const name = reader.name();
+  const field = reader.name();
+  const flags = reader.u8();
+
+  try {
+    return normalizeIndexSpec({
+      name,
+      field,
+      direction: (flags & DESCENDING_FLAG) === 0 ? 1 : -1,
+      unique: (flags & UNIQUE_FLAG) !== 0,
+      sparse: (flags & SPARSE_FLAG) !== 0,
+    });
+  } catch (error: unknown) {
+    throw malformed(
+      `An index definition is invalid: ${(error as Error).message}`,
+    );
+  }
+}
+
+export function encodeName(name: string): Uint8Array {
   const bytes = encoder.encode(name);
 
   if (bytes.byteLength === 0 || bytes.byteLength > MAX_NAME_BYTE_LENGTH) {
@@ -164,7 +255,7 @@ function malformed(reason: string): StorageError {
   );
 }
 
-class Reader {
+export class Reader {
   private offset = 0;
 
   public constructor(private readonly buffer: Uint8Array) {}

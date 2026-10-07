@@ -28,6 +28,36 @@ describe("operation codec", () => {
       id: id(200),
       document: new Uint8Array(),
     },
+    {
+      kind: "createIndex",
+      database: "app",
+      collection: "users",
+      index: {
+        name: "email_1",
+        field: "email",
+        direction: 1,
+        unique: true,
+        sparse: false,
+      },
+    },
+    {
+      kind: "createIndex",
+      database: "app",
+      collection: "users",
+      index: {
+        name: "プロフィール",
+        field: "profile.level",
+        direction: -1,
+        unique: false,
+        sparse: true,
+      },
+    },
+    {
+      kind: "dropIndex",
+      database: "app",
+      collection: "users",
+      name: "email_1",
+    },
   ];
 
   it("round-trips every operation kind", () => {
@@ -108,5 +138,35 @@ describe("operation codec", () => {
     encoded[6] = 0xff;
 
     expect(() => decodeOperations(encoded)).toThrow(StorageError);
+  });
+
+  it("rejects an index definition that is not valid", () => {
+    const encoded = Buffer.from(
+      encodeOperations([
+        {
+          kind: "createIndex",
+          database: "a",
+          collection: "b",
+          index: {
+            name: "bad",
+            field: "x.y",
+            direction: 1,
+            unique: false,
+            sparse: false,
+          },
+        },
+      ]),
+    );
+    const position = encoded.indexOf(Buffer.from("x.y"));
+
+    encoded[position] = "$".charCodeAt(0);
+
+    try {
+      decodeOperations(encoded);
+      throw new Error("Expected an error.");
+    } catch (error: unknown) {
+      expect((error as StorageError).code).toBe(StorageErrorCode.Corruption);
+      expect((error as Error).message).toContain("index definition");
+    }
   });
 });

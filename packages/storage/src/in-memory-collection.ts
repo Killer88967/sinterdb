@@ -66,7 +66,9 @@ export type JournalOperation =
       readonly key: string;
       readonly document: Uint8Array;
     }
-  | { readonly kind: "delete"; readonly key: string };
+  | { readonly kind: "delete"; readonly key: string }
+  | { readonly kind: "createIndex"; readonly spec: IndexSpec }
+  | { readonly kind: "dropIndex"; readonly name: string };
 
 export interface CollectionJournal {
   /**
@@ -547,6 +549,15 @@ export class InMemoryCollection {
     const spec = normalizeIndexSpec(input);
     const created = this.buildIndex(spec);
 
+    if (created) {
+      try {
+        this.commit([{ kind: "createIndex", spec }]);
+      } catch (error: unknown) {
+        this.removeIndex(spec.name);
+        throw error;
+      }
+    }
+
     return { name: spec.name, created };
   }
 
@@ -565,11 +576,13 @@ export class InMemoryCollection {
       );
     }
 
-    this.indexes.drop(name);
+    this.commit([{ kind: "dropIndex", name }]);
+    this.removeIndex(name);
+  }
 
-    if (this.indexes.isEmpty) {
-      this.sequence = undefined;
-    }
+  /** The definition of the indexes besides `_id`, in creation order. */
+  public indexSpec(): IndexSpec[] {
+    return this.indexes.specs();
   }
 
   /** The `_id` index followed by the other indexes in creation order. */
@@ -733,6 +746,14 @@ export class InMemoryCollection {
     }
 
     return result === "created";
+  }
+
+  private removeIndex(name: string): void {
+    this.indexes.drop(name);
+
+    if (this.indexes.isEmpty) {
+      this.sequence = undefined;
+    }
   }
 
   private put(key: string, encoded: Uint8Array): void {

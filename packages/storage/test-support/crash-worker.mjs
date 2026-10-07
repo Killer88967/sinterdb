@@ -79,6 +79,16 @@ send(
 const items = engine.openCollection("crash", "items");
 const pad = "x".repeat(24);
 
+function hasIndex(name) {
+  return items.listIndexes().some((index) => index.name === name);
+}
+
+function runSetupOperation(id, operation) {
+  send(`BEGIN ${id} ${JSON.stringify(operation)}`);
+  apply(operation);
+  send(`ACK ${id}`);
+}
+
 function chooseOperation() {
   const documents = [...items.find({})];
   const present = new Map(
@@ -114,6 +124,8 @@ function chooseOperation() {
   if (groups.length > 2) {
     kinds.push("deleteGroup");
   }
+
+  kinds.push(hasIndex("v_idx") ? "dropValueIndex" : "createValueIndex");
 
   const kind = pick(kinds);
   const group = Math.floor(random() * GROUPS);
@@ -154,6 +166,10 @@ function chooseOperation() {
 
     case "inc":
       return { kind, group: pick(groups) };
+
+    case "createValueIndex":
+    case "dropValueIndex":
+      return { kind };
 
     default:
       return { kind: "deleteGroup", group: pick(groups) };
@@ -211,9 +227,33 @@ function apply(operation) {
       );
       break;
 
+    case "ensureKeyIndex":
+      items.createIndex({ field: "key", unique: true });
+      break;
+
+    case "ensureGroupIndex":
+      items.createIndex({ field: "group" });
+      break;
+
+    case "createValueIndex":
+      items.createIndex({ field: "v", name: "v_idx" });
+      break;
+
+    case "dropValueIndex":
+      items.dropIndex("v_idx");
+      break;
+
     default:
       throw new Error(`Unknown operation ${operation.kind}`);
   }
+}
+
+if (!hasIndex("key_1")) {
+  runSetupOperation(-1, { kind: "ensureKeyIndex" });
+}
+
+if (!hasIndex("group_1")) {
+  runSetupOperation(-2, { kind: "ensureGroupIndex" });
 }
 
 for (let index = 0; index < config.maxOps; index += 1) {
