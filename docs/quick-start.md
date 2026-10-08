@@ -20,6 +20,8 @@ npm install --global @sinterdb/cli@next
 
 With pnpm, use `pnpm add --global @sinterdb/cli@next`.
 
+Prefer a container? See [Running in Docker](./docker.md), then continue at step 3.
+
 ## 2. Start the server
 
 ```bash run=server
@@ -194,4 +196,7 @@ error with the reason, and exits with code 1.
 - [Configuration reference](./configuration.md): every server and driver option.
 - [Indexes](./indexes.md): make queries fast and enforce unique values.
 - [Storage](./storage.md): durability, checkpoints, and recovery.
+- [Running in Docker](./docker.md): the server in a container, with a volume.
+- [Known limitations](./limitations.md): what SinterDB does not do yet.
+- [Benchmarks](./benchmarks.md): what the everyday operations cost.
 - [Compatibility](./compatibility.md): what stays stable between releases.

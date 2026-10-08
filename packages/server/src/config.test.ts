@@ -13,6 +13,7 @@ describe("resolveServerConfig", () => {
       host: DEFAULT_SERVER_HOST,
       port: DEFAULT_SERVER_PORT,
       durability: "fsync",
+      reclaimLock: false,
     });
   });
 
@@ -29,6 +30,7 @@ describe("resolveServerConfig", () => {
       host: "0.0.0.0",
       port: 5000,
       durability: "fsync",
+      reclaimLock: false,
     });
   });
 
@@ -48,6 +50,7 @@ describe("resolveServerConfig", () => {
       host: "127.0.0.1",
       port: 6000,
       durability: "fsync",
+      reclaimLock: false,
     });
   });
 
@@ -116,6 +119,7 @@ describe("resolveServerConfig storage options", () => {
   it("defaults to fsync durability with a data directory", () => {
     expect(resolveServerConfig({ dataDirectory: "/data" }, {})).toMatchObject({
       durability: "fsync",
+      reclaimLock: false,
     });
   });
 
@@ -204,5 +208,59 @@ describe("resolveServerConfig checkpoint threshold", () => {
         "checkpointThresholdBytes",
       );
     }
+  });
+});
+
+describe("resolveServerConfig reclaim lock", () => {
+  it("is off by default", () => {
+    expect(
+      resolveServerConfig({ dataDirectory: "/data" }, {}).reclaimLock,
+    ).toBe(false);
+  });
+
+  it("reads true and false from input and the environment", () => {
+    expect(
+      resolveServerConfig({ dataDirectory: "/d", reclaimLock: true }, {})
+        .reclaimLock,
+    ).toBe(true);
+    expect(
+      resolveServerConfig(
+        {},
+        { SINTERDB_DATA_DIR: "/d", SINTERDB_RECLAIM_LOCK: "true" },
+      ).reclaimLock,
+    ).toBe(true);
+    expect(
+      resolveServerConfig(
+        {},
+        { SINTERDB_DATA_DIR: "/d", SINTERDB_RECLAIM_LOCK: " false " },
+      ).reclaimLock,
+    ).toBe(false);
+  });
+
+  it("lets input override the environment", () => {
+    expect(
+      resolveServerConfig(
+        { reclaimLock: false },
+        { SINTERDB_DATA_DIR: "/d", SINTERDB_RECLAIM_LOCK: "true" },
+      ).reclaimLock,
+    ).toBe(false);
+  });
+
+  it.each(["", "yes", "1", "TRUE"])("rejects %j", (value) => {
+    expect(() =>
+      resolveServerConfig(
+        {},
+        { SINTERDB_DATA_DIR: "/d", SINTERDB_RECLAIM_LOCK: value },
+      ),
+    ).toThrow(ServerConfigurationError);
+  });
+
+  it("requires a data directory when turned on", () => {
+    expect(() => resolveServerConfig({ reclaimLock: true }, {})).toThrow(
+      ServerConfigurationError,
+    );
+    expect(resolveServerConfig({ reclaimLock: false }, {}).reclaimLock).toBe(
+      false,
+    );
   });
 });

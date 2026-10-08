@@ -23,9 +23,27 @@ export interface DirectoryLock {
   release(): void;
 }
 
+export interface DirectoryLockOptions {
+  /**
+   * Treat a lock written by a process on another host as left behind. A
+   * server cannot tell whether such a process is still running, so this is
+   * off by default. Container platforms give every container its own host
+   * name, so a lock left by a stopped container always looks foreign.
+   */
+  readonly reclaimForeignLock?: boolean;
+}
+
+// Locks this process currently holds. A lock file with this process's id that
+// is not in here was written by an earlier process that had the same id, which
+// is normal in containers where the server is always process 1.
+const heldPaths = new Set<string>();
+
 const UNREADABLE_LOCK_GRACE_MS = 5_000;
 
-export function acquireDirectoryLock(path: string): DirectoryLock {
+export function acquireDirectoryLock(
+  path: string,
+  options: DirectoryLockOptions = {},
+): DirectoryLock {
   const info: LockInfo = {
     pid: process.pid,
     hostname: hostname(),
@@ -44,6 +62,8 @@ export function acquireDirectoryLock(path: string): DirectoryLock {
         closeSync(fd);
       }
 
+      heldPaths.add(path);
+
       return { release: () => releaseLock(path, info.nonce) };
     } catch (error: unknown) {
       if ((error as NodeJS.ErrnoException).code !== "EEXIST") {
@@ -61,7 +81,7 @@ export function acquireDirectoryLock(path: string): DirectoryLock {
       if (lockIsFresh(path)) {
         throw locked(path, "another process is starting up");
       }
-    } else if (!isStale(holder)) {
+    } else if (!isStale(holder, path, options)) {
       throw locked(
         path,
         `it is held by process ${holder.pid} on ${holder.hostname}, started ${holder.startedAt}`,
@@ -107,9 +127,17 @@ function lockIsFresh(path: string): boolean {
   }
 }
 
-function isStale(holder: LockInfo): boolean {
+function isStale(
+  holder: LockInfo,
+  path: string,
+  options: DirectoryLockOptions,
+): boolean {
   if (holder.hostname !== hostname()) {
-    return false;
+    return options.reclaimForeignLock === true;
+  }
+
+  if (holder.pid === process.pid) {
+    return !heldPaths.has(path);
   }
 
   try {
@@ -122,6 +150,8 @@ function isStale(holder: LockInfo): boolean {
 }
 
 function releaseLock(path: string, nonce: string): void {
+  heldPaths.delete(path);
+
   if (readLock(path)?.nonce !== nonce) {
     return;
   }

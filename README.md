@@ -54,6 +54,7 @@ SinterDB aims to provide:
 | `@sinterdb-internal/test-utils` | Private    | Shared fixtures and server test utilities      |
 | `@sinterdb-internal/api-docs`   | Private    | Generates the driver API reference             |
 | `@sinterdb-examples/todo-app`   | Private    | Example command-line application               |
+| `@sinterdb-internal/bench`      | Private    | Basic benchmarks (`pnpm bench`)                |
 
 The ODM will be developed separately as `sinterdb-odm` after the driver API
 becomes stable enough to support it.
@@ -78,9 +79,12 @@ sinterdb/
 │   ├── protocol/
 │   └── reference/
 ├── examples/
+│   ├── docker/
 │   └── todo-app/
 ├── tools/
-│   └── api-docs/
+│   ├── api-docs/
+│   └── bench/
+├── Dockerfile
 └── ROADMAP.md
 ```
 
@@ -164,6 +168,9 @@ on `SIGINT` or `SIGTERM`.
 - [Durable storage](./docs/storage.md)
 - [Indexes](./docs/indexes.md)
 - [Compatibility and versioning](./docs/compatibility.md)
+- [Running in Docker](./docs/docker.md)
+- [Known limitations](./docs/limitations.md)
+- [Benchmarks](./docs/benchmarks.md)
 - [Example application](./examples/todo-app) (a to-do list on the driver)
 - API reference: run `pnpm docs:api` to generate it in `docs/api/`; CI
   publishes it as a build artifact

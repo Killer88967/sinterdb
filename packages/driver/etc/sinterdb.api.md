@@ -329,6 +329,11 @@ export class SinterDatabase {
 }
 
 // @public
+export class SinterDocumentError extends SinterError {
+    constructor(message: string, options?: ErrorOptions);
+}
+
+// @public
 export class SinterError extends Error {
     constructor(code: SinterErrorCode, message: string, options?: ErrorOptions);
     // Warning: (ae-unresolved-link) The @link reference could not be resolved: The reference is ambiguous because "SinterErrorCode" has more than one declaration; you need to add a TSDoc member reference selector
@@ -339,6 +344,7 @@ export class SinterError extends Error {
 export const SinterErrorCode: {
     readonly InvalidConnectionString: "INVALID_CONNECTION_STRING";
     readonly InvalidClientOptions: "INVALID_CLIENT_OPTIONS";
+    readonly InvalidDocument: "INVALID_DOCUMENT";
     readonly ClientClosed: "CLIENT_CLOSED";
     readonly ClientNotConnected: "CLIENT_NOT_CONNECTED";
     readonly ConnectionFailed: "CONNECTION_FAILED";

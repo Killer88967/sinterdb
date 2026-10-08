@@ -125,6 +125,12 @@ gone and takes the lock over. The lock is a file, not an operating-system
 lock, so it cannot protect a directory shared over a network file system, and
 it can be fooled if the operating system reuses a process id.
 
+A lock written on a different host is never taken over unless you ask for it,
+because the server cannot tell whether that process is still running. Start the
+server with `--reclaim-lock` (or `SINTERDB_RECLAIM_LOCK=true`) when you know it
+is not. Containers need this, because each one has its own host name; the
+[Docker image](./docker.md) sets it for you.
+
 ## Indexes
 
 Index definitions are part of the stored data. `createIndex` and `dropIndex` are

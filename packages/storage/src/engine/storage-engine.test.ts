@@ -533,6 +533,65 @@ describe("directory locking", () => {
     );
   });
 
+  it("takes over a lock from another host only when asked to", () => {
+    writeFileSync(
+      join(directory, "LOCK"),
+      JSON.stringify({
+        pid: 1,
+        hostname: "a-stopped-container",
+        startedAt: new Date().toISOString(),
+        nonce: "remote",
+      }),
+    );
+
+    expectCode(
+      () => StorageEngine.open({ directory }),
+      StorageErrorCode.Locked,
+    );
+
+    const engine = StorageEngine.open({ directory, reclaimLock: true });
+
+    engine.close();
+
+    expect(existsSync(join(directory, "LOCK"))).toBe(false);
+  });
+
+  it("takes over a lock written by an earlier process with the same id", () => {
+    // In a container the server is always process 1, so a lock left by a
+    // killed container names the id this process now has.
+    writeFileSync(
+      join(directory, "LOCK"),
+      JSON.stringify({
+        pid: process.pid,
+        hostname: hostname(),
+        startedAt: new Date().toISOString(),
+        nonce: "previous-life",
+      }),
+    );
+
+    const engine = open();
+
+    expect(engine.listDatabases()).toEqual([]);
+
+    engine.close();
+
+    expect(existsSync(join(directory, "LOCK"))).toBe(false);
+  });
+
+  it("still refuses a second open by the same process", () => {
+    const first = open();
+
+    expectCode(
+      () => StorageEngine.open({ directory, reclaimLock: true }),
+      StorageErrorCode.Locked,
+    );
+
+    first.close();
+
+    // Closing releases the lock for good, so a later open is allowed.
+    open().close();
+  });
+
   it("waits for a lock file that is still being written", () => {
     writeFileSync(join(directory, "LOCK"), "");
 

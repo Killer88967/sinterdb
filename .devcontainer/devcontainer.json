@@ -13,7 +13,10 @@
       "nodeGypDependencies": true
     },
     "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/devcontainers/features/git-lfs:1": {}
+    "ghcr.io/devcontainers/features/git-lfs:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:4.1.3": {
+      "moby": true
+    }
   },
   "remoteUser": "vscode",
   "containerEnv": {
@@ -142,7 +145,27 @@
         "[markdown]": {
           "editor.defaultFormatter": "esbenp.prettier-vscode",
           "files.trimTrailingWhitespace": false
-        }
+        },
+        "todohighlight.keywords": [
+          {
+            "text": "FINDME:",
+            "color": "#ffffff",
+            "backgroundColor": "#8b5cf6",
+            "overviewRulerColor": "#8b5cf6"
+          },
+          {
+            "text": "IDEA:",
+            "color": "#ffffff",
+            "backgroundColor": "#0891b2",
+            "overviewRulerColor": "#0891b2"
+          },
+          {
+            "text": "DEPRECATED:",
+            "color": "#ffffff",
+            "backgroundColor": "#d40d0d",
+            "overviewRulerColor": "#d40d0d"
+          }
+        ]
       }
     }
   }

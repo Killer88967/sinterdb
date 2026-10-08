@@ -12,6 +12,7 @@ import {
 
 import {
   SinterConnectionError,
+  SinterDocumentError,
   SinterProtocolError,
   SinterRequestTimeoutError,
   SinterServerError,
@@ -61,6 +62,22 @@ export class RequestDispatcher {
     }
 
     const requestId = this.allocateRequestId();
+    let frame: Uint8Array;
+
+    // Encoding fails when the caller's request holds something that cannot be
+    // stored. That is not a connection problem and nothing has been sent.
+    try {
+      frame = encodeMessage({ kind, requestId, payload });
+    } catch (cause: unknown) {
+      return Promise.reject(
+        new SinterDocumentError(
+          `The request could not be encoded: ${
+            cause instanceof Error ? cause.message : String(cause)
+          }`,
+          { cause },
+        ),
+      );
+    }
 
     return new Promise<DecodedMessage>((resolve, reject) => {
       const timeout = setTimeout(() => {
@@ -82,24 +99,17 @@ export class RequestDispatcher {
       });
 
       try {
-        this.socket.write(
-          encodeMessage({
-            kind,
-            requestId,
-            payload,
-          }),
-          (error?: Error | null) => {
-            if (error !== undefined && error !== null) {
-              this.rejectRequest(
-                requestId,
-                new SinterConnectionError(
-                  `Could not write request ${requestId} to the server.`,
-                  { cause: error },
-                ),
-              );
-            }
-          },
-        );
+        this.socket.write(frame, (error?: Error | null) => {
+          if (error !== undefined && error !== null) {
+            this.rejectRequest(
+              requestId,
+              new SinterConnectionError(
+                `Could not write request ${requestId} to the server.`,
+                { cause: error },
+              ),
+            );
+          }
+        });
       } catch (cause: unknown) {
         this.rejectRequest(
           requestId,

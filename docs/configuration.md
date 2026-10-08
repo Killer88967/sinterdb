@@ -19,6 +19,7 @@ the default.
 | Data directory       | `--data-dir <path>`      | `SINTERDB_DATA_DIR`         | none        |
 | Durability mode      | `--durability <mode>`    | `SINTERDB_DURABILITY`       | `fsync`     |
 | Checkpoint threshold | `--checkpoint-bytes <n>` | `SINTERDB_CHECKPOINT_BYTES` | `64 MiB`    |
+| Reclaim lock         | `--reclaim-lock`         | `SINTERDB_RECLAIM_LOCK`     | `false`     |
 
 Two more flags do not start a server: `-h, --help` prints the usage text, and
 `-v, --version` prints the server version.
@@ -45,8 +46,15 @@ and survive a restart. The directory is created if it does not exist, and a
 second server cannot open a directory that another is using. See
 [storage.md](./storage.md) for the layout and recovery.
 
-`--durability` and `--checkpoint-bytes` only make sense with a data directory.
-Setting either one without `--data-dir` is a configuration error.
+`--durability`, `--checkpoint-bytes` and `--reclaim-lock` only make sense with a
+data directory. Setting any of them without `--data-dir` is a configuration
+error.
+
+`--reclaim-lock` (or `SINTERDB_RECLAIM_LOCK=true`) makes the server take over a
+lock that a process on another host or container left behind. Leave it off
+unless the directory is only ever used by one server at a time and the host name
+changes between runs, which is the case for containers. The Docker image turns
+it on. See [the data directory lock](./storage.md#the-data-directory-lock).
 
 ### Durability
 
@@ -89,7 +97,9 @@ reason in the log.
 ### Log output
 
 The server writes one JSON object per line: informational events to standard
-output and errors to standard error. The fields of a line are `timestamp`,
+output, and warnings and errors to standard error. A client that disconnects
+abruptly is logged as a `server.connection_error` warning and does not stop the
+server; an `error` line with a `server.runtime_error` event does. The fields of a line are `timestamp`,
 `level`, `event`, `message`, and `details`. The `server.started` event reports
 the address and, with a data directory, what recovery did. The log format is
 meant for people and is not covered by the compatibility promise in

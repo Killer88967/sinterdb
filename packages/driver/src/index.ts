@@ -46,6 +46,7 @@ export {
   SinterConnectionError,
   SinterConnectionStringError,
   SinterConnectionTimeoutError,
+  SinterDocumentError,
   SinterError,
   SinterErrorCode,
   SinterInsertManyError,
