@@ -3,15 +3,15 @@ import type { CustomId } from "sinterdb-protocol";
 export type ComparableValue =
   string | number | bigint | Date | Uint8Array | CustomId;
 
-type AtomicValue = ComparableValue | boolean | null;
+export type AtomicValue = ComparableValue | boolean | null;
 
 export type ElementOf<TValue> = TValue extends readonly (infer TElement)[]
   ? TElement
   : TValue;
 
-type ComparisonOperators<TValue> = [Extract<TValue, ComparableValue>] extends [
-  never,
-]
+export type ComparisonOperators<TValue> = [
+  Extract<TValue, ComparableValue>,
+] extends [never]
   ? unknown
   : {
       readonly $gt?: Extract<TValue, ComparableValue>;
@@ -29,7 +29,7 @@ export type FilterOperators<TValue> = {
   readonly $not?: FilterOperators<TValue>;
 } & ComparisonOperators<TValue>;
 
-type MaxPathDepth = 5;
+export type MaxPathDepth = 5;
 
 export type FilterPaths<
   TDocument,

@@ -46,7 +46,7 @@ SinterDB aims to provide:
 | ------------------------------- | ---------- | ---------------------------------------------- |
 | `sinterdb`                      | Public     | Official Node.js database driver               |
 | `sinterdb-protocol`             | Public     | Wire-protocol types, framing, and errors       |
-| `sinterdb-server`               | Public     | `sinterd` server executable                    |
+| `@sinterdb/cli`                 | Public     | `sinterd` server executable                    |
 | `@sinterdb-internal/server`     | Private    | Sessions, commands, and query execution        |
 | `@sinterdb-internal/storage`    | Private    | Persistent storage, WAL, indexes, and recovery |
 | `@sinterdb-internal/test-utils` | Private    | Shared fixtures and server test utilities      |
@@ -121,7 +121,7 @@ pnpm clean
 Build and start the development server:
 
 ```sh
-pnpm --filter sinterdb-server build
+pnpm --filter @sinterdb/cli build
 node apps/server-cli/dist/index.js
 ```
 

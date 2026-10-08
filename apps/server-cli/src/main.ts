@@ -87,7 +87,7 @@ async function startServer(
 
     logError(
       "server.runtime_error",
-      "SinterDB server encounter a runtime error.",
+      "SinterDB server encountered a runtime error.",
       error,
     );
 

@@ -89,7 +89,7 @@ sinterdb-odm/
 | `sinterdb-protocol`             | Yes, low-level           | Versioned request/response types, framing, serialization, capabilities, and error codes |
 | `@sinterdb-internal/storage`    | No                       | Data files, write-ahead log, checkpoints, indexes, recovery, and compaction             |
 | `@sinterdb-internal/server`     | Optional                 | Query execution, sessions, authentication, transactions, and TCP server                 |
-| `sinterdb-server`               | Optional executable      | CLI that configures and starts the server                                               |
+| `@sinterdb/cli`                 | Optional executable      | CLI that configures and starts the server                                               |
 | `sinterdb`                      | Yes                      | Official Node.js driver and primary public npm package                                  |
 | `@sinterdb-internal/test-utils` | Later                    | Test-server lifecycle and fixtures for downstream packages                              |
 | `sinterdb-odm`                  | Yes, separate repository | Schemas, models, validation, hooks, virtuals, and population                            |
@@ -223,7 +223,7 @@ packages/
 
 ### Deliverables
 
-- `sinterdb-server` CLI
+- `@sinterdb/cli` CLI
 - Configuration through command-line flags and environment variables
 - Graceful startup and shutdown
 - TCP listener

@@ -12,8 +12,10 @@
     "pnpm": ">=12.0.0"
   },
   "scripts": {
-    "all": "pnpm clean && pnpm build && pnpm typecheck && pnpm format && pnpm lint && pnpm test && pnpm format:check",
+    "all": "pnpm clean && pnpm build && pnpm api:check && pnpm typecheck && pnpm format && pnpm lint && pnpm test && pnpm format:check",
     "build": "pnpm --recursive build",
+    "api:check": "pnpm --recursive --if-present api:check",
+    "api:update": "pnpm --recursive --if-present api:update",
     "typecheck": "pnpm --recursive typecheck",
     "lint": "eslint .",
     "test": "pnpm build && pnpm --recursive test",
@@ -24,10 +26,10 @@
     "clean:release": "rimraf release",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "pack:all": "pnpm pack:driver && pnpm pack:protocol && pnpm pack:server",
+    "pack:all": "pnpm pack:driver && pnpm pack:protocol && pnpm pack:cli",
     "pack:driver": "pnpm --filter sinterdb pack --pack-destination ./release",
     "pack:protocol": "pnpm --filter sinterdb-protocol pack --pack-destination ./release",
-    "pack:server": "pnpm --filter sinterdb-server pack --pack-destination ./release",
+    "pack:cli": "pnpm --filter @sinterdb/cli pack --pack-destination ./release",
     "release:prepare": "pnpm clean:release && pnpm all && pnpm pack:all",
     "release:npm": "pnpm build && changeset publish",
     "release:github": "gh release create v$(node -p \"require('./packages/driver/package.json').version\") release/*.tgz --title \"SinterDB v$(node -p \"require('./packages/driver/package.json').version\")\" --notes-file docs/releases/$(node -p \"require('./packages/driver/package.json').version\").md",
@@ -36,6 +38,7 @@
   "devDependencies": {
     "@changesets/cli": "^3.0.3",
     "@eslint/js": "^10.0.1",
+    "@microsoft/api-extractor": "^7.59.4",
     "@types/node": "^26.6.4",
     "@vitest/coverage-v8": "^5.0.3",
     "eslint": "^10.12.0",

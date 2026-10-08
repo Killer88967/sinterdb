@@ -32,6 +32,7 @@ export {
 export type {
   FrameFlag as FrameFlagValue,
   MessageKind as MessageKindValue,
+  MessageKindByName,
 } from "./constants.js";
 export type {
   ProtocolErrorCode as ProtocolErrorCodeValue,
@@ -49,6 +50,7 @@ export type {
   HandshakeEnvelope,
   HandshakeRole as HandshakeRoleValue,
   MessagePayloadByKind,
+  MessagePayloadByName,
   PingEnvelope,
   ProtocolCapability as ProtocolCapabilityValue,
   ProtocolEnvelope,
@@ -56,4 +58,8 @@ export type {
   StreamEndEnvelope,
   StreamItemEnvelope,
 } from "./messages.js";
-export type { DecodedMessage, MessageInput } from "./message-frame.js";
+export type {
+  DecodedMessage,
+  FrameMetadata,
+  MessageInput,
+} from "./message-frame.js";

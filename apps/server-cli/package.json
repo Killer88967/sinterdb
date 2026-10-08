@@ -1,5 +1,5 @@
 {
-  "name": "sinterdb-server",
+  "name": "@sinterdb/cli",
   "version": "0.0.9",
   "description": "Command-line server for SinterDB.",
   "author": "Killer88967",

@@ -1,4 +1,4 @@
-# sinterdb-server
+# @sinterdb/cli
 
 Command-line server for SinterDB. The package installs the `sinterd` executable.
 
@@ -10,7 +10,7 @@ Command-line server for SinterDB. The package installs the `sinterd` executable.
 Build the executable from the repository root:
 
 ```bash
-pnpm --filter sinterdb-server build
+pnpm --filter @sinterdb/cli build
 ```
 
 Start the server:

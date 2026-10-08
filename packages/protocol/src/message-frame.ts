@@ -10,7 +10,7 @@ export interface MessageInput<K extends MessageKindValue> {
   flags?: number;
 }
 
-type FrameMetadata = Omit<Frame, "kind" | "payload">;
+export type FrameMetadata = Omit<Frame, "kind" | "payload">;
 
 export type DecodedMessage = {
   [K in MessageKindValue]: FrameMetadata & {

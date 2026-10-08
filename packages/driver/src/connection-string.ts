@@ -22,6 +22,12 @@ export function parseSinterConnectionString(
     );
   }
 
+  if (/[\s\p{Cc}]/u.test(connectionString)) {
+    throw new SinterConnectionStringError(
+      "The connection string must not contain whitespace or control characters; percent-encode them in the database name.",
+    );
+  }
+
   let url: URL;
 
   try {
@@ -45,19 +51,25 @@ export function parseSinterConnectionString(
     );
   }
 
+  if (url.hostname.includes("%")) {
+    throw new SinterConnectionStringError(
+      "The host name must be plain ASCII; write internationalized names as punycode (xn--...).",
+    );
+  }
+
   if (url.username.length > 0 || url.password.length > 0) {
     throw new SinterConnectionStringError(
       "Authentication credentials are not supported yet.",
     );
   }
 
-  if (url.search.length > 0) {
+  if (connectionString.includes("?")) {
     throw new SinterConnectionStringError(
       "Connection-string query parameters are not supported yet.",
     );
   }
 
-  if (url.hash.length > 0) {
+  if (connectionString.includes("#")) {
     throw new SinterConnectionStringError(
       "Connection-string fragments are not supported.",
     );

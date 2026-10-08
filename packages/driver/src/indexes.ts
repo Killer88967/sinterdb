@@ -40,11 +40,22 @@ export interface IndexInfo {
   readonly sparse: boolean;
 }
 
+/**
+ * One end of an index range in an {@link ExplainResult}.
+ *
+ * @beta
+ */
 export interface IndexBoundInfo {
   readonly value: DocumentValue;
   readonly inclusive: boolean;
 }
 
+/**
+ * The query plan the server reports for a find. The shape is experimental and
+ * may change in any release; see docs/compatibility.md.
+ *
+ * @beta
+ */
 export interface ExplainResult {
   readonly stage: "COLLSCAN" | "IDLOOKUP" | "IXSCAN";
   readonly index?: string;
