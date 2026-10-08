@@ -8,10 +8,12 @@ import {
   PROTOCOL_VERSION,
   ProtocolCapability,
   ProtocolError,
+  ProtocolErrorCode,
   WireErrorCode,
   type CommandEnvelope,
   type DecodedMessage,
   type Document,
+  type DocumentValue,
   type ErrorEnvelope,
 } from "sinterdb-protocol";
 
@@ -39,7 +41,16 @@ export interface ServerSessionOptions {
   dispatcher: CommandDispatcher;
   product?: string;
   productVersion?: string;
+  /**
+   * An unexpected failure while running a command. Reaching this means the
+   * server hit a bug, so the server treats it as fatal.
+   */
   onError?: (error: Error) => void;
+  /**
+   * A failure of this one connection, such as a reset by the peer. It affects
+   * only this session and never the server.
+   */
+  onConnectionError?: (error: Error) => void;
 }
 
 export class ServerSession {
@@ -50,6 +61,7 @@ export class ServerSession {
   private readonly product: string;
   private readonly productVersion: string;
   private readonly onError: (error: Error) => void;
+  private readonly onConnectionError: (error: Error) => void;
   private currentState: ServerSessionState =
     ServerSessionState.AwaitingHandshake;
 
@@ -61,6 +73,7 @@ export class ServerSession {
     this.product = options.product ?? SERVER_PRODUCT;
     this.productVersion = options.productVersion ?? SERVER_PRODUCT_VERSION;
     this.onError = options.onError ?? (() => undefined);
+    this.onConnectionError = options.onConnectionError ?? (() => undefined);
     this.sweepTimer = setInterval(() => {
       this.cursors.sweepExpired();
     }, CURSOR_SWEEP_INTERVAL_MS);
@@ -76,7 +89,11 @@ export class ServerSession {
 
       this.handleData(chunk);
     });
-    socket.on("error", (error) => this.onError(error));
+    socket.on("error", (error) => {
+      // A reset or broken connection ends this session only.
+      this.onConnectionError(error);
+      socket.destroy();
+    });
 
     socket.once("close", () => {
       clearInterval(this.sweepTimer);
@@ -186,12 +203,10 @@ export class ServerSession {
   }
 
   private handleCommand(requestId: number, command: CommandEnvelope): void {
-    try {
-      const value = this.dispatcher.dispatch(command, this.cursors);
+    let value: DocumentValue;
 
-      this.send(MessageKind.Result, requestId, {
-        value,
-      });
+    try {
+      value = this.dispatcher.dispatch(command, this.cursors);
     } catch (error: unknown) {
       if (error instanceof CommandExecutionError) {
         this.sendError(
@@ -205,21 +220,48 @@ export class ServerSession {
         return;
       }
 
-      const internalError =
-        error instanceof Error
-          ? error
-          : new Error("Unknown command execution failure.");
-
-      this.onError(internalError);
-
-      this.sendError(
-        requestId,
-        WireErrorCode.InternalError,
-        "InternalError",
-        "The server failed to execute the command.",
-        false,
-      );
+      this.failCommand(requestId, error);
+      return;
     }
+
+    try {
+      this.send(MessageKind.Result, requestId, { value });
+    } catch (error: unknown) {
+      if (
+        error instanceof ProtocolError &&
+        error.code === ProtocolErrorCode.PayloadTooLarge
+      ) {
+        // The command ran, but its result does not fit in one message. That
+        // is a property of the stored data, not a fault of the server.
+        this.sendError(
+          requestId,
+          WireErrorCode.InternalError,
+          "ResultTooLarge",
+          "The result is larger than the 16 MiB message limit. Request fewer or smaller documents.",
+          false,
+        );
+        return;
+      }
+
+      this.failCommand(requestId, error);
+    }
+  }
+
+  private failCommand(requestId: number, error: unknown): void {
+    const internalError =
+      error instanceof Error
+        ? error
+        : new Error("Unknown command execution failure.");
+
+    this.onError(internalError);
+
+    this.sendError(
+      requestId,
+      WireErrorCode.InternalError,
+      "InternalError",
+      "The server failed to execute the command.",
+      false,
+    );
   }
 
   private handleHandshake(message: DecodedMessage): void {

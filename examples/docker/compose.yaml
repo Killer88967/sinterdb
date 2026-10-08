@@ -1,0 +1,24 @@
+# A local SinterDB server with a data volume.
+#
+#   docker compose --file examples/docker/compose.yaml up --detach --build --wait
+#
+# Connect with sinterdb://127.0.0.1:4721. See docs/docker.md.
+name: sinterdb
+
+services:
+  sinterdb:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    image: sinterdb-local
+    restart: unless-stopped
+    ports:
+      # SinterDB has no authentication or TLS yet: publish on localhost only.
+      - "127.0.0.1:${SINTERDB_PUBLISH_PORT:-4721}:4721"
+    volumes:
+      - sinterdb-data:/data
+    # The server closes connections and writes a final checkpoint on SIGTERM.
+    stop_grace_period: 15s
+
+volumes:
+  sinterdb-data:

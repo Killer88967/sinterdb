@@ -1,7 +1,11 @@
 import type { Document } from "sinterdb-protocol";
 import { describe, expect, it } from "vitest";
 
-import { CursorManager, CursorNotFoundError } from "./cursor-manager.js";
+import {
+  CursorManager,
+  CursorNotFoundError,
+  DEFAULT_CURSOR_BATCH_BYTES,
+} from "./cursor-manager.js";
 
 describe("CursorManager", () => {
   it("returns a completed cursor when all documents fit in the first batch", () => {
@@ -132,3 +136,81 @@ function createDocuments(count: number): Document[] {
     value: index,
   }));
 }
+
+describe("CursorManager batch size in bytes", () => {
+  const text = (length: number): Document => ({ text: "x".repeat(length) });
+
+  it("ends a batch early when its documents would not fit in a message", () => {
+    const manager = new CursorManager({ maxBatchBytes: 1_000 });
+    const documents = [text(400), text(400), text(400), text(400), text(400)];
+
+    const first = manager.open(documents, 100);
+
+    // Two documents of about 410 bytes fit in 1,000 bytes; a third does not.
+    expect(first.documents).toHaveLength(2);
+    expect(first.cursorId).not.toBeNull();
+
+    const second = manager.getMore(first.cursorId as number, 100);
+
+    expect(second.documents).toHaveLength(2);
+    expect(second.cursorId).not.toBeNull();
+
+    const third = manager.getMore(second.cursorId as number, 100);
+
+    expect(third.documents).toHaveLength(1);
+    expect(third.cursorId).toBeNull();
+    expect([
+      ...first.documents,
+      ...second.documents,
+      ...third.documents,
+    ]).toEqual(documents);
+  });
+
+  it("always returns at least one document, however large", () => {
+    const manager = new CursorManager({ maxBatchBytes: 100 });
+    const documents = [text(5_000), text(5_000)];
+
+    const first = manager.open(documents, 100);
+
+    expect(first.documents).toEqual([documents[0]]);
+    expect(first.cursorId).not.toBeNull();
+
+    const second = manager.getMore(first.cursorId as number, 100);
+
+    expect(second.documents).toEqual([documents[1]]);
+    expect(second.cursorId).toBeNull();
+  });
+
+  it("does not lose or repeat a document at a batch boundary", () => {
+    for (const limit of [200, 450, 1_000, 5_000]) {
+      const manager = new CursorManager({ maxBatchBytes: limit });
+      const documents = Array.from({ length: 37 }, (_, index) => ({
+        index,
+        text: "y".repeat((index * 37) % 300),
+      }));
+      const seen: Document[] = [];
+
+      let batch = manager.open(documents, 5);
+
+      seen.push(...batch.documents);
+
+      while (batch.cursorId !== null) {
+        batch = manager.getMore(batch.cursorId, 5);
+        seen.push(...batch.documents);
+      }
+
+      expect(seen).toEqual(documents);
+    }
+  });
+
+  it("keeps the default under half of the message limit", () => {
+    expect(DEFAULT_CURSOR_BATCH_BYTES * 2).toBeLessThanOrEqual(
+      16 * 1024 * 1024,
+    );
+  });
+
+  it("rejects a limit that is not a positive integer", () => {
+    expect(() => new CursorManager({ maxBatchBytes: 0 })).toThrow(TypeError);
+    expect(() => new CursorManager({ maxBatchBytes: 1.5 })).toThrow(TypeError);
+  });
+});

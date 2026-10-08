@@ -89,7 +89,9 @@ reason in the log.
 ### Log output
 
 The server writes one JSON object per line: informational events to standard
-output and errors to standard error. The fields of a line are `timestamp`,
+output, and warnings and errors to standard error. A client that disconnects
+abruptly is logged as a `server.connection_error` warning and does not stop the
+server; an `error` line with a `server.runtime_error` event does. The fields of a line are `timestamp`,
 `level`, `event`, `message`, and `details`. The `server.started` event reports
 the address and, with a data directory, what recovery did. The log format is
 meant for people and is not covered by the compatibility promise in

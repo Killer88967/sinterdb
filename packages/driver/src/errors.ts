@@ -9,6 +9,8 @@ export const SinterErrorCode = {
   InvalidConnectionString: "INVALID_CONNECTION_STRING",
   /** A client option or a database or collection name is invalid. */
   InvalidClientOptions: "INVALID_CLIENT_OPTIONS",
+  /** A request holds a value the driver cannot encode. Nothing was sent. */
+  InvalidDocument: "INVALID_DOCUMENT",
   /** The client has been closed. */
   ClientClosed: "CLIENT_CLOSED",
   /** A command was sent before `connect()` completed. */
@@ -84,6 +86,19 @@ export class SinterConnectionStringError extends SinterError {
 export class SinterClientOptionsError extends SinterError {
   public constructor(message: string, options?: ErrorOptions) {
     super(SinterErrorCode.InvalidClientOptions, message, options);
+  }
+}
+
+/**
+ * A request could not be encoded, so nothing was sent and the connection is
+ * unaffected. The usual causes are a value the database cannot store (such as
+ * `undefined`, a function, or a class instance like `Map`), a document nested
+ * more than 100 levels deep, or a request larger than 16 MiB. The `cause` says
+ * which. Code `INVALID_DOCUMENT`.
+ */
+export class SinterDocumentError extends SinterError {
+  public constructor(message: string, options?: ErrorOptions) {
+    super(SinterErrorCode.InvalidDocument, message, options);
   }
 }
 

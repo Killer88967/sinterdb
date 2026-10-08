@@ -1,7 +1,17 @@
 import type { Document } from "sinterdb-protocol";
 
+import { estimateEncodedSize } from "./document-size.js";
+
 export const DEFAULT_CURSOR_BATCH_SIZE = 100;
 export const DEFAULT_CURSOR_IDLE_TIMEOUT_MS = 10 * 60 * 1000;
+
+/**
+ * A batch stops growing once its documents add up to this many bytes, even
+ * when `batchSize` allows more. A message cannot exceed 16 MiB, so the limit
+ * leaves room for the rest of the response. A batch always holds at least one
+ * document.
+ */
+export const DEFAULT_CURSOR_BATCH_BYTES = 8 * 1024 * 1024;
 
 export interface CursorBatch {
   readonly cursorId: number | null;
@@ -10,6 +20,7 @@ export interface CursorBatch {
 
 export interface CursorManagerOptions {
   readonly idleTimeoutMS?: number;
+  readonly maxBatchBytes?: number;
   readonly now?: () => number;
 }
 
@@ -24,6 +35,7 @@ export class CursorManager {
   private readonly cursors = new Map<number, CursorState>();
   private nextCursorId = 1;
   private readonly idleTimeoutMS: number;
+  private readonly maxBatchBytes: number;
   private readonly now: () => number;
 
   public constructor(options: CursorManagerOptions = {}) {
@@ -36,6 +48,13 @@ export class CursorManager {
     }
 
     this.idleTimeoutMS = timeout;
+    this.maxBatchBytes = options.maxBatchBytes ?? DEFAULT_CURSOR_BATCH_BYTES;
+
+    if (!Number.isSafeInteger(this.maxBatchBytes) || this.maxBatchBytes <= 0) {
+      throw new TypeError(
+        "Cursor batch byte limit must be a positive safe integer.",
+      );
+    }
     this.now = options.now ?? Date.now;
   }
 
@@ -57,7 +76,7 @@ export class CursorManager {
       lastUsed: this.now(),
     };
 
-    const documentsBatch = takeBatch(state, batchSize);
+    const documentsBatch = takeBatch(state, batchSize, this.maxBatchBytes);
 
     if (isExhausted(state)) {
       return {
@@ -92,7 +111,7 @@ export class CursorManager {
 
     state.lastUsed = this.now();
 
-    const documents = takeBatch(state, batchSize);
+    const documents = takeBatch(state, batchSize, this.maxBatchBytes);
 
     if (isExhausted(state)) {
       this.cursors.delete(cursorId);
@@ -172,11 +191,17 @@ export class CursorNotFoundError extends Error {
   }
 }
 
-function takeBatch(state: CursorState, batchSize: number): Document[] {
+function takeBatch(
+  state: CursorState,
+  batchSize: number,
+  maxBatchBytes: number,
+): Document[] {
   const documents: Document[] = [];
+  let bytes = 0;
 
   if (state.buffered !== undefined) {
     documents.push(state.buffered);
+    bytes += estimateEncodedSize(state.buffered);
     state.buffered = undefined;
   }
 
@@ -188,7 +213,16 @@ function takeBatch(state: CursorState, batchSize: number): Document[] {
       return documents;
     }
 
+    const size = estimateEncodedSize(result.value);
+
+    // Keep this document for the next batch rather than overflow a message.
+    if (documents.length > 0 && bytes + size > maxBatchBytes) {
+      state.buffered = result.value;
+      return documents;
+    }
+
     documents.push(result.value);
+    bytes += size;
   }
 
   const lookahead = state.iterator.next();

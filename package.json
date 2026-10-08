@@ -17,6 +17,7 @@
     "api:check": "pnpm --recursive --if-present api:check",
     "api:update": "pnpm --recursive --if-present api:update",
     "docs:api": "pnpm --filter @sinterdb-internal/api-docs run generate",
+    "bench": "pnpm --filter @sinterdb-internal/bench run bench",
     "typecheck": "pnpm --recursive typecheck",
     "lint": "eslint .",
     "test": "pnpm build && pnpm --recursive test",

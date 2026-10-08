@@ -15,6 +15,7 @@ describe("driver errors", () => {
     expect(SinterErrorCode).toEqual({
       InvalidConnectionString: "INVALID_CONNECTION_STRING",
       InvalidClientOptions: "INVALID_CLIENT_OPTIONS",
+      InvalidDocument: "INVALID_DOCUMENT",
       ClientClosed: "CLIENT_CLOSED",
       ClientNotConnected: "CLIENT_NOT_CONNECTED",
       ConnectionFailed: "CONNECTION_FAILED",

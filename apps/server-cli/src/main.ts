@@ -5,7 +5,7 @@ import {
 } from "@sinterdb-internal/server";
 
 import { HELP_TEXT, parseCliArguments, type CliCommand } from "./cli.js";
-import { logError, logInfo } from "./logger.js";
+import { logError, logInfo, logWarning } from "./logger.js";
 
 export async function main(
   arguments_: readonly string[] = process.argv.slice(2),
@@ -81,6 +81,15 @@ async function startServer(
 
   process.once("SIGINT", handleSignal);
   process.once("SIGTERM", handleSignal);
+
+  // A client that disconnects abruptly is not a reason to stop the server.
+  server.on("connectionError", (error: Error) => {
+    logWarning(
+      "server.connection_error",
+      "A client connection failed and was closed.",
+      error,
+    );
+  });
 
   server.on("error", (error: Error) => {
     process.exitCode = 1;

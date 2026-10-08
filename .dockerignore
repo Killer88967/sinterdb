@@ -1,0 +1,15 @@
+.git
+.github
+**/node_modules
+**/dist
+**/coverage
+**/.temp
+docs/api
+release
+data
+sinterdb-data
+benchmarks/results
+*.tgz
+*.log
+.env
+.env.*

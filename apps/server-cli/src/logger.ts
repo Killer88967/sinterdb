@@ -1,4 +1,4 @@
-export type LogLevel = "info" | "error";
+export type LogLevel = "info" | "warn" | "error";
 
 export interface LogDetails {
   readonly [key: string]: unknown;
@@ -24,6 +24,27 @@ export function logError(event: string, message: string, error: unknown): void {
   );
 }
 
+/**
+ * A problem that affects one connection or request but not the server, such
+ * as a client that disconnected abruptly.
+ */
+export function logWarning(
+  event: string,
+  message: string,
+  error: unknown,
+): void {
+  writeLog(
+    "warn",
+    event,
+    message,
+    {
+      error: serializationError(error),
+    },
+    process.stderr,
+  );
+}
+
+// IDEA: Format the raw json string.
 function writeLog(
   level: LogLevel,
   event: string,

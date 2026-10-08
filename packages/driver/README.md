@@ -471,6 +471,23 @@ try {
 }
 ```
 
+Every error has a stable `code`. Branch on it rather than on the message:
+
+| Code                        | Class                          | Meaning                                                                           |
+| --------------------------- | ------------------------------ | --------------------------------------------------------------------------------- |
+| `INVALID_CONNECTION_STRING` | `SinterConnectionStringError`  | The connection string is malformed                                                |
+| `INVALID_CLIENT_OPTIONS`    | `SinterClientOptionsError`     | A client option, or a database or collection name, is invalid                     |
+| `INVALID_DOCUMENT`          | `SinterDocumentError`          | A request holds a value the driver cannot encode; nothing was sent                |
+| `CLIENT_NOT_CONNECTED`      | `SinterClientStateError`       | A command was sent before `connect()` completed                                   |
+| `CLIENT_CLOSED`             | `SinterClientStateError`       | The client was closed                                                             |
+| `CONNECTION_FAILED`         | `SinterConnectionError`        | The connection could not be made or was lost                                      |
+| `CONNECTION_TIMEOUT`        | `SinterConnectionTimeoutError` | Connecting took longer than `connectTimeoutMS`                                    |
+| `SOCKET_TIMEOUT`            | `SinterSocketTimeoutError`     | The connection was idle for longer than `socketTimeoutMS`                         |
+| `REQUEST_TIMEOUT`           | `SinterRequestTimeoutError`    | No response within `requestTimeoutMS`; the request may still have run             |
+| `INCOMPATIBLE_PROTOCOL`     | `SinterCompatibilityError`     | The server speaks a different protocol version                                    |
+| `PROTOCOL_VIOLATION`        | `SinterProtocolError`          | The server sent something the driver cannot interpret                             |
+| `SERVER_ERROR`              | `SinterServerError`            | The server rejected the request (`SinterInsertManyError` is a more specific kind) |
+
 Server rejections of write commands carry a wire code and name:
 
 | Name                       | Cause                                                |

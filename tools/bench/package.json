@@ -1,0 +1,19 @@
+{
+  "name": "@sinterdb-internal/bench",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Basic benchmarks for the SinterDB server and driver.",
+  "type": "module",
+  "scripts": {
+    "bench": "node src/bench.ts",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "sinterdb": "workspace:^"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "vitest": "catalog:"
+  }
+}

@@ -1,4 +1,4 @@
-import { connect, type Socket } from "node:net";
+import { connect, createServer, type Socket } from "node:net";
 
 import {
   encodeMessage,
@@ -10,8 +10,10 @@ import {
   WireErrorCode,
   type DecodedMessage,
 } from "sinterdb-protocol";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
+import type { CommandDispatcher } from "./command-dispatcher.js";
+import { ServerSession } from "./session.js";
 import { SinterServer, type SinterServerAddress } from "./server.js";
 
 describe("server protocol sessions", () => {
@@ -161,6 +163,99 @@ describe("server protocol sessions", () => {
         database: "app",
         collections: ["users"],
       });
+    }
+  });
+
+  it("keeps running when a client resets its connection", async () => {
+    server = new SinterServer({ port: 0 }, {});
+
+    const fatal = vi.fn();
+    const connectionErrors: Error[] = [];
+
+    server.on("error", fatal);
+    server.on("connectionError", (error: Error) => {
+      connectionErrors.push(error);
+    });
+
+    const address = await server.start();
+    const resetting = await connectClient(address);
+
+    resetting.on("error", () => undefined);
+    resetting.write(Buffer.from("this is not the SinterDB protocol"));
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    resetting.resetAndDestroy();
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    // A broken connection is not a server failure.
+    expect(fatal).not.toHaveBeenCalled();
+
+    // Other clients are served as before.
+    client = await connectClient(address);
+    await performHandshake(client);
+
+    const response = await exchange(client, {
+      kind: MessageKind.Ping,
+      requestId: 2,
+      payload: { sentAt: new Date() },
+    });
+
+    expect(response.kind).toBe(MessageKind.Result);
+  });
+
+  it("answers ResultTooLarge when a result does not fit in a message", async () => {
+    const onError = vi.fn();
+    const dispatcher = {
+      dispatch: (): { text: string } => ({ text: "x".repeat(17 << 20) }),
+    } as unknown as CommandDispatcher;
+    const listener = createServer((socket) => {
+      new ServerSession(socket, { dispatcher, onError });
+    });
+
+    await new Promise<void>((resolve) => {
+      listener.listen(0, "127.0.0.1", resolve);
+    });
+
+    try {
+      const address = listener.address();
+
+      if (address === null || typeof address === "string") {
+        throw new Error("Expected a TCP address.");
+      }
+
+      client = await connectClient({
+        host: "127.0.0.1",
+        port: address.port,
+        family: "IPv4",
+      });
+      await performHandshake(client);
+
+      const response = await exchange(client, {
+        kind: MessageKind.Command,
+        requestId: 2,
+        payload: { command: "find", database: "app", parameters: {} },
+      });
+
+      expect(response.kind).toBe(MessageKind.Error);
+
+      if (response.kind === MessageKind.Error) {
+        expect(response.payload.name).toBe("ResultTooLarge");
+        expect(response.payload.code).toBe(WireErrorCode.InternalError);
+      }
+
+      // Not a bug in the server, so nothing is reported as fatal, and the
+      // connection still works.
+      expect(onError).not.toHaveBeenCalled();
+
+      const ping = await exchange(client, {
+        kind: MessageKind.Ping,
+        requestId: 3,
+        payload: { sentAt: new Date() },
+      });
+
+      expect(ping.kind).toBe(MessageKind.Result);
+    } finally {
+      client?.destroy();
+      await new Promise((resolve) => listener.close(resolve));
     }
   });
 });
