@@ -28,12 +28,20 @@ export interface ServerConfigInput {
   checkpointThresholdBytes?: number | string;
 }
 
+/**
+ * The environment variables the server reads. docs/configuration.md documents
+ * each of them, and a test fails when the two lists differ.
+ */
+export const SERVER_ENVIRONMENT_VARIABLES = [
+  "SINTERDB_HOST",
+  "SINTERDB_PORT",
+  "SINTERDB_DATA_DIR",
+  "SINTERDB_DURABILITY",
+  "SINTERDB_CHECKPOINT_BYTES",
+] as const;
+
 export type ServerEnvironment = Readonly<{
-  SINTERDB_HOST?: string;
-  SINTERDB_PORT?: string;
-  SINTERDB_DATA_DIR?: string;
-  SINTERDB_DURABILITY?: string;
-  SINTERDB_CHECKPOINT_BYTES?: string;
+  [Name in (typeof SERVER_ENVIRONMENT_VARIABLES)[number]]?: string;
 }>;
 
 export type ServerConfigurationOption =
@@ -75,7 +83,7 @@ export function resolveServerConfig(
   if (checkpointThresholdBytes !== undefined && dataDirectory === undefined) {
     throw new ServerConfigurationError(
       "checkpointThresholdBytes",
-      "A checkpoint threshold only applies when a date directory is configured.",
+      "A checkpoint threshold only applies when a data directory is configured.",
     );
   }
 

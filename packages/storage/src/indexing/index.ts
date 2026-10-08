@@ -4,6 +4,7 @@ export { candidateKeys, planQuery } from "./planner.js";
 export {
   ID_INDEX_NAME,
   MAX_INDEXES_PER_COLLECTION,
+  MAX_INDEX_NAME_LENGTH,
   idIndexSpec,
   normalizeIndexSpec,
   sameDefinition,

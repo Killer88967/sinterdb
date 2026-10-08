@@ -11,6 +11,7 @@ export { compileUpdate } from "./update.js";
 export {
   ID_INDEX_NAME,
   MAX_INDEXES_PER_COLLECTION,
+  MAX_INDEX_NAME_LENGTH,
   normalizeIndexSpec,
 } from "./indexing/index.js";
 export {
