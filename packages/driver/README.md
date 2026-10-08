@@ -342,6 +342,48 @@ console.log(one.deletedCount, many.deletedCount);
 Both require a filter and return a `DeleteResult`. Pass an empty filter
 explicitly, as in `deleteMany({})`, to delete every document.
 
+## Indexes
+
+An index lets the server find documents without reading the whole collection.
+Every collection has a unique index on `_id`. Add others with `createIndex()`:
+
+```ts
+await users.createIndex({ field: "email", unique: true });
+await users.createIndex({
+  field: "profile.level",
+  direction: -1,
+  sparse: true,
+});
+
+const indexes = await users.indexes();
+await users.dropIndex("profile.level_-1");
+```
+
+`field` is checked against your document type, so a typo or `_id` is a compile
+error. The options are:
+
+- `unique`: at most one document may have a value.
+- `sparse`: documents without the field are not indexed.
+- `direction`: `1` (the default) or `-1`.
+- `name`: defaults to the field and direction, such as `email_1`.
+
+Creating an identical index again succeeds and reports `created: false`.
+
+The server chooses an index when a query allows it, and the result is always
+the same as scanning the collection. See what it would do with `explain()`:
+
+```ts
+const plan = await users.find({ email: "ada@example.com" }).explain();
+
+console.log(plan.stage); // "IXSCAN"
+console.log(plan.index); // "email_1"
+```
+
+A write that breaks a unique index fails with a `DuplicateKey` server error and
+changes nothing. `validateIndexes()` rebuilds every index and reports any
+difference. See [Indexes](../../docs/indexes.md) for what an index can serve,
+the rules for unique and missing values, and recovery.
+
 ## Listing Namespaces
 
 ```ts
@@ -423,16 +465,19 @@ try {
 
 Server rejections of write commands carry a wire code and name:
 
-| Name                       | Cause                                               |
-| -------------------------- | --------------------------------------------------- |
-| `DuplicateKey`             | An inserted or updated `_id` already exists         |
-| `InvalidUpdate`            | A malformed, conflicting, or type-mismatched update |
-| `ImmutableId`              | An update or replacement tried to change `_id`      |
-| `DocumentValidationFailed` | An invalid document, replacement, or filter         |
+| Name                       | Cause                                                |
+| -------------------------- | ---------------------------------------------------- |
+| `DuplicateKey`             | A duplicate `_id`, or a value a unique index rejects |
+| `InvalidUpdate`            | A malformed, conflicting, or type-mismatched update  |
+| `ImmutableId`              | An update or replacement tried to change `_id`       |
+| `DocumentValidationFailed` | An invalid document, replacement, or filter          |
+| `InvalidIndex`             | A malformed index definition                         |
+| `IndexNotFound`            | Dropping an index or collection that does not exist  |
+| `IndexConflict`            | An index that clashes with an existing one           |
 
 ## Current Scope
 
-Version `0.0.8` provides:
+Version `0.0.9` provides:
 
 - `SinterClient`
 - `sinterdb://` connection-string parsing
@@ -456,5 +501,8 @@ Version `0.0.8` provides:
 - Immutable `_id` enforcement
 - Document-size and nesting validation
 - Durable storage when connected to a server started with a data directory
+- `createIndex()`, `dropIndex()`, `indexes()`, and `validateIndexes()`
+- Unique and sparse single-field indexes with typed `IndexDefinition<TDocument>`
+- `find().explain()`
 
-Durable storage and recovery are planned for version `0.0.9`.
+The next milestone is `0.1.0`, the Developer Preview.

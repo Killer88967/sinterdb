@@ -11,8 +11,9 @@ This package owns:
 - Startup recovery, including repair of incomplete final records
 - Data directory locking
 - The in-memory collection with filters, sorting, updates, and deletes
-
-Index persistence is planned for a later version.
+- Single-field indexes with unique and sparse options, the query planner, and
+  index validation. Index definitions are stored and the indexes are rebuilt on
+  recovery.
 
 See [Durable Storage](../../docs/storage.md) for how the pieces fit together.
 

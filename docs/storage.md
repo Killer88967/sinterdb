@@ -115,6 +115,7 @@ files at random.
 | `lost records`                         | The log ends before the newest snapshot                              | Restore from a backup                                                                 |
 | `no manifest.json` or `not valid JSON` | The manifest is missing or damaged                                   | Restore `manifest.json` from a backup                                                 |
 | `Upgrade` or `newer version`           | The data was written by a newer SinterDB                             | Run the newer version                                                                 |
+| `cannot be rebuilt`                    | A recorded index cannot be built from the recovered documents        | Restore from a backup                                                                 |
 
 ## The data directory lock
 
@@ -123,6 +124,34 @@ host. After a crash, the next server on the same host notices the process is
 gone and takes the lock over. The lock is a file, not an operating-system
 lock, so it cannot protect a directory shared over a network file system, and
 it can be fooled if the operating system reuses a process id.
+
+## Indexes
+
+Index definitions are part of the stored data. `createIndex` and `dropIndex` are
+log records, and each snapshot lists the index definitions of every collection.
+The indexes themselves are rebuilt from the documents on every start, so they
+add very little to the data directory. See [Indexes](./indexes.md).
+
+If a unique index recorded in the log cannot be rebuilt because the recovered
+documents violate it, the server refuses to start and names the collection. This
+only happens when the data is damaged.
+
+## Storage format versions
+
+The data directory records a format version in `manifest.json`.
+
+| Version | Written by | Contents                                        |
+| ------: | ---------- | ----------------------------------------------- |
+|       1 | 0.0.8      | Documents and collections                       |
+|       2 | 0.0.9      | Adds index definitions to the log and snapshots |
+
+A version 1 directory is upgraded to version 2 in place the first time 0.0.9
+opens it, before anything is written. The manifest then records `upgradedFrom`.
+Version 1 snapshots and logs are still read.
+
+The upgrade is one way. A 0.0.8 server refuses a version 2 directory with an
+"Upgrade" error instead of ignoring the indexes. Make a backup before upgrading
+if you may want to go back.
 
 ## Backups
 
@@ -143,6 +172,8 @@ which recovers the true state from disk.
 - The dataset must fit in memory. Recovery briefly needs about twice the size
   of the snapshot it loads.
 - Database and collection names can be at most 255 bytes.
+- Recovery rebuilds every index, so startup time grows with the number and size
+  of indexes.
 - There is no encryption, compression, or replication.
 - Reads and writes share one thread with checkpoints.
 - The on-disk format has a version. A server refuses data written by a newer

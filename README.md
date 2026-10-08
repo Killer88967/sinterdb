@@ -122,7 +122,7 @@ node apps/server-cli/dist/index.js --data-dir ./data
 ```
 
 See [Durable Storage](./docs/storage.md) for durability modes, checkpoints, and
-recovery.
+recovery, and [Indexes](./docs/indexes.md) for indexes and query planning.
 
 Display the available options:
 
@@ -135,7 +135,7 @@ on `SIGINT` or `SIGTERM`.
 
 ## Development Status
 
-The current milestone is `0.0.8 — Durable Storage and Recovery`.
+The current milestone is `0.0.9 — Indexes and Query Planning`.
 
 Implemented so far:
 
@@ -172,6 +172,13 @@ Implemented so far:
 - Data directory locking and storage format versioning
 - Crash tests that terminate the server with `SIGKILL` during writes and
   during checkpoints
+- Single-field indexes with `createIndex`, `dropIndex`, and `indexes`, in either
+  direction, with `unique` and `sparse` options and nested field paths
+- A query planner that chooses between a collection scan, an `_id` lookup, and
+  an index lookup, with results identical to a scan
+- `explain()` and `validateIndexes()`
+- Index definitions that survive restarts, with indexes rebuilt on recovery
+- Typed `IndexDefinition<TDocument>` API
 - Duplicate identifier detection
 - Document-size and nesting validation
 - Structured server logging
@@ -179,7 +186,7 @@ Implemented so far:
 - End-to-end driver and server integration tests
 - Graceful signal shutdown
 
-The next milestone, `0.0.9`, introduces indexes and query planning.
+The next milestone, `0.1.0`, is the Developer Preview.
 
 See [ROADMAP.md](./ROADMAP.md) for the complete development plan.
 

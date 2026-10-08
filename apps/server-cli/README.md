@@ -93,7 +93,7 @@ Lifecycle events are written as newline-delimited JSON:
     "host": "127.0.0.1",
     "port": 4721,
     "family": "IPv4",
-    "version": "0.0.8",
+    "version": "0.0.9",
     "storage": "disk",
     "dataDirectory": "/var/lib/sinterdb",
     "durability": "fsync",
@@ -101,6 +101,7 @@ Lifecycle events are written as newline-delimited JSON:
     "collections": 2,
     "checkpointLsn": "1042",
     "replayedRecords": 0,
+    "rebuiltIndexes": 3,
     "skippedCheckpoints": []
   }
 }
@@ -132,6 +133,11 @@ After completing the protocol handshake, clients can use:
 - `replaceOne`
 - `deleteOne`
 - `deleteMany`
+- `createIndex`
+- `dropIndex`
+- `listIndexes`
+- `explain`
+- `validateIndexes`
 
 ## License
 

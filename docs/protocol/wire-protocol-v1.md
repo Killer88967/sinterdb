@@ -395,6 +395,11 @@ Database and collection names are created on first write.
 | `updateMany`       | Yes      | `collection`, `filter`, `update`, optional `upsert`                   | `acknowledged`, `matchedCount`, `modifiedCount`, `upsertedId`  |
 | `deleteOne`        | Yes      | `collection`, `filter`                                                | `acknowledged`, `deletedCount`                                 |
 | `deleteMany`       | Yes      | `collection`, `filter`                                                | `acknowledged`, `deletedCount`                                 |
+| `createIndex`      | Yes      | `collection`, `index`                                                 | `acknowledged`, `name`, `created`                              |
+| `dropIndex`        | Yes      | `collection`, `name`                                                  | `acknowledged`                                                 |
+| `listIndexes`      | Yes      | `collection`                                                          | `indexes`: array of index definitions                          |
+| `explain`          | Yes      | `collection`, `filter`                                                | the query plan, see below                                      |
+| `validateIndexes`  | Yes      | `collection`                                                          | `valid`, `indexes`, `documents`, `issues`                      |
 
 Notes:
 
@@ -416,6 +421,28 @@ Notes:
 - When a server with durable storage cannot record a write, it returns
   `InternalError` (9000). The outcome of that write is unknown until the server
   restarts and recovers.
+- `createIndex` takes an `index` document with `field` and the optional
+  `direction` (`1` or `-1`), `unique`, `sparse`, and `name`. Unknown options
+  return `InvalidRequest`. An invalid definition returns `InvalidIndex`, a
+  definition that conflicts with an existing index returns `IndexConflict`, and
+  a unique index that existing documents violate returns `DuplicateKey`. It
+  creates the collection if it does not exist, and `created` is `false` when an
+  identical index already exists.
+- `dropIndex` returns `IndexNotFound` for an unknown index or collection and
+  `InvalidIndex` for the `_id_` index.
+- Each entry of `listIndexes` has `name`, `field`, `direction`, `unique`, and
+  `sparse`. The `_id_` index is first, followed by the others in creation order.
+  A collection that does not exist has no indexes.
+- `explain` returns `stage` (`COLLSCAN`, `IDLOOKUP`, or `IXSCAN`),
+  `estimatedCandidates`, and `documents`. For an index it also returns `index`,
+  `field`, and `access` (`equality`, `in`, or `range`), and for a range `lower`
+  and `upper` documents with `value` and `inclusive`. The plan format is
+  experimental.
+- `validateIndexes` returns `issues`, an array of documents with `index`,
+  `problem`, and `detail`. A collection that does not exist is valid.
+- A write that violates a unique index returns `DuplicateKey` with the index
+  name in the message. `insertMany` reports `failedIndex` and `insertedCount` in
+  the error details.
 - `updateOne`, `updateMany`, `replaceOne`, `deleteOne`, and `deleteMany` do not
   create a collection. `updateOne`, `updateMany`, and `replaceOne` create it
   only when `upsert` is `true` and a document is inserted.
@@ -465,7 +492,15 @@ across a connection use numeric `WireErrorCode` values.
 | ---: | ---------------- |
 | 5000 | `CursorNotFound` |
 
-### 6.6 Internal errors
+### 6.6 Index errors
+
+| Code | Name            |
+| ---: | --------------- |
+| 6000 | `InvalidIndex`  |
+| 6001 | `IndexNotFound` |
+| 6002 | `IndexConflict` |
+
+### 6.7 Internal errors
 
 | Code | Name            |
 | ---: | --------------- |

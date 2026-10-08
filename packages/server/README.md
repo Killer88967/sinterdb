@@ -26,6 +26,8 @@ Internal server implementation for the SinterDB document database.
 - `getMore` and `closeCursor`
 - `updateOne`, `updateMany`, and `replaceOne` with upserts
 - `deleteOne` and `deleteMany`
+- `createIndex`, `dropIndex`, `listIndexes`, `explain`, and `validateIndexes`
+- Unique and sparse single-field indexes, with a query planner that uses them
 - Update operators: `$set`, `$unset`, `$inc`, `$min`, `$max`, `$push`, `$pull`, and `$addToSet`
 - Immutable `_id` enforcement and all-or-nothing `updateMany`
 - Session-scoped cursors with idle timeout

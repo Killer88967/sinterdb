@@ -1,5 +1,37 @@
 # sinterdb-server
 
+## 0.0.9
+
+### Patch Changes
+
+- Add indexes and query planning.
+
+  - Add single-field indexes with `createIndex()`, `dropIndex()`, and `indexes()`.
+    Indexes can be ascending or descending, `unique`, `sparse`, and on nested
+    fields, and a collection always has a unique `_id` index.
+  - Add a query planner that chooses between a collection scan, an `_id` lookup,
+    and an index lookup for equality, range, and `$in` filters, including filters
+    joined by `$and`. Results are always identical to a scan, including order.
+  - Enforce unique indexes on inserts, updates, replacements, upserts, and
+    multi-document writes. A rejected write changes nothing, and concurrent
+    writers cannot both claim a value.
+  - Add `find().explain()` to show the chosen plan and `validateIndexes()` to
+    rebuild every index and report any difference.
+  - Add the `createIndex`, `dropIndex`, `listIndexes`, `explain`, and
+    `validateIndexes` server commands, and the `InvalidIndex` (6000),
+    `IndexNotFound` (6001), and `IndexConflict` (6002) wire error codes. A unique
+    violation returns the existing `DuplicateKey` error.
+  - Add the typed `IndexDefinition<TDocument>` so index fields are checked against
+    your document type.
+  - Store index definitions in the log and in snapshots and rebuild the indexes
+    when the server starts. Startup stops with a clear error if a recorded unique
+    index cannot be rebuilt. The `server.started` log reports `rebuiltIndexes`.
+  - Move the storage format to version 2. A version 1 directory is upgraded in
+    place when it is first opened, and servers from before 0.0.9 refuse the
+    upgraded directory.
+  - Add the Indexes documentation and extend the crash tests with indexed and
+    unique collections.
+
 ## 0.0.8
 
 ### Patch Changes
