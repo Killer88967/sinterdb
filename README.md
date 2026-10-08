@@ -1,12 +1,18 @@
 
 # SinterDB
 
+<!-- USE WHEN PUBLISHED TO NPM -->
+<!-- [![CI](https://img.shields.io/github/actions/workflow/status/SinterDB/sinterdb/ci.yml?branch=main&label=CI&logo=githubactions)](https://github.com/SinterDB/sinterdb/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/sinterdb?logo=npm&logoColor=white)](https://www.npmjs.com/package/sinterdb)
+[![License](https://img.shields.io/github/license/SinterDB/sinterdb?color=blue)](LICENSE)
+[![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A524-339933?logo=nodedotjs&logoColor=white)](package.json)
+[![Status](https://img.shields.io/badge/Status-Alpha-orange)](ROADMAP.md) -->
+
 [![CI](https://img.shields.io/github/actions/workflow/status/SinterDB/sinterdb/ci.yml?branch=main&label=Build&logo=githubactions&logoColor=white)](https://github.com/SinterDB/sinterdb/actions/workflows/ci.yml)
 [![CodeQL](https://img.shields.io/github/actions/workflow/status/SinterDB/sinterdb/codeql.yml?branch=main&label=CodeQL&logo=githubactions&logoColor=white)](https://github.com/SinterDB/sinterdb/actions/workflows/codeql.yml)
 [![License](https://img.shields.io/github/license/SinterDB/sinterdb?label=License&color=blue)](LICENSE)
 [![GitHub Issues](https://img.shields.io/github/issues/SinterDB/sinterdb?label=Issues&logo=github)](https://github.com/SinterDB/sinterdb/issues)
 
-<!-- [![npm](https://img.shields.io/npm/v/sinterdb?label=npm&logo=npm&logoColor=white)](https://www.npmjs.com/package/sinterdb) -->
 [![pnpm](https://img.shields.io/badge/pnpm-%E2%89%A512-F69220?logo=pnpm&logoColor=white)](https://pnpm.io/)
 [![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A524-339933?logo=nodedotjs&logoColor=white)](package.json)
 [![TypeScript](https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
