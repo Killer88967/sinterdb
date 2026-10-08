@@ -2,7 +2,7 @@ import { spawnSync } from "node:child_process";
 import { randomBytes } from "node:crypto";
 import { fileURLToPath } from "node:url";
 
-import { afterAll, describe, expect, it } from "vitest";
+import { afterAll, describe, expect, it, vi } from "vitest";
 
 import { SinterClient } from "./client.js";
 
@@ -115,6 +115,8 @@ afterAll(() => {
 });
 
 describe.skipIf(IMAGE === undefined)("the server image", () => {
+  vi.setConfig({ testTimeout: 180_000 });
+
   const volume = `sinterdb-test-${suffix}`;
 
   function run(name: string): string {
