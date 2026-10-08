@@ -1,6 +1,9 @@
+export { DEFAULT_CHECKPOINT_THRESHOLD_BYTES } from "@sinterdb-internal/storage";
 export {
+  DEFAULT_DURABILITY,
   DEFAULT_SERVER_HOST,
   DEFAULT_SERVER_PORT,
+  SERVER_ENVIRONMENT_VARIABLES,
   ServerConfigurationError,
   resolveServerConfig,
 } from "./config.js";
@@ -10,7 +13,12 @@ export {
   SinterServerState,
 } from "./server.js";
 export { ServerSession, ServerSessionState } from "./session.js";
-export { CatalogError, CatalogErrorCode, InMemoryCatalog } from "./catalog.js";
+export {
+  CatalogError,
+  CatalogErrorCode,
+  InMemoryCatalog,
+  MAX_NAME_BYTES,
+} from "./catalog.js";
 export {
   CommandDispatcher,
   CommandExecutionError,

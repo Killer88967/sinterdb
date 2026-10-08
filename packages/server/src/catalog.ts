@@ -20,7 +20,7 @@ export class CatalogError extends Error {
   }
 }
 
-const MAX_NAME_BYTES = 255;
+export const MAX_NAME_BYTES = 255;
 
 export interface CreatedCollection {
   database: string;

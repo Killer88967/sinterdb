@@ -8,6 +8,7 @@
 [![Status](https://img.shields.io/badge/Status-Alpha-orange)](ROADMAP.md) -->
 
 <!-- ⌄ REMOVE WHEN PUBLISHED TO NPM ⌄ -->
+
 [![CI](https://img.shields.io/github/actions/workflow/status/SinterDB/sinterdb/ci.yml?branch=main&label=Build&logo=githubactions&logoColor=white)](https://github.com/SinterDB/sinterdb/actions/workflows/ci.yml)
 [![CodeQL](https://img.shields.io/github/actions/workflow/status/SinterDB/sinterdb/codeql.yml?branch=main&label=CodeQL&logo=githubactions&logoColor=white)](https://github.com/SinterDB/sinterdb/actions/workflows/codeql.yml)
 [![License](https://img.shields.io/github/license/SinterDB/sinterdb?label=License&color=blue)](LICENSE)
@@ -21,6 +22,7 @@
 [![Contributing](https://img.shields.io/badge/Contributing-Guidelines-2ea44f?logo=github)](https://github.com/SinterDB/.github/blob/main/CONTRIBUTING.md)
 [![Security](https://img.shields.io/badge/Security-Policy-6f42c1?logo=github)](https://github.com/SinterDB/sinterdb/security/policy)
 [![Support](https://img.shields.io/badge/Support-Help-0078D4?logo=github)](https://github.com/SinterDB/.github/blob/main/SUPPORT.md)
+
 <!-- ^ REMOVE WHEN PUBLISHED TO NPM ^ -->
 
 A document-oriented database, its official Node.js driver, and supporting packages.
@@ -150,6 +152,15 @@ node apps/server-cli/dist/index.js --help
 
 The server emits newline-delimited JSON lifecycle logs and shuts down gracefully
 on `SIGINT` or `SIGTERM`.
+
+## Documentation
+
+- [Quick start](./docs/quick-start.md)
+- [Configuration reference](./docs/configuration.md)
+- [Connection strings](./docs/connection-strings.md)
+- [Durable storage](./docs/storage.md)
+- [Indexes](./docs/indexes.md)
+- [Compatibility and versioning](./docs/compatibility.md)
 
 ## Development Status
 

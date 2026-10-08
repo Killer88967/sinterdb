@@ -5,6 +5,19 @@ Command-line server for SinterDB. The package installs the `sinterd` executable.
 > [!WARNING]
 > SinterDB is under active development and is not ready for production data. Without `--data-dir` the server keeps all data in memory and loses it on shutdown.
 
+## Installation
+
+The package has not been published to npm yet. The `0.1.0` developer preview
+will be published under the `next` tag:
+
+```bash
+npm install --global @sinterdb/cli@next
+```
+
+See the [quick start](../../docs/quick-start.md) for a walkthrough and the
+[configuration reference](../../docs/configuration.md) for every option, exit
+code, and default.
+
 ## Development
 
 Build the executable from the repository root:
@@ -47,6 +60,9 @@ Example:
 ```bash
 sinterd --host 0.0.0.0 --port 5000
 ```
+
+SinterDB has no authentication or TLS yet. Listen on a non-local address only
+on a network you trust.
 
 Port `0` asks the operating system to select an available temporary port.
 

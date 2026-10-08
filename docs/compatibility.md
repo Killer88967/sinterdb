@@ -88,12 +88,12 @@ breaking change.
 
 ## Other packages
 
-| Package                | Promise                                                                                                                               |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `sinterdb`             | The driver API above.                                                                                                                 |
-| `@sinterdb/cli`        | The `sinterd` command-line flags, environment variables, and exit codes. The format of log lines is for people and is not covered.    |
-| `sinterdb-protocol`    | Low-level wire codec. It follows `PROTOCOL_VERSION`: breaking changes ship in a minor release, and most applications never import it. |
-| `@sinterdb-internal/*` | Internal. Not published and not covered.                                                                                              |
+| Package                | Promise                                                                                                                                                                                 |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sinterdb`             | The driver API above.                                                                                                                                                                   |
+| `@sinterdb/cli`        | The `sinterd` command-line flags, environment variables, and exit codes, as listed in [configuration.md](./configuration.md). The format of log lines is for people and is not covered. |
+| `sinterdb-protocol`    | Low-level wire codec. It follows `PROTOCOL_VERSION`: breaking changes ship in a minor release, and most applications never import it.                                                   |
+| `@sinterdb-internal/*` | Internal. Not published and not covered.                                                                                                                                                |
 
 ## Migration notes
 
