@@ -1,11 +1,21 @@
 import { URL } from "node:url";
 import { SinterConnectionStringError } from "./errors.js";
 
+/** The port used when a connection string does not name one: 4721. */
 export const DEFAULT_SINTERDB_PORT = 4721;
 
+/**
+ * A parsed `sinterdb://` connection string, available as {@link
+ * SinterClient.target}.
+ */
 export interface ParsedSinterConnectionString {
+  /** The server host. */
   readonly host: string;
+  /**
+   * The server port; {@link DEFAULT_SINTERDB_PORT} when the string has none.
+   */
   readonly port: number;
+  /** The database named in the path, if any. */
   readonly database?: string;
 }
 

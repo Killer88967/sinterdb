@@ -9,19 +9,19 @@ import { Document } from 'sinterdb-protocol';
 import { DocumentValue } from 'sinterdb-protocol';
 import { EventEmitter } from 'node:events';
 
-// @public (undocumented)
+// @public
 export type ArrayPaths<TDocument extends object> = PathsMatching<TDocument, readonly unknown[]>;
 
-// @public (undocumented)
+// @public
 export type AtomicValue = ComparableValue | boolean | null;
 
-// @public (undocumented)
+// @public
 export type ComparablePaths<TDocument extends object> = PathsMatching<TDocument, ComparableValue | boolean>;
 
-// @public (undocumented)
+// @public
 export type ComparableValue = string | number | bigint | Date | Uint8Array | CustomId;
 
-// @public (undocumented)
+// @public
 export type ComparisonOperators<TValue> = [
 Extract<TValue, ComparableValue>
 ] extends [never] ? unknown : {
@@ -31,12 +31,10 @@ Extract<TValue, ComparableValue>
     readonly $lte?: Extract<TValue, ComparableValue>;
 };
 
-// @public (undocumented)
+// @public
 export interface CreateIndexResult {
-    // (undocumented)
     readonly acknowledged: true;
     readonly created: boolean;
-    // (undocumented)
     readonly name: string;
 }
 
@@ -45,55 +43,47 @@ export type CursorExecutor = (command: string, parameters: Document) => Promise<
 
 export { CustomId }
 
-// @public (undocumented)
+// @public
 export const DEFAULT_CONNECT_TIMEOUT_MS = 10000;
 
-// @public (undocumented)
+// @public
 export const DEFAULT_REQUEST_TIMEOUT_MS = 10000;
 
-// @public (undocumented)
+// @public
 export const DEFAULT_SINTERDB_PORT = 4721;
 
-// @public (undocumented)
+// @public
 export const DEFAULT_SOCKET_TIMEOUT_MS = 0;
 
-// @public (undocumented)
+// @public
 export interface DeleteResult {
-    // (undocumented)
     readonly acknowledged: true;
-    // (undocumented)
     readonly deletedCount: number;
 }
 
 export { Document }
 
-// @public (undocumented)
+// @public
 export type ElementOf<TValue> = TValue extends readonly (infer TElement)[] ? TElement : TValue;
 
-// @public (undocumented)
+// @public
 export type EqualityFilter<TDocument extends object> = {
     readonly [Key in keyof TDocument]?: TDocument[Key];
 };
 
 // @beta
 export interface ExplainResult {
-    // (undocumented)
     readonly access?: "equality" | "in" | "range";
     readonly documents: number;
     readonly estimatedCandidates: number;
-    // (undocumented)
     readonly field?: string;
-    // (undocumented)
     readonly index?: string;
-    // (undocumented)
     readonly lower?: IndexBoundInfo;
-    // (undocumented)
     readonly stage: "COLLSCAN" | "IDLOOKUP" | "IXSCAN";
-    // (undocumented)
     readonly upper?: IndexBoundInfo;
 }
 
-// @public (undocumented)
+// @public
 export type Filter<TDocument extends object> = {
     readonly [Path in FilterPaths<TDocument>]?: FilterPathValue<TDocument, Path> | FilterOperators<FilterPathValue<TDocument, Path>>;
 } & {
@@ -103,7 +93,7 @@ export type Filter<TDocument extends object> = {
     readonly $nor?: readonly Filter<TDocument>[];
 };
 
-// @public (undocumented)
+// @public
 export type FilterOperators<TValue> = {
     readonly $eq?: TValue;
     readonly $ne?: TValue;
@@ -113,50 +103,38 @@ export type FilterOperators<TValue> = {
     readonly $not?: FilterOperators<TValue>;
 } & ComparisonOperators<TValue>;
 
-// @public (undocumented)
+// @public
 export type FilterPaths<TDocument, TDepth extends readonly unknown[] = []> = TDepth["length"] extends MaxPathDepth ? never : TDocument extends object ? {
     [Key in keyof TDocument & string]: Key | (NonNullable<TDocument[Key]> extends readonly unknown[] | AtomicValue ? never : NonNullable<TDocument[Key]> extends object ? `${Key}.${FilterPaths<NonNullable<TDocument[Key]>, [...TDepth, unknown]>}` : never);
 }[keyof TDocument & string] : never;
 
-// @public (undocumented)
+// @public
 export type FilterPathValue<TDocument, TPath extends string> = TPath extends keyof TDocument ? TDocument[TPath] : TPath extends `${infer THead}.${infer TRest}` ? THead extends keyof TDocument ? FilterPathValue<NonNullable<TDocument[THead]>, TRest> : never : never;
 
-// @public (undocumented)
+// @public
 export class FindCursor<TDocument extends object = Document> implements AsyncIterable<WithId<TDocument>> {
-    // (undocumented)
     [Symbol.asyncIterator](): AsyncGenerator<WithId<TDocument>, void, undefined>;
     constructor(execute: CursorExecutor, collection: string, filter: Document, batchSize: number | undefined, query?: FindQueryOptions);
-    // (undocumented)
     close(): Promise<void>;
     // @beta
     explain(): Promise<ExplainResult>;
-    // (undocumented)
     hasNext(): Promise<boolean>;
-    // (undocumented)
     next(): Promise<WithId<TDocument> | null>;
-    // (undocumented)
     toArray(): Promise<WithId<TDocument>[]>;
 }
 
-// @public (undocumented)
+// @public
 export interface FindOptions<TDocument extends object = Document> {
-    // (undocumented)
     readonly batchSize?: number;
-    // (undocumented)
     readonly limit?: number;
-    // (undocumented)
     readonly skip?: number;
-    // (undocumented)
     readonly sort?: Sort<TDocument>;
 }
 
-// @public (undocumented)
+// @public
 export interface FindQueryOptions {
-    // (undocumented)
     readonly limit?: number;
-    // (undocumented)
     readonly skip?: number;
-    // (undocumented)
     readonly sort?: readonly (readonly [string, SortDirection])[];
 }
 
@@ -165,13 +143,11 @@ export type IndexablePath<TDocument extends object> = Exclude<FilterPaths<TDocum
 
 // @beta
 export interface IndexBoundInfo {
-    // (undocumented)
     readonly inclusive: boolean;
-    // (undocumented)
     readonly value: DocumentValue;
 }
 
-// @public (undocumented)
+// @public
 export interface IndexDefinition<TDocument extends object = Document> {
     readonly direction?: 1 | -1;
     readonly field: IndexablePath<TDocument>;
@@ -180,147 +156,107 @@ export interface IndexDefinition<TDocument extends object = Document> {
     readonly unique?: boolean;
 }
 
-// @public (undocumented)
+// @public
 export interface IndexInfo {
-    // (undocumented)
     readonly direction: 1 | -1;
-    // (undocumented)
     readonly field: string;
-    // (undocumented)
     readonly name: string;
-    // (undocumented)
     readonly sparse: boolean;
-    // (undocumented)
     readonly unique: boolean;
 }
 
-// @public (undocumented)
+// @public
 export interface IndexIssue {
-    // (undocumented)
     readonly detail: string;
-    // (undocumented)
     readonly index: string;
-    // (undocumented)
     readonly problem: string;
 }
 
-// @public (undocumented)
+// @public
 export interface IndexValidationResult {
-    // (undocumented)
     readonly documents: number;
-    // (undocumented)
     readonly indexes: number;
-    // (undocumented)
     readonly issues: readonly IndexIssue[];
-    // (undocumented)
     readonly valid: boolean;
 }
 
-// @public (undocumented)
+// @public
 export interface InsertManyResult {
-    // (undocumented)
     readonly acknowledged: true;
-    // (undocumented)
     readonly insertedCount: number;
-    // (undocumented)
     readonly insertedIds: readonly CustomId[];
 }
 
-// @public (undocumented)
+// @public
 export interface InsertOneResult {
-    // (undocumented)
     readonly acknowledged: true;
-    // (undocumented)
     readonly insertedId: CustomId;
 }
 
-// @public (undocumented)
+// @public
 export type MaxPathDepth = 5;
 
-// @public (undocumented)
+// @public
 export type NumericPaths<TDocument extends object> = PathsMatching<TDocument, number | bigint>;
 
-// @public (undocumented)
+// @public
 export type OptionalId<TDocument extends object> = Omit<TDocument, "_id"> & {
     readonly _id?: CustomId;
 };
 
-// @public (undocumented)
+// @public
 export interface ParsedSinterConnectionString {
-    // (undocumented)
     readonly database?: string;
-    // (undocumented)
     readonly host: string;
-    // (undocumented)
     readonly port: number;
 }
 
-// @public (undocumented)
+// @public
 export type PathsMatching<TDocument extends object, TKind> = {
     [Path in UpdatePaths<TDocument>]: [
     NonNullable<FilterPathValue<TDocument, Path>>
     ] extends [TKind] ? Path : never;
 }[UpdatePaths<TDocument>];
 
-// @public (undocumented)
+// @public
 export class SinterClient extends EventEmitter<SinterClientEvents> {
     constructor(connectionString: string, options?: SinterClientOptions);
-    // (undocumented)
     close(): Promise<void>;
-    // (undocumented)
     connect(): Promise<this>;
-    // (undocumented)
     get connected(): boolean;
-    // (undocumented)
     readonly connectTimeoutMS: number;
-    // (undocumented)
     db(name?: string): SinterDatabase;
-    // (undocumented)
     executeCommand(database: string | undefined, command: string, parameters: Document): Promise<DocumentValue>;
-    // (undocumented)
     listDatabases(): Promise<string[]>;
-    // (undocumented)
     ping(): Promise<SinterPingResult>;
-    // (undocumented)
     readonly requestTimeoutMS: number;
-    // (undocumented)
     get serverInfo(): SinterServerInfo | undefined;
-    // (undocumented)
     readonly socketTimeoutMS: number;
-    // (undocumented)
     get state(): SinterClientState;
-    // (undocumented)
     readonly target: ParsedSinterConnectionString;
 }
 
-// @public (undocumented)
+// @public
 export interface SinterClientEvents {
-    // (undocumented)
     closed: [client: SinterClient];
-    // (undocumented)
     connected: [client: SinterClient];
-    // (undocumented)
     connecting: [client: SinterClient];
-    // (undocumented)
     error: [error: Error];
 }
 
-// @public (undocumented)
+// @public
 export interface SinterClientOptions {
-    // (undocumented)
     readonly connectTimeoutMS?: number;
-    // (undocumented)
     readonly requestTimeoutMS?: number;
-    // (undocumented)
     readonly socketTimeoutMS?: number;
 }
 
-// @public (undocumented)
+// @public
 export class SinterClientOptionsError extends SinterError {
     constructor(message: string, options?: ErrorOptions);
 }
 
-// @public (undocumented)
+// @public
 export const SinterClientState: {
     readonly New: "new";
     readonly Connecting: "connecting";
@@ -329,93 +265,77 @@ export const SinterClientState: {
     readonly Closed: "closed";
 };
 
-// @public (undocumented)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The reference is ambiguous because "SinterClientState" has more than one declaration; you need to add a TSDoc member reference selector
+//
+// @public
 export type SinterClientState = (typeof SinterClientState)[keyof typeof SinterClientState];
 
-// @public (undocumented)
+// @public
 export class SinterClientStateError extends SinterError {
     constructor(code: typeof SinterErrorCode.ClientClosed | typeof SinterErrorCode.ClientNotConnected, message: string, options?: ErrorOptions);
 }
 
-// @public (undocumented)
+// @public
 export class SinterCollection<TDocument extends object = Document> {
-    constructor(database: SinterDatabase, name: string);
+    constructor(
+    database: SinterDatabase, name: string);
     createIndex(definition: IndexDefinition<TDocument>): Promise<CreateIndexResult>;
-    // (undocumented)
     readonly database: SinterDatabase;
-    // (undocumented)
     deleteMany(filter: Filter<TDocument>): Promise<DeleteResult>;
-    // (undocumented)
     deleteOne(filter: Filter<TDocument>): Promise<DeleteResult>;
-    // (undocumented)
     protected readonly documentType: TDocument;
-    // (undocumented)
     dropIndex(name: string): Promise<void>;
-    // (undocumented)
     find(filter?: Filter<TDocument>, options?: FindOptions<TDocument>): FindCursor<TDocument>;
-    // (undocumented)
     findOne(filter?: Filter<TDocument>): Promise<WithId<TDocument> | null>;
     indexes(): Promise<IndexInfo[]>;
-    // (undocumented)
     insertMany(documents: readonly OptionalId<TDocument>[]): Promise<InsertManyResult>;
-    // (undocumented)
     insertOne(document: OptionalId<TDocument>): Promise<InsertOneResult>;
-    // (undocumented)
     readonly name: string;
-    // (undocumented)
     get namespace(): string;
-    // (undocumented)
     replaceOne(filter: Filter<TDocument>, replacement: OptionalId<TDocument>, options?: UpdateOptions): Promise<UpdateResult>;
-    // (undocumented)
     updateMany(filter: Filter<TDocument>, update: UpdateFilter<TDocument>, options?: UpdateOptions): Promise<UpdateResult>;
-    // (undocumented)
     updateOne(filter: Filter<TDocument>, update: UpdateFilter<TDocument>, options?: UpdateOptions): Promise<UpdateResult>;
     validateIndexes(): Promise<IndexValidationResult>;
 }
 
-// @public (undocumented)
+// @public
 export class SinterCompatibilityError extends SinterServerError {
-    // (undocumented)
     readonly code: typeof SinterErrorCode.IncompatibleProtocol;
 }
 
-// @public (undocumented)
+// @public
 export class SinterConnectionError extends SinterError {
     constructor(message: string, options?: ErrorOptions);
 }
 
-// @public (undocumented)
+// @public
 export class SinterConnectionStringError extends SinterError {
     constructor(message: string, options?: ErrorOptions);
 }
 
-// @public (undocumented)
+// @public
 export class SinterConnectionTimeoutError extends SinterConnectionError {
-    // (undocumented)
     readonly code: typeof SinterErrorCode.ConnectionTimeout;
 }
 
-// @public (undocumented)
+// @public
 export class SinterDatabase {
-    constructor(client: SinterClient, name: string);
-    // (undocumented)
+    constructor(
+    client: SinterClient, name: string);
     readonly client: SinterClient;
-    // (undocumented)
     collection<TDocument extends object = Document>(name: string): SinterCollection<TDocument>;
-    // (undocumented)
     listCollections(): Promise<string[]>;
-    // (undocumented)
     readonly name: string;
 }
 
-// @public (undocumented)
+// @public
 export class SinterError extends Error {
     constructor(code: SinterErrorCode, message: string, options?: ErrorOptions);
-    // (undocumented)
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The reference is ambiguous because "SinterErrorCode" has more than one declaration; you need to add a TSDoc member reference selector
     readonly code: SinterErrorCode;
 }
 
-// @public (undocumented)
+// @public
 export const SinterErrorCode: {
     readonly InvalidConnectionString: "INVALID_CONNECTION_STRING";
     readonly InvalidClientOptions: "INVALID_CLIENT_OPTIONS";
@@ -430,97 +350,80 @@ export const SinterErrorCode: {
     readonly ServerError: "SERVER_ERROR";
 };
 
-// @public (undocumented)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The reference is ambiguous because "SinterErrorCode" has more than one declaration; you need to add a TSDoc member reference selector
+//
+// @public
 export type SinterErrorCode = (typeof SinterErrorCode)[keyof typeof SinterErrorCode];
 
-// @public (undocumented)
+// @public
 export class SinterInsertManyError extends SinterServerError {
     constructor(serverError: SinterServerError, failedIndex: number, insertedIds: readonly CustomId[]);
-    // (undocumented)
     readonly failedIndex: number;
-    // (undocumented)
     readonly insertedIds: readonly CustomId[];
 }
 
-// @public (undocumented)
+// @public
 export class SinterNamespaceError extends SinterClientOptionsError {
 }
 
-// @public (undocumented)
+// @public
 export interface SinterPingResult {
-    // (undocumented)
     readonly ok: true;
-    // (undocumented)
     readonly receivedAt: Date;
-    // (undocumented)
     readonly roundTripTimeMS: number;
-    // (undocumented)
     readonly sentAt: Date;
 }
 
-// @public (undocumented)
+// @public
 export class SinterProtocolError extends SinterError {
     constructor(message: string, options?: ErrorOptions);
 }
 
-// @public (undocumented)
+// @public
 export class SinterRequestTimeoutError extends SinterError {
     constructor(message: string, options?: ErrorOptions);
 }
 
-// @public (undocumented)
+// @public
 export class SinterServerError extends SinterError {
     constructor(message: string, options?: SinterServerErrorOptions);
-    // (undocumented)
     readonly details: Document | undefined;
-    // (undocumented)
     readonly retryable: boolean;
-    // (undocumented)
     readonly serverErrorName: string | undefined;
-    // (undocumented)
     readonly wireCode: number | undefined;
 }
 
-// @public (undocumented)
+// @public
 export interface SinterServerErrorOptions extends ErrorOptions {
-    // (undocumented)
     readonly details?: Document;
-    // (undocumented)
     readonly retryable?: boolean;
-    // (undocumented)
     readonly serverErrorName?: string;
-    // (undocumented)
     readonly wireCode?: number;
 }
 
-// @public (undocumented)
+// @public
 export interface SinterServerInfo {
-    // (undocumented)
     readonly capabilities: readonly string[];
-    // (undocumented)
     readonly product: string;
-    // (undocumented)
     readonly productVersion: string;
-    // (undocumented)
     readonly protocolVersion: number;
 }
 
-// @public (undocumented)
+// @public
 export class SinterSocketTimeoutError extends SinterConnectionError {
-    // (undocumented)
     readonly code: typeof SinterErrorCode.SocketTimeout;
 }
 
-// @public (undocumented)
+// @public
 export type Sort<TDocument extends object> = readonly (readonly [
 path: FilterPaths<TDocument> | "_id",
 direction: SortDirection
 ])[];
 
-// @public (undocumented)
+// @public
 export type SortDirection = 1 | -1;
 
-// @public (undocumented)
+// @public
 export type UpdateFilter<TDocument extends object> = {
     readonly $set?: {
         readonly [Path in UpdatePaths<TDocument>]?: FilterPathValue<TDocument, Path>;
@@ -548,27 +451,23 @@ export type UpdateFilter<TDocument extends object> = {
     };
 };
 
-// @public (undocumented)
+// @public
 export interface UpdateOptions {
     readonly upsert?: boolean;
 }
 
-// @public (undocumented)
+// @public
 export type UpdatePaths<TDocument extends object> = Exclude<FilterPaths<TDocument>, "_id" | `_id.${string}`>;
 
-// @public (undocumented)
+// @public
 export interface UpdateResult {
-    // (undocumented)
     readonly acknowledged: true;
-    // (undocumented)
     readonly matchedCount: number;
-    // (undocumented)
     readonly modifiedCount: number;
-    // (undocumented)
     readonly upsertedId: CustomId | null;
 }
 
-// @public (undocumented)
+// @public
 export type WithId<TDocument extends object> = Omit<TDocument, "_id"> & {
     readonly _id: CustomId;
 };

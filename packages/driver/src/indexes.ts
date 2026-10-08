@@ -12,6 +12,7 @@ export type IndexablePath<TDocument extends object> = Exclude<
   "_id" | `_id.${string}`
 >;
 
+/** How to build an index, passed to {@link SinterCollection.createIndex}. */
 export interface IndexDefinition<TDocument extends object = Document> {
   /** The field to index. Dotted paths reach into nested documents. */
   readonly field: IndexablePath<TDocument>;
@@ -25,18 +26,29 @@ export interface IndexDefinition<TDocument extends object = Document> {
   readonly name?: string;
 }
 
+/** The result of {@link SinterCollection.createIndex}. */
 export interface CreateIndexResult {
+  /** Always `true`; a failed request throws instead. */
   readonly acknowledged: true;
+  /** The name of the index, whether new or existing. */
   readonly name: string;
   /** False when an identical index already existed. */
   readonly created: boolean;
 }
 
+/**
+ * A description of an index, as returned by {@link SinterCollection.indexes}.
+ */
 export interface IndexInfo {
+  /** The index name. */
   readonly name: string;
+  /** The indexed field path. */
   readonly field: string;
+  /** `1` for ascending or `-1` for descending. */
   readonly direction: 1 | -1;
+  /** Whether the index rejects duplicate values. */
   readonly unique: boolean;
+  /** Whether documents without the field are left out of the index. */
   readonly sparse: boolean;
 }
 
@@ -46,7 +58,9 @@ export interface IndexInfo {
  * @beta
  */
 export interface IndexBoundInfo {
+  /** The bound value. */
   readonly value: DocumentValue;
+  /** Whether documents equal to the bound are included. */
   readonly inclusive: boolean;
 }
 
@@ -57,11 +71,22 @@ export interface IndexBoundInfo {
  * @beta
  */
 export interface ExplainResult {
+  /**
+   * The strategy: `COLLSCAN` reads every document, `IDLOOKUP` reads by `_id`,
+   * and `IXSCAN` scans an index.
+   */
   readonly stage: "COLLSCAN" | "IDLOOKUP" | "IXSCAN";
+  /** The index used, for `IXSCAN`. */
   readonly index?: string;
+  /** The field the index covers, for `IXSCAN`. */
   readonly field?: string;
+  /**
+   * How the index is read: by equality, by a list of values, or by a range.
+   */
   readonly access?: "equality" | "in" | "range";
+  /** The lower end of a range scan. */
   readonly lower?: IndexBoundInfo;
+  /** The upper end of a range scan. */
   readonly upper?: IndexBoundInfo;
   /** How many documents the server expects to examine. */
   readonly estimatedCandidates: number;
@@ -69,16 +94,25 @@ export interface ExplainResult {
   readonly documents: number;
 }
 
+/** One difference found by {@link SinterCollection.validateIndexes}. */
 export interface IndexIssue {
+  /** The name of the affected index. */
   readonly index: string;
+  /** A short identifier for the kind of difference. */
   readonly problem: string;
+  /** A human-readable description of the difference. */
   readonly detail: string;
 }
 
+/** The result of {@link SinterCollection.validateIndexes}. */
 export interface IndexValidationResult {
+  /** Whether every index matches the documents. */
   readonly valid: boolean;
+  /** How many indexes were checked. */
   readonly indexes: number;
+  /** How many documents were checked. */
   readonly documents: number;
+  /** Every difference found; empty when `valid` is `true`. */
   readonly issues: readonly IndexIssue[];
 }
 

@@ -17,7 +17,10 @@ npm install sinterdb@next
 
 See the [quick start](../../docs/quick-start.md) for a walkthrough,
 [connection strings](../../docs/connection-strings.md) for the URI format, and
-the [configuration reference](../../docs/configuration.md) for client options.
+the [configuration reference](../../docs/configuration.md) for client options. The
+[to-do app](../../examples/todo-app) is a complete example. Every public type
+and method has a doc comment, and `pnpm docs:api` turns them into an HTML API
+reference.
 
 ## Quick Start
 

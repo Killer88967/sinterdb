@@ -27,56 +27,138 @@ import { parseNameList } from "./list-result.js";
 import { SinterNamespaceError } from "./namespace.js";
 import { RequestDispatcher } from "./request-dispatcher.js";
 
+/** The default `connectTimeoutMS`: 10 seconds. */
 export const DEFAULT_CONNECT_TIMEOUT_MS = 10_000;
+/** The default `requestTimeoutMS`: 10 seconds. */
 export const DEFAULT_REQUEST_TIMEOUT_MS = 10_000;
+/** The default `socketTimeoutMS`: 0, which disables the idle timeout. */
 export const DEFAULT_SOCKET_TIMEOUT_MS = 0;
 export const DRIVER_PRODUCT = "sinterdb-node-driver";
 export const DRIVER_PRODUCT_VERSION = "0.0.9";
 
 const MAX_TIMEOUT_MS = 2_147_483_647;
 
+/**
+ * Options for {@link SinterClient}. Every timeout is a whole number of
+ * milliseconds no greater than 2,147,483,647. An invalid value throws a
+ * {@link SinterClientOptionsError}.
+ */
 export interface SinterClientOptions {
+  /**
+   * How long `connect()` may take, including the protocol handshake, before
+   * it fails with a {@link SinterConnectionTimeoutError}. Must be at least 1.
+   * Defaults to 10,000.
+   */
   readonly connectTimeoutMS?: number;
+  /**
+   * How long a single request may wait for its response before it fails with
+   * a {@link SinterRequestTimeoutError}. Must be at least 1. Defaults to
+   * 10,000.
+   */
   readonly requestTimeoutMS?: number;
+  /**
+   * How long the connection may be inactive before the socket is closed with
+   * a {@link SinterSocketTimeoutError}. 0, the default, disables the timeout.
+   */
   readonly socketTimeoutMS?: number;
 }
 
+/**
+ * What the server reported during the protocol handshake. Available from
+ * {@link SinterClient.serverInfo} once the client is connected.
+ */
 export interface SinterServerInfo {
+  /** The wire protocol version both sides agreed on. */
   readonly protocolVersion: number;
+  /** The server's product name. */
   readonly product: string;
+  /** The server's version. */
   readonly productVersion: string;
+  /** The protocol capabilities the server advertised. */
   readonly capabilities: readonly string[];
 }
 
+/** The result of {@link SinterClient.ping}. */
 export interface SinterPingResult {
+  /** Always `true`; a failed ping throws instead. */
   readonly ok: true;
+  /** When the client sent the ping. */
   readonly sentAt: Date;
+  /** When the server received the ping, by the server's clock. */
   readonly receivedAt: Date;
+  /**
+   * The measured round trip, in milliseconds, with sub-millisecond precision.
+   */
   readonly roundTripTimeMS: number;
 }
 
+/**
+ * The events a {@link SinterClient} emits.
+ *
+ * An `error` event is emitted only while at least one `error` listener is
+ * attached.
+ */
 export interface SinterClientEvents {
+  /** Emitted when `connect()` starts a connection attempt. */
   connecting: [client: SinterClient];
+  /**
+   * Emitted once the handshake has succeeded and the client is ready for
+   * commands.
+   */
   connected: [client: SinterClient];
+  /** Emitted after the client has closed. */
   closed: [client: SinterClient];
+  /**
+   * Emitted when the connection fails after it was established, such as a
+   * socket error or an idle timeout.
+   */
   error: [error: Error];
 }
 
+/**
+ * The lifecycle states of a {@link SinterClient}.
+ *
+ * A client moves from `new` to `connecting` to `connected`, and finally to
+ * `closing` and `closed`. A failed connection attempt returns it to `new`, so
+ * `connect()` can be called again. A closed client cannot be reused.
+ */
 export const SinterClientState = {
+  /** Created, not yet connected. Also the state after a failed connection attempt. */
   New: "new",
+  /** A connection attempt is in progress. */
   Connecting: "connecting",
+  /** Connected and ready for commands. */
   Connected: "connected",
+  /** `close()` is in progress. */
   Closing: "closing",
+  /** Closed for good; the client cannot be reused. */
   Closed: "closed",
 } as const;
 
+/** A value of {@link SinterClientState}. */
 export type SinterClientState =
   (typeof SinterClientState)[keyof typeof SinterClientState];
 
+/**
+ * A connection to a SinterDB server.
+ *
+ * Create a client from a `sinterdb://` connection string, call `connect()`,
+ * and then use `db()` to reach databases and collections. Commands sent
+ * before `connect()` completes throw a {@link SinterClientStateError}. Call
+ * `close()` when finished.
+ */
 export class SinterClient extends EventEmitter<SinterClientEvents> {
+  /**
+   * The host, port and optional database parsed from the connection string.
+   */
   public readonly target: ParsedSinterConnectionString;
+  /** The effective connect timeout in milliseconds. */
   public readonly connectTimeoutMS: number;
+  /** The effective request timeout in milliseconds. */
   public readonly requestTimeoutMS: number;
+  /**
+   * The effective idle socket timeout in milliseconds, or 0 when disabled.
+   */
   public readonly socketTimeoutMS: number;
 
   private currentState: SinterClientState = SinterClientState.New;
@@ -110,18 +192,34 @@ export class SinterClient extends EventEmitter<SinterClientEvents> {
     );
   }
 
+  /** The current lifecycle state. */
   public get state(): SinterClientState {
     return this.currentState;
   }
 
+  /** Whether the client is connected and ready for commands. */
   public get connected(): boolean {
     return this.currentState === SinterClientState.Connected;
   }
 
+  /**
+   * What the server reported during the handshake, or `undefined` while the
+   * client is not connected.
+   */
   public get serverInfo(): SinterServerInfo | undefined {
     return this.negotiatedServer;
   }
 
+  /**
+   * Opens the connection and performs the protocol handshake.
+   *
+   * Calling `connect()` on a connected client resolves immediately, and
+   * concurrent calls share one attempt. If the attempt fails, the client
+   * returns to `new` and `connect()` may be tried again. A closed client
+   * rejects with a {@link SinterClientStateError}.
+   *
+   * @returns This client, so calls can be chained.
+   */
   public connect(): Promise<this> {
     if (this.currentState === SinterClientState.Connected) {
       return Promise.resolve(this);
@@ -165,6 +263,7 @@ export class SinterClient extends EventEmitter<SinterClientEvents> {
     return connection;
   }
 
+  /** Sends a ping to the server and measures the round trip. */
   public async ping(): Promise<SinterPingResult> {
     const dispatcher = this.getRequestDispatcher();
     const sentAt = new Date();
@@ -185,6 +284,18 @@ export class SinterClient extends EventEmitter<SinterClientEvents> {
     return parsePingResult(response.payload.value, sentAt, roundTripTimeMS);
   }
 
+  /**
+   * Sends a command by name and returns the raw result.
+   *
+   * This is the low-level entry point behind the collection and database
+   * methods. Prefer those; the command names and parameters are part of the
+   * wire protocol, not of the typed API.
+   *
+   * @param database - The database to run the command in, or `undefined` for
+   *   server-wide commands.
+   * @param command - The command name.
+   * @param parameters - The command parameters.
+   */
   public async executeCommand(
     database: string | undefined,
     command: string,
@@ -207,12 +318,25 @@ export class SinterClient extends EventEmitter<SinterClientEvents> {
     return response.payload.value;
   }
 
+  /** Lists the names of the databases on the server. */
   public async listDatabases(): Promise<string[]> {
     const value = await this.executeCommand(undefined, "listDatabases", {});
 
     return parseNameList(value, "databases", "listDatabases");
   }
 
+  /**
+   * Returns a handle to a database.
+   *
+   * The handle is created locally; no request is sent, and the database is
+   * created on the server by the first write. Without `name`, the database
+   * from the connection string is used.
+   *
+   * @param name - The database name. Optional when the connection string
+   *   names one.
+   * @throws {@link SinterNamespaceError} when neither is available, or when
+   *   the name is invalid.
+   */
   public db(name?: string): SinterDatabase {
     const selectedName = name ?? this.target.database;
 
@@ -225,6 +349,10 @@ export class SinterClient extends EventEmitter<SinterClientEvents> {
     return new SinterDatabase(this, selectedName);
   }
 
+  /**
+   * Closes the connection. Requests still waiting for a response fail.
+   * Closing a closed client does nothing.
+   */
   public async close(): Promise<void> {
     if (this.currentState === SinterClientState.Closed) {
       return;

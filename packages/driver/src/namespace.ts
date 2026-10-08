@@ -1,5 +1,9 @@
 import { SinterClientOptionsError } from "./errors.js";
 
+/**
+ * A database or collection name is invalid: empty, or containing forbidden
+ * characters. Code `INVALID_CLIENT_OPTIONS`.
+ */
 export class SinterNamespaceError extends SinterClientOptionsError {}
 
 export function validateDatabaseName(name: string): void {

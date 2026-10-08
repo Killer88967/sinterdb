@@ -12,10 +12,11 @@
     "pnpm": ">=12.0.0"
   },
   "scripts": {
-    "all": "pnpm clean && pnpm build && pnpm api:check && pnpm typecheck && pnpm format && pnpm lint && pnpm test && pnpm format:check",
+    "all": "pnpm clean && pnpm build && pnpm api:check && pnpm docs:api && pnpm typecheck && pnpm format && pnpm lint && pnpm test && pnpm format:check",
     "build": "pnpm --recursive build",
     "api:check": "pnpm --recursive --if-present api:check",
     "api:update": "pnpm --recursive --if-present api:update",
+    "docs:api": "pnpm --filter @sinterdb-internal/api-docs run generate",
     "typecheck": "pnpm --recursive typecheck",
     "lint": "eslint .",
     "test": "pnpm build && pnpm --recursive test",
