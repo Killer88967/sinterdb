@@ -1,0 +1,18 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "SinterDB driver API",
+  "entryPoints": ["../../packages/driver/dist/index.d.ts"],
+  "tsconfig": "./tsconfig.json",
+  "out": "../../docs/api",
+  "readme": "none",
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeInternal": true,
+  "treatWarningsAsErrors": true,
+  "validation": {
+    "notExported": true,
+    "invalidLink": true,
+    "notDocumented": true
+  },
+  "githubPages": false
+}

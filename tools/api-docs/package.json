@@ -1,0 +1,16 @@
+{
+  "name": "@sinterdb-internal/api-docs",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Generates the driver API reference from its public declarations.",
+  "type": "module",
+  "scripts": {
+    "generate": "typedoc",
+    "clean": "rimraf ../../docs/api"
+  },
+  "devDependencies": {
+    "sinterdb": "workspace:^",
+    "typedoc": "^0.28.20",
+    "typescript": "~6.0.0"
+  }
+}

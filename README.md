@@ -52,6 +52,8 @@ SinterDB aims to provide:
 | `@sinterdb-internal/server`     | Private    | Sessions, commands, and query execution        |
 | `@sinterdb-internal/storage`    | Private    | Persistent storage, WAL, indexes, and recovery |
 | `@sinterdb-internal/test-utils` | Private    | Shared fixtures and server test utilities      |
+| `@sinterdb-internal/api-docs`   | Private    | Generates the driver API reference             |
+| `@sinterdb-examples/todo-app`   | Private    | Example command-line application               |
 
 The ODM will be developed separately as `sinterdb-odm` after the driver API
 becomes stable enough to support it.
@@ -76,8 +78,9 @@ sinterdb/
 │   ├── protocol/
 │   └── reference/
 ├── examples/
-│   ├── basic/
-│   └── typescript/
+│   └── todo-app/
+├── tools/
+│   └── api-docs/
 └── ROADMAP.md
 ```
 
@@ -161,6 +164,9 @@ on `SIGINT` or `SIGTERM`.
 - [Durable storage](./docs/storage.md)
 - [Indexes](./docs/indexes.md)
 - [Compatibility and versioning](./docs/compatibility.md)
+- [Example application](./examples/todo-app) (a to-do list on the driver)
+- API reference: run `pnpm docs:api` to generate it in `docs/api/`; CI
+  publishes it as a build artifact
 
 ## Development Status
 

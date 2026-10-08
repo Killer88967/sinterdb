@@ -19,6 +19,7 @@ export default defineConfig([
       "**/.temp/",
       "**/tmp/",
       "**/*.{ts,tsx,mts,cts}",
+      "docs/api/",
       "data/",
       ".sinterdb/",
       "sinterdb-data/",

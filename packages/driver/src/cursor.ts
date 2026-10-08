@@ -14,12 +14,24 @@ export type CursorExecutor = (
   parameters: Document,
 ) => Promise<DocumentValue>;
 
+/** The query parts of a find that are sent with the first request. */
 export interface FindQueryOptions {
+  /** Sort order as `[path, direction]` pairs. */
   readonly sort?: readonly (readonly [string, SortDirection])[];
+  /** How many matching documents to skip. */
   readonly skip?: number;
+  /** The maximum number of documents to return. */
   readonly limit?: number;
 }
 
+/**
+ * A lazy, batched cursor over the results of a find.
+ *
+ * Nothing is sent until the first read. Documents arrive in batches, and the
+ * cursor releases its server-side state when it is exhausted or closed.
+ * `toArray()` and `for await` close the cursor for you, even when the loop
+ * exits early or throws.
+ */
 export class FindCursor<
   TDocument extends object = Document,
 > implements AsyncIterable<WithId<TDocument>> {
@@ -50,6 +62,9 @@ export class FindCursor<
     return parseExplainResult(value);
   }
 
+  /**
+   * Whether another document is available. This may fetch the next batch.
+   */
   public async hasNext(): Promise<boolean> {
     while (this.buffer.length === 0) {
       if (this.closed || this.cursorId === null) {
@@ -62,6 +77,10 @@ export class FindCursor<
     return true;
   }
 
+  /**
+   * Returns the next document, or `null` when the results are exhausted or
+   * the cursor is closed.
+   */
   public async next(): Promise<WithId<TDocument> | null> {
     if (!(await this.hasNext())) {
       return null;
@@ -70,6 +89,10 @@ export class FindCursor<
     return this.buffer.shift() ?? null;
   }
 
+  /**
+   * Reads all remaining documents into an array and closes the cursor. Large
+   * result sets are held in memory; iterate instead when they may be large.
+   */
   public async toArray(): Promise<WithId<TDocument>[]> {
     const results: WithId<TDocument>[] = [];
 
@@ -84,6 +107,10 @@ export class FindCursor<
     return results;
   }
 
+  /**
+   * Closes the cursor and releases it on the server. Closing twice does
+   * nothing.
+   */
   public async close(): Promise<void> {
     if (this.closed) {
       return;
@@ -100,6 +127,9 @@ export class FindCursor<
     }
   }
 
+  /**
+   * Iterates the remaining documents, closing the cursor when the loop ends.
+   */
   public async *[Symbol.asyncIterator](): AsyncGenerator<
     WithId<TDocument>,
     void,

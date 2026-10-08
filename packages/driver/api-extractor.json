@@ -36,6 +36,10 @@
       "ae-forgotten-export": {
         "logLevel": "error",
         "addToApiReportFile": true
+      },
+      "ae-undocumented": {
+        "logLevel": "error",
+        "addToApiReportFile": false
       }
     },
     "tsdocMessageReporting": {
