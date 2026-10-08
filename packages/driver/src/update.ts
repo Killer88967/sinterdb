@@ -7,12 +7,12 @@ import type {
   FilterPathValue,
 } from "./filter.js";
 
-type UpdatePaths<TDocument extends object> = Exclude<
+export type UpdatePaths<TDocument extends object> = Exclude<
   FilterPaths<TDocument>,
   "_id" | `_id.${string}`
 >;
 
-type PathsMatching<TDocument extends object, TKind> = {
+export type PathsMatching<TDocument extends object, TKind> = {
   [Path in UpdatePaths<TDocument>]: [
     NonNullable<FilterPathValue<TDocument, Path>>,
   ] extends [TKind]
@@ -20,17 +20,17 @@ type PathsMatching<TDocument extends object, TKind> = {
     : never;
 }[UpdatePaths<TDocument>];
 
-type NumericPaths<TDocument extends object> = PathsMatching<
+export type NumericPaths<TDocument extends object> = PathsMatching<
   TDocument,
   number | bigint
 >;
 
-type ComparablePaths<TDocument extends object> = PathsMatching<
+export type ComparablePaths<TDocument extends object> = PathsMatching<
   TDocument,
   ComparableValue | boolean
 >;
 
-type ArrayPaths<TDocument extends object> = PathsMatching<
+export type ArrayPaths<TDocument extends object> = PathsMatching<
   TDocument,
   readonly unknown[]
 >;

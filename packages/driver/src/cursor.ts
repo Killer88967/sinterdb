@@ -5,6 +5,10 @@ import { SinterProtocolError } from "./errors.js";
 import type { SortDirection } from "./filter.js";
 import { parseExplainResult, type ExplainResult } from "./indexes.js";
 
+/**
+ * The function a {@link FindCursor} uses to reach the server. Cursors are
+ * created by {@link SinterCollection.find}; do not construct them directly.
+ */
 export type CursorExecutor = (
   command: string,
   parameters: Document,
@@ -34,6 +38,8 @@ export class FindCursor<
   /**
    * Asks the server how it would run this query, without running it. The
    * sort, skip, limit, and batch size do not change the plan.
+   *
+   * @beta
    */
   public async explain(): Promise<ExplainResult> {
     const value = await this.execute("explain", {

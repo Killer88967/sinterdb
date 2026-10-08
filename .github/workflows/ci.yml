@@ -48,6 +48,9 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Check public API reports
+        run: pnpm api:check
+
       - name: Format
         run: pnpm format
 

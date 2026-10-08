@@ -55,7 +55,7 @@ export interface ErrorEnvelope {
   details?: Document;
 }
 
-type MessagePayloadByName = {
+export type MessagePayloadByName = {
   Handshake: HandshakeEnvelope;
   Ping: PingEnvelope;
   Command: CommandEnvelope;

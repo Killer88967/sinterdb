@@ -92,7 +92,7 @@ Port `0` asks the operating system to select an available temporary port.
 
 Durable storage is provided by `@sinterdb-internal/storage`. Wire messages, framing, and document encoding are provided by `sinterdb-protocol`.
 
-The public executable is distributed separately as `sinterdb-server`.
+The public executable is distributed separately as `@sinterdb/cli`.
 
 ## Current Limitations
 

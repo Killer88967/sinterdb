@@ -6,7 +6,7 @@
     [
       "sinterdb",
       "sinterdb-protocol",
-      "sinterdb-server",
+      "@sinterdb/cli",
       "@sinterdb-internal/server",
       "@sinterdb-internal/storage",
       "@sinterdb-internal/test-utils"
