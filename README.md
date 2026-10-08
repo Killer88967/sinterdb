@@ -1,4 +1,3 @@
-
 # SinterDB
 
 <!-- USE WHEN PUBLISHED TO NPM -->
