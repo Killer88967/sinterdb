@@ -18,6 +18,11 @@ export interface ServerConfig {
    * default applies when it is not set.
    */
   checkpointThresholdBytes?: number;
+  /**
+   * Take over a data directory lock left by a process on another host or
+   * container. Off by default.
+   */
+  reclaimLock: boolean;
 }
 
 export interface ServerConfigInput {
@@ -26,6 +31,7 @@ export interface ServerConfigInput {
   dataDirectory?: string;
   durability?: string;
   checkpointThresholdBytes?: number | string;
+  reclaimLock?: boolean | string;
 }
 
 /**
@@ -38,6 +44,7 @@ export const SERVER_ENVIRONMENT_VARIABLES = [
   "SINTERDB_DATA_DIR",
   "SINTERDB_DURABILITY",
   "SINTERDB_CHECKPOINT_BYTES",
+  "SINTERDB_RECLAIM_LOCK",
 ] as const;
 
 export type ServerEnvironment = Readonly<{
@@ -45,7 +52,12 @@ export type ServerEnvironment = Readonly<{
 }>;
 
 export type ServerConfigurationOption =
-  "host" | "port" | "dataDirectory" | "durability" | "checkpointThresholdBytes";
+  | "host"
+  | "port"
+  | "dataDirectory"
+  | "durability"
+  | "checkpointThresholdBytes"
+  | "reclaimLock";
 
 export class ServerConfigurationError extends Error {
   public readonly option: ServerConfigurationOption;
@@ -87,6 +99,17 @@ export function resolveServerConfig(
     );
   }
 
+  const reclaimLock = resolveReclaimLock(
+    input.reclaimLock ?? environment.SINTERDB_RECLAIM_LOCK,
+  );
+
+  if (reclaimLock && dataDirectory === undefined) {
+    throw new ServerConfigurationError(
+      "reclaimLock",
+      "Reclaiming a lock only applies when a data directory is configured.",
+    );
+  }
+
   return {
     host,
     port,
@@ -95,6 +118,7 @@ export function resolveServerConfig(
     ...(checkpointThresholdBytes === undefined
       ? {}
       : { checkpointThresholdBytes }),
+    reclaimLock,
   };
 }
 
@@ -186,6 +210,27 @@ function resolveCheckpointThreshold(
   }
 
   return bytes;
+}
+
+function resolveReclaimLock(value: boolean | string | undefined): boolean {
+  if (value === undefined) {
+    return false;
+  }
+
+  if (typeof value === "boolean") {
+    return value;
+  }
+
+  const text = value.trim();
+
+  if (text !== "true" && text !== "false") {
+    throw new ServerConfigurationError(
+      "reclaimLock",
+      `Reclaim lock must be "true" or "false"; received ${JSON.stringify(value)}.`,
+    );
+  }
+
+  return text === "true";
 }
 
 function invalidPort(value: number | string): ServerConfigurationError {

@@ -73,6 +73,7 @@ to publish on another host port.
 | Listening host | `0.0.0.0` | Published ports cannot reach a server on `127.0.0.1` |
 | Port           | `4721`    | The default port                                     |
 | Data directory | `/data`   | Declared as a volume                                 |
+| Reclaim lock   | `true`    | A killed container leaves its lock in the volume     |
 | User           | `node`    | The server does not run as root                      |
 
 Each of these comes from an environment variable listed in the
@@ -117,3 +118,10 @@ container. A clean stop finishes much sooner: the server ends open connections,
 destroys any that are still open after five seconds, and writes a final
 checkpoint. If a container is killed anyway, the next start recovers from the
 write-ahead log; see [storage.md](./storage.md).
+
+A killed container also leaves the `LOCK` file in the volume. Every container
+has its own host name, so the next container cannot tell that the owner is gone.
+The image sets `SINTERDB_RECLAIM_LOCK=true`, which makes the server take such a
+lock over. This is only safe while one container at a time uses a volume, so do
+not mount the same volume or folder into two running containers. SinterDB does
+not support that, and the setting removes the protection that would stop it.

@@ -12,6 +12,9 @@ Options:
   --durability <mode> How writes are acknowledged: fsync (default) or buffered
   --checkpoint-bytes <n>
                       Bytes of log between automatic checkpoints (default 64 MiB)
+  --reclaim-lock      Take over a data directory lock left by another host or
+                      container. Only use it when no other server can be using
+                      the directory
   -h, --help          Show this help message
   -v, --version       Show the server version
 
@@ -30,6 +33,7 @@ Environment:
   SINTERDB_DURABILITY    Default durability mode
   SINTERDB_CHECKPOINT_BYTES
                          Default bytes of log between checkpoints
+  SINTERDB_RECLAIM_LOCK  Set to true to take over a lock left by another host
 
 `;
 
@@ -41,6 +45,7 @@ export type CliCommand =
       dataDir?: string;
       durability?: string;
       checkpointBytes?: string;
+      reclaimLock?: boolean;
     }
   | {
       kind: "help";
@@ -81,6 +86,9 @@ export function parseCliArguments(arguments_: readonly string[]): CliCommand {
         "checkpoint-bytes": {
           type: "string",
         },
+        "reclaim-lock": {
+          type: "boolean",
+        },
         help: {
           type: "boolean",
           short: "h",
@@ -106,6 +114,7 @@ export function parseCliArguments(arguments_: readonly string[]): CliCommand {
   const dataDir = readStringOption(parsed.values, "data-dir");
   const durability = readStringOption(parsed.values, "durability");
   const checkpointBytes = readStringOption(parsed.values, "checkpoint-bytes");
+  const reclaimLock = readBooleanOption(parsed.values, "reclaim-lock");
 
   if (help && version) {
     throw new CliUsageError("--help and --version cannot be used together.");
@@ -130,6 +139,7 @@ export function parseCliArguments(arguments_: readonly string[]): CliCommand {
     ...(dataDir === undefined ? {} : { dataDir }),
     ...(durability === undefined ? {} : { durability }),
     ...(checkpointBytes === undefined ? {} : { checkpointBytes }),
+    ...(reclaimLock ? { reclaimLock } : {}),
   };
 }
 

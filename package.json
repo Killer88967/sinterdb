@@ -22,6 +22,7 @@
     "lint": "eslint .",
     "test": "pnpm build && pnpm --recursive test",
     "test:watch": "pnpm --recursive --parallel test:watch",
+    "test:docker": "vitest packages/driver/src/docker.integration.test.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "clean": "pnpm --recursive run clean",

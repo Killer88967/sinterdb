@@ -41,6 +41,7 @@ async function startServer(
     ...(command.checkpointBytes === undefined
       ? {}
       : { checkpointThresholdBytes: command.checkpointBytes }),
+    ...(command.reclaimLock === true ? { reclaimLock: true } : {}),
   };
 
   const server = new SinterServer(config);

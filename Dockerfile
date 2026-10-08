@@ -36,10 +36,15 @@ LABEL org.opencontainers.image.title="SinterDB server" \
 # Inside a container the server has to listen on every interface, or published
 # ports cannot reach it. Publish the port on 127.0.0.1 only: SinterDB has no
 # authentication or TLS yet.
+#
+# Every container has its own host name, so the lock a killed container leaves
+# in the volume always looks like it belongs to another machine. The volume is
+# meant for one container at a time, so the server takes such a lock over.
 ENV NODE_ENV=production \
     SINTERDB_HOST=0.0.0.0 \
     SINTERDB_PORT=4721 \
-    SINTERDB_DATA_DIR=/data
+    SINTERDB_DATA_DIR=/data \
+    SINTERDB_RECLAIM_LOCK=true
 
 WORKDIR /app
 COPY --from=build /repo/apps/server-cli/dist/ ./

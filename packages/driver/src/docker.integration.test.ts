@@ -59,6 +59,24 @@ async function waitFor(
   throw new Error(`Timed out waiting for ${description}.`);
 }
 
+async function waitUntilHealthy(container: string): Promise<void> {
+  try {
+    await waitFor(`${container} to be healthy`, () => {
+      return health(container) === "healthy";
+    });
+  } catch (error: unknown) {
+    // A container that never becomes healthy usually says why in its log.
+    const logs = spawnSync("docker", ["logs", container], {
+      encoding: "utf8",
+    });
+
+    throw new Error(
+      `${(error as Error).message}\n--- docker logs ${container} ---\n${logs.stdout}${logs.stderr}`,
+      { cause: error },
+    );
+  }
+}
+
 function health(container: string): string {
   return docker("inspect", "--format", "{{.State.Health.Status}}", container);
 }
@@ -140,9 +158,7 @@ describe.skipIf(IMAGE === undefined)("the server image", () => {
     docker("volume", "create", volume);
     run(`sinterdb-a-${suffix}`);
 
-    await waitFor("the first container to be healthy", () => {
-      return health(`sinterdb-a-${suffix}`) === "healthy";
-    });
+    await waitUntilHealthy(`sinterdb-a-${suffix}`);
 
     expect(docker("exec", `sinterdb-a-${suffix}`, "id", "-u")).toBe("1000");
 
@@ -177,9 +193,7 @@ describe.skipIf(IMAGE === undefined)("the server image", () => {
     docker("rm", first);
     run(`sinterdb-b-${suffix}`);
 
-    await waitFor("the second container to be healthy", () => {
-      return health(`sinterdb-b-${suffix}`) === "healthy";
-    });
+    await waitUntilHealthy(`sinterdb-b-${suffix}`);
 
     expect(docker("logs", `sinterdb-b-${suffix}`)).toContain(
       '"storage":"disk"',
@@ -213,9 +227,7 @@ describe.skipIf(IMAGE === undefined)("the server image", () => {
     docker("rm", second);
     run(`sinterdb-c-${suffix}`);
 
-    await waitFor("the third container to be healthy", () => {
-      return health(`sinterdb-c-${suffix}`) === "healthy";
-    });
+    await waitUntilHealthy(`sinterdb-c-${suffix}`);
 
     const names = await withClient(
       hostPort(`sinterdb-c-${suffix}`),

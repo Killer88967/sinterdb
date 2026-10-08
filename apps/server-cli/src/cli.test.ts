@@ -89,6 +89,20 @@ describe("parseCliArguments", () => {
     });
   });
 
+  it("parses --reclaim-lock as a flag", () => {
+    expect(
+      parseCliArguments(["--data-dir", "./data", "--reclaim-lock"]),
+    ).toEqual({
+      kind: "start",
+      dataDir: "./data",
+      reclaimLock: true,
+    });
+    expect(parseCliArguments([])).not.toHaveProperty("reclaimLock");
+    expect(() => parseCliArguments(["--reclaim-lock=yes"])).toThrow(
+      CliUsageError,
+    );
+  });
+
   it("rejects storage options without values", () => {
     expect(() => parseCliArguments(["--data-dir"])).toThrow(CliUsageError);
     expect(() => parseCliArguments(["--durability"])).toThrow(CliUsageError);

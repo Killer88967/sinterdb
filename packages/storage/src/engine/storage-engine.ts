@@ -68,6 +68,13 @@ export interface StorageEngineOptions {
    */
   readonly checkpointOnClose?: boolean;
   /**
+   * Take over a lock file left by a process on another host. Only set this
+   * when no other server can be using the directory at the same time, for
+   * example because a container platform started this server in place of one
+   * that stopped. A lock left by a process on this host is always checked.
+   */
+  readonly reclaimLock?: boolean;
+  /**
    * Called as a checkpoint passes each stage. Intended for tests and
    * diagnostics; throwing from it aborts the checkpoint at that point.
    */
@@ -174,7 +181,9 @@ export class StorageEngine {
 
     mkdirSync(root, { recursive: true });
 
-    const lock = acquireDirectoryLock(join(root, "LOCK"));
+    const lock = acquireDirectoryLock(join(root, "LOCK"), {
+      reclaimForeignLock: options.reclaimLock === true,
+    });
 
     try {
       for (const name of SUBDIRECTORIES) {

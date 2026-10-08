@@ -99,6 +99,13 @@ describe("Dockerfile", () => {
     expect(runtimeStage()).toContain(`VOLUME ${dataDirectory}`);
   });
 
+  it("takes over the lock a killed container leaves in the volume", () => {
+    expect(environmentOfRuntimeStage().get("SINTERDB_RECLAIM_LOCK")).toBe(
+      "true",
+    );
+    expect(guide).toContain("SINTERDB_RECLAIM_LOCK");
+  });
+
   it("does not run the server as root, and the data directory belongs to that user", () => {
     expect(runtimeStage()).toMatch(/^USER node$/m);
     expect(runtimeStage()).toContain("chown node:node /data");
