@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { CustomId } from "sinterdb-protocol";
+import { CustomId, WireErrorCode } from "sinterdb-protocol";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import { SinterClient } from "./client.js";
@@ -194,6 +194,28 @@ describe("killing the real server process", () => {
         await client.connect();
 
         const entries = client.db().collection<Entry>("entries");
+
+        await entries.createIndex({ field: "seq", unique: true });
+
+        const indexes = await entries.indexes();
+
+        expect(
+          indexes.some((index) => index.name === "seq_1" && index.unique),
+        ).toBe(true);
+        expect((await entries.validateIndexes()).valid).toBe(true);
+
+        if (round > 0) {
+          expect(server.details["rebuiltIndexes"]).toBeGreaterThanOrEqual(1);
+        }
+
+        const earliest = [...acknowledged][0];
+
+        if (earliest !== undefined) {
+          await expect(
+            entries.insertOne({ seq: earliest, round, pad: "dup" } as Entry),
+          ).rejects.toMatchObject({ wireCode: WireErrorCode.DuplicateKey });
+        }
+
         const inFlight = new Set<number>();
         const killAfter = 15 + ((round * 17) % 60);
         let completed = 0;

@@ -8,7 +8,11 @@ export {
 export { compileFilter } from "./filter.js";
 export { compileSort } from "./sort.js";
 export { compileUpdate } from "./update.js";
-export { ID_INDEX_NAME, MAX_INDEXES_PER_COLLECTION } from "./indexing/index.js";
+export {
+  ID_INDEX_NAME,
+  MAX_INDEXES_PER_COLLECTION,
+  normalizeIndexSpec,
+} from "./indexing/index.js";
 export {
   DEFAULT_SEGMENT_SIZE_BYTES,
   MAX_RECORD_PAYLOAD_SIZE,

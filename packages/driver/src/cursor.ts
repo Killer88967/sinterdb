@@ -3,6 +3,7 @@ import { CustomId, type Document, type DocumentValue } from "sinterdb-protocol";
 import type { WithId } from "./collection.js";
 import { SinterProtocolError } from "./errors.js";
 import type { SortDirection } from "./filter.js";
+import { parseExplainResult, type ExplainResult } from "./indexes.js";
 
 export type CursorExecutor = (
   command: string,
@@ -29,6 +30,19 @@ export class FindCursor<
     private readonly batchSize: number | undefined,
     private readonly query: FindQueryOptions = {},
   ) {}
+
+  /**
+   * Asks the server how it would run this query, without running it. The
+   * sort, skip, limit, and batch size do not change the plan.
+   */
+  public async explain(): Promise<ExplainResult> {
+    const value = await this.execute("explain", {
+      collection: this.collection,
+      filter: this.filter,
+    });
+
+    return parseExplainResult(value);
+  }
 
   public async hasNext(): Promise<boolean> {
     while (this.buffer.length === 0) {

@@ -1,9 +1,11 @@
 import {
   compileFilter,
   compileUpdate,
+  normalizeIndexSpec,
   StorageError,
   StorageErrorCode,
   StorageInsertManyError,
+  type CreateIndexInput,
   type SortSpecification,
   type StorageFindOptions,
   type StorageUpdateResult,
@@ -45,6 +47,11 @@ export const ServerCommand = {
   Find: "find",
   GetMore: "getMore",
   CloseCursor: "closeCursor",
+  CreateIndex: "createIndex",
+  DropIndex: "dropIndex",
+  ListIndexes: "listIndexes",
+  Explain: "explain",
+  ValidateIndexes: "validateIndexes",
 } as const;
 
 export type ServerCommand = (typeof ServerCommand)[keyof typeof ServerCommand];
@@ -59,7 +66,19 @@ export class CommandExecutionError extends Error {
 
   public constructor(
     code: WireErrorCodeValue,
-    name: string,
+    name:
+      | "CursorNotFound"
+      | "DocumentValidationFailed"
+      | "DuplicateKey"
+      | "ImmutableId"
+      | "InternalError"
+      | "InvalidRequest"
+      | "InvalidUpdate"
+      | "InvalidIndex"
+      | "IndexNotFound"
+      | "IndexConflict"
+      | "NamespaceConflict"
+      | "UnknownCommand",
     message: string,
     options: {
       retryable?: boolean;
@@ -127,6 +146,21 @@ export class CommandDispatcher {
 
       case ServerCommand.CloseCursor:
         return this.closeCursor(command, cursors);
+
+      case ServerCommand.CreateIndex:
+        return this.createIndex(command);
+
+      case ServerCommand.DropIndex:
+        return this.dropIndex(command);
+
+      case ServerCommand.ListIndexes:
+        return this.listIndexes(command);
+
+      case ServerCommand.Explain:
+        return this.explain(command);
+
+      case ServerCommand.ValidateIndexes:
+        return this.validateIndexes(command);
 
       default:
         throw new CommandExecutionError(
@@ -262,7 +296,6 @@ export class CommandDispatcher {
     }
   }
 
-  /** @deprecated */
   private updateDocuments(command: CommandEnvelope, many: boolean): Document {
     const databaseName = requireDatabase(command);
     const collectionName = requireStringParameter(
@@ -289,6 +322,171 @@ export class CommandDispatcher {
           ? collection.updateMany(filter, update, { upsert })
           : collection.updateOne(filter, update, { upsert }),
       );
+    } catch (error: unknown) {
+      if (error instanceof CatalogError) {
+        throw translateCatalogError(error);
+      }
+
+      throw translateStorageError(error);
+    }
+  }
+
+  private createIndex(command: CommandEnvelope): Document {
+    const databaseName = requireDatabase(command);
+    const collectionName = requireStringParameter(
+      command.parameters,
+      "collection",
+    );
+    const input = parseIndexInput(
+      requireDocumentParameter(command.parameters, "index"),
+    );
+
+    try {
+      // Validate the definition first so a bad one does not create the
+      // collection as a side effect.
+      normalizeIndexSpec(input);
+
+      const result = this.catalog
+        .getOrCreateCollection(databaseName, collectionName)
+        .createIndex(input);
+
+      return {
+        acknowledged: true,
+        name: result.name,
+        created: result.created,
+      };
+    } catch (error: unknown) {
+      if (error instanceof CatalogError) {
+        throw translateCatalogError(error);
+      }
+
+      throw translateStorageError(error);
+    }
+  }
+
+  private dropIndex(command: CommandEnvelope): Document {
+    const databaseName = requireDatabase(command);
+    const collectionName = requireStringParameter(
+      command.parameters,
+      "collection",
+    );
+    const name = requireStringParameter(command.parameters, "name");
+
+    try {
+      const collection = this.catalog.getCollection(
+        databaseName,
+        collectionName,
+      );
+
+      if (collection === undefined) {
+        throw new StorageError(
+          StorageErrorCode.IndexNotFound,
+          `There is no index named ${JSON.stringify(name)}.`,
+        );
+      }
+
+      collection.dropIndex(name);
+
+      return { acknowledged: true };
+    } catch (error: unknown) {
+      if (error instanceof CatalogError) {
+        throw translateCatalogError(error);
+      }
+
+      throw translateStorageError(error);
+    }
+  }
+
+  private listIndexes(command: CommandEnvelope): Document {
+    const databaseName = requireDatabase(command);
+    const collectionName = requireStringParameter(
+      command.parameters,
+      "collection",
+    );
+
+    try {
+      const collection = this.catalog.getCollection(
+        databaseName,
+        collectionName,
+      );
+
+      return {
+        indexes: (collection?.listIndexes() ?? []).map((index) => ({
+          name: index.name,
+          field: index.field,
+          direction: index.direction,
+          unique: index.unique,
+          sparse: index.sparse,
+        })),
+      };
+    } catch (error: unknown) {
+      if (error instanceof CatalogError) {
+        throw translateCatalogError(error);
+      }
+
+      throw translateStorageError(error);
+    }
+  }
+
+  private explain(command: CommandEnvelope): Document {
+    const databaseName = requireDatabase(command);
+    const collectionName = requireStringParameter(
+      command.parameters,
+      "collection",
+    );
+    const filter = requireDocumentParameter(command.parameters, "filter");
+
+    try {
+      const collection = this.catalog.getCollection(
+        databaseName,
+        collectionName,
+      );
+
+      if (collection === undefined) {
+        compileFilter(filter);
+
+        return { stage: "COLLSCAN", estimatedCandidates: 0, documents: 0 };
+      }
+
+      return collection.explain(filter) as unknown as Document;
+    } catch (error: unknown) {
+      if (error instanceof CatalogError) {
+        throw translateCatalogError(error);
+      }
+
+      throw translateStorageError(error);
+    }
+  }
+
+  private validateIndexes(command: CommandEnvelope): Document {
+    const databaseName = requireDatabase(command);
+    const collectionName = requireStringParameter(
+      command.parameters,
+      "collection",
+    );
+
+    try {
+      const collection = this.catalog.getCollection(
+        databaseName,
+        collectionName,
+      );
+
+      if (collection === undefined) {
+        return { valid: true, indexes: 0, documents: 0, issues: [] };
+      }
+
+      const report = collection.validateIndexes();
+
+      return {
+        valid: report.valid,
+        indexes: report.indexes,
+        documents: report.documents,
+        issues: report.issues.map((issue) => ({
+          index: issue.index,
+          problem: issue.problem,
+          detail: issue.detail,
+        })),
+      };
     } catch (error: unknown) {
       if (error instanceof CatalogError) {
         throw translateCatalogError(error);
@@ -625,6 +823,47 @@ function translateStorageError(error: unknown): CommandExecutionError {
     );
   }
 
+  if (error.code === StorageErrorCode.DuplicateKey) {
+    return new CommandExecutionError(
+      WireErrorCode.DuplicateKey,
+      "DuplicateKey",
+      error.message,
+      {
+        details: {
+          storageErrorCode: error.code,
+          ...batchDetails,
+        },
+      },
+    );
+  }
+
+  if (error.code === StorageErrorCode.InvalidIndex) {
+    return new CommandExecutionError(
+      WireErrorCode.InvalidIndex,
+      "InvalidIndex",
+      error.message,
+      { details: { storageErrorCode: error.code } },
+    );
+  }
+
+  if (error.code === StorageErrorCode.IndexNotFound) {
+    return new CommandExecutionError(
+      WireErrorCode.IndexNotFound,
+      "IndexNotFound",
+      error.message,
+      { details: { storageErrorCode: error.code } },
+    );
+  }
+
+  if (error.code === StorageErrorCode.IndexConflict) {
+    return new CommandExecutionError(
+      WireErrorCode.IndexConflict,
+      "IndexConflict",
+      error.message,
+      { details: { storageErrorCode: error.code } },
+    );
+  }
+
   if (error.code === StorageErrorCode.InvalidUpdate) {
     return new CommandExecutionError(
       WireErrorCode.InvalidUpdate,
@@ -669,6 +908,29 @@ function translateStorageError(error: unknown): CommandExecutionError {
       },
     },
   );
+}
+
+const INDEX_OPTIONS = new Set([
+  "field",
+  "direction",
+  "unique",
+  "sparse",
+  "name",
+]);
+
+function parseIndexInput(index: Document): CreateIndexInput {
+  for (const key of Object.keys(index)) {
+    if (!INDEX_OPTIONS.has(key)) {
+      throw new CommandExecutionError(
+        WireErrorCode.InvalidRequest,
+        "InvalidRequest",
+        `Unknown index option ${JSON.stringify(key)}`,
+        { details: { field: "index", option: key } },
+      );
+    }
+  }
+
+  return index as unknown as CreateIndexInput;
 }
 
 function toWriteResult(result: StorageUpdateResult): Document {

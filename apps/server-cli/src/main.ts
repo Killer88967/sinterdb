@@ -117,6 +117,7 @@ async function startServer(
           collections: server.catalog.collectionCount,
           checkpointLsn: String(server.recovery?.checkpointLsn ?? 0n),
           replayedRecords: server.recovery?.replayedRecords ?? 0,
+          rebuiltIndexes: server.recovery?.rebuiltIndexes ?? 0,
           skippedCheckpoints: server.recovery?.skippedCheckpoints.map(
             (entry) => ({
               file: entry.file,

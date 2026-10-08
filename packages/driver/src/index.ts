@@ -7,5 +7,6 @@ export * from "./cursor.js";
 export * from "./database.js";
 export * from "./errors.js";
 export * from "./filter.js";
+export * from "./indexes.js";
 export { SinterNamespaceError } from "./namespace.js";
 export * from "./update.js";

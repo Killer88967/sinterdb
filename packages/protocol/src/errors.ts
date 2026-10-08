@@ -19,6 +19,10 @@ export const WireErrorCode = {
 
   CursorNotFound: 5000,
 
+  InvalidIndex: 6000,
+  IndexNotFound: 6001,
+  IndexConflict: 6002,
+
   InternalError: 9000,
 } as const;
 

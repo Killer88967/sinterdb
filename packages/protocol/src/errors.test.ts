@@ -41,6 +41,9 @@ describe("WireErrorCode", () => {
       InvalidUpdate: 4002,
       ImmutableId: 4003,
       CursorNotFound: 5000,
+      InvalidIndex: 6000,
+      IndexNotFound: 6001,
+      IndexConflict: 6002,
       InternalError: 9000,
     });
   });

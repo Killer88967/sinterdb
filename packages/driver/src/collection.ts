@@ -8,6 +8,15 @@ import {
   SinterServerError,
 } from "./errors.js";
 import type { Filter, Sort } from "./filter.js";
+import {
+  parseCreateIndexResult,
+  parseIndexList,
+  parseIndexValidation,
+  type CreateIndexResult,
+  type IndexDefinition,
+  type IndexInfo,
+  type IndexValidationResult,
+} from "./indexes.js";
 import { validateCollectionName } from "./namespace.js";
 import type {
   DeleteResult,
@@ -157,6 +166,55 @@ export class SinterCollection<TDocument extends object = Document> {
     options: UpdateOptions = {},
   ): Promise<UpdateResult> {
     return this.runUpdate("updateMany", filter, update, options);
+  }
+
+  /**
+   * Creates an index, or confirms that an identical one exists. The collection
+   * is created if it does not exist. A unique index fails with a
+   * `DuplicateKey` server error when existing documents already violate it.
+   */
+  public async createIndex(
+    definition: IndexDefinition<TDocument>,
+  ): Promise<CreateIndexResult> {
+    const value = await this.database.client.executeCommand(
+      this.database.name,
+      "createIndex",
+      {
+        collection: this.name,
+        index: { ...definition } as unknown as Document,
+      },
+    );
+
+    return parseCreateIndexResult(value);
+  }
+
+  public async dropIndex(name: string): Promise<void> {
+    await this.database.client.executeCommand(this.database.name, "dropIndex", {
+      collection: this.name,
+      name,
+    });
+  }
+
+  /** The `_id` index first, then the others in creation order. */
+  public async indexes(): Promise<IndexInfo[]> {
+    const value = await this.database.client.executeCommand(
+      this.database.name,
+      "listIndexes",
+      { collection: this.name },
+    );
+
+    return parseIndexList(value);
+  }
+
+  /** Asks the server to rebuild every index and report any difference. */
+  public async validateIndexes(): Promise<IndexValidationResult> {
+    const value = await this.database.client.executeCommand(
+      this.database.name,
+      "validateIndexes",
+      { collection: this.name },
+    );
+
+    return parseIndexValidation(value);
   }
 
   public find(

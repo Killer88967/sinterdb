@@ -3,6 +3,13 @@ import { describe, expect, expectTypeOf, it } from "vitest";
 
 import type { SinterCollection } from "./collection.js";
 import type { Filter, Sort } from "./filter.js";
+import type {
+  CreateIndexResult,
+  ExplainResult,
+  IndexDefinition,
+  IndexInfo,
+  IndexValidationResult,
+} from "./indexes.js";
 import type { DeleteResult, UpdateFilter, UpdateResult } from "./update.js";
 
 interface User {
@@ -191,5 +198,70 @@ describe("collection method types", () => {
     }
 
     expect(typeof neverCalled).toBe("function");
+  });
+
+  describe("IndexDefinition<TDocument> types", () => {
+    it("accepts known fields and options", () => {
+      const definitions: IndexDefinition<User>[] = [
+        { field: "name" },
+        { field: "profile.stats.level", unique: true },
+        { field: "tags", sparse: true, direction: -1, name: "by_tags" },
+        { field: "createdAt", direction: 1 },
+      ];
+
+      expect(definitions).toHaveLength(4);
+    });
+
+    it("rejects _id, unknown fields, and bad options", () => {
+      // @ts-expect-error _id always has its own index
+      const onId: IndexDefinition<User> = { field: "_id" };
+      // @ts-expect-error unknown field
+      const unknownField: IndexDefinition<User> = { field: "nope" };
+      const badDirection: IndexDefinition<User> = {
+        field: "age",
+        // @ts-expect-error direction must be 1 or -1
+        direction: 2,
+      };
+      // @ts-expect-error unique must be a boolean
+      const badUnique: IndexDefinition<User> = { field: "age", unique: "yes" };
+      // @ts-expect-error a field is required
+      const noField: IndexDefinition<User> = { unique: true };
+      const unknownOption: IndexDefinition<User> = {
+        field: "age",
+        // @ts-expect-error unknown option
+        background: true,
+      };
+
+      expect([
+        onId,
+        unknownField,
+        badDirection,
+        badUnique,
+        noField,
+        unknownOption,
+      ]).toHaveLength(6);
+    });
+
+    it("types the index methods", () => {
+      async function neverCalled(users: SinterCollection<User>): Promise<void> {
+        const created = await users.createIndex({ field: "age" });
+        const listed = await users.indexes();
+        const validation = await users.validateIndexes();
+        const plan = await users.find({ age: 1 }).explain();
+
+        expectTypeOf(created).toEqualTypeOf<CreateIndexResult>();
+        expectTypeOf(listed).toEqualTypeOf<IndexInfo[]>();
+        expectTypeOf(validation).toEqualTypeOf<IndexValidationResult>();
+        expectTypeOf(plan).toEqualTypeOf<ExplainResult>();
+        expectTypeOf(await users.dropIndex("age_1")).toEqualTypeOf<void>();
+
+        // @ts-expect-error dropIndex needs a name
+        await users.dropIndex();
+        // @ts-expect-error createIndex needs a definition
+        await users.createIndex();
+      }
+
+      expect(typeof neverCalled).toBe("function");
+    });
   });
 });
