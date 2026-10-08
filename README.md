@@ -1,9 +1,20 @@
+
 # SinterDB
 
-[![CI](https://img.shields.io/github/actions/workflow/status/SinterDB/sinterdb/ci.yml?branch=main&label=CI)](https://github.com/SinterDB/sinterdb/actions/workflows/ci.yml)
-[![License](https://img.shields.io/github/license/SinterDB/sinterdb)](LICENSE)
-[![Node.js](https://img.shields.io/badge/Node.js-%3E%3D24-339933?logo=node.js&logoColor=white)](package.json)
+[![CI](https://img.shields.io/github/actions/workflow/status/SinterDB/sinterdb/ci.yml?branch=main&label=Build&logo=githubactions&logoColor=white)](https://github.com/SinterDB/sinterdb/actions/workflows/ci.yml)
+[![CodeQL](https://img.shields.io/github/actions/workflow/status/SinterDB/sinterdb/codeql.yml?branch=main&label=CodeQL&logo=githubactions&logoColor=white)](https://github.com/SinterDB/sinterdb/actions/workflows/codeql.yml)
+[![License](https://img.shields.io/github/license/SinterDB/sinterdb?label=License&color=blue)](LICENSE)
+[![GitHub Issues](https://img.shields.io/github/issues/SinterDB/sinterdb?label=Issues&logo=github)](https://github.com/SinterDB/sinterdb/issues)
+
+<!-- [![npm](https://img.shields.io/npm/v/sinterdb?label=npm&logo=npm&logoColor=white)](https://www.npmjs.com/package/sinterdb) -->
+[![pnpm](https://img.shields.io/badge/pnpm-%E2%89%A512-F69220?logo=pnpm&logoColor=white)](https://pnpm.io/)
+[![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A524-339933?logo=nodedotjs&logoColor=white)](package.json)
 [![TypeScript](https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Development Status](https://img.shields.io/badge/Status-Alpha-orange)](ROADMAP.md#009--indexes-and-query-planning)
+
+[![Contributing](https://img.shields.io/badge/Contributing-Guidelines-2ea44f?logo=github)](https://github.com/SinterDB/.github/blob/main/CONTRIBUTING.md)
+[![Security](https://img.shields.io/badge/Security-Policy-6f42c1?logo=github)](https://github.com/SinterDB/sinterdb/security/policy)
+[![Support](https://img.shields.io/badge/Support-Help-0078D4?logo=github)](https://github.com/SinterDB/.github/blob/main/SUPPORT.md)
 
 A document-oriented database, its official Node.js driver, and supporting packages.
 
