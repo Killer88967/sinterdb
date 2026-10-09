@@ -3,7 +3,17 @@
   "name": "SinterDB driver API",
   "entryPoints": ["../../packages/driver/dist/index.d.ts"],
   "tsconfig": "./tsconfig.json",
-  "out": "../../docs/api",
+  "outputs": [
+    {
+      "name": "html",
+      "path": "../../docs/api/static"
+    },
+    {
+      "name": "react",
+      "path": "../../docs/api/react"
+    }
+  ],
+  "plugin": ["./react-output.js"],
   "readme": "none",
   "excludePrivate": true,
   "excludeProtected": true,
