@@ -108,7 +108,6 @@ export default function Home() {
               px-3 py-1.5 font-mono text-xs text-orange-300"
             >
               <span className="size-1.5 rounded-full bg-orange-400 shadow-[0_0_14px_rgba(251,146,60,0.9)]" />
-
               v0.0.7 · Updates, Replacements &amp; Deletes
             </div>
 
