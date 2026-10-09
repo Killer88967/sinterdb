@@ -1,5 +1,56 @@
 # @sinterdb-internal/storage
 
+## 0.1.0
+
+### Minor Changes
+
+- Developer Preview.
+
+  - Publish `sinterdb` (the driver), `sinterdb-protocol`, and `@sinterdb/cli` (the
+    `sinterd` server) to npm under the `next` tag, with provenance. The server
+    package is now `@sinterdb/cli`; earlier GitHub release tarballs named it
+    `sinterdb-server`. The `sinterd` command is unchanged.
+  - Add the compatibility promise in `docs/compatibility.md`: patch releases do
+    not change the API, the protocol, or the on-disk format, and breaking changes
+    need a minor release and migration notes.
+  - Record the driver's public API in `etc/sinterdb.api.md` and fail CI when it
+    changes without that file. Helpers that were exported by accident are no
+    longer public: `parseSinterConnectionString`, `parseCreateIndexResult`,
+    `parseIndexList`, `parseExplainResult`, `parseIndexValidation`,
+    `DRIVER_PRODUCT`, and `DRIVER_PRODUCT_VERSION`.
+  - Make connection strings stricter and document the `sinterdb://` format. An
+    empty `?` or `#`, whitespace, and a non-ASCII host name are now rejected with
+    `SinterConnectionStringError`.
+  - Add a quick start, a configuration reference, a Docker guide, benchmarks, a
+    list of known limitations, and an API reference generated from the public
+    declarations. The quick start and the configuration reference are checked by
+    tests against the real server and its flags.
+  - Add a `Dockerfile` and a Compose example. The image runs as a non-root user,
+    keeps data in a `/data` volume, and has a health check.
+  - Add `pnpm bench` and an example to-do application.
+  - Add `--reclaim-lock` and `SINTERDB_RECLAIM_LOCK` so a server can take over a
+    data directory lock left by another host or container. The Docker image turns
+    it on, because every container has its own host name. A lock left by an
+    earlier process with the same process id, such as a killed container's
+    process 1, is now taken over without it.
+  - Fix the server stopping when a client connection was reset. The error is now
+    logged as `server.connection_error` and only that connection is closed.
+  - Fix the server stopping when a `find` result was larger than the 16 MiB
+    payload limit. A cursor batch now stops at about 8 MiB, and a result that is
+    still too large is answered with a `ResultTooLarge` error.
+  - Reject a document the database cannot store with the new
+    `SinterDocumentError` (`INVALID_DOCUMENT`) instead of a `CONNECTION_FAILED`
+    connection error. Nothing is sent and the connection stays usable.
+  - Write warnings and errors to standard error and other log lines to standard
+    output.
+  - No data format or protocol version changed. Storage format 2, snapshot
+    format 2, WAL format 1, and protocol 1 are the same as in 0.0.9.
+
+### Patch Changes
+
+- Updated dependencies
+  - sinterdb-protocol@0.1.0
+
 ## 0.0.9
 
 ### Patch Changes

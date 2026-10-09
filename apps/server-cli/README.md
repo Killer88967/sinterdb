@@ -109,7 +109,7 @@ Lifecycle events are written as newline-delimited JSON:
     "host": "127.0.0.1",
     "port": 4721,
     "family": "IPv4",
-    "version": "0.0.9",
+    "version": "0.1.0",
     "storage": "disk",
     "dataDirectory": "/var/lib/sinterdb",
     "durability": "fsync",

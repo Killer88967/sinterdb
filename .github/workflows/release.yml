@@ -1,0 +1,152 @@
+name: Release
+
+# Publishes a developer preview to npm when a version tag is pushed, for
+# example `git tag v0.1.0 && git push origin v0.1.0`. See docs/releasing.md.
+#
+# npm trusts this workflow by its file name, so do not rename it without
+# changing the trusted publisher on each package at npmjs.com.
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Verify and pack
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check the version, notes, and manifests
+        run: pnpm release:check --release --tag "$GITHUB_REF_NAME"
+
+      - name: Build
+        run: pnpm build
+
+      - name: Check public API reports
+        run: pnpm api:check
+
+      - name: Type-check
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Check formatting
+        run: pnpm format:check
+
+      - name: Test
+        run: pnpm test
+
+      - name: Pack, install, and follow the quick-start
+        run: pnpm release:rehearse --out release
+
+      - name: Upload tarballs
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-tarballs
+          path: release/*.tgz
+          if-no-files-found: error
+          retention-days: 14
+
+  publish:
+    name: Publish to npm
+    needs: verify
+    runs-on: ubuntu-latest
+    # Add required reviewers to this environment in the repository settings to
+    # make a person approve every publish.
+    environment: npm
+
+    permissions:
+      contents: read
+      # Lets npm exchange this run's identity for a short-lived publish token
+      # and sign the provenance. There is no long-lived npm token.
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+
+      # Trusted publishing needs npm 11.5.1 or later.
+      - name: Use a recent npm
+        run: |
+          npm install --global npm@^11.5.1
+          npm --version
+
+      - name: Download tarballs
+        uses: actions/download-artifact@v4
+        with:
+          name: release-tarballs
+          path: release
+
+      - name: Publish under the next tag
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          node tools/release/src/publish.ts --dir release --version "$version" --tag next
+
+  github-release:
+    name: Create GitHub release
+    needs: publish
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download tarballs
+        uses: actions/download-artifact@v4
+        with:
+          name: release-tarballs
+          path: release
+
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          if gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1; then
+            echo "The release $GITHUB_REF_NAME already exists."
+          else
+            gh release create "$GITHUB_REF_NAME" release/*.tgz \
+              --verify-tag \
+              --prerelease \
+              --title "SinterDB $GITHUB_REF_NAME" \
+              --notes-file "docs/releases/$version.md"
+          fi

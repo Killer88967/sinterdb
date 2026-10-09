@@ -5,7 +5,7 @@
 **/coverage
 **/.temp
 docs/api
-release
+/release
 data
 sinterdb-data
 benchmarks/results

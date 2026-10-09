@@ -1,34 +1,15 @@
 # SinterDB
 
-<!-- USE WHEN PUBLISHED TO NPM -->
-<!-- [![CI](https://img.shields.io/github/actions/workflow/status/SinterDB/sinterdb/ci.yml?branch=main&label=CI&logo=githubactions)](https://github.com/SinterDB/sinterdb/actions/workflows/ci.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/SinterDB/sinterdb/ci.yml?branch=main&label=CI&logo=githubactions)](https://github.com/SinterDB/sinterdb/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/sinterdb?logo=npm&logoColor=white)](https://www.npmjs.com/package/sinterdb)
 [![License](https://img.shields.io/github/license/SinterDB/sinterdb?color=blue)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A524-339933?logo=nodedotjs&logoColor=white)](package.json)
-[![Status](https://img.shields.io/badge/Status-Alpha-orange)](ROADMAP.md) -->
-
-<!-- ⌄ REMOVE WHEN PUBLISHED TO NPM ⌄ -->
-
-[![CI](https://img.shields.io/github/actions/workflow/status/SinterDB/sinterdb/ci.yml?branch=main&label=Build&logo=githubactions&logoColor=white)](https://github.com/SinterDB/sinterdb/actions/workflows/ci.yml)
-[![CodeQL](https://img.shields.io/github/actions/workflow/status/SinterDB/sinterdb/codeql.yml?branch=main&label=CodeQL&logo=githubactions&logoColor=white)](https://github.com/SinterDB/sinterdb/actions/workflows/codeql.yml)
-[![License](https://img.shields.io/github/license/SinterDB/sinterdb?label=License&color=blue)](LICENSE)
-[![GitHub Issues](https://img.shields.io/github/issues/SinterDB/sinterdb?label=Issues&logo=github)](https://github.com/SinterDB/sinterdb/issues)
-
-[![pnpm](https://img.shields.io/badge/pnpm-%E2%89%A512-F69220?logo=pnpm&logoColor=white)](https://pnpm.io/)
-[![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A524-339933?logo=nodedotjs&logoColor=white)](package.json)
-[![TypeScript](https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Development Status](https://img.shields.io/badge/Status-Alpha-orange)](ROADMAP.md#009--indexes-and-query-planning)
-
-[![Contributing](https://img.shields.io/badge/Contributing-Guidelines-2ea44f?logo=github)](https://github.com/SinterDB/.github/blob/main/CONTRIBUTING.md)
-[![Security](https://img.shields.io/badge/Security-Policy-6f42c1?logo=github)](https://github.com/SinterDB/sinterdb/security/policy)
-[![Support](https://img.shields.io/badge/Support-Help-0078D4?logo=github)](https://github.com/SinterDB/.github/blob/main/SUPPORT.md)
-
-<!-- ^ REMOVE WHEN PUBLISHED TO NPM ^ -->
+[![Status](https://img.shields.io/badge/Status-Alpha-orange)](ROADMAP.md)
 
 A document-oriented database, its official Node.js driver, and supporting packages.
 
 > [!WARNING]
-> SinterDB is in early development. The server can keep its data durably in a data directory (`--data-dir`) and recover it after a restart or crash. Without a data directory it keeps everything in memory and loses it on shutdown. The whole dataset must fit in memory, and APIs and protocol details may change before `1.0.0`.
+> SinterDB `0.1.0` is a developer preview for local projects. The server can keep its data durably in a data directory (`--data-dir`) and recover it after a restart or crash. Without a data directory it keeps everything in memory and loses it on shutdown. The whole dataset must fit in memory, and APIs and protocol details may change before `1.0.0`.
 
 ## Project Goals
 
@@ -55,6 +36,7 @@ SinterDB aims to provide:
 | `@sinterdb-internal/api-docs`   | Private    | Generates the driver API reference             |
 | `@sinterdb-examples/todo-app`   | Private    | Example command-line application               |
 | `@sinterdb-internal/bench`      | Private    | Basic benchmarks (`pnpm bench`)                |
+| `@sinterdb-internal/release`    | Private    | Release checks and rehearsal                   |
 
 The ODM will be developed separately as `sinterdb-odm` after the driver API
 becomes stable enough to support it.
@@ -171,13 +153,14 @@ on `SIGINT` or `SIGTERM`.
 - [Running in Docker](./docs/docker.md)
 - [Known limitations](./docs/limitations.md)
 - [Benchmarks](./docs/benchmarks.md)
+- [Releasing](./docs/releasing.md) (for maintainers)
 - [Example application](./examples/todo-app) (a to-do list on the driver)
 - API reference: run `pnpm docs:api` to generate it in `docs/api/`; CI
   publishes it as a build artifact
 
 ## Development Status
 
-The current milestone is `0.0.9 — Indexes and Query Planning`.
+The current milestone is `0.1.0 — Developer Preview`.
 
 Implemented so far:
 
@@ -227,8 +210,12 @@ Implemented so far:
 - Temporary-port test-server utilities
 - End-to-end driver and server integration tests
 - Graceful signal shutdown
+- A compatibility promise and a recorded public driver API
+- A tested quick start, a configuration reference, and generated API docs
+- A Docker image, benchmarks, and documented limitations
+- Publishing to npm from GitHub Actions with provenance
 
-The next milestone, `0.1.0`, is the Developer Preview.
+The next milestone, `0.2.0`, is Storage Reliability.
 
 See [ROADMAP.md](./ROADMAP.md) for the complete development plan.
 

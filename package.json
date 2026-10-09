@@ -1,6 +1,6 @@
 {
   "name": "sinterdb-workspace",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "private": true,
   "description": "A document-oriented database, its official Node.js driver, and supporting packages.",
   "author": "Killer88967",
@@ -26,17 +26,11 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "clean": "pnpm --recursive run clean",
-    "clean:release": "rimraf release",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "pack:all": "pnpm pack:driver && pnpm pack:protocol && pnpm pack:cli",
-    "pack:driver": "pnpm --filter sinterdb pack --pack-destination ./release",
-    "pack:protocol": "pnpm --filter sinterdb-protocol pack --pack-destination ./release",
-    "pack:cli": "pnpm --filter @sinterdb/cli pack --pack-destination ./release",
-    "release:prepare": "pnpm clean:release && pnpm all && pnpm pack:all",
-    "release:npm": "pnpm build && changeset publish",
-    "release:github": "gh release create v$(node -p \"require('./packages/driver/package.json').version\") release/*.tgz --title \"SinterDB v$(node -p \"require('./packages/driver/package.json').version\")\" --notes-file docs/releases/$(node -p \"require('./packages/driver/package.json').version\").md",
-    "release": "pnpm release:npm"
+    "release:check": "node tools/release/src/check.ts",
+    "release:rehearse": "node tools/release/src/rehearse.ts",
+    "release:publish": "node tools/release/src/publish.ts"
   },
   "devDependencies": {
     "@changesets/cli": "^3.0.3",
