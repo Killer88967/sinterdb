@@ -57,6 +57,11 @@ function sleep(milliseconds: number): void {
  * depends on it. It publishes the exact tarballs that were tested, with
  * provenance, under `distTag` and never `latest`. A version that is already on
  * npm is skipped, so a run that stopped halfway can be run again.
+ *
+ * All packages are published before any is checked. npm's registry is cached
+ * for a few minutes, and a trusted publisher that only allows staged
+ * publishing accepts a publish without making the version public, so checking
+ * one package at a time could stop the run after the first.
  */
 export function publishTarballs(options: PublishOptions): PublishResult {
   const run = options.run ?? defaultRun;
@@ -90,9 +95,7 @@ export function publishTarballs(options: PublishOptions): PublishResult {
   }
 
   for (const { name, file } of plan) {
-    const existing = run("npm", ["view", `${name}@${version}`, "version"]);
-
-    if (existing.status === 0 && existing.stdout.trim() === version) {
+    if (isVisible(name, version, run)) {
       log(`${name}@${version} is already on npm; skipping.`);
       skipped.push(name);
 
@@ -110,65 +113,132 @@ export function publishTarballs(options: PublishOptions): PublishResult {
       "public",
       ...(options.dryRun === true ? ["--dry-run"] : ["--provenance"]),
     ]);
+    const output = `${result.stdout}${result.stderr}`.trim();
 
     if (result.status !== 0) {
-      throw new Error(
-        `npm publish failed for ${name}@${version}:\n${result.stdout}${result.stderr}`,
-      );
+      // The registry can be slow to show a version it already has, so the
+      // check above may have missed it.
+      if (/cannot publish over|previously published/i.test(output)) {
+        log(`${name}@${version} was already published; skipping.`);
+        skipped.push(name);
+
+        continue;
+      }
+
+      throw new Error(`npm publish failed for ${name}@${version}:\n${output}`);
+    }
+
+    // npm says here what it did, for example that it staged the package.
+    for (const line of output.split("\n").slice(-12)) {
+      log(`  npm: ${line}`);
     }
 
     published.push(name);
+  }
 
-    if (options.dryRun !== true) {
-      confirmTag(name, version, distTag, run, wait, log);
-    }
+  if (options.dryRun !== true && published.length > 0) {
+    confirmPublished(published, version, distTag, run, wait, log);
   }
 
   return { published, skipped };
 }
 
-/** The registry can take a moment to show a new version; try a few times. */
-function confirmTag(
+function isVisible(name: string, version: string, run: CommandRunner): boolean {
+  const result = run("npm", [
+    "view",
+    `${name}@${version}`,
+    "version",
+    "--prefer-online",
+  ]);
+
+  return result.status === 0 && result.stdout.trim() === version;
+}
+
+function readTags(
   name: string,
+  run: CommandRunner,
+): Record<string, string> | undefined {
+  const result = run("npm", [
+    "view",
+    name,
+    "dist-tags",
+    "--json",
+    "--prefer-online",
+  ]);
+
+  if (result.status !== 0) {
+    return undefined;
+  }
+
+  try {
+    return JSON.parse(result.stdout) as Record<string, string>;
+  } catch {
+    return undefined;
+  }
+}
+
+const ATTEMPTS = 30;
+const SECONDS_BETWEEN_ATTEMPTS = 10;
+
+/**
+ * Waits for every published package to show `distTag` pointing at the new
+ * version. The registry's cache can hide a new version for about five
+ * minutes, so this waits that long before it gives up, and then says which of
+ * two things went wrong.
+ */
+function confirmPublished(
+  names: readonly string[],
   version: string,
   distTag: string,
   run: CommandRunner,
   wait: (milliseconds: number) => void,
   log: (line: string) => void,
 ): void {
-  let seen = "nothing";
+  const pending = new Set(names);
 
-  for (let attempt = 0; attempt < 6; attempt += 1) {
-    const result = run("npm", ["view", name, "dist-tags", "--json"]);
+  for (let attempt = 0; attempt < ATTEMPTS && pending.size > 0; attempt += 1) {
+    for (const name of [...pending]) {
+      const tags = readTags(name, run);
 
-    if (result.status === 0) {
-      try {
-        const tags = JSON.parse(result.stdout) as Record<string, string>;
+      if (tags?.[distTag] === version) {
+        pending.delete(name);
 
-        seen = JSON.stringify(tags);
-
-        if (tags[distTag] === version) {
-          // npm can point "latest" at the very first version of a new package
-          // whatever tag it was published under. That is npm's doing, so say
-          // so rather than fail a release that went out correctly.
-          if (tags["latest"] === version && distTag !== "latest") {
-            log(
-              `Note: npm also points "latest" at ${name}@${version}. It does that for the first version of a package; it is replaced by the next release you promote.`,
-            );
-          }
-
-          return;
+        // npm can point "latest" at the very first version of a new package
+        // whatever tag it was published under. That is npm's doing, so say so
+        // rather than fail a release that went out correctly.
+        if (tags["latest"] === version && distTag !== "latest") {
+          log(
+            `Note: npm also points "latest" at ${name}@${version}. It does that for the first version of a package; it is replaced by the next release you promote.`,
+          );
         }
-      } catch {
-        // Not JSON yet; try again.
       }
     }
 
-    wait(5_000);
+    if (pending.size > 0 && attempt < ATTEMPTS - 1) {
+      wait(SECONDS_BETWEEN_ATTEMPTS * 1_000);
+    }
+  }
+
+  if (pending.size === 0) {
+    return;
+  }
+
+  const problems: string[] = [];
+
+  for (const name of pending) {
+    if (isVisible(name, version, run)) {
+      problems.push(
+        `${name}@${version} is public, but the "${distTag}" tag does not point at it. Run: npm dist-tag add ${name}@${version} ${distTag}`,
+      );
+    } else {
+      problems.push(
+        `${name}@${version} is not public. npm accepted the publish, so it is probably waiting in the Staged Packages tab on npmjs.com.`,
+      );
+    }
   }
 
   throw new Error(
-    `${name}@${version} was published, but the "${distTag}" tag does not point at it. The registry reports ${seen}.`,
+    `${problems.join("\n")}\n\nA staged package becomes public when you approve it with two-factor authentication (npmjs.com, the package's Staged Packages tab, or \`npm stage approve\`). To publish without approval, turn on "Allow npm publish" in the package's trusted publisher settings; see docs/releasing.md.`,
   );
 }
 

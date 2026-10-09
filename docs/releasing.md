@@ -76,21 +76,29 @@ protection rule for `v*` so only maintainers can create version tags.
 On npmjs.com, open each of the three packages, then Settings, then **Trusted
 Publisher**, choose **GitHub Actions**, and enter:
 
-| Field                | Value                            |
-| -------------------- | -------------------------------- |
-| Organization or user | `SinterDB`                       |
-| Repository           | `sinterdb`                       |
-| Workflow filename    | `release.yml`                    |
-| Environment name     | `npm`                            |
-| Allowed actions      | `npm publish` (and nothing else) |
+| Field                | Value                      |
+| -------------------- | -------------------------- |
+| Organization or user | `SinterDB`                 |
+| Repository           | `sinterdb`                 |
+| Workflow filename    | `release.yml`              |
+| Environment name     | `npm`                      |
+| Allowed actions      | tick **Allow npm publish** |
 
 The workflow filename is the name of the file, not a path. npm does not check
 the settings when you save them, so a typo only shows up when the workflow
 publishes. A new configuration also expires if it has not been used to publish
 within two days, so set it up shortly before you push the first tag.
 
-If npm will not let you configure a package that does not exist yet, create
-the package with a throwaway placeholder version, then configure it. Do not
+**Tick "Allow npm publish".** It is off by default. Without it the publisher
+may only use staged publishing: npm accepts the publish, exits successfully, and
+holds the package until a maintainer approves it with two-factor authentication.
+The workflow then reports that the version is not public. Either tick the box,
+or approve each staged package by hand (see below). You cannot edit a
+configuration, so delete it and create it again to change this.
+
+npm accepts a trusted publisher for a package name that is not published yet,
+and creates an empty `0.0.0-stage` stub for it. If it does not, create the
+package with a throwaway placeholder version first, then configure it. Do not
 publish `0.1.0` by hand: a version can only be published once, and the one you
 publish from your own computer has no provenance. Run this once, signed in with
 `npm login`:
@@ -147,6 +155,17 @@ replace the commented-out npm badges in the root `README.md`.
   the workflow. Compare the trusted publisher settings with the table above,
   and check that `repository.url` in each `package.json` is exactly
   `git+https://github.com/SinterDB/sinterdb.git`.
+- **The publish step says a version "is not public".** npm accepted the publish
+  but did not make the version visible. Nearly always the trusted publisher
+  allows staged publishing only, so the package is waiting for your approval:
+  open the package on npmjs.com, go to the **Staged Packages** tab, and approve
+  it (or run `npm stage list` and `npm stage approve <id>`; both ask for
+  two-factor authentication). A staged publish may not keep the `next` tag, so
+  afterwards check `npm view sinterdb dist-tags` and, if needed, run
+  `npm dist-tag add sinterdb@0.1.0 next`. To avoid the approval next time,
+  recreate the trusted publisher with **Allow npm publish** ticked.
+- **The publish step says a version is public but the tag is wrong.** Run the
+  `npm dist-tag add` command it prints.
 - **The check job fails.** Read its list. Each line names the file and what it
   should say.
 - **A version was published by mistake.** npm does not allow publishing the same
