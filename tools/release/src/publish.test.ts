@@ -9,54 +9,84 @@ interface Call {
   readonly arguments_: readonly string[];
 }
 
-/** A pretend npm. `onNpm` is the registry: names it already holds. */
-function fakeNpm(options: {
-  already?: readonly string[];
-  failPublishOf?: string;
-  tags?: (name: string) => Record<string, string>;
-}) {
+interface FakeOptions {
+  /** Names already on npm before the run. */
+  readonly already?: readonly string[];
+  /** A publish of this file name fails with this message. */
+  readonly failPublish?: { readonly file: string; readonly message: string };
+  /** Names whose new version never becomes public, as when npm only stages it. */
+  readonly staged?: readonly string[];
+  /** How many reads the registry's cache hides a new version for. */
+  readonly staleReads?: number;
+  /** What npm reports for the tags of a package once its version is public. */
+  readonly tags?: (name: string) => Record<string, string>;
+}
+
+const NAMES = ["sinterdb-protocol", "sinterdb", "@sinterdb/cli"] as const;
+
+function nameOfFile(file: string): string {
+  const base = file.split("/").pop() as string;
+
+  return base.startsWith("sinterdb-protocol")
+    ? "sinterdb-protocol"
+    : base.startsWith("sinterdb-cli")
+      ? "@sinterdb/cli"
+      : "sinterdb";
+}
+
+/** A pretend npm and registry. */
+function fakeNpm(options: FakeOptions = {}) {
   const calls: Call[] = [];
   const uploaded = new Set<string>();
+  let reads = 0;
+  const isPublic = (name: string): boolean =>
+    options.already?.includes(name) === true ||
+    (uploaded.has(name) &&
+      options.staged?.includes(name) !== true &&
+      reads >= (options.staleReads ?? 0));
   const run: CommandRunner = (command, arguments_) => {
     calls.push({ command, arguments_ });
 
     const [verb, target] = arguments_ as [string, string];
 
     if (verb === "view" && arguments_[2] === "version") {
+      reads += 1;
+
       const name = target.slice(0, target.lastIndexOf("@"));
 
-      return options.already?.includes(name) === true || uploaded.has(name)
+      return isPublic(name)
         ? { status: 0, stdout: "0.1.0\n", stderr: "" }
         : { status: 1, stdout: "", stderr: "E404" };
     }
 
     if (verb === "view") {
-      return {
-        status: 0,
-        stdout: JSON.stringify(
-          options.tags?.(target) ?? { next: "0.1.0", latest: "0.0.0" },
-        ),
-        stderr: "",
-      };
+      reads += 1;
+
+      return isPublic(target)
+        ? {
+            status: 0,
+            stdout: JSON.stringify(
+              options.tags?.(target) ?? { next: "0.1.0", latest: "0.0.1" },
+            ),
+            stderr: "",
+          }
+        : {
+            status: 0,
+            stdout: JSON.stringify({ latest: "0.0.1" }),
+            stderr: "",
+          };
     }
 
     if (verb === "publish") {
       const file = target.split("/").pop() as string;
 
-      if (
-        options.failPublishOf !== undefined &&
-        file.includes(options.failPublishOf)
-      ) {
-        return { status: 1, stdout: "", stderr: "E403 trusted publisher" };
+      if (options.failPublish && file.includes(options.failPublish.file)) {
+        return { status: 1, stdout: "", stderr: options.failPublish.message };
       }
 
-      uploaded.add(
-        file.startsWith("sinterdb-protocol")
-          ? "sinterdb-protocol"
-          : file.startsWith("sinterdb-cli")
-            ? "@sinterdb/cli"
-            : "sinterdb",
-      );
+      uploaded.add(nameOfFile(file));
+
+      return { status: 0, stdout: "", stderr: `npm notice published ${file}` };
     }
 
     return { status: 0, stdout: "", stderr: "" };
@@ -66,6 +96,9 @@ function fakeNpm(options: {
     run,
     calls,
     publishes: () => calls.filter((c) => c.arguments_[0] === "publish"),
+    firstTagRead: () =>
+      calls.findIndex((c) => c.arguments_.includes("dist-tags")),
+    lastPublish: () => calls.map((c) => c.arguments_[0]).lastIndexOf("publish"),
   };
 }
 
@@ -78,14 +111,10 @@ const BASE = {
 
 describe("publishTarballs", () => {
   it("publishes protocol, then driver, then CLI, with provenance and the tag", () => {
-    const npm = fakeNpm({});
+    const npm = fakeNpm();
     const result = publishTarballs({ ...BASE, run: npm.run });
 
-    expect(result.published).toEqual([
-      "sinterdb-protocol",
-      "sinterdb",
-      "@sinterdb/cli",
-    ]);
+    expect(result.published).toEqual([...NAMES]);
     expect(npm.publishes().map((c) => c.arguments_)).toEqual([
       [
         "publish",
@@ -117,9 +146,31 @@ describe("publishTarballs", () => {
     ]);
   });
 
+  it("publishes every package before it checks any of them", () => {
+    const npm = fakeNpm();
+
+    publishTarballs({ ...BASE, run: npm.run });
+
+    expect(npm.firstTagRead()).toBeGreaterThan(npm.lastPublish());
+  });
+
+  it("shows what npm said about each publish", () => {
+    const lines: string[] = [];
+
+    publishTarballs({
+      ...BASE,
+      run: fakeNpm().run,
+      log: (line) => lines.push(line),
+    });
+
+    expect(lines.join("\n")).toContain(
+      "npm: npm notice published sinterdb-protocol-0.1.0.tgz",
+    );
+  });
+
   it("hands npm absolute paths even when given a relative folder", () => {
     // npm reads `release/x.tgz` as the GitHub repository `release/x.tgz`.
-    const npm = fakeNpm({});
+    const npm = fakeNpm();
 
     publishTarballs({ ...BASE, directory: "release", run: npm.run });
 
@@ -137,8 +188,28 @@ describe("publishTarballs", () => {
     expect(npm.publishes()).toHaveLength(1);
   });
 
-  it("stops at the first failure and publishes nothing after it", () => {
-    const npm = fakeNpm({ failPublishOf: "sinterdb-0.1.0" });
+  it("treats a version npm says is already published as skipped", () => {
+    // The registry's cache can hide a version it already has.
+    const npm = fakeNpm({
+      failPublish: {
+        file: "sinterdb-protocol-0.1.0",
+        message:
+          "npm error You cannot publish over the previously published versions: 0.1.0.",
+      },
+    });
+    const result = publishTarballs({ ...BASE, run: npm.run });
+
+    expect(result.skipped).toEqual(["sinterdb-protocol"]);
+    expect(result.published).toEqual(["sinterdb", "@sinterdb/cli"]);
+  });
+
+  it("stops at any other failure and publishes nothing after it", () => {
+    const npm = fakeNpm({
+      failPublish: {
+        file: "sinterdb-0.1.0",
+        message: "E403 trusted publisher",
+      },
+    });
 
     expect(() => publishTarballs({ ...BASE, run: npm.run })).toThrow(
       /npm publish failed for sinterdb@0.1.0[\s\S]*E403/,
@@ -147,7 +218,7 @@ describe("publishTarballs", () => {
   });
 
   it('refuses to publish under "latest"', () => {
-    const npm = fakeNpm({});
+    const npm = fakeNpm();
 
     expect(() =>
       publishTarballs({ ...BASE, distTag: "latest", run: npm.run }),
@@ -155,11 +226,31 @@ describe("publishTarballs", () => {
     expect(npm.calls).toHaveLength(0);
   });
 
-  it("fails when the tag does not point at the new version", () => {
-    const npm = fakeNpm({ tags: () => ({ next: "0.0.9" }) });
+  it("waits out a registry cache that hides the new version", () => {
+    const waits: number[] = [];
+    const npm = fakeNpm({ staleReads: 20 });
+
+    publishTarballs({ ...BASE, run: npm.run, wait: (ms) => waits.push(ms) });
+
+    expect(waits.length).toBeGreaterThan(0);
+    expect(waits.every((ms) => ms === 10_000)).toBe(true);
+  });
+
+  it("explains a package that npm accepted but did not make public", () => {
+    const npm = fakeNpm({ staged: ["sinterdb"] });
 
     expect(() => publishTarballs({ ...BASE, run: npm.run })).toThrow(
-      /"next" tag does not point at it/,
+      /sinterdb@0\.1\.0 is not public[\s\S]*Staged Packages[\s\S]*Allow npm publish/,
+    );
+    // It still sent the others, so one approval round covers everything.
+    expect(npm.publishes()).toHaveLength(3);
+  });
+
+  it("names the command to run when a version is public with the wrong tag", () => {
+    const npm = fakeNpm({ tags: () => ({ latest: "0.0.1", next: "0.0.9" }) });
+
+    expect(() => publishTarballs({ ...BASE, run: npm.run })).toThrow(
+      /npm dist-tag add sinterdb-protocol@0\.1\.0 next/,
     );
   });
 
@@ -173,20 +264,8 @@ describe("publishTarballs", () => {
     expect(lines.join("\n")).toContain('npm also points "latest"');
   });
 
-  it("waits for the registry to show the tag", () => {
-    let reads = 0;
-    const waits: number[] = [];
-    const npm = fakeNpm({
-      tags: () => (reads++ < 2 ? {} : { next: "0.1.0" }),
-    });
-
-    publishTarballs({ ...BASE, run: npm.run, wait: (ms) => waits.push(ms) });
-
-    expect(waits.length).toBeGreaterThanOrEqual(2);
-  });
-
   it("does a dry run without provenance and without checking tags", () => {
-    const npm = fakeNpm({});
+    const npm = fakeNpm();
 
     publishTarballs({ ...BASE, dryRun: true, run: npm.run });
 
@@ -195,8 +274,6 @@ describe("publishTarballs", () => {
       expect(call.arguments_).not.toContain("--provenance");
     }
 
-    expect(npm.calls.some((c) => c.arguments_.includes("dist-tags"))).toBe(
-      false,
-    );
+    expect(npm.firstTagRead()).toBe(-1);
   });
 });
