@@ -1,0 +1,714 @@
+:root {
+  --typedoc-background: #2b2e33;
+  --typedoc-background-secondary: #1e2024;
+  --typedoc-background-active: #5d5d6a;
+
+  --typedoc-text: #f5f5f5;
+  --typedoc-text-aside: #a8abb2;
+  --typedoc-border: #41444a;
+
+  --typedoc-link: #00aff4;
+
+  --color-icon-background: #1e2024;
+  --color-icon-text: #f5f5f5;
+
+  --color-ts-keyword: #3399ff;
+  --color-ts-project: #e358ff;
+  --color-ts-module: #e358ff;
+  --color-ts-namespace: #e358ff;
+
+  --color-ts-enum: #f4d93e;
+  --color-ts-enum-member: #f4d93e;
+
+  --color-ts-variable: #798dff;
+  --color-ts-function: #a280ff;
+
+  --color-ts-class: #8ac4ff;
+  --color-ts-interface: #6cff87;
+
+  --color-ts-constructor: #8ac4ff;
+  --color-ts-property: #ff984d;
+  --color-ts-method: #ff4db8;
+
+  --color-ts-reference: #ff4d82;
+
+  --color-ts-parameter: #798dff;
+  --color-ts-type-parameter: #e07d13;
+
+  --color-ts-accessor: #ff6060;
+  --color-ts-type-alias: #ff6492;
+
+  --color-document: #ffffff;
+}
+
+.typedoc-shell {
+  min-height: 100vh;
+  color: var(--typedoc-text);
+}
+
+.typedoc-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+
+  border-bottom: 1px solid
+    rgba(255, 255, 255, 0.08);
+
+  background:
+    rgba(9, 9, 9, 0.94);
+
+  backdrop-filter: blur(14px);
+}
+
+.typedoc-toolbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  max-width: 1440px;
+  height: 42px;
+
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.typedoc-toolbar-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #f4f4f5;
+}
+
+.typedoc-toolbar-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.typedoc-toolbar-link {
+  font-size: 12px;
+  color: #71717a;
+}
+
+.typedoc-toolbar-link:hover {
+  color: #f4f4f5;
+}
+
+.typedoc-layout {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    300px;
+
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.typedoc-content {
+  min-width: 0;
+  padding: 48px 54px 64px;
+}
+
+.typedoc-sidebar {
+  border-left: 1px solid
+    rgba(255, 255, 255, 0.07);
+
+  padding: 32px 24px;
+}
+
+.typedoc-page-menu,
+.typedoc-site-menu {
+  position: sticky;
+}
+
+.typedoc-page-menu {
+  top: 72px;
+}
+
+.typedoc-site-menu {
+  margin-top: 30px;
+}
+
+.typedoc-page-menu details,
+.typedoc-site-menu details {
+  margin-bottom: 12px;
+}
+
+.typedoc-page-menu summary,
+.typedoc-site-menu summary {
+  cursor: pointer;
+
+  font-size: 12px;
+  color: #a1a1aa;
+}
+
+.typedoc-page-navigation {
+  padding-top: 10px;
+}
+
+.typedoc-page-navigation details {
+  margin: 6px 0;
+}
+
+.typedoc-page-navigation a {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  padding: 4px 6px;
+
+  font-size: 11px;
+
+  color: #71717a;
+}
+
+.typedoc-page-navigation a:hover {
+  color: #fb923c;
+}
+
+.typedoc-site-title {
+  display: block;
+
+  margin-bottom: 14px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  color: #e4e4e7;
+}
+
+.typedoc-site-navigation {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.typedoc-nav-group > div {
+  margin-top: 4px;
+}
+
+.typedoc-nav-link {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  padding: 4px 7px;
+
+  border-radius: 5px;
+
+  font-size: 11px;
+  color: #71717a;
+}
+
+.typedoc-nav-link:hover {
+  background:
+    rgba(255, 255, 255, 0.03);
+
+  color: #d4d4d8;
+}
+
+.typedoc-nav-link-active {
+  color: #fb923c;
+
+  background:
+    rgba(249, 115, 22, 0.08);
+}
+
+.typedoc-page-title {
+  margin-bottom: 24px;
+}
+
+.typedoc-page-title h1 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 10px;
+
+  margin-top: 8px;
+
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.2;
+
+  letter-spacing: -0.02em;
+}
+
+.typedoc-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  font-size: 11px;
+  color: #71717a;
+}
+
+.typedoc-breadcrumb a:hover {
+  color: #d4d4d8;
+}
+
+.typedoc-comment {
+  margin: 16px 0;
+
+  font-size: 14px;
+  line-height: 1.75;
+
+  color: #c4c4ca;
+}
+
+.typedoc-comment p + p {
+  margin-top: 10px;
+}
+
+.typedoc-signature {
+  overflow-x: auto;
+
+  margin: 18px 0;
+
+  padding: 14px 16px;
+
+  border-radius: 4px;
+
+  background: #1e1e1e;
+
+  font-family:
+    var(--font-geist-mono),
+    ui-monospace,
+    monospace;
+
+  font-size: 12px;
+  line-height: 1.7;
+
+  white-space: pre-wrap;
+}
+
+.typedoc-signature-line {
+  padding-left: 28px;
+}
+
+.typedoc-keyword {
+  color:
+    var(--color-ts-keyword);
+}
+
+.typedoc-symbol {
+  color: #a1a1aa;
+}
+
+.typedoc-literal {
+  color: #ce9178;
+}
+
+.typedoc-parameter {
+  color:
+    var(--color-ts-parameter);
+}
+
+.typedoc-type-parameter {
+  color:
+    var(--color-ts-type-parameter);
+}
+
+.typedoc-kind-class {
+  color:
+    var(--color-ts-class);
+}
+
+.typedoc-kind-interface {
+  color:
+    var(--color-ts-interface);
+}
+
+.typedoc-kind-variable {
+  color:
+    var(--color-ts-variable);
+}
+
+.typedoc-kind-function {
+  color:
+    var(--color-ts-function);
+}
+
+.typedoc-kind-method {
+  color:
+    var(--color-ts-method);
+}
+
+.typedoc-kind-property {
+  color:
+    var(--color-ts-property);
+}
+
+.typedoc-kind-accessor {
+  color:
+    var(--color-ts-accessor);
+}
+
+.typedoc-kind-constructor {
+  color:
+    var(--color-ts-constructor);
+}
+
+.typedoc-kind-type-alias {
+  color:
+    var(--color-ts-type-alias);
+}
+
+.typedoc-type-link:hover {
+  text-decoration: underline;
+}
+
+.typedoc-tag {
+  display: inline-block;
+
+  margin-right: 6px;
+  padding: 2px 5px;
+
+  border-radius: 4px;
+
+  background:
+    rgba(255, 255, 255, 0.07);
+
+  font-size: 9px;
+  font-weight: 400;
+
+  color: #c4c4ca;
+}
+
+.typedoc-anchor {
+  display: inline-flex;
+
+  margin-left: 6px;
+
+  color: #52525b;
+
+  vertical-align: middle;
+}
+
+.typedoc-anchor:hover {
+  color: #fb923c;
+}
+
+.typedoc-hierarchy-panel {
+  margin: 24px 0;
+}
+
+.typedoc-hierarchy-panel h4 {
+  margin-bottom: 8px;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.typedoc-hierarchy-panel ul {
+  margin-left: 18px;
+
+  font-size: 12px;
+
+  color: #a1a1aa;
+}
+
+.typedoc-hierarchy-target {
+  color: #f4f4f5;
+}
+
+.typedoc-relationships {
+  margin: 16px 0;
+
+  font-size: 11px;
+  color: #71717a;
+}
+
+.typedoc-sources {
+  margin: 16px 0 24px;
+
+  font-size: 10px;
+
+  color: #71717a;
+}
+
+.typedoc-sources ul {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.typedoc-sources a {
+  color: #a1a1aa;
+}
+
+.typedoc-sources a:hover {
+  color: var(--typedoc-link);
+}
+
+.typedoc-index-panel {
+  margin: 28px 0;
+
+  padding: 18px 20px;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.08);
+
+  border-radius: 5px;
+}
+
+.typedoc-index-panel > h5 {
+  margin-bottom: 18px;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.12em;
+
+  color: #71717a;
+}
+
+.typedoc-index-section {
+  margin-top: 16px;
+}
+
+.typedoc-index-section h3 {
+  margin-bottom: 7px;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.typedoc-index-list {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: 5px 20px;
+}
+
+.typedoc-index-list a {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  font-size: 12px;
+
+  color: #a1a1aa;
+}
+
+.typedoc-index-list a:hover {
+  color: #fb923c;
+}
+
+.typedoc-member-group {
+  margin: 26px 0;
+}
+
+.typedoc-group-summary {
+  cursor: pointer;
+
+  list-style: none;
+
+  border-bottom: 1px solid
+    rgba(255, 255, 255, 0.08);
+
+  padding-bottom: 8px;
+}
+
+.typedoc-group-summary h2 {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.typedoc-member {
+  padding: 24px 0;
+
+  border-bottom: 1px solid
+    rgba(255, 255, 255, 0.07);
+}
+
+.typedoc-member:last-child {
+  border-bottom: 0;
+}
+
+.typedoc-member h3 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 4px;
+
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.typedoc-parameters {
+  margin-top: 18px;
+}
+
+.typedoc-parameters h4 {
+  margin-bottom: 10px;
+
+  font-size: 13px;
+}
+
+.typedoc-parameters ul {
+  display: flex;
+  flex-direction: column;
+
+  gap: 14px;
+}
+
+.typedoc-parameters li {
+  font-size: 12px;
+}
+
+.typedoc-parameters p {
+  margin-top: 5px;
+
+  color: #a1a1aa;
+
+  line-height: 1.6;
+}
+
+.typedoc-returns {
+  margin-top: 18px;
+
+  font-size: 13px;
+}
+
+.typedoc-return-description {
+  margin-top: 7px;
+
+  font-size: 12px;
+  line-height: 1.6;
+
+  color: #a1a1aa;
+}
+
+.typedoc-type-declaration {
+  margin: 22px 0;
+}
+
+.typedoc-type-declaration > h4 {
+  margin-bottom: 12px;
+
+  font-size: 13px;
+}
+
+.typedoc-type-declaration > ul {
+  display: flex;
+  flex-direction: column;
+
+  gap: 14px;
+}
+
+.typedoc-type-declaration h5 {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.typedoc-member-summaries {
+  display: flex;
+  flex-direction: column;
+}
+
+.typedoc-summary-row {
+  display: grid;
+
+  grid-template-columns:
+    minmax(180px, 0.4fr)
+    minmax(0, 1fr);
+
+  gap: 20px;
+
+  padding: 9px 0;
+
+  border-bottom: 1px solid
+    rgba(255, 255, 255, 0.05);
+}
+
+.typedoc-summary-row dt {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  font-size: 13px;
+}
+
+.typedoc-summary-row dd {
+  font-size: 12px;
+  line-height: 1.55;
+
+  color: #71717a;
+}
+
+.typedoc-hierarchy-tree,
+.typedoc-hierarchy-tree ul {
+  margin: 12px 0 0 18px;
+}
+
+.typedoc-hierarchy-tree li {
+  margin: 7px 0;
+}
+
+.typedoc-hierarchy-link {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 7px;
+
+  font-size: 13px;
+
+  color: #c4c4ca;
+}
+
+.typedoc-footer {
+  max-width: 1440px;
+
+  margin: 0 auto;
+
+  padding: 28px 54px;
+
+  border-top: 1px solid
+    rgba(255, 255, 255, 0.06);
+
+  font-size: 10px;
+
+  color: #52525b;
+}
+
+@media (
+  max-width: 960px
+) {
+  .typedoc-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .typedoc-sidebar {
+    display: none;
+  }
+
+  .typedoc-content {
+    padding:
+      32px 22px
+      48px;
+  }
+
+  .typedoc-index-list {
+    grid-template-columns:
+      1fr;
+  }
+
+  .typedoc-summary-row {
+    grid-template-columns:
+      1fr;
+
+    gap: 4px;
+  }
+}
