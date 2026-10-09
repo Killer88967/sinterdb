@@ -1,6 +1,6 @@
 {
   "name": "@sinterdb-internal/storage",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "Internal durable storage engine for SinterDB.",
   "private": true,
   "type": "module",

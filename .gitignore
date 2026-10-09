@@ -76,7 +76,7 @@ Desktop.ini
 
 # Dont ask
 .vscode
-release
+/release
 
 # Generated API reference
 /docs/api/

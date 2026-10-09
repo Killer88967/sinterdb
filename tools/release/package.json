@@ -1,0 +1,17 @@
+{
+  "name": "@sinterdb-internal/release",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Checks and rehearses a SinterDB release before it is published.",
+  "type": "module",
+  "scripts": {
+    "check": "node src/check.ts",
+    "rehearse": "node src/rehearse.ts",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "vitest": "catalog:"
+  }
+}

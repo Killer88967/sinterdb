@@ -116,6 +116,20 @@ Each breaking change lands here in the release that makes it.
   inside the string, and a non-ASCII host name (the driver would have tried to
   resolve a percent-encoded name that cannot exist). See
   [connection-strings.md](./connection-strings.md).
+- **A document the database cannot store throws `SinterDocumentError`.** A
+  value such as `undefined`, a function, or a `Map`, a document nested too
+  deeply, or a request over 16 MiB used to fail with a connection error
+  (`CONNECTION_FAILED`) that did not say what was wrong. It now rejects with
+  `SinterDocumentError` (`INVALID_DOCUMENT`), sends nothing, and leaves the
+  connection usable. Code that matched on `CONNECTION_FAILED` for this case
+  should match `INVALID_DOCUMENT`.
+- **A cursor batch can hold fewer documents than `batchSize`.** A batch stops
+  at about 8 MiB, so large documents arrive in smaller batches. Iterating a
+  cursor is unaffected. A result that is still too large for one reply gets a
+  `ResultTooLarge` error instead of stopping the server.
+- **Warnings and errors are written to standard error.** The server used to
+  write every log line to standard output. Other lines still go to standard
+  output. Tools that read only standard output no longer see warnings and errors.
 - No data or protocol format changed. Storage format 2, snapshot format 2, WAL
   format 1, and protocol 1 are the same as in `0.0.9`.
 

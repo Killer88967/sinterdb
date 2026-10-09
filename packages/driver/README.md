@@ -502,7 +502,7 @@ Server rejections of write commands carry a wire code and name:
 
 ## Current Scope
 
-Version `0.0.9` provides:
+Version `0.1.0` provides:
 
 - `SinterClient`
 - `sinterdb://` connection-string parsing
@@ -524,10 +524,13 @@ Version `0.0.9` provides:
 - Typed `UpdateFilter<TDocument>`
 - Duplicate `_id` detection
 - Immutable `_id` enforcement
-- Document-size and nesting validation
+- Document-size and nesting validation, with `SinterDocumentError` for a
+  document the database cannot store
 - Durable storage when connected to a server started with a data directory
 - `createIndex()`, `dropIndex()`, `indexes()`, and `validateIndexes()`
 - Unique and sparse single-field indexes with typed `IndexDefinition<TDocument>`
 - `find().explain()`
 
-The next milestone is `0.1.0`, the Developer Preview.
+`0.1.0` is a developer preview. See the
+[compatibility promise](../../docs/compatibility.md) for what stays stable
+between releases. The next milestone is `0.2.0`, Storage Reliability.

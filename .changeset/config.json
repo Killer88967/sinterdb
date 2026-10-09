@@ -17,7 +17,12 @@
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "bumpVersionsWithWorkspaceProtocolOnly": true,
-  "ignore": [],
+  "ignore": [
+    "@sinterdb-examples/todo-app",
+    "@sinterdb-internal/api-docs",
+    "@sinterdb-internal/bench",
+    "@sinterdb-internal/release"
+  ],
   "privatePackages": {
     "version": true,
     "tag": false
