@@ -18,7 +18,7 @@ export default function GuidesLayout({
     <div className="relative">
       <div className="site-grid fixed inset-0 z-0" aria-hidden="true" />
 
-      <div className="relative z-10 mx-auto flex max-w-[92rem]">
+      <div className="relative z-10 mx-auto flex max-w-368">
         <DocsSidebar />
 
         <main className="min-w-0 flex-1 px-5 py-12 sm:px-8 lg:px-12 lg:py-16">
