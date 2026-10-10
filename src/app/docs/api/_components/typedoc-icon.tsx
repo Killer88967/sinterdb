@@ -1,4 +1,4 @@
-const ICON_SPRITE = undefined;
+const ICON_SPRITE = "/docs/api/assets/icons.svg";
 
 interface TypeDocIconProps {
   readonly kind: number | string;
