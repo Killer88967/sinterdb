@@ -60,6 +60,7 @@ yarn-error.log*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
+!.vscode/*.code-snippets
 
 # JetBrains
 .idea/
@@ -75,7 +76,6 @@ Desktop.ini
 *~
 
 # Don't ask
-.vscode
 /release
 
 # Generated API reference
