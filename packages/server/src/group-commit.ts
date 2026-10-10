@@ -6,7 +6,7 @@ export interface DurabilityBarrier {
   /** True while some applied writes are not yet on stable storage. */
   readonly hasPending: boolean;
   /**
-   * Calls `callback` once those writes are flushed, or with the when the
+   * Calls `callback` once those writes are flushed, or with the error when the
    * flush fails. Callbacks run in the order they were added.
    */
   whenDurable(callback: (error?: unknown) => void): void;
