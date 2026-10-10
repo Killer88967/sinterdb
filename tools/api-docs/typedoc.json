@@ -11,9 +11,13 @@
     {
       "name": "react",
       "path": "../../docs/api/react"
+    },
+    {
+      "name": "markdown",
+      "path": "../../docs/api/markdown"
     }
   ],
-  "plugin": ["./react-output.js"],
+  "plugin": ["./react-output.js", "typedoc-plugin-markdown"],
   "readme": "none",
   "excludePrivate": true,
   "excludeProtected": true,
