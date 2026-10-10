@@ -179,7 +179,7 @@ const page = {
                 {
                   path: "packages/driver/src/errors.ts",
                   line: 60,
-                  url: "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/errors.ts#L60",
+                  url: "https://github.com/SinterDB/sinterdb/blob/58ea2c651133ad935cfae9b68769cc834dd9052e/packages/driver/src/errors.ts#L60",
                 },
               ],
             },
@@ -190,7 +190,7 @@ const page = {
             {
               path: "packages/driver/src/errors.ts",
               line: 60,
-              url: "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/errors.ts#L60",
+              url: "https://github.com/SinterDB/sinterdb/blob/58ea2c651133ad935cfae9b68769cc834dd9052e/packages/driver/src/errors.ts#L60",
             },
           ],
         },
@@ -229,7 +229,7 @@ const page = {
             {
               path: "packages/driver/src/errors.ts",
               line: 58,
-              url: "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/errors.ts#L58",
+              url: "https://github.com/SinterDB/sinterdb/blob/58ea2c651133ad935cfae9b68769cc834dd9052e/packages/driver/src/errors.ts#L58",
             },
           ],
         },
@@ -264,7 +264,7 @@ const page = {
     {
       path: "packages/driver/src/errors.ts",
       line: 54,
-      url: "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/errors.ts#L54",
+      url: "https://github.com/SinterDB/sinterdb/blob/58ea2c651133ad935cfae9b68769cc834dd9052e/packages/driver/src/errors.ts#L54",
     },
   ],
 } satisfies ApiPage;
