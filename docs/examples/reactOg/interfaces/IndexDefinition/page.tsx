@@ -70,7 +70,7 @@ const api = {
       "kind": "Property",
       "kindId": 1024,
       "description": "The field to index. Dotted paths reach into nested documents.",
-      "type": "Exclude<TDocument extends object ? { [Key in string]: Key | (NonNullable<TDocument[Key]> extends AtomicValue | readonly unknown[] ? never : NonNullable<TDocument[Key]> extends object ? `${Key}.${NonNullable<(...)[(...)]> extends object ? { [Key in (...)]: (...) }[(...) & (...)] : never}` : never) }[keyof TDocument & string] : never>",
+      "type": "Exclude<TDocument extends object ? { [Key in string]: Key | (NonNullable<TDocument[Key]> extends AtomicValue | readonly unknown[] ? never : NonNullable<TDocument[Key]> extends object ? `${Key}.${NonNullable<TDocument[Key]> extends object ? { [Key in string]: Key | (NonNullable<NonNullable<TDocument[Key]>[Key]> extends AtomicValue | readonly unknown[] ? never : NonNullable<NonNullable<TDocument[Key]>[Key]> extends object ? `${Key}.${NonNullable<NonNullable<TDocument[Key]>[Key]> extends object ? { [Key in string]: Key | (NonNullable<(...)> extends (...) | (...) ? never : (...) extends (...) ? (...) : (...)) }[keyof NonNullable<(...)[(...)]> & string] : never}` : never) }[keyof NonNullable<TDocument[Key]> & string] : never}` : never) }[keyof TDocument & string] : never>",
       "flags": {
         "static": false,
         "readonly": true,

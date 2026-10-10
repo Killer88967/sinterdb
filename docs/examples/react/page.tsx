@@ -1,503 +1,663 @@
-import { ApiIndexPage } from "./_components/api-shell";
+import { ApiIndexPage } from "./_components/pages";
+import type { ApiIndexGroup } from "./_generated/model";
 
-const reflections = [
-  {
-    "id": 1,
-    "name": "CustomId",
-    "route": "classes/CustomId",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 285,
-    "name": "FindCursor",
-    "route": "classes/FindCursor",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 32,
-    "name": "SinterClient",
-    "route": "classes/SinterClient",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 338,
-    "name": "SinterClientOptionsError",
-    "route": "classes/SinterClientOptionsError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 357,
-    "name": "SinterClientStateError",
-    "route": "classes/SinterClientStateError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 199,
-    "name": "SinterCollection",
-    "route": "classes/SinterCollection",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 377,
-    "name": "SinterCompatibilityError",
-    "route": "classes/SinterCompatibilityError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 400,
-    "name": "SinterConnectionError",
-    "route": "classes/SinterConnectionError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 419,
-    "name": "SinterConnectionStringError",
-    "route": "classes/SinterConnectionStringError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 438,
-    "name": "SinterConnectionTimeoutError",
-    "route": "classes/SinterConnectionTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 325,
-    "name": "SinterDatabase",
-    "route": "classes/SinterDatabase",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 457,
-    "name": "SinterDocumentError",
-    "route": "classes/SinterDocumentError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 476,
-    "name": "SinterError",
-    "route": "classes/SinterError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 511,
-    "name": "SinterInsertManyError",
-    "route": "classes/SinterInsertManyError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 700,
-    "name": "SinterNamespaceError",
-    "route": "classes/SinterNamespaceError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 537,
-    "name": "SinterProtocolError",
-    "route": "classes/SinterProtocolError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 556,
-    "name": "SinterRequestTimeoutError",
-    "route": "classes/SinterRequestTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 575,
-    "name": "SinterServerError",
-    "route": "classes/SinterServerError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 598,
-    "name": "SinterSocketTimeoutError",
-    "route": "classes/SinterSocketTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 660,
-    "name": "CreateIndexResult",
-    "route": "interfaces/CreateIndexResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 723,
-    "name": "DeleteResult",
-    "route": "interfaces/DeleteResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 26,
-    "name": "Document",
-    "route": "interfaces/Document",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 664,
-    "name": "ExplainResult",
-    "route": "interfaces/ExplainResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 259,
-    "name": "FindOptions",
-    "route": "interfaces/FindOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 321,
-    "name": "FindQueryOptions",
-    "route": "interfaces/FindQueryOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 675,
-    "name": "IndexBoundInfo",
-    "route": "interfaces/IndexBoundInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 678,
-    "name": "IndexDefinition",
-    "route": "interfaces/IndexDefinition",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 685,
-    "name": "IndexInfo",
-    "route": "interfaces/IndexInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 691,
-    "name": "IndexIssue",
-    "route": "interfaces/IndexIssue",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 695,
-    "name": "IndexValidationResult",
-    "route": "interfaces/IndexValidationResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 265,
-    "name": "InsertManyResult",
-    "route": "interfaces/InsertManyResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 269,
-    "name": "InsertOneResult",
-    "route": "interfaces/InsertOneResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 281,
-    "name": "ParsedSinterConnectionString",
-    "route": "interfaces/ParsedSinterConnectionString",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 180,
-    "name": "SinterClientEvents",
-    "route": "interfaces/SinterClientEvents",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 185,
-    "name": "SinterClientOptions",
-    "route": "interfaces/SinterClientOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 189,
-    "name": "SinterPingResult",
-    "route": "interfaces/SinterPingResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 617,
-    "name": "SinterServerErrorOptions",
-    "route": "interfaces/SinterServerErrorOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 194,
-    "name": "SinterServerInfo",
-    "route": "interfaces/SinterServerInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 742,
-    "name": "UpdateOptions",
-    "route": "interfaces/UpdateOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 746,
-    "name": "UpdateResult",
-    "route": "interfaces/UpdateResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 719,
-    "name": "ArrayPaths",
-    "route": "types/ArrayPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 623,
-    "name": "AtomicValue",
-    "route": "types/AtomicValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 721,
-    "name": "ComparablePaths",
-    "route": "types/ComparablePaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 624,
-    "name": "ComparableValue",
-    "route": "types/ComparableValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 625,
-    "name": "ComparisonOperators",
-    "route": "types/ComparisonOperators",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 316,
-    "name": "CursorExecutor",
-    "route": "types/CursorExecutor",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 632,
-    "name": "ElementOf",
-    "route": "types/ElementOf",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 257,
-    "name": "EqualityFilter",
-    "route": "types/EqualityFilter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 634,
-    "name": "Filter",
-    "route": "types/Filter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 641,
-    "name": "FilterOperators",
-    "route": "types/FilterOperators",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 650,
-    "name": "FilterPaths",
-    "route": "types/FilterPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 653,
-    "name": "FilterPathValue",
-    "route": "types/FilterPathValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 673,
-    "name": "IndexablePath",
-    "route": "types/IndexablePath",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 656,
-    "name": "MaxPathDepth",
-    "route": "types/MaxPathDepth",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 726,
-    "name": "NumericPaths",
-    "route": "types/NumericPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 272,
-    "name": "OptionalId",
-    "route": "types/OptionalId",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 728,
-    "name": "PathsMatching",
-    "route": "types/PathsMatching",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 179,
-    "name": "SinterClientState",
-    "route": "types/SinterClientState",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 510,
-    "name": "SinterErrorCode",
-    "route": "types/SinterErrorCode",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 657,
-    "name": "Sort",
-    "route": "types/Sort",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 659,
-    "name": "SortDirection",
-    "route": "types/SortDirection",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 731,
-    "name": "UpdateFilter",
-    "route": "types/UpdateFilter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 744,
-    "name": "UpdatePaths",
-    "route": "types/UpdatePaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 276,
-    "name": "WithId",
-    "route": "types/WithId",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 29,
-    "name": "DEFAULT_CONNECT_TIMEOUT_MS",
-    "route": "variables/DEFAULT_CONNECT_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 30,
-    "name": "DEFAULT_REQUEST_TIMEOUT_MS",
-    "route": "variables/DEFAULT_REQUEST_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 280,
-    "name": "DEFAULT_SINTERDB_PORT",
-    "route": "variables/DEFAULT_SINTERDB_PORT",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 31,
-    "name": "DEFAULT_SOCKET_TIMEOUT_MS",
-    "route": "variables/DEFAULT_SOCKET_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 172,
-    "name": "SinterClientState",
-    "route": "variables/SinterClientState",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 496,
-    "name": "SinterErrorCode",
-    "route": "variables/SinterErrorCode",
-    "kind": "Variable",
-    "kindId": 32
+const groups = [
+  {
+    "id": "classes",
+    "title": "Classes",
+    "items": [
+      {
+        "id": 1,
+        "name": "CustomId",
+        "href": "/docs/api/classes/CustomId",
+        "kind": "class",
+        "label": "Class",
+        "short": "",
+        "deprecated": false
+      },
+      {
+        "id": 285,
+        "name": "FindCursor",
+        "href": "/docs/api/classes/FindCursor",
+        "kind": "class",
+        "label": "Class",
+        "short": "A lazy, batched cursor over the results of a find.",
+        "deprecated": false
+      },
+      {
+        "id": 32,
+        "name": "SinterClient",
+        "href": "/docs/api/classes/SinterClient",
+        "kind": "class",
+        "label": "Class",
+        "short": "A connection to a SinterDB server.",
+        "deprecated": false
+      },
+      {
+        "id": 338,
+        "name": "SinterClientOptionsError",
+        "href": "/docs/api/classes/SinterClientOptionsError",
+        "kind": "class",
+        "label": "Class",
+        "short": "A client option or a database or collection name is invalid. Code <code>INVALID_CLIENT_OPTIONS</code>.",
+        "deprecated": false
+      },
+      {
+        "id": 357,
+        "name": "SinterClientStateError",
+        "href": "/docs/api/classes/SinterClientStateError",
+        "kind": "class",
+        "label": "Class",
+        "short": "A command was used in the wrong client state: <code>CLIENT_NOT_CONNECTED</code> before <code>connect()</code>, or <code>CLIENT_CLOSED</code> after <code>close()</code>.",
+        "deprecated": false
+      },
+      {
+        "id": 199,
+        "name": "SinterCollection",
+        "href": "/docs/api/classes/SinterCollection",
+        "kind": "class",
+        "label": "Class",
+        "short": "A collection of documents, typed by <code>TDocument</code>.",
+        "deprecated": false
+      },
+      {
+        "id": 377,
+        "name": "SinterCompatibilityError",
+        "href": "/docs/api/classes/SinterCompatibilityError",
+        "kind": "class",
+        "label": "Class",
+        "short": "The server does not speak a compatible protocol version. Code <code>INCOMPATIBLE_PROTOCOL</code>.",
+        "deprecated": false
+      },
+      {
+        "id": 400,
+        "name": "SinterConnectionError",
+        "href": "/docs/api/classes/SinterConnectionError",
+        "kind": "class",
+        "label": "Class",
+        "short": "The connection could not be established or was lost. Code <code>CONNECTION_FAILED</code>.",
+        "deprecated": false
+      },
+      {
+        "id": 419,
+        "name": "SinterConnectionStringError",
+        "href": "/docs/api/classes/SinterConnectionStringError",
+        "kind": "class",
+        "label": "Class",
+        "short": "The connection string is malformed. Code <code>INVALID_CONNECTION_STRING</code>.",
+        "deprecated": false
+      },
+      {
+        "id": 438,
+        "name": "SinterConnectionTimeoutError",
+        "href": "/docs/api/classes/SinterConnectionTimeoutError",
+        "kind": "class",
+        "label": "Class",
+        "short": "Connecting took longer than <code>connectTimeoutMS</code>.",
+        "deprecated": false
+      },
+      {
+        "id": 325,
+        "name": "SinterDatabase",
+        "href": "/docs/api/classes/SinterDatabase",
+        "kind": "class",
+        "label": "Class",
+        "short": "A handle to a database on a server.",
+        "deprecated": false
+      },
+      {
+        "id": 457,
+        "name": "SinterDocumentError",
+        "href": "/docs/api/classes/SinterDocumentError",
+        "kind": "class",
+        "label": "Class",
+        "short": "A request could not be encoded, so nothing was sent and the connection is unaffected. The usual causes are a value the database cannot store (such as <code>undefined</code>, a function, or a class instance like <code>Map</code>), a document nested more than 100 levels deep, or a request larger than 16 MiB. The <code>cause</code> says which. Code <code>INVALID_DOCUMENT</code>.",
+        "deprecated": false
+      },
+      {
+        "id": 476,
+        "name": "SinterError",
+        "href": "/docs/api/classes/SinterError",
+        "kind": "class",
+        "label": "Class",
+        "short": "The base class of every error the driver throws on its own. Check <code>code</code> to tell them apart.",
+        "deprecated": false
+      },
+      {
+        "id": 511,
+        "name": "SinterInsertManyError",
+        "href": "/docs/api/classes/SinterInsertManyError",
+        "kind": "class",
+        "label": "Class",
+        "short": "<code>insertMany</code> failed partway. The documents before <code>failedIndex</code> were inserted and stay committed.",
+        "deprecated": false
+      },
+      {
+        "id": 700,
+        "name": "SinterNamespaceError",
+        "href": "/docs/api/classes/SinterNamespaceError",
+        "kind": "class",
+        "label": "Class",
+        "short": "A database or collection name is invalid: empty, or containing forbidden characters. Code <code>INVALID_CLIENT_OPTIONS</code>.",
+        "deprecated": false
+      },
+      {
+        "id": 537,
+        "name": "SinterProtocolError",
+        "href": "/docs/api/classes/SinterProtocolError",
+        "kind": "class",
+        "label": "Class",
+        "short": "The server sent something the driver cannot interpret. Code <code>PROTOCOL_VIOLATION</code>.",
+        "deprecated": false
+      },
+      {
+        "id": 556,
+        "name": "SinterRequestTimeoutError",
+        "href": "/docs/api/classes/SinterRequestTimeoutError",
+        "kind": "class",
+        "label": "Class",
+        "short": "A request got no response within <code>requestTimeoutMS</code>. The request may still have run on the server. Code <code>REQUEST_TIMEOUT</code>.",
+        "deprecated": false
+      },
+      {
+        "id": 575,
+        "name": "SinterServerError",
+        "href": "/docs/api/classes/SinterServerError",
+        "kind": "class",
+        "label": "Class",
+        "short": "The server rejected a request. Code <code>SERVER_ERROR</code>.",
+        "deprecated": false
+      },
+      {
+        "id": 598,
+        "name": "SinterSocketTimeoutError",
+        "href": "/docs/api/classes/SinterSocketTimeoutError",
+        "kind": "class",
+        "label": "Class",
+        "short": "The connection was idle for longer than <code>socketTimeoutMS</code>.",
+        "deprecated": false
+      }
+    ]
+  },
+  {
+    "id": "interfaces",
+    "title": "Interfaces",
+    "items": [
+      {
+        "id": 660,
+        "name": "CreateIndexResult",
+        "href": "/docs/api/interfaces/CreateIndexResult",
+        "kind": "interface",
+        "label": "Interface",
+        "short": "The result of <a href=\"/docs/api/classes/SinterCollection#create-index\">SinterCollection.createIndex</a>.",
+        "deprecated": false
+      },
+      {
+        "id": 723,
+        "name": "DeleteResult",
+        "href": "/docs/api/interfaces/DeleteResult",
+        "kind": "interface",
+        "label": "Interface",
+        "short": "The result of a delete.",
+        "deprecated": false
+      },
+      {
+        "id": 26,
+        "name": "Document",
+        "href": "/docs/api/interfaces/Document",
+        "kind": "interface",
+        "label": "Interface",
+        "short": "",
+        "deprecated": false
+      },
+      {
+        "id": 664,
+        "name": "ExplainResult",
+        "href": "/docs/api/interfaces/ExplainResult",
+        "kind": "interface",
+        "label": "Interface",
+        "short": "The query plan the server reports for a find. The shape is experimental and may change in any release; see docs/compatibility.md.",
+        "deprecated": false
+      },
+      {
+        "id": 259,
+        "name": "FindOptions",
+        "href": "/docs/api/interfaces/FindOptions",
+        "kind": "interface",
+        "label": "Interface",
+        "short": "Options for <a href=\"/docs/api/classes/SinterCollection#find\">SinterCollection.find</a>.",
+        "deprecated": false
+      },
+      {
+        "id": 321,
+        "name": "FindQueryOptions",
+        "href": "/docs/api/interfaces/FindQueryOptions",
+        "kind": "interface",
+        "label": "Interface",
+        "short": "The query parts of a find that are sent with the first request.",
+        "deprecated": false
+      },
+      {
+        "id": 675,
+        "name": "IndexBoundInfo",
+        "href": "/docs/api/interfaces/IndexBoundInfo",
+        "kind": "interface",
+        "label": "Interface",
+        "short": "One end of an index range in an <a href=\"/docs/api/interfaces/ExplainResult\">ExplainResult</a>.",
+        "deprecated": false
+      },
+      {
+        "id": 678,
+        "name": "IndexDefinition",
+        "href": "/docs/api/interfaces/IndexDefinition",
+        "kind": "interface",
+        "label": "Interface",
+        "short": "How to build an index, passed to <a href=\"/docs/api/classes/SinterCollection#create-index\">SinterCollection.createIndex</a>.",
+        "deprecated": false
+      },
+      {
+        "id": 685,
+        "name": "IndexInfo",
+        "href": "/docs/api/interfaces/IndexInfo",
+        "kind": "interface",
+        "label": "Interface",
+        "short": "A description of an index, as returned by <a href=\"/docs/api/classes/SinterCollection#indexes\">SinterCollection.indexes</a>.",
+        "deprecated": false
+      },
+      {
+        "id": 691,
+        "name": "IndexIssue",
+        "href": "/docs/api/interfaces/IndexIssue",
+        "kind": "interface",
+        "label": "Interface",
+        "short": "One difference found by <a href=\"/docs/api/classes/SinterCollection#validate-indexes\">SinterCollection.validateIndexes</a>.",
+        "deprecated": false
+      },
+      {
+        "id": 695,
+        "name": "IndexValidationResult",
+        "href": "/docs/api/interfaces/IndexValidationResult",
+        "kind": "interface",
+        "label": "Interface",
+        "short": "The result of <a href=\"/docs/api/classes/SinterCollection#validate-indexes\">SinterCollection.validateIndexes</a>.",
+        "deprecated": false
+      },
+      {
+        "id": 265,
+        "name": "InsertManyResult",
+        "href": "/docs/api/interfaces/InsertManyResult",
+        "kind": "interface",
+        "label": "Interface",
+        "short": "The result of <a href=\"/docs/api/classes/SinterCollection#insert-many\">SinterCollection.insertMany</a>.",
+        "deprecated": false
+      },
+      {
+        "id": 269,
+        "name": "InsertOneResult",
+        "href": "/docs/api/interfaces/InsertOneResult",
+        "kind": "interface",
+        "label": "Interface",
+        "short": "The result of <a href=\"/docs/api/classes/SinterCollection#insert-one\">SinterCollection.insertOne</a>.",
+        "deprecated": false
+      },
+      {
+        "id": 281,
+        "name": "ParsedSinterConnectionString",
+        "href": "/docs/api/interfaces/ParsedSinterConnectionString",
+        "kind": "interface",
+        "label": "Interface",
+        "short": "A parsed <code>sinterdb://</code> connection string, available as <a href=\"/docs/api/classes/SinterClient#target\">SinterClient.target</a>.",
+        "deprecated": false
+      },
+      {
+        "id": 180,
+        "name": "SinterClientEvents",
+        "href": "/docs/api/interfaces/SinterClientEvents",
+        "kind": "interface",
+        "label": "Interface",
+        "short": "The events a <a href=\"/docs/api/classes/SinterClient\">SinterClient</a> emits.",
+        "deprecated": false
+      },
+      {
+        "id": 185,
+        "name": "SinterClientOptions",
+        "href": "/docs/api/interfaces/SinterClientOptions",
+        "kind": "interface",
+        "label": "Interface",
+        "short": "Options for <a href=\"/docs/api/classes/SinterClient\">SinterClient</a>. Every timeout is a whole number of milliseconds no greater than 2,147,483,647. An invalid value throws a <a href=\"/docs/api/classes/SinterClientOptionsError\">SinterClientOptionsError</a>.",
+        "deprecated": false
+      },
+      {
+        "id": 189,
+        "name": "SinterPingResult",
+        "href": "/docs/api/interfaces/SinterPingResult",
+        "kind": "interface",
+        "label": "Interface",
+        "short": "The result of <a href=\"/docs/api/classes/SinterClient#ping\">SinterClient.ping</a>.",
+        "deprecated": false
+      },
+      {
+        "id": 617,
+        "name": "SinterServerErrorOptions",
+        "href": "/docs/api/interfaces/SinterServerErrorOptions",
+        "kind": "interface",
+        "label": "Interface",
+        "short": "Details a server error response can carry.",
+        "deprecated": false
+      },
+      {
+        "id": 194,
+        "name": "SinterServerInfo",
+        "href": "/docs/api/interfaces/SinterServerInfo",
+        "kind": "interface",
+        "label": "Interface",
+        "short": "What the server reported during the protocol handshake. Available from <a href=\"/docs/api/classes/SinterClient#server-info\">SinterClient.serverInfo</a> once the client is connected.",
+        "deprecated": false
+      },
+      {
+        "id": 742,
+        "name": "UpdateOptions",
+        "href": "/docs/api/interfaces/UpdateOptions",
+        "kind": "interface",
+        "label": "Interface",
+        "short": "Options for updates and replacements.",
+        "deprecated": false
+      },
+      {
+        "id": 746,
+        "name": "UpdateResult",
+        "href": "/docs/api/interfaces/UpdateResult",
+        "kind": "interface",
+        "label": "Interface",
+        "short": "The result of an update or replace.",
+        "deprecated": false
+      }
+    ]
+  },
+  {
+    "id": "type-aliases",
+    "title": "Type Aliases",
+    "items": [
+      {
+        "id": 719,
+        "name": "ArrayPaths",
+        "href": "/docs/api/types/ArrayPaths",
+        "kind": "type-alias",
+        "label": "Type Alias",
+        "short": "Updatable paths that hold an array, the targets of <code>$push</code>, <code>$addToSet</code> and <code>$pull</code>.",
+        "deprecated": false
+      },
+      {
+        "id": 623,
+        "name": "AtomicValue",
+        "href": "/docs/api/types/AtomicValue",
+        "kind": "type-alias",
+        "label": "Type Alias",
+        "short": "Values that can be matched by equality: comparable values, booleans and <code>null</code>.",
+        "deprecated": false
+      },
+      {
+        "id": 721,
+        "name": "ComparablePaths",
+        "href": "/docs/api/types/ComparablePaths",
+        "kind": "type-alias",
+        "label": "Type Alias",
+        "short": "Updatable paths that hold a comparable value, the targets of <code>$min</code> and <code>$max</code>.",
+        "deprecated": false
+      },
+      {
+        "id": 624,
+        "name": "ComparableValue",
+        "href": "/docs/api/types/ComparableValue",
+        "kind": "type-alias",
+        "label": "Type Alias",
+        "short": "Values that can be compared with <code>$gt</code>, <code>$gte</code>, <code>$lt</code> and <code>$lte</code>.",
+        "deprecated": false
+      },
+      {
+        "id": 625,
+        "name": "ComparisonOperators",
+        "href": "/docs/api/types/ComparisonOperators",
+        "kind": "type-alias",
+        "label": "Type Alias",
+        "short": "The range operators <code>$gt</code>, <code>$gte</code>, <code>$lt</code> and <code>$lte</code>. They are available only when the value type includes a comparable type.",
+        "deprecated": false
+      },
+      {
+        "id": 316,
+        "name": "CursorExecutor",
+        "href": "/docs/api/types/CursorExecutor",
+        "kind": "type-alias",
+        "label": "Type Alias",
+        "short": "The function a <a href=\"/docs/api/classes/FindCursor\">FindCursor</a> uses to reach the server. Cursors are created by <a href=\"/docs/api/classes/SinterCollection#find\">SinterCollection.find</a>; do not construct them directly.",
+        "deprecated": false
+      },
+      {
+        "id": 632,
+        "name": "ElementOf",
+        "href": "/docs/api/types/ElementOf",
+        "kind": "type-alias",
+        "label": "Type Alias",
+        "short": "The element type of an array type, or the type itself when it is not an array.",
+        "deprecated": false
+      },
+      {
+        "id": 257,
+        "name": "EqualityFilter",
+        "href": "/docs/api/types/EqualityFilter",
+        "kind": "type-alias",
+        "label": "Type Alias",
+        "short": "A shorthand filter that matches fields by equality only.",
+        "deprecated": false
+      },
+      {
+        "id": 634,
+        "name": "Filter",
+        "href": "/docs/api/types/Filter",
+        "kind": "type-alias",
+        "label": "Type Alias",
+        "short": "A query filter: field paths mapped to a value or to operators, combined with <code>$and</code>, <code>$or</code> and <code>$nor</code>. An empty filter matches every document.",
+        "deprecated": false
+      },
+      {
+        "id": 641,
+        "name": "FilterOperators",
+        "href": "/docs/api/types/FilterOperators",
+        "kind": "type-alias",
+        "label": "Type Alias",
+        "short": "The operators that can be applied to a single field: <code>$eq</code>, <code>$ne</code>, <code>$in</code>, <code>$nin</code>, <code>$exists</code>, <code>$not</code>, plus the range operators for comparable values.",
+        "deprecated": false
+      },
+      {
+        "id": 650,
+        "name": "FilterPaths",
+        "href": "/docs/api/types/FilterPaths",
+        "kind": "type-alias",
+        "label": "Type Alias",
+        "short": "Every dotted field path of a document type, such as <code>profile.name</code>. Arrays and atomic values end a path.",
+        "deprecated": false
+      },
+      {
+        "id": 653,
+        "name": "FilterPathValue",
+        "href": "/docs/api/types/FilterPathValue",
+        "kind": "type-alias",
+        "label": "Type Alias",
+        "short": "The type of the value at a dotted field path.",
+        "deprecated": false
+      },
+      {
+        "id": 673,
+        "name": "IndexablePath",
+        "href": "/docs/api/types/IndexablePath",
+        "kind": "type-alias",
+        "label": "Type Alias",
+        "short": "Field paths that can be indexed: every known path except <code>_id</code>, which always has its own unique index.",
+        "deprecated": false
+      },
+      {
+        "id": 656,
+        "name": "MaxPathDepth",
+        "href": "/docs/api/types/MaxPathDepth",
+        "kind": "type-alias",
+        "label": "Type Alias",
+        "short": "How many levels of nesting the compiler follows when it builds field paths. Deeper paths still work at runtime but are not suggested or type-checked.",
+        "deprecated": false
+      },
+      {
+        "id": 726,
+        "name": "NumericPaths",
+        "href": "/docs/api/types/NumericPaths",
+        "kind": "type-alias",
+        "label": "Type Alias",
+        "short": "Updatable paths that hold a number or bigint, the targets of <code>$inc</code>.",
+        "deprecated": false
+      },
+      {
+        "id": 272,
+        "name": "OptionalId",
+        "href": "/docs/api/types/OptionalId",
+        "kind": "type-alias",
+        "label": "Type Alias",
+        "short": "A document as accepted for insertion: <code>_id</code> is optional, and the server generates one when it is missing.",
+        "deprecated": false
+      },
+      {
+        "id": 728,
+        "name": "PathsMatching",
+        "href": "/docs/api/types/PathsMatching",
+        "kind": "type-alias",
+        "label": "Type Alias",
+        "short": "The updatable paths whose value type is assignable to <code>TKind</code>.",
+        "deprecated": false
+      },
+      {
+        "id": 179,
+        "name": "SinterClientState",
+        "href": "/docs/api/types/SinterClientState",
+        "kind": "type-alias",
+        "label": "Type Alias",
+        "short": "A value of <a href=\"/docs/api/variables/SinterClientState\">SinterClientState</a>.",
+        "deprecated": false
+      },
+      {
+        "id": 510,
+        "name": "SinterErrorCode",
+        "href": "/docs/api/types/SinterErrorCode",
+        "kind": "type-alias",
+        "label": "Type Alias",
+        "short": "A value of <a href=\"/docs/api/variables/SinterErrorCode\">SinterErrorCode</a>.",
+        "deprecated": false
+      },
+      {
+        "id": 657,
+        "name": "Sort",
+        "href": "/docs/api/types/Sort",
+        "kind": "type-alias",
+        "label": "Type Alias",
+        "short": "A sort order: <code>[path, direction]</code> pairs, where earlier pairs take priority.",
+        "deprecated": false
+      },
+      {
+        "id": 659,
+        "name": "SortDirection",
+        "href": "/docs/api/types/SortDirection",
+        "kind": "type-alias",
+        "label": "Type Alias",
+        "short": "<code>1</code> for ascending or <code>-1</code> for descending.",
+        "deprecated": false
+      },
+      {
+        "id": 731,
+        "name": "UpdateFilter",
+        "href": "/docs/api/types/UpdateFilter",
+        "kind": "type-alias",
+        "label": "Type Alias",
+        "short": "An update document built from operators: <code>$set</code>, <code>$unset</code>, <code>$inc</code>, <code>$min</code>, <code>$max</code>, <code>$push</code>, <code>$addToSet</code> and <code>$pull</code>. Each operator accepts only paths of a matching type.",
+        "deprecated": false
+      },
+      {
+        "id": 744,
+        "name": "UpdatePaths",
+        "href": "/docs/api/types/UpdatePaths",
+        "kind": "type-alias",
+        "label": "Type Alias",
+        "short": "The field paths an update can change: every path except <code>_id</code>, which is immutable.",
+        "deprecated": false
+      },
+      {
+        "id": 276,
+        "name": "WithId",
+        "href": "/docs/api/types/WithId",
+        "kind": "type-alias",
+        "label": "Type Alias",
+        "short": "A document as stored and returned: <code>_id</code> is always present.",
+        "deprecated": false
+      }
+    ]
+  },
+  {
+    "id": "variables",
+    "title": "Variables",
+    "items": [
+      {
+        "id": 29,
+        "name": "DEFAULT_CONNECT_TIMEOUT_MS",
+        "href": "/docs/api/variables/DEFAULT_CONNECT_TIMEOUT_MS",
+        "kind": "variable",
+        "label": "Variable",
+        "short": "The default <code>connectTimeoutMS</code>: 10 seconds.",
+        "deprecated": false
+      },
+      {
+        "id": 30,
+        "name": "DEFAULT_REQUEST_TIMEOUT_MS",
+        "href": "/docs/api/variables/DEFAULT_REQUEST_TIMEOUT_MS",
+        "kind": "variable",
+        "label": "Variable",
+        "short": "The default <code>requestTimeoutMS</code>: 10 seconds.",
+        "deprecated": false
+      },
+      {
+        "id": 280,
+        "name": "DEFAULT_SINTERDB_PORT",
+        "href": "/docs/api/variables/DEFAULT_SINTERDB_PORT",
+        "kind": "variable",
+        "label": "Variable",
+        "short": "The port used when a connection string does not name one: 4721.",
+        "deprecated": false
+      },
+      {
+        "id": 31,
+        "name": "DEFAULT_SOCKET_TIMEOUT_MS",
+        "href": "/docs/api/variables/DEFAULT_SOCKET_TIMEOUT_MS",
+        "kind": "variable",
+        "label": "Variable",
+        "short": "The default <code>socketTimeoutMS</code>: 0, which disables the idle timeout.",
+        "deprecated": false
+      },
+      {
+        "id": 172,
+        "name": "SinterClientState",
+        "href": "/docs/api/variables/SinterClientState",
+        "kind": "variable",
+        "label": "Variable",
+        "short": "The lifecycle states of a <a href=\"/docs/api/classes/SinterClient\">SinterClient</a>.",
+        "deprecated": false
+      },
+      {
+        "id": 496,
+        "name": "SinterErrorCode",
+        "href": "/docs/api/variables/SinterErrorCode",
+        "kind": "variable",
+        "label": "Variable",
+        "short": "The stable string codes carried by <a href=\"/docs/api/classes/SinterError#code\">SinterError.code</a>. Branch on these rather than on message text.",
+        "deprecated": false
+      }
+    ]
   }
-] as const;
+] satisfies readonly ApiIndexGroup[];
 
 export default function Page() {
-  return (
-    <ApiIndexPage
-      projectName="SinterDB driver API"
-      reflections={reflections}
-    />
-  );
+  return <ApiIndexPage groups={groups} />;
 }

@@ -1,70 +1,75 @@
 export function renderRendererDeclarations() {
-  return `import type {
+  return `import type { ReactNode } from "react";
+
+import type {
+  ApiCode,
+  ApiComment,
+  ApiHierarchyNode,
+  ApiIndexGroup,
   ApiMember,
-  ApiNavigationItem,
+  ApiPage,
+  ApiParameter,
   ApiProject,
-  ApiReflection,
   ApiSignature,
   ApiSource,
-  ApiType,
+  ApiTocEntry,
+  ApiTypeParameter,
 } from "./model";
 
-export interface ApiLayoutProps {
-  readonly children: React.ReactNode;
+export interface ApiShellProps {
+  readonly activeHref: string | null;
+  readonly toc?: readonly ApiTocEntry[];
+  readonly children: ReactNode;
 }
 
 export interface ApiIndexPageProps {
-  readonly projectName: string;
-  readonly reflections: readonly ApiNavigationItem[];
+  readonly groups: readonly ApiIndexGroup[];
 }
 
 export interface ApiReflectionPageProps {
-  readonly projectName: string;
-  readonly api: ApiReflection;
-  readonly navigation: readonly ApiNavigationItem[];
+  readonly page: ApiPage;
 }
 
 export interface ApiHierarchyPageProps {
-  readonly projectName: string;
-  readonly classes: readonly ApiReflection[];
-  readonly navigation: readonly ApiNavigationItem[];
+  readonly nodes: readonly ApiHierarchyNode[];
 }
 
-export interface ApiShellProps {
-  readonly projectName: string;
-  readonly navigation: readonly ApiNavigationItem[];
-  readonly activeId?: number;
-  readonly pageNavigation?: React.ReactNode;
-  readonly children: React.ReactNode;
+export interface ApiSidebarProps {
+  readonly project: ApiProject;
+  readonly activeHref: string | null;
 }
 
-export interface ApiMemberGroupProps {
-  readonly title: string;
-  readonly members: readonly ApiMember[];
+export interface ApiMemberCardProps {
+  readonly member: ApiMember;
 }
 
 export interface ApiSignatureProps {
   readonly signature: ApiSignature;
 }
 
-export interface ApiTypeExpressionProps {
-  readonly type: ApiType | null;
+export interface ApiParameterListProps {
+  readonly title: string;
+  readonly parameters: readonly (ApiParameter | ApiTypeParameter)[];
 }
 
-export interface ApiSourceListProps {
-  readonly sources: readonly ApiSource[];
-}
-
-export interface TypeDocIconProps {
-  readonly kind: number | string;
-  readonly label?: string;
+export interface ApiCodeProps {
+  readonly code: ApiCode;
+  readonly block?: boolean;
   readonly className?: string;
 }
 
-export interface ApiRendererContext {
-  readonly project: ApiProject;
-  readonly routeBase: string;
-  readonly iconSpritePath: string;
+export interface ApiCommentProps {
+  readonly comment: ApiComment | null;
+  readonly summary?: boolean;
+}
+
+export interface ApiSourcesProps {
+  readonly sources: readonly ApiSource[];
+}
+
+export interface ApiKindIconProps {
+  readonly kind: string;
+  readonly label?: string;
 }
 `;
 }

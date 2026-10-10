@@ -1,728 +1,211 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import type { Metadata } from "next";
 
-const api = {
+import { ApiReflectionPage } from "../../_components/pages";
+import type { ApiPage } from "../../_generated/model";
+
+const page = {
   "id": 660,
   "name": "CreateIndexResult",
-  "slug": "CreateIndexResult",
-  "route": "interfaces/CreateIndexResult",
-  "kind": "Interface",
-  "kindId": 256,
-  "flags": {
-    "static": false,
-    "readonly": false,
-    "optional": false,
-    "abstract": false,
-    "protected": false,
-    "private": false,
-    "external": false,
-    "const": false
-  },
-  "comment": {
-    "summary": [
-      {
-        "kind": "text",
-        "text": "The result of ",
-        "target": null
-      },
-      {
-        "kind": "inline-tag",
-        "text": "SinterCollection.createIndex",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": ".",
-        "target": null
-      }
+  "kind": "interface",
+  "label": "Interface",
+  "href": "/docs/api/interfaces/CreateIndexResult",
+  "description": "The result of SinterCollection.createIndex.",
+  "badges": [],
+  "declaration": [
+    [
+      "interface ",
+      "kw"
     ],
-    "blockTags": []
-  },
-  "type": null,
-  "hierarchy": {
-    "extends": [],
-    "extendedBy": []
-  },
-  "sources": [
-    {
-      "fileName": "packages/driver/dist/indexes.d.ts",
-      "line": 22,
-      "character": 17,
-      "url": null
-    }
+    [
+      "CreateIndexResult",
+      "name"
+    ]
   ],
-  "relationships": {
-    "inheritedFrom": null,
-    "overwrites": null,
-    "implementationOf": null
+  "comment": {
+    "summary": "<p>The result of <a href=\"/docs/api/classes/SinterCollection#create-index\">SinterCollection.createIndex</a>.</p>",
+    "short": "The result of <a href=\"/docs/api/classes/SinterCollection#create-index\">SinterCollection.createIndex</a>.",
+    "deprecated": null,
+    "modifiers": [],
+    "blocks": []
   },
   "typeParameters": [],
+  "hierarchy": null,
+  "signatureSection": null,
   "signatures": [],
-  "children": [
+  "sections": [
     {
-      "id": 661,
-      "name": "acknowledged",
-      "anchor": "acknowledged",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "Always ",
-            "target": null
+      "id": "properties",
+      "title": "Properties",
+      "members": [
+        {
+          "id": 661,
+          "name": "acknowledged",
+          "anchor": "acknowledged",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "acknowledged",
+              "name"
+            ],
+            [
+              ": ",
+              "pn"
+            ],
+            [
+              "true",
+              "lit"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>Always <code>true</code>; a failed request throws instead.</p>",
+            "short": "Always <code>true</code>; a failed request throws instead.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
           },
-          {
-            "kind": "code",
-            "text": "`true`",
-            "target": null
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/indexes.ts",
+              "line": 32,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/indexes.ts#L32"
+            }
+          ]
+        },
+        {
+          "id": 663,
+          "name": "created",
+          "anchor": "created",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "created",
+              "name"
+            ],
+            [
+              ": ",
+              "pn"
+            ],
+            [
+              "boolean",
+              "prim"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>False when an identical index already existed.</p>",
+            "short": "False when an identical index already existed.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
           },
-          {
-            "kind": "text",
-            "text": "; a failed request throws instead.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "literal",
-        "text": "true",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/indexes.ts",
+              "line": 36,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/indexes.ts#L36"
+            }
+          ]
+        },
         {
-          "fileName": "packages/driver/dist/indexes.d.ts",
-          "line": 24,
-          "character": 13,
-          "url": null
+          "id": 662,
+          "name": "name",
+          "anchor": "name",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "name",
+              "name"
+            ],
+            [
+              ": ",
+              "pn"
+            ],
+            [
+              "string",
+              "prim"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>The name of the index, whether new or existing.</p>",
+            "short": "The name of the index, whether new or existing.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/indexes.ts",
+              "line": 34,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/indexes.ts#L34"
+            }
+          ]
         }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 663,
-      "name": "created",
-      "anchor": "created",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "False when an identical index already existed.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "intrinsic",
-        "text": "boolean",
-        "name": "boolean",
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "packages/driver/dist/indexes.d.ts",
-          "line": 28,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 662,
-      "name": "name",
-      "anchor": "name",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "The name of the index, whether new or existing.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "intrinsic",
-        "text": "string",
-        "name": "string",
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "packages/driver/dist/indexes.d.ts",
-          "line": 26,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
+      ]
     }
   ],
-  "typeDeclaration": []
-} as const;
-const navigation = [
-  {
-    "id": 1,
-    "name": "CustomId",
-    "route": "classes/CustomId",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 285,
-    "name": "FindCursor",
-    "route": "classes/FindCursor",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 32,
-    "name": "SinterClient",
-    "route": "classes/SinterClient",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 338,
-    "name": "SinterClientOptionsError",
-    "route": "classes/SinterClientOptionsError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 357,
-    "name": "SinterClientStateError",
-    "route": "classes/SinterClientStateError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 199,
-    "name": "SinterCollection",
-    "route": "classes/SinterCollection",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 377,
-    "name": "SinterCompatibilityError",
-    "route": "classes/SinterCompatibilityError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 400,
-    "name": "SinterConnectionError",
-    "route": "classes/SinterConnectionError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 419,
-    "name": "SinterConnectionStringError",
-    "route": "classes/SinterConnectionStringError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 438,
-    "name": "SinterConnectionTimeoutError",
-    "route": "classes/SinterConnectionTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 325,
-    "name": "SinterDatabase",
-    "route": "classes/SinterDatabase",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 457,
-    "name": "SinterDocumentError",
-    "route": "classes/SinterDocumentError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 476,
-    "name": "SinterError",
-    "route": "classes/SinterError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 511,
-    "name": "SinterInsertManyError",
-    "route": "classes/SinterInsertManyError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 700,
-    "name": "SinterNamespaceError",
-    "route": "classes/SinterNamespaceError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 537,
-    "name": "SinterProtocolError",
-    "route": "classes/SinterProtocolError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 556,
-    "name": "SinterRequestTimeoutError",
-    "route": "classes/SinterRequestTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 575,
-    "name": "SinterServerError",
-    "route": "classes/SinterServerError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 598,
-    "name": "SinterSocketTimeoutError",
-    "route": "classes/SinterSocketTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 660,
-    "name": "CreateIndexResult",
-    "route": "interfaces/CreateIndexResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 723,
-    "name": "DeleteResult",
-    "route": "interfaces/DeleteResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 26,
-    "name": "Document",
-    "route": "interfaces/Document",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 664,
-    "name": "ExplainResult",
-    "route": "interfaces/ExplainResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 259,
-    "name": "FindOptions",
-    "route": "interfaces/FindOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 321,
-    "name": "FindQueryOptions",
-    "route": "interfaces/FindQueryOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 675,
-    "name": "IndexBoundInfo",
-    "route": "interfaces/IndexBoundInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 678,
-    "name": "IndexDefinition",
-    "route": "interfaces/IndexDefinition",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 685,
-    "name": "IndexInfo",
-    "route": "interfaces/IndexInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 691,
-    "name": "IndexIssue",
-    "route": "interfaces/IndexIssue",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 695,
-    "name": "IndexValidationResult",
-    "route": "interfaces/IndexValidationResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 265,
-    "name": "InsertManyResult",
-    "route": "interfaces/InsertManyResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 269,
-    "name": "InsertOneResult",
-    "route": "interfaces/InsertOneResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 281,
-    "name": "ParsedSinterConnectionString",
-    "route": "interfaces/ParsedSinterConnectionString",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 180,
-    "name": "SinterClientEvents",
-    "route": "interfaces/SinterClientEvents",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 185,
-    "name": "SinterClientOptions",
-    "route": "interfaces/SinterClientOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 189,
-    "name": "SinterPingResult",
-    "route": "interfaces/SinterPingResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 617,
-    "name": "SinterServerErrorOptions",
-    "route": "interfaces/SinterServerErrorOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 194,
-    "name": "SinterServerInfo",
-    "route": "interfaces/SinterServerInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 742,
-    "name": "UpdateOptions",
-    "route": "interfaces/UpdateOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 746,
-    "name": "UpdateResult",
-    "route": "interfaces/UpdateResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 719,
-    "name": "ArrayPaths",
-    "route": "types/ArrayPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 623,
-    "name": "AtomicValue",
-    "route": "types/AtomicValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 721,
-    "name": "ComparablePaths",
-    "route": "types/ComparablePaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 624,
-    "name": "ComparableValue",
-    "route": "types/ComparableValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 625,
-    "name": "ComparisonOperators",
-    "route": "types/ComparisonOperators",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 316,
-    "name": "CursorExecutor",
-    "route": "types/CursorExecutor",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 632,
-    "name": "ElementOf",
-    "route": "types/ElementOf",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 257,
-    "name": "EqualityFilter",
-    "route": "types/EqualityFilter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 634,
-    "name": "Filter",
-    "route": "types/Filter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 641,
-    "name": "FilterOperators",
-    "route": "types/FilterOperators",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 650,
-    "name": "FilterPaths",
-    "route": "types/FilterPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 653,
-    "name": "FilterPathValue",
-    "route": "types/FilterPathValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 673,
-    "name": "IndexablePath",
-    "route": "types/IndexablePath",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 656,
-    "name": "MaxPathDepth",
-    "route": "types/MaxPathDepth",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 726,
-    "name": "NumericPaths",
-    "route": "types/NumericPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 272,
-    "name": "OptionalId",
-    "route": "types/OptionalId",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 728,
-    "name": "PathsMatching",
-    "route": "types/PathsMatching",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 179,
-    "name": "SinterClientState",
-    "route": "types/SinterClientState",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 510,
-    "name": "SinterErrorCode",
-    "route": "types/SinterErrorCode",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 657,
-    "name": "Sort",
-    "route": "types/Sort",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 659,
-    "name": "SortDirection",
-    "route": "types/SortDirection",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 731,
-    "name": "UpdateFilter",
-    "route": "types/UpdateFilter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 744,
-    "name": "UpdatePaths",
-    "route": "types/UpdatePaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 276,
-    "name": "WithId",
-    "route": "types/WithId",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 29,
-    "name": "DEFAULT_CONNECT_TIMEOUT_MS",
-    "route": "variables/DEFAULT_CONNECT_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 30,
-    "name": "DEFAULT_REQUEST_TIMEOUT_MS",
-    "route": "variables/DEFAULT_REQUEST_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 280,
-    "name": "DEFAULT_SINTERDB_PORT",
-    "route": "variables/DEFAULT_SINTERDB_PORT",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 31,
-    "name": "DEFAULT_SOCKET_TIMEOUT_MS",
-    "route": "variables/DEFAULT_SOCKET_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 172,
-    "name": "SinterClientState",
-    "route": "variables/SinterClientState",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 496,
-    "name": "SinterErrorCode",
-    "route": "variables/SinterErrorCode",
-    "kind": "Variable",
-    "kindId": 32
-  }
-] as const;
+  "toc": [
+    {
+      "id": "properties",
+      "title": "Properties",
+      "items": [
+        {
+          "anchor": "acknowledged",
+          "name": "acknowledged",
+          "kind": "property"
+        },
+        {
+          "anchor": "created",
+          "name": "created",
+          "kind": "property"
+        },
+        {
+          "anchor": "name",
+          "name": "name",
+          "kind": "property"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/driver/src/indexes.ts",
+      "line": 30,
+      "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/indexes.ts#L30"
+    }
+  ]
+} satisfies ApiPage;
+
+export const metadata: Metadata = {
+  title: page.name,
+  description: page.description || undefined,
+};
 
 export default function Page() {
-  return (
-    <ApiReflectionPage
-      projectName="SinterDB driver API"
-      api={api}
-      navigation={navigation}
-    />
-  );
+  return <ApiReflectionPage page={page} />;
 }

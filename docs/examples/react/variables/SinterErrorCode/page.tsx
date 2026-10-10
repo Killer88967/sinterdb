@@ -1,1239 +1,947 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import type { Metadata } from "next";
 
-const api = {
+import { ApiReflectionPage } from "../../_components/pages";
+import type { ApiPage } from "../../_generated/model";
+
+const page = {
   "id": 496,
   "name": "SinterErrorCode",
-  "slug": "SinterErrorCode",
-  "route": "variables/SinterErrorCode",
-  "kind": "Variable",
-  "kindId": 32,
-  "flags": {
-    "static": false,
-    "readonly": false,
-    "optional": false,
-    "abstract": false,
-    "protected": false,
-    "private": false,
-    "external": false,
-    "const": true
-  },
-  "comment": {
-    "summary": [
-      {
-        "kind": "text",
-        "text": "The stable string codes carried by ",
-        "target": null
-      },
-      {
-        "kind": "inline-tag",
-        "text": "SinterError.code",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": ". Branch on\nthese rather than on message text.",
-        "target": null
-      }
+  "kind": "variable",
+  "label": "Variable",
+  "href": "/docs/api/variables/SinterErrorCode",
+  "description": "The stable string codes carried by SinterError.code. Branch on these rather than on message text.",
+  "badges": [],
+  "declaration": [
+    [
+      "const ",
+      "kw"
     ],
-    "blockTags": []
-  },
-  "type": {
-    "kind": "reflection",
-    "text": "{ ClientClosed: \"CLIENT_CLOSED\"; ClientNotConnected: \"CLIENT_NOT_CONNECTED\"; ConnectionFailed: \"CONNECTION_FAILED\"; ConnectionTimeout: \"CONNECTION_TIMEOUT\"; IncompatibleProtocol: \"INCOMPATIBLE_PROTOCOL\"; InvalidClientOptions: \"INVALID_CLIENT_OPTIONS\"; InvalidConnectionString: \"INVALID_CONNECTION_STRING\"; InvalidDocument: \"INVALID_DOCUMENT\"; ProtocolViolation: \"PROTOCOL_VIOLATION\"; RequestTimeout: \"REQUEST_TIMEOUT\"; ServerError: \"SERVER_ERROR\"; SocketTimeout: \"SOCKET_TIMEOUT\" }",
-    "name": null,
-    "target": null,
-    "children": []
-  },
-  "hierarchy": {
-    "extends": [],
-    "extendedBy": []
-  },
-  "sources": [
-    {
-      "fileName": "packages/driver/dist/errors.d.ts",
-      "line": 6,
-      "character": 21,
-      "url": null
-    },
-    {
-      "fileName": "packages/driver/dist/errors.d.ts",
-      "line": 33,
-      "character": 12,
-      "url": null
-    }
+    [
+      "SinterErrorCode",
+      "name"
+    ],
+    [
+      ": {",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "ClientClosed",
+      "prop",
+      "/docs/api/variables/SinterErrorCode#client-closed"
+    ],
+    [
+      ": ",
+      "pn"
+    ],
+    [
+      "\"CLIENT_CLOSED\"",
+      "lit"
+    ],
+    [
+      ";",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "ClientNotConnected",
+      "prop",
+      "/docs/api/variables/SinterErrorCode#client-not-connected"
+    ],
+    [
+      ": ",
+      "pn"
+    ],
+    [
+      "\"CLIENT_NOT_CONNECTED\"",
+      "lit"
+    ],
+    [
+      ";",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "ConnectionFailed",
+      "prop",
+      "/docs/api/variables/SinterErrorCode#connection-failed"
+    ],
+    [
+      ": ",
+      "pn"
+    ],
+    [
+      "\"CONNECTION_FAILED\"",
+      "lit"
+    ],
+    [
+      ";",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "ConnectionTimeout",
+      "prop",
+      "/docs/api/variables/SinterErrorCode#connection-timeout"
+    ],
+    [
+      ": ",
+      "pn"
+    ],
+    [
+      "\"CONNECTION_TIMEOUT\"",
+      "lit"
+    ],
+    [
+      ";",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "IncompatibleProtocol",
+      "prop",
+      "/docs/api/variables/SinterErrorCode#incompatible-protocol"
+    ],
+    [
+      ": ",
+      "pn"
+    ],
+    [
+      "\"INCOMPATIBLE_PROTOCOL\"",
+      "lit"
+    ],
+    [
+      ";",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "InvalidClientOptions",
+      "prop",
+      "/docs/api/variables/SinterErrorCode#invalid-client-options"
+    ],
+    [
+      ": ",
+      "pn"
+    ],
+    [
+      "\"INVALID_CLIENT_OPTIONS\"",
+      "lit"
+    ],
+    [
+      ";",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "InvalidConnectionString",
+      "prop",
+      "/docs/api/variables/SinterErrorCode#invalid-connection-string"
+    ],
+    [
+      ": ",
+      "pn"
+    ],
+    [
+      "\"INVALID_CONNECTION_STRING\"",
+      "lit"
+    ],
+    [
+      ";",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "InvalidDocument",
+      "prop",
+      "/docs/api/variables/SinterErrorCode#invalid-document"
+    ],
+    [
+      ": ",
+      "pn"
+    ],
+    [
+      "\"INVALID_DOCUMENT\"",
+      "lit"
+    ],
+    [
+      ";",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "ProtocolViolation",
+      "prop",
+      "/docs/api/variables/SinterErrorCode#protocol-violation"
+    ],
+    [
+      ": ",
+      "pn"
+    ],
+    [
+      "\"PROTOCOL_VIOLATION\"",
+      "lit"
+    ],
+    [
+      ";",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "RequestTimeout",
+      "prop",
+      "/docs/api/variables/SinterErrorCode#request-timeout"
+    ],
+    [
+      ": ",
+      "pn"
+    ],
+    [
+      "\"REQUEST_TIMEOUT\"",
+      "lit"
+    ],
+    [
+      ";",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "ServerError",
+      "prop",
+      "/docs/api/variables/SinterErrorCode#server-error"
+    ],
+    [
+      ": ",
+      "pn"
+    ],
+    [
+      "\"SERVER_ERROR\"",
+      "lit"
+    ],
+    [
+      ";",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "SocketTimeout",
+      "prop",
+      "/docs/api/variables/SinterErrorCode#socket-timeout"
+    ],
+    [
+      ": ",
+      "pn"
+    ],
+    [
+      "\"SOCKET_TIMEOUT\"",
+      "lit"
+    ],
+    [
+      ";",
+      "pn"
+    ],
+    [
+      "\n"
+    ],
+    [
+      "}",
+      "pn"
+    ]
   ],
-  "relationships": {
-    "inheritedFrom": null,
-    "overwrites": null,
-    "implementationOf": null
+  "comment": {
+    "summary": "<p>The stable string codes carried by <a href=\"/docs/api/classes/SinterError#code\">SinterError.code</a>. Branch on\nthese rather than on message text.</p>",
+    "short": "The stable string codes carried by <a href=\"/docs/api/classes/SinterError#code\">SinterError.code</a>. Branch on these rather than on message text.",
+    "deprecated": null,
+    "modifiers": [],
+    "blocks": []
   },
   "typeParameters": [],
+  "hierarchy": null,
+  "signatureSection": null,
   "signatures": [],
-  "children": [],
-  "typeDeclaration": [
+  "sections": [
     {
-      "id": 501,
-      "name": "ClientClosed",
-      "anchor": "client-closed",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "The client has been closed.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "literal",
-        "text": "\"CLIENT_CLOSED\"",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
+      "id": "type-declaration",
+      "title": "Properties",
+      "members": [
         {
-          "fileName": "packages/driver/dist/errors.d.ts",
-          "line": 14,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 502,
-      "name": "ClientNotConnected",
-      "anchor": "client-not-connected",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "A command was sent before ",
-            "target": null
+          "id": 501,
+          "name": "ClientClosed",
+          "anchor": "client-closed",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "ClientClosed",
+              "name"
+            ],
+            [
+              ": ",
+              "pn"
+            ],
+            [
+              "\"CLIENT_CLOSED\"",
+              "lit"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>The client has been closed.</p>",
+            "short": "The client has been closed.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
           },
-          {
-            "kind": "code",
-            "text": "`connect()`",
-            "target": null
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/errors.ts",
+              "line": 15,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/errors.ts#L15"
+            }
+          ]
+        },
+        {
+          "id": 502,
+          "name": "ClientNotConnected",
+          "anchor": "client-not-connected",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "ClientNotConnected",
+              "name"
+            ],
+            [
+              ": ",
+              "pn"
+            ],
+            [
+              "\"CLIENT_NOT_CONNECTED\"",
+              "lit"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>A command was sent before <code>connect()</code> completed.</p>",
+            "short": "A command was sent before <code>connect()</code> completed.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
           },
-          {
-            "kind": "text",
-            "text": " completed.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "literal",
-        "text": "\"CLIENT_NOT_CONNECTED\"",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/errors.ts",
+              "line": 17,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/errors.ts#L17"
+            }
+          ]
+        },
         {
-          "fileName": "packages/driver/dist/errors.d.ts",
-          "line": 16,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 503,
-      "name": "ConnectionFailed",
-      "anchor": "connection-failed",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "The connection could not be established or was lost.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "literal",
-        "text": "\"CONNECTION_FAILED\"",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "packages/driver/dist/errors.d.ts",
-          "line": 18,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 504,
-      "name": "ConnectionTimeout",
-      "anchor": "connection-timeout",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "Connecting exceeded ",
-            "target": null
+          "id": 503,
+          "name": "ConnectionFailed",
+          "anchor": "connection-failed",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "ConnectionFailed",
+              "name"
+            ],
+            [
+              ": ",
+              "pn"
+            ],
+            [
+              "\"CONNECTION_FAILED\"",
+              "lit"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>The connection could not be established or was lost.</p>",
+            "short": "The connection could not be established or was lost.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
           },
-          {
-            "kind": "code",
-            "text": "`connectTimeoutMS`",
-            "target": null
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/errors.ts",
+              "line": 19,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/errors.ts#L19"
+            }
+          ]
+        },
+        {
+          "id": 504,
+          "name": "ConnectionTimeout",
+          "anchor": "connection-timeout",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "ConnectionTimeout",
+              "name"
+            ],
+            [
+              ": ",
+              "pn"
+            ],
+            [
+              "\"CONNECTION_TIMEOUT\"",
+              "lit"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>Connecting exceeded <code>connectTimeoutMS</code>.</p>",
+            "short": "Connecting exceeded <code>connectTimeoutMS</code>.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
           },
-          {
-            "kind": "text",
-            "text": ".",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "literal",
-        "text": "\"CONNECTION_TIMEOUT\"",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/errors.ts",
+              "line": 21,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/errors.ts#L21"
+            }
+          ]
+        },
         {
-          "fileName": "packages/driver/dist/errors.d.ts",
-          "line": 20,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 507,
-      "name": "IncompatibleProtocol",
-      "anchor": "incompatible-protocol",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "The server does not speak a compatible protocol version.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "literal",
-        "text": "\"INCOMPATIBLE_PROTOCOL\"",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "packages/driver/dist/errors.d.ts",
-          "line": 26,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 499,
-      "name": "InvalidClientOptions",
-      "anchor": "invalid-client-options",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "A client option or a database or collection name is invalid.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "literal",
-        "text": "\"INVALID_CLIENT_OPTIONS\"",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "packages/driver/dist/errors.d.ts",
-          "line": 10,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 498,
-      "name": "InvalidConnectionString",
-      "anchor": "invalid-connection-string",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "The connection string is malformed.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "literal",
-        "text": "\"INVALID_CONNECTION_STRING\"",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "packages/driver/dist/errors.d.ts",
-          "line": 8,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 500,
-      "name": "InvalidDocument",
-      "anchor": "invalid-document",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "A request holds a value the driver cannot encode. Nothing was sent.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "literal",
-        "text": "\"INVALID_DOCUMENT\"",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "packages/driver/dist/errors.d.ts",
-          "line": 12,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 508,
-      "name": "ProtocolViolation",
-      "anchor": "protocol-violation",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "The server sent a message the driver cannot interpret.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "literal",
-        "text": "\"PROTOCOL_VIOLATION\"",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "packages/driver/dist/errors.d.ts",
-          "line": 28,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 506,
-      "name": "RequestTimeout",
-      "anchor": "request-timeout",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "A request exceeded ",
-            "target": null
+          "id": 507,
+          "name": "IncompatibleProtocol",
+          "anchor": "incompatible-protocol",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "IncompatibleProtocol",
+              "name"
+            ],
+            [
+              ": ",
+              "pn"
+            ],
+            [
+              "\"INCOMPATIBLE_PROTOCOL\"",
+              "lit"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>The server does not speak a compatible protocol version.</p>",
+            "short": "The server does not speak a compatible protocol version.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
           },
-          {
-            "kind": "code",
-            "text": "`requestTimeoutMS`",
-            "target": null
-          },
-          {
-            "kind": "text",
-            "text": ".",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "literal",
-        "text": "\"REQUEST_TIMEOUT\"",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/errors.ts",
+              "line": 27,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/errors.ts#L27"
+            }
+          ]
+        },
         {
-          "fileName": "packages/driver/dist/errors.d.ts",
-          "line": 24,
-          "character": 13,
-          "url": null
+          "id": 499,
+          "name": "InvalidClientOptions",
+          "anchor": "invalid-client-options",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "InvalidClientOptions",
+              "name"
+            ],
+            [
+              ": ",
+              "pn"
+            ],
+            [
+              "\"INVALID_CLIENT_OPTIONS\"",
+              "lit"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>A client option or a database or collection name is invalid.</p>",
+            "short": "A client option or a database or collection name is invalid.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/errors.ts",
+              "line": 11,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/errors.ts#L11"
+            }
+          ]
+        },
+        {
+          "id": 498,
+          "name": "InvalidConnectionString",
+          "anchor": "invalid-connection-string",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "InvalidConnectionString",
+              "name"
+            ],
+            [
+              ": ",
+              "pn"
+            ],
+            [
+              "\"INVALID_CONNECTION_STRING\"",
+              "lit"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>The connection string is malformed.</p>",
+            "short": "The connection string is malformed.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/errors.ts",
+              "line": 9,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/errors.ts#L9"
+            }
+          ]
+        },
+        {
+          "id": 500,
+          "name": "InvalidDocument",
+          "anchor": "invalid-document",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "InvalidDocument",
+              "name"
+            ],
+            [
+              ": ",
+              "pn"
+            ],
+            [
+              "\"INVALID_DOCUMENT\"",
+              "lit"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>A request holds a value the driver cannot encode. Nothing was sent.</p>",
+            "short": "A request holds a value the driver cannot encode. Nothing was sent.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/errors.ts",
+              "line": 13,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/errors.ts#L13"
+            }
+          ]
+        },
+        {
+          "id": 508,
+          "name": "ProtocolViolation",
+          "anchor": "protocol-violation",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "ProtocolViolation",
+              "name"
+            ],
+            [
+              ": ",
+              "pn"
+            ],
+            [
+              "\"PROTOCOL_VIOLATION\"",
+              "lit"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>The server sent a message the driver cannot interpret.</p>",
+            "short": "The server sent a message the driver cannot interpret.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/errors.ts",
+              "line": 29,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/errors.ts#L29"
+            }
+          ]
+        },
+        {
+          "id": 506,
+          "name": "RequestTimeout",
+          "anchor": "request-timeout",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "RequestTimeout",
+              "name"
+            ],
+            [
+              ": ",
+              "pn"
+            ],
+            [
+              "\"REQUEST_TIMEOUT\"",
+              "lit"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>A request exceeded <code>requestTimeoutMS</code>.</p>",
+            "short": "A request exceeded <code>requestTimeoutMS</code>.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/errors.ts",
+              "line": 25,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/errors.ts#L25"
+            }
+          ]
+        },
+        {
+          "id": 509,
+          "name": "ServerError",
+          "anchor": "server-error",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "ServerError",
+              "name"
+            ],
+            [
+              ": ",
+              "pn"
+            ],
+            [
+              "\"SERVER_ERROR\"",
+              "lit"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>The server rejected the request. See <code>serverErrorName</code>.</p>",
+            "short": "The server rejected the request. See <code>serverErrorName</code>.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/errors.ts",
+              "line": 31,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/errors.ts#L31"
+            }
+          ]
+        },
+        {
+          "id": 505,
+          "name": "SocketTimeout",
+          "anchor": "socket-timeout",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "SocketTimeout",
+              "name"
+            ],
+            [
+              ": ",
+              "pn"
+            ],
+            [
+              "\"SOCKET_TIMEOUT\"",
+              "lit"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>The connection was idle for longer than <code>socketTimeoutMS</code>.</p>",
+            "short": "The connection was idle for longer than <code>socketTimeoutMS</code>.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/errors.ts",
+              "line": 23,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/errors.ts#L23"
+            }
+          ]
         }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
+      ]
+    }
+  ],
+  "toc": [
+    {
+      "id": "type-declaration",
+      "title": "Properties",
+      "items": [
+        {
+          "anchor": "client-closed",
+          "name": "ClientClosed",
+          "kind": "property"
+        },
+        {
+          "anchor": "client-not-connected",
+          "name": "ClientNotConnected",
+          "kind": "property"
+        },
+        {
+          "anchor": "connection-failed",
+          "name": "ConnectionFailed",
+          "kind": "property"
+        },
+        {
+          "anchor": "connection-timeout",
+          "name": "ConnectionTimeout",
+          "kind": "property"
+        },
+        {
+          "anchor": "incompatible-protocol",
+          "name": "IncompatibleProtocol",
+          "kind": "property"
+        },
+        {
+          "anchor": "invalid-client-options",
+          "name": "InvalidClientOptions",
+          "kind": "property"
+        },
+        {
+          "anchor": "invalid-connection-string",
+          "name": "InvalidConnectionString",
+          "kind": "property"
+        },
+        {
+          "anchor": "invalid-document",
+          "name": "InvalidDocument",
+          "kind": "property"
+        },
+        {
+          "anchor": "protocol-violation",
+          "name": "ProtocolViolation",
+          "kind": "property"
+        },
+        {
+          "anchor": "request-timeout",
+          "name": "RequestTimeout",
+          "kind": "property"
+        },
+        {
+          "anchor": "server-error",
+          "name": "ServerError",
+          "kind": "property"
+        },
+        {
+          "anchor": "socket-timeout",
+          "name": "SocketTimeout",
+          "kind": "property"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/driver/src/errors.ts",
+      "line": 7,
+      "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/errors.ts#L7"
     },
     {
-      "id": 509,
-      "name": "ServerError",
-      "anchor": "server-error",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "The server rejected the request. See ",
-            "target": null
-          },
-          {
-            "kind": "code",
-            "text": "`serverErrorName`",
-            "target": null
-          },
-          {
-            "kind": "text",
-            "text": ".",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "literal",
-        "text": "\"SERVER_ERROR\"",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "packages/driver/dist/errors.d.ts",
-          "line": 30,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 505,
-      "name": "SocketTimeout",
-      "anchor": "socket-timeout",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "The connection was idle for longer than ",
-            "target": null
-          },
-          {
-            "kind": "code",
-            "text": "`socketTimeoutMS`",
-            "target": null
-          },
-          {
-            "kind": "text",
-            "text": ".",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "literal",
-        "text": "\"SOCKET_TIMEOUT\"",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "packages/driver/dist/errors.d.ts",
-          "line": 22,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
+      "path": "packages/driver/src/errors.ts",
+      "line": 35,
+      "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/errors.ts#L35"
     }
   ]
-} as const;
-const navigation = [
-  {
-    "id": 1,
-    "name": "CustomId",
-    "route": "classes/CustomId",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 285,
-    "name": "FindCursor",
-    "route": "classes/FindCursor",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 32,
-    "name": "SinterClient",
-    "route": "classes/SinterClient",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 338,
-    "name": "SinterClientOptionsError",
-    "route": "classes/SinterClientOptionsError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 357,
-    "name": "SinterClientStateError",
-    "route": "classes/SinterClientStateError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 199,
-    "name": "SinterCollection",
-    "route": "classes/SinterCollection",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 377,
-    "name": "SinterCompatibilityError",
-    "route": "classes/SinterCompatibilityError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 400,
-    "name": "SinterConnectionError",
-    "route": "classes/SinterConnectionError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 419,
-    "name": "SinterConnectionStringError",
-    "route": "classes/SinterConnectionStringError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 438,
-    "name": "SinterConnectionTimeoutError",
-    "route": "classes/SinterConnectionTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 325,
-    "name": "SinterDatabase",
-    "route": "classes/SinterDatabase",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 457,
-    "name": "SinterDocumentError",
-    "route": "classes/SinterDocumentError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 476,
-    "name": "SinterError",
-    "route": "classes/SinterError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 511,
-    "name": "SinterInsertManyError",
-    "route": "classes/SinterInsertManyError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 700,
-    "name": "SinterNamespaceError",
-    "route": "classes/SinterNamespaceError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 537,
-    "name": "SinterProtocolError",
-    "route": "classes/SinterProtocolError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 556,
-    "name": "SinterRequestTimeoutError",
-    "route": "classes/SinterRequestTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 575,
-    "name": "SinterServerError",
-    "route": "classes/SinterServerError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 598,
-    "name": "SinterSocketTimeoutError",
-    "route": "classes/SinterSocketTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 660,
-    "name": "CreateIndexResult",
-    "route": "interfaces/CreateIndexResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 723,
-    "name": "DeleteResult",
-    "route": "interfaces/DeleteResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 26,
-    "name": "Document",
-    "route": "interfaces/Document",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 664,
-    "name": "ExplainResult",
-    "route": "interfaces/ExplainResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 259,
-    "name": "FindOptions",
-    "route": "interfaces/FindOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 321,
-    "name": "FindQueryOptions",
-    "route": "interfaces/FindQueryOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 675,
-    "name": "IndexBoundInfo",
-    "route": "interfaces/IndexBoundInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 678,
-    "name": "IndexDefinition",
-    "route": "interfaces/IndexDefinition",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 685,
-    "name": "IndexInfo",
-    "route": "interfaces/IndexInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 691,
-    "name": "IndexIssue",
-    "route": "interfaces/IndexIssue",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 695,
-    "name": "IndexValidationResult",
-    "route": "interfaces/IndexValidationResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 265,
-    "name": "InsertManyResult",
-    "route": "interfaces/InsertManyResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 269,
-    "name": "InsertOneResult",
-    "route": "interfaces/InsertOneResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 281,
-    "name": "ParsedSinterConnectionString",
-    "route": "interfaces/ParsedSinterConnectionString",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 180,
-    "name": "SinterClientEvents",
-    "route": "interfaces/SinterClientEvents",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 185,
-    "name": "SinterClientOptions",
-    "route": "interfaces/SinterClientOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 189,
-    "name": "SinterPingResult",
-    "route": "interfaces/SinterPingResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 617,
-    "name": "SinterServerErrorOptions",
-    "route": "interfaces/SinterServerErrorOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 194,
-    "name": "SinterServerInfo",
-    "route": "interfaces/SinterServerInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 742,
-    "name": "UpdateOptions",
-    "route": "interfaces/UpdateOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 746,
-    "name": "UpdateResult",
-    "route": "interfaces/UpdateResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 719,
-    "name": "ArrayPaths",
-    "route": "types/ArrayPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 623,
-    "name": "AtomicValue",
-    "route": "types/AtomicValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 721,
-    "name": "ComparablePaths",
-    "route": "types/ComparablePaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 624,
-    "name": "ComparableValue",
-    "route": "types/ComparableValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 625,
-    "name": "ComparisonOperators",
-    "route": "types/ComparisonOperators",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 316,
-    "name": "CursorExecutor",
-    "route": "types/CursorExecutor",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 632,
-    "name": "ElementOf",
-    "route": "types/ElementOf",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 257,
-    "name": "EqualityFilter",
-    "route": "types/EqualityFilter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 634,
-    "name": "Filter",
-    "route": "types/Filter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 641,
-    "name": "FilterOperators",
-    "route": "types/FilterOperators",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 650,
-    "name": "FilterPaths",
-    "route": "types/FilterPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 653,
-    "name": "FilterPathValue",
-    "route": "types/FilterPathValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 673,
-    "name": "IndexablePath",
-    "route": "types/IndexablePath",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 656,
-    "name": "MaxPathDepth",
-    "route": "types/MaxPathDepth",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 726,
-    "name": "NumericPaths",
-    "route": "types/NumericPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 272,
-    "name": "OptionalId",
-    "route": "types/OptionalId",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 728,
-    "name": "PathsMatching",
-    "route": "types/PathsMatching",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 179,
-    "name": "SinterClientState",
-    "route": "types/SinterClientState",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 510,
-    "name": "SinterErrorCode",
-    "route": "types/SinterErrorCode",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 657,
-    "name": "Sort",
-    "route": "types/Sort",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 659,
-    "name": "SortDirection",
-    "route": "types/SortDirection",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 731,
-    "name": "UpdateFilter",
-    "route": "types/UpdateFilter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 744,
-    "name": "UpdatePaths",
-    "route": "types/UpdatePaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 276,
-    "name": "WithId",
-    "route": "types/WithId",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 29,
-    "name": "DEFAULT_CONNECT_TIMEOUT_MS",
-    "route": "variables/DEFAULT_CONNECT_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 30,
-    "name": "DEFAULT_REQUEST_TIMEOUT_MS",
-    "route": "variables/DEFAULT_REQUEST_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 280,
-    "name": "DEFAULT_SINTERDB_PORT",
-    "route": "variables/DEFAULT_SINTERDB_PORT",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 31,
-    "name": "DEFAULT_SOCKET_TIMEOUT_MS",
-    "route": "variables/DEFAULT_SOCKET_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 172,
-    "name": "SinterClientState",
-    "route": "variables/SinterClientState",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 496,
-    "name": "SinterErrorCode",
-    "route": "variables/SinterErrorCode",
-    "kind": "Variable",
-    "kindId": 32
-  }
-] as const;
+} satisfies ApiPage;
+
+export const metadata: Metadata = {
+  title: page.name,
+  description: page.description || undefined,
+};
 
 export default function Page() {
-  return (
-    <ApiReflectionPage
-      projectName="SinterDB driver API"
-      api={api}
-      navigation={navigation}
-    />
-  );
+  return <ApiReflectionPage page={page} />;
 }

@@ -1,907 +1,443 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import type { Metadata } from "next";
 
-const api = {
+import { ApiReflectionPage } from "../../_components/pages";
+import type { ApiPage } from "../../_generated/model";
+
+const page = {
   "id": 172,
   "name": "SinterClientState",
-  "slug": "SinterClientState",
-  "route": "variables/SinterClientState",
-  "kind": "Variable",
-  "kindId": 32,
-  "flags": {
-    "static": false,
-    "readonly": false,
-    "optional": false,
-    "abstract": false,
-    "protected": false,
-    "private": false,
-    "external": false,
-    "const": true
-  },
-  "comment": {
-    "summary": [
-      {
-        "kind": "text",
-        "text": "The lifecycle states of a ",
-        "target": null
-      },
-      {
-        "kind": "inline-tag",
-        "text": "SinterClient",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": ".\n\nA client moves from ",
-        "target": null
-      },
-      {
-        "kind": "code",
-        "text": "`new`",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": " to ",
-        "target": null
-      },
-      {
-        "kind": "code",
-        "text": "`connecting`",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": " to ",
-        "target": null
-      },
-      {
-        "kind": "code",
-        "text": "`connected`",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": ", and finally to\n",
-        "target": null
-      },
-      {
-        "kind": "code",
-        "text": "`closing`",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": " and ",
-        "target": null
-      },
-      {
-        "kind": "code",
-        "text": "`closed`",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": ". A failed connection attempt returns it to ",
-        "target": null
-      },
-      {
-        "kind": "code",
-        "text": "`new`",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": ", so\n",
-        "target": null
-      },
-      {
-        "kind": "code",
-        "text": "`connect()`",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": " can be called again. A closed client cannot be reused.",
-        "target": null
-      }
+  "kind": "variable",
+  "label": "Variable",
+  "href": "/docs/api/variables/SinterClientState",
+  "description": "The lifecycle states of a SinterClient.",
+  "badges": [],
+  "declaration": [
+    [
+      "const ",
+      "kw"
     ],
-    "blockTags": []
-  },
-  "type": {
-    "kind": "reflection",
-    "text": "{ Closed: \"closed\"; Closing: \"closing\"; Connected: \"connected\"; Connecting: \"connecting\"; New: \"new\" }",
-    "name": null,
-    "target": null,
-    "children": []
-  },
-  "hierarchy": {
-    "extends": [],
-    "extendedBy": []
-  },
-  "sources": [
-    {
-      "fileName": "packages/driver/dist/client.d.ts",
-      "line": 93,
-      "character": 21,
-      "url": null
-    },
-    {
-      "fileName": "packages/driver/dist/client.d.ts",
-      "line": 106,
-      "character": 12,
-      "url": null
-    }
+    [
+      "SinterClientState",
+      "name"
+    ],
+    [
+      ": {",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "Closed",
+      "prop",
+      "/docs/api/variables/SinterClientState#closed"
+    ],
+    [
+      ": ",
+      "pn"
+    ],
+    [
+      "\"closed\"",
+      "lit"
+    ],
+    [
+      ";",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "Closing",
+      "prop",
+      "/docs/api/variables/SinterClientState#closing"
+    ],
+    [
+      ": ",
+      "pn"
+    ],
+    [
+      "\"closing\"",
+      "lit"
+    ],
+    [
+      ";",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "Connected",
+      "prop",
+      "/docs/api/variables/SinterClientState#connected"
+    ],
+    [
+      ": ",
+      "pn"
+    ],
+    [
+      "\"connected\"",
+      "lit"
+    ],
+    [
+      ";",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "Connecting",
+      "prop",
+      "/docs/api/variables/SinterClientState#connecting"
+    ],
+    [
+      ": ",
+      "pn"
+    ],
+    [
+      "\"connecting\"",
+      "lit"
+    ],
+    [
+      ";",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "New",
+      "prop",
+      "/docs/api/variables/SinterClientState#new"
+    ],
+    [
+      ": ",
+      "pn"
+    ],
+    [
+      "\"new\"",
+      "lit"
+    ],
+    [
+      ";",
+      "pn"
+    ],
+    [
+      "\n"
+    ],
+    [
+      "}",
+      "pn"
+    ]
   ],
-  "relationships": {
-    "inheritedFrom": null,
-    "overwrites": null,
-    "implementationOf": null
+  "comment": {
+    "summary": "<p>The lifecycle states of a <a href=\"/docs/api/classes/SinterClient\">SinterClient</a>.</p>\n<p>A client moves from <code>new</code> to <code>connecting</code> to <code>connected</code>, and finally to\n<code>closing</code> and <code>closed</code>. A failed connection attempt returns it to <code>new</code>, so\n<code>connect()</code> can be called again. A closed client cannot be reused.</p>",
+    "short": "The lifecycle states of a <a href=\"/docs/api/classes/SinterClient\">SinterClient</a>.",
+    "deprecated": null,
+    "modifiers": [],
+    "blocks": []
   },
   "typeParameters": [],
+  "hierarchy": null,
+  "signatureSection": null,
   "signatures": [],
-  "children": [],
-  "typeDeclaration": [
+  "sections": [
     {
-      "id": 178,
-      "name": "Closed",
-      "anchor": "closed",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "Closed for good; the client cannot be reused.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "literal",
-        "text": "\"closed\"",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
+      "id": "type-declaration",
+      "title": "Properties",
+      "members": [
         {
-          "fileName": "packages/driver/dist/client.d.ts",
-          "line": 103,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 177,
-      "name": "Closing",
-      "anchor": "closing",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "code",
-            "text": "`close()`",
-            "target": null
+          "id": 178,
+          "name": "Closed",
+          "anchor": "closed",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "Closed",
+              "name"
+            ],
+            [
+              ": ",
+              "pn"
+            ],
+            [
+              "\"closed\"",
+              "lit"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>Closed for good; the client cannot be reused.</p>",
+            "short": "Closed for good; the client cannot be reused.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
           },
-          {
-            "kind": "text",
-            "text": " is in progress.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "literal",
-        "text": "\"closing\"",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/client.ts",
+              "line": 135,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/client.ts#L135"
+            }
+          ]
+        },
         {
-          "fileName": "packages/driver/dist/client.d.ts",
-          "line": 101,
-          "character": 13,
-          "url": null
+          "id": 177,
+          "name": "Closing",
+          "anchor": "closing",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "Closing",
+              "name"
+            ],
+            [
+              ": ",
+              "pn"
+            ],
+            [
+              "\"closing\"",
+              "lit"
+            ]
+          ],
+          "comment": {
+            "summary": "<p><code>close()</code> is in progress.</p>",
+            "short": "<code>close()</code> is in progress.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/client.ts",
+              "line": 133,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/client.ts#L133"
+            }
+          ]
+        },
+        {
+          "id": 176,
+          "name": "Connected",
+          "anchor": "connected",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "Connected",
+              "name"
+            ],
+            [
+              ": ",
+              "pn"
+            ],
+            [
+              "\"connected\"",
+              "lit"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>Connected and ready for commands.</p>",
+            "short": "Connected and ready for commands.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/client.ts",
+              "line": 131,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/client.ts#L131"
+            }
+          ]
+        },
+        {
+          "id": 175,
+          "name": "Connecting",
+          "anchor": "connecting",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "Connecting",
+              "name"
+            ],
+            [
+              ": ",
+              "pn"
+            ],
+            [
+              "\"connecting\"",
+              "lit"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>A connection attempt is in progress.</p>",
+            "short": "A connection attempt is in progress.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/client.ts",
+              "line": 129,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/client.ts#L129"
+            }
+          ]
+        },
+        {
+          "id": 174,
+          "name": "New",
+          "anchor": "new",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "New",
+              "name"
+            ],
+            [
+              ": ",
+              "pn"
+            ],
+            [
+              "\"new\"",
+              "lit"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>Created, not yet connected. Also the state after a failed connection attempt.</p>",
+            "short": "Created, not yet connected. Also the state after a failed connection attempt.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/client.ts",
+              "line": 127,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/client.ts#L127"
+            }
+          ]
         }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
+      ]
+    }
+  ],
+  "toc": [
+    {
+      "id": "type-declaration",
+      "title": "Properties",
+      "items": [
+        {
+          "anchor": "closed",
+          "name": "Closed",
+          "kind": "property"
+        },
+        {
+          "anchor": "closing",
+          "name": "Closing",
+          "kind": "property"
+        },
+        {
+          "anchor": "connected",
+          "name": "Connected",
+          "kind": "property"
+        },
+        {
+          "anchor": "connecting",
+          "name": "Connecting",
+          "kind": "property"
+        },
+        {
+          "anchor": "new",
+          "name": "New",
+          "kind": "property"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/driver/src/client.ts",
+      "line": 125,
+      "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/client.ts#L125"
     },
     {
-      "id": 176,
-      "name": "Connected",
-      "anchor": "connected",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "Connected and ready for commands.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "literal",
-        "text": "\"connected\"",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "packages/driver/dist/client.d.ts",
-          "line": 99,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 175,
-      "name": "Connecting",
-      "anchor": "connecting",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "A connection attempt is in progress.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "literal",
-        "text": "\"connecting\"",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "packages/driver/dist/client.d.ts",
-          "line": 97,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 174,
-      "name": "New",
-      "anchor": "new",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "Created, not yet connected. Also the state after a failed connection attempt.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "literal",
-        "text": "\"new\"",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "packages/driver/dist/client.d.ts",
-          "line": 95,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
+      "path": "packages/driver/src/client.ts",
+      "line": 139,
+      "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/client.ts#L139"
     }
   ]
-} as const;
-const navigation = [
-  {
-    "id": 1,
-    "name": "CustomId",
-    "route": "classes/CustomId",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 285,
-    "name": "FindCursor",
-    "route": "classes/FindCursor",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 32,
-    "name": "SinterClient",
-    "route": "classes/SinterClient",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 338,
-    "name": "SinterClientOptionsError",
-    "route": "classes/SinterClientOptionsError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 357,
-    "name": "SinterClientStateError",
-    "route": "classes/SinterClientStateError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 199,
-    "name": "SinterCollection",
-    "route": "classes/SinterCollection",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 377,
-    "name": "SinterCompatibilityError",
-    "route": "classes/SinterCompatibilityError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 400,
-    "name": "SinterConnectionError",
-    "route": "classes/SinterConnectionError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 419,
-    "name": "SinterConnectionStringError",
-    "route": "classes/SinterConnectionStringError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 438,
-    "name": "SinterConnectionTimeoutError",
-    "route": "classes/SinterConnectionTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 325,
-    "name": "SinterDatabase",
-    "route": "classes/SinterDatabase",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 457,
-    "name": "SinterDocumentError",
-    "route": "classes/SinterDocumentError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 476,
-    "name": "SinterError",
-    "route": "classes/SinterError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 511,
-    "name": "SinterInsertManyError",
-    "route": "classes/SinterInsertManyError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 700,
-    "name": "SinterNamespaceError",
-    "route": "classes/SinterNamespaceError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 537,
-    "name": "SinterProtocolError",
-    "route": "classes/SinterProtocolError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 556,
-    "name": "SinterRequestTimeoutError",
-    "route": "classes/SinterRequestTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 575,
-    "name": "SinterServerError",
-    "route": "classes/SinterServerError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 598,
-    "name": "SinterSocketTimeoutError",
-    "route": "classes/SinterSocketTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 660,
-    "name": "CreateIndexResult",
-    "route": "interfaces/CreateIndexResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 723,
-    "name": "DeleteResult",
-    "route": "interfaces/DeleteResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 26,
-    "name": "Document",
-    "route": "interfaces/Document",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 664,
-    "name": "ExplainResult",
-    "route": "interfaces/ExplainResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 259,
-    "name": "FindOptions",
-    "route": "interfaces/FindOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 321,
-    "name": "FindQueryOptions",
-    "route": "interfaces/FindQueryOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 675,
-    "name": "IndexBoundInfo",
-    "route": "interfaces/IndexBoundInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 678,
-    "name": "IndexDefinition",
-    "route": "interfaces/IndexDefinition",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 685,
-    "name": "IndexInfo",
-    "route": "interfaces/IndexInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 691,
-    "name": "IndexIssue",
-    "route": "interfaces/IndexIssue",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 695,
-    "name": "IndexValidationResult",
-    "route": "interfaces/IndexValidationResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 265,
-    "name": "InsertManyResult",
-    "route": "interfaces/InsertManyResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 269,
-    "name": "InsertOneResult",
-    "route": "interfaces/InsertOneResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 281,
-    "name": "ParsedSinterConnectionString",
-    "route": "interfaces/ParsedSinterConnectionString",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 180,
-    "name": "SinterClientEvents",
-    "route": "interfaces/SinterClientEvents",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 185,
-    "name": "SinterClientOptions",
-    "route": "interfaces/SinterClientOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 189,
-    "name": "SinterPingResult",
-    "route": "interfaces/SinterPingResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 617,
-    "name": "SinterServerErrorOptions",
-    "route": "interfaces/SinterServerErrorOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 194,
-    "name": "SinterServerInfo",
-    "route": "interfaces/SinterServerInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 742,
-    "name": "UpdateOptions",
-    "route": "interfaces/UpdateOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 746,
-    "name": "UpdateResult",
-    "route": "interfaces/UpdateResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 719,
-    "name": "ArrayPaths",
-    "route": "types/ArrayPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 623,
-    "name": "AtomicValue",
-    "route": "types/AtomicValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 721,
-    "name": "ComparablePaths",
-    "route": "types/ComparablePaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 624,
-    "name": "ComparableValue",
-    "route": "types/ComparableValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 625,
-    "name": "ComparisonOperators",
-    "route": "types/ComparisonOperators",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 316,
-    "name": "CursorExecutor",
-    "route": "types/CursorExecutor",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 632,
-    "name": "ElementOf",
-    "route": "types/ElementOf",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 257,
-    "name": "EqualityFilter",
-    "route": "types/EqualityFilter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 634,
-    "name": "Filter",
-    "route": "types/Filter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 641,
-    "name": "FilterOperators",
-    "route": "types/FilterOperators",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 650,
-    "name": "FilterPaths",
-    "route": "types/FilterPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 653,
-    "name": "FilterPathValue",
-    "route": "types/FilterPathValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 673,
-    "name": "IndexablePath",
-    "route": "types/IndexablePath",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 656,
-    "name": "MaxPathDepth",
-    "route": "types/MaxPathDepth",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 726,
-    "name": "NumericPaths",
-    "route": "types/NumericPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 272,
-    "name": "OptionalId",
-    "route": "types/OptionalId",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 728,
-    "name": "PathsMatching",
-    "route": "types/PathsMatching",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 179,
-    "name": "SinterClientState",
-    "route": "types/SinterClientState",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 510,
-    "name": "SinterErrorCode",
-    "route": "types/SinterErrorCode",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 657,
-    "name": "Sort",
-    "route": "types/Sort",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 659,
-    "name": "SortDirection",
-    "route": "types/SortDirection",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 731,
-    "name": "UpdateFilter",
-    "route": "types/UpdateFilter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 744,
-    "name": "UpdatePaths",
-    "route": "types/UpdatePaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 276,
-    "name": "WithId",
-    "route": "types/WithId",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 29,
-    "name": "DEFAULT_CONNECT_TIMEOUT_MS",
-    "route": "variables/DEFAULT_CONNECT_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 30,
-    "name": "DEFAULT_REQUEST_TIMEOUT_MS",
-    "route": "variables/DEFAULT_REQUEST_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 280,
-    "name": "DEFAULT_SINTERDB_PORT",
-    "route": "variables/DEFAULT_SINTERDB_PORT",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 31,
-    "name": "DEFAULT_SOCKET_TIMEOUT_MS",
-    "route": "variables/DEFAULT_SOCKET_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 172,
-    "name": "SinterClientState",
-    "route": "variables/SinterClientState",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 496,
-    "name": "SinterErrorCode",
-    "route": "variables/SinterErrorCode",
-    "kind": "Variable",
-    "kindId": 32
-  }
-] as const;
+} satisfies ApiPage;
+
+export const metadata: Metadata = {
+  title: page.name,
+  description: page.description || undefined,
+};
 
 export default function Page() {
-  return (
-    <ApiReflectionPage
-      projectName="SinterDB driver API"
-      api={api}
-      navigation={navigation}
-    />
-  );
+  return <ApiReflectionPage page={page} />;
 }

@@ -9,6 +9,8 @@
     "clean": "rimraf ../../docs/api"
   },
   "devDependencies": {
+    "markdown-it": "^15.0.2",
+    "shiki": "^4.5.0",
     "sinterdb": "workspace:^",
     "typedoc": "^0.28.20",
     "typedoc-plugin-markdown": "^4.13.1",

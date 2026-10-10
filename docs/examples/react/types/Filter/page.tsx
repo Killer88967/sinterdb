@@ -1,604 +1,649 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import type { Metadata } from "next";
 
-const api = {
+import { ApiReflectionPage } from "../../_components/pages";
+import type { ApiPage } from "../../_generated/model";
+
+const page = {
   "id": 634,
   "name": "Filter",
-  "slug": "Filter",
-  "route": "types/Filter",
-  "kind": "TypeAlias",
-  "kindId": 2097152,
-  "flags": {
-    "static": false,
-    "readonly": false,
-    "optional": false,
-    "abstract": false,
-    "protected": false,
-    "private": false,
-    "external": false,
-    "const": false
-  },
-  "comment": {
-    "summary": [
-      {
-        "kind": "text",
-        "text": "A query filter: field paths mapped to a value or to operators, combined\nwith ",
-        "target": null
-      },
-      {
-        "kind": "code",
-        "text": "`$and`",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": ", ",
-        "target": null
-      },
-      {
-        "kind": "code",
-        "text": "`$or`",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": " and ",
-        "target": null
-      },
-      {
-        "kind": "code",
-        "text": "`$nor`",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": ". An empty filter matches every document.",
-        "target": null
-      }
+  "kind": "type-alias",
+  "label": "Type Alias",
+  "href": "/docs/api/types/Filter",
+  "description": "A query filter: field paths mapped to a value or to operators, combined with $and, $or and $nor. An empty filter matches every document.",
+  "badges": [],
+  "declaration": [
+    [
+      "type ",
+      "kw"
     ],
-    "blockTags": []
-  },
-  "type": {
-    "kind": "intersection",
-    "text": "{ readonly [Path in FilterPaths<TDocument>]?: FilterPathValue<TDocument, Path> | FilterOperators<FilterPathValue<TDocument, Path>> } & { _id?: CustomId | FilterOperators<CustomId>; $and?: readonly Filter<TDocument>[]; $nor?: readonly Filter<TDocument>[]; $or?: readonly Filter<TDocument>[] }",
-    "name": null,
-    "target": null,
-    "children": []
-  },
-  "hierarchy": {
-    "extends": [],
-    "extendedBy": []
-  },
-  "sources": [
-    {
-      "fileName": "packages/driver/dist/filter.d.ts",
-      "line": 66,
-      "character": 12,
-      "url": null
-    }
+    [
+      "Filter",
+      "name"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "TDocument",
+      "tp"
+    ],
+    [
+      " extends ",
+      "kw"
+    ],
+    [
+      "object",
+      "prim"
+    ],
+    [
+      "> = {",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "[",
+      "pn"
+    ],
+    [
+      "Path",
+      "tp"
+    ],
+    [
+      " in ",
+      "kw"
+    ],
+    [
+      "FilterPaths",
+      "ref",
+      "/docs/api/types/FilterPaths"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "TDocument",
+      "tp"
+    ],
+    [
+      ">]?:",
+      "pn"
+    ],
+    [
+      "\n    "
+    ],
+    [
+      "| ",
+      "pn"
+    ],
+    [
+      "FilterPathValue",
+      "ref",
+      "/docs/api/types/FilterPathValue"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "TDocument",
+      "tp"
+    ],
+    [
+      ", ",
+      "pn"
+    ],
+    [
+      "Path",
+      "tp"
+    ],
+    [
+      ">",
+      "pn"
+    ],
+    [
+      "\n    "
+    ],
+    [
+      "| ",
+      "pn"
+    ],
+    [
+      "FilterOperators",
+      "ref",
+      "/docs/api/types/FilterOperators"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "FilterPathValue",
+      "ref",
+      "/docs/api/types/FilterPathValue"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "TDocument",
+      "tp"
+    ],
+    [
+      ", ",
+      "pn"
+    ],
+    [
+      "Path",
+      "tp"
+    ],
+    [
+      ">>;",
+      "pn"
+    ],
+    [
+      "\n"
+    ],
+    [
+      "} & {",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "_id",
+      "prop",
+      "/docs/api/types/Filter#_id"
+    ],
+    [
+      "?: ",
+      "pn"
+    ],
+    [
+      "CustomId",
+      "ref",
+      "/docs/api/classes/CustomId"
+    ],
+    [
+      " | ",
+      "pn"
+    ],
+    [
+      "FilterOperators",
+      "ref",
+      "/docs/api/types/FilterOperators"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "CustomId",
+      "ref",
+      "/docs/api/classes/CustomId"
+    ],
+    [
+      ">;",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "$and",
+      "prop",
+      "/docs/api/types/Filter#and"
+    ],
+    [
+      "?: ",
+      "pn"
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "Filter",
+      "ref",
+      "/docs/api/types/Filter"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "TDocument",
+      "tp"
+    ],
+    [
+      ">[];",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "$nor",
+      "prop",
+      "/docs/api/types/Filter#nor"
+    ],
+    [
+      "?: ",
+      "pn"
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "Filter",
+      "ref",
+      "/docs/api/types/Filter"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "TDocument",
+      "tp"
+    ],
+    [
+      ">[];",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "$or",
+      "prop",
+      "/docs/api/types/Filter#or"
+    ],
+    [
+      "?: ",
+      "pn"
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "Filter",
+      "ref",
+      "/docs/api/types/Filter"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "TDocument",
+      "tp"
+    ],
+    [
+      ">[];",
+      "pn"
+    ],
+    [
+      "\n"
+    ],
+    [
+      "}",
+      "pn"
+    ]
   ],
-  "relationships": {
-    "inheritedFrom": null,
-    "overwrites": null,
-    "implementationOf": null
+  "comment": {
+    "summary": "<p>A query filter: field paths mapped to a value or to operators, combined\nwith <code>$and</code>, <code>$or</code> and <code>$nor</code>. An empty filter matches every document.</p>",
+    "short": "A query filter: field paths mapped to a value or to operators, combined with <code>$and</code>, <code>$or</code> and <code>$nor</code>. An empty filter matches every document.",
+    "deprecated": null,
+    "modifiers": [],
+    "blocks": []
   },
   "typeParameters": [
     {
-      "id": 640,
       "name": "TDocument",
-      "type": {
-        "kind": "intrinsic",
-        "text": "object",
-        "name": "object",
-        "target": null,
-        "children": []
-      },
-      "default": null,
+      "code": [
+        [
+          "TDocument",
+          "tp"
+        ],
+        [
+          " extends ",
+          "kw"
+        ],
+        [
+          "object",
+          "prim"
+        ]
+      ],
       "comment": null
     }
   ],
+  "hierarchy": null,
+  "signatureSection": null,
   "signatures": [],
-  "children": [],
-  "typeDeclaration": []
-} as const;
-const navigation = [
-  {
-    "id": 1,
-    "name": "CustomId",
-    "route": "classes/CustomId",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 285,
-    "name": "FindCursor",
-    "route": "classes/FindCursor",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 32,
-    "name": "SinterClient",
-    "route": "classes/SinterClient",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 338,
-    "name": "SinterClientOptionsError",
-    "route": "classes/SinterClientOptionsError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 357,
-    "name": "SinterClientStateError",
-    "route": "classes/SinterClientStateError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 199,
-    "name": "SinterCollection",
-    "route": "classes/SinterCollection",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 377,
-    "name": "SinterCompatibilityError",
-    "route": "classes/SinterCompatibilityError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 400,
-    "name": "SinterConnectionError",
-    "route": "classes/SinterConnectionError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 419,
-    "name": "SinterConnectionStringError",
-    "route": "classes/SinterConnectionStringError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 438,
-    "name": "SinterConnectionTimeoutError",
-    "route": "classes/SinterConnectionTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 325,
-    "name": "SinterDatabase",
-    "route": "classes/SinterDatabase",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 457,
-    "name": "SinterDocumentError",
-    "route": "classes/SinterDocumentError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 476,
-    "name": "SinterError",
-    "route": "classes/SinterError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 511,
-    "name": "SinterInsertManyError",
-    "route": "classes/SinterInsertManyError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 700,
-    "name": "SinterNamespaceError",
-    "route": "classes/SinterNamespaceError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 537,
-    "name": "SinterProtocolError",
-    "route": "classes/SinterProtocolError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 556,
-    "name": "SinterRequestTimeoutError",
-    "route": "classes/SinterRequestTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 575,
-    "name": "SinterServerError",
-    "route": "classes/SinterServerError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 598,
-    "name": "SinterSocketTimeoutError",
-    "route": "classes/SinterSocketTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 660,
-    "name": "CreateIndexResult",
-    "route": "interfaces/CreateIndexResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 723,
-    "name": "DeleteResult",
-    "route": "interfaces/DeleteResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 26,
-    "name": "Document",
-    "route": "interfaces/Document",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 664,
-    "name": "ExplainResult",
-    "route": "interfaces/ExplainResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 259,
-    "name": "FindOptions",
-    "route": "interfaces/FindOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 321,
-    "name": "FindQueryOptions",
-    "route": "interfaces/FindQueryOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 675,
-    "name": "IndexBoundInfo",
-    "route": "interfaces/IndexBoundInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 678,
-    "name": "IndexDefinition",
-    "route": "interfaces/IndexDefinition",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 685,
-    "name": "IndexInfo",
-    "route": "interfaces/IndexInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 691,
-    "name": "IndexIssue",
-    "route": "interfaces/IndexIssue",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 695,
-    "name": "IndexValidationResult",
-    "route": "interfaces/IndexValidationResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 265,
-    "name": "InsertManyResult",
-    "route": "interfaces/InsertManyResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 269,
-    "name": "InsertOneResult",
-    "route": "interfaces/InsertOneResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 281,
-    "name": "ParsedSinterConnectionString",
-    "route": "interfaces/ParsedSinterConnectionString",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 180,
-    "name": "SinterClientEvents",
-    "route": "interfaces/SinterClientEvents",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 185,
-    "name": "SinterClientOptions",
-    "route": "interfaces/SinterClientOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 189,
-    "name": "SinterPingResult",
-    "route": "interfaces/SinterPingResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 617,
-    "name": "SinterServerErrorOptions",
-    "route": "interfaces/SinterServerErrorOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 194,
-    "name": "SinterServerInfo",
-    "route": "interfaces/SinterServerInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 742,
-    "name": "UpdateOptions",
-    "route": "interfaces/UpdateOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 746,
-    "name": "UpdateResult",
-    "route": "interfaces/UpdateResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 719,
-    "name": "ArrayPaths",
-    "route": "types/ArrayPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 623,
-    "name": "AtomicValue",
-    "route": "types/AtomicValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 721,
-    "name": "ComparablePaths",
-    "route": "types/ComparablePaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 624,
-    "name": "ComparableValue",
-    "route": "types/ComparableValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 625,
-    "name": "ComparisonOperators",
-    "route": "types/ComparisonOperators",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 316,
-    "name": "CursorExecutor",
-    "route": "types/CursorExecutor",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 632,
-    "name": "ElementOf",
-    "route": "types/ElementOf",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 257,
-    "name": "EqualityFilter",
-    "route": "types/EqualityFilter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 634,
-    "name": "Filter",
-    "route": "types/Filter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 641,
-    "name": "FilterOperators",
-    "route": "types/FilterOperators",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 650,
-    "name": "FilterPaths",
-    "route": "types/FilterPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 653,
-    "name": "FilterPathValue",
-    "route": "types/FilterPathValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 673,
-    "name": "IndexablePath",
-    "route": "types/IndexablePath",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 656,
-    "name": "MaxPathDepth",
-    "route": "types/MaxPathDepth",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 726,
-    "name": "NumericPaths",
-    "route": "types/NumericPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 272,
-    "name": "OptionalId",
-    "route": "types/OptionalId",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 728,
-    "name": "PathsMatching",
-    "route": "types/PathsMatching",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 179,
-    "name": "SinterClientState",
-    "route": "types/SinterClientState",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 510,
-    "name": "SinterErrorCode",
-    "route": "types/SinterErrorCode",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 657,
-    "name": "Sort",
-    "route": "types/Sort",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 659,
-    "name": "SortDirection",
-    "route": "types/SortDirection",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 731,
-    "name": "UpdateFilter",
-    "route": "types/UpdateFilter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 744,
-    "name": "UpdatePaths",
-    "route": "types/UpdatePaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 276,
-    "name": "WithId",
-    "route": "types/WithId",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 29,
-    "name": "DEFAULT_CONNECT_TIMEOUT_MS",
-    "route": "variables/DEFAULT_CONNECT_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 30,
-    "name": "DEFAULT_REQUEST_TIMEOUT_MS",
-    "route": "variables/DEFAULT_REQUEST_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 280,
-    "name": "DEFAULT_SINTERDB_PORT",
-    "route": "variables/DEFAULT_SINTERDB_PORT",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 31,
-    "name": "DEFAULT_SOCKET_TIMEOUT_MS",
-    "route": "variables/DEFAULT_SOCKET_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 172,
-    "name": "SinterClientState",
-    "route": "variables/SinterClientState",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 496,
-    "name": "SinterErrorCode",
-    "route": "variables/SinterErrorCode",
-    "kind": "Variable",
-    "kindId": 32
-  }
-] as const;
+  "sections": [
+    {
+      "id": "type-declaration",
+      "title": "Properties",
+      "members": [
+        {
+          "id": 636,
+          "name": "_id",
+          "anchor": "_id",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "_id",
+              "name"
+            ],
+            [
+              "?: ",
+              "pn"
+            ],
+            [
+              "CustomId",
+              "ref",
+              "/docs/api/classes/CustomId"
+            ],
+            [
+              " | ",
+              "pn"
+            ],
+            [
+              "FilterOperators",
+              "ref",
+              "/docs/api/types/FilterOperators"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "CustomId",
+              "ref",
+              "/docs/api/classes/CustomId"
+            ],
+            [
+              ">",
+              "pn"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>Matches the document <code>_id</code>.</p>",
+            "short": "Matches the document <code>_id</code>.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/filter.ts",
+              "line": 109,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/filter.ts#L109"
+            }
+          ]
+        },
+        {
+          "id": 637,
+          "name": "$and",
+          "anchor": "and",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "$and",
+              "name"
+            ],
+            [
+              "?: ",
+              "pn"
+            ],
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "Filter",
+              "ref",
+              "/docs/api/types/Filter"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              ">[]",
+              "pn"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>Matches when every filter matches.</p>",
+            "short": "Matches when every filter matches.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/filter.ts",
+              "line": 111,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/filter.ts#L111"
+            }
+          ]
+        },
+        {
+          "id": 639,
+          "name": "$nor",
+          "anchor": "nor",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "$nor",
+              "name"
+            ],
+            [
+              "?: ",
+              "pn"
+            ],
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "Filter",
+              "ref",
+              "/docs/api/types/Filter"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              ">[]",
+              "pn"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>Matches when no filter matches.</p>",
+            "short": "Matches when no filter matches.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/filter.ts",
+              "line": 115,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/filter.ts#L115"
+            }
+          ]
+        },
+        {
+          "id": 638,
+          "name": "$or",
+          "anchor": "or",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "$or",
+              "name"
+            ],
+            [
+              "?: ",
+              "pn"
+            ],
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "Filter",
+              "ref",
+              "/docs/api/types/Filter"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              ">[]",
+              "pn"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>Matches when at least one filter matches.</p>",
+            "short": "Matches when at least one filter matches.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/filter.ts",
+              "line": 113,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/filter.ts#L113"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "toc": [
+    {
+      "id": "type-declaration",
+      "title": "Properties",
+      "items": [
+        {
+          "anchor": "_id",
+          "name": "_id",
+          "kind": "property"
+        },
+        {
+          "anchor": "and",
+          "name": "$and",
+          "kind": "property"
+        },
+        {
+          "anchor": "nor",
+          "name": "$nor",
+          "kind": "property"
+        },
+        {
+          "anchor": "or",
+          "name": "$or",
+          "kind": "property"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/driver/src/filter.ts",
+      "line": 103,
+      "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/filter.ts#L103"
+    }
+  ]
+} satisfies ApiPage;
+
+export const metadata: Metadata = {
+  title: page.name,
+  description: page.description || undefined,
+};
 
 export default function Page() {
-  return (
-    <ApiReflectionPage
-      projectName="SinterDB driver API"
-      api={api}
-      navigation={navigation}
-    />
-  );
+  return <ApiReflectionPage page={page} />;
 }

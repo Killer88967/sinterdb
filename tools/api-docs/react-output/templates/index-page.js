@@ -1,19 +1,17 @@
-export function renderIndexPageTemplate({ projectName, reflections }) {
-  return `import { ApiIndexPage } from "./_components/api-shell";
+import { serialize } from "./serialize.js";
 
-const reflections = ${serialize(reflections)} as const;
+export function renderIndexPageTemplate({
+  groups,
+  componentsDirectory,
+  generatedDirectory,
+}) {
+  return `import { ApiIndexPage } from "./${componentsDirectory}/pages";
+import type { ApiIndexGroup } from "./${generatedDirectory}/model";
+
+const groups = ${serialize(groups)} satisfies readonly ApiIndexGroup[];
 
 export default function Page() {
-  return (
-    <ApiIndexPage
-      projectName=${JSON.stringify(projectName)}
-      reflections={reflections}
-    />
-  );
+  return <ApiIndexPage groups={groups} />;
 }
 `;
-}
-
-function serialize(value) {
-  return JSON.stringify(value, null, 2);
 }

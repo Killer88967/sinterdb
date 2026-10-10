@@ -1,29 +1,25 @@
+import { relativePrefix, serialize } from "./serialize.js";
+
 export function renderHierarchyPageTemplate({
-  projectName,
-  reflections,
-  navigation,
+  nodes,
+  componentsDirectory,
+  generatedDirectory,
 }) {
-  const classes = reflections.filter(
-    (reflection) => reflection.kind === "Class",
-  );
+  const up = relativePrefix("hierarchy");
 
-  return `import { ApiHierarchyPage } from "../_components/api-shell";
+  return `import type { Metadata } from "next";
 
-const classes = ${serialize(classes)} as const;
-const navigation = ${serialize(navigation)} as const;
+import { ApiHierarchyPage } from "${up}${componentsDirectory}/pages";
+import type { ApiHierarchyNode } from "${up}${generatedDirectory}/model";
+
+const nodes = ${serialize(nodes)} satisfies readonly ApiHierarchyNode[];
+
+export const metadata: Metadata = {
+  title: "Hierarchy",
+};
 
 export default function Page() {
-  return (
-    <ApiHierarchyPage
-      projectName=${JSON.stringify(projectName)}
-      classes={classes}
-      navigation={navigation}
-    />
-  );
+  return <ApiHierarchyPage nodes={nodes} />;
 }
 `;
-}
-
-function serialize(value) {
-  return JSON.stringify(value, null, 2);
 }

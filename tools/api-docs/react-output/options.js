@@ -4,9 +4,7 @@ const DEFAULT_REACT_OUTPUT_OPTIONS = {
   framework: "next",
   routeBase: "/docs/api",
   cleanOutput: true,
-  assets: {
-    iconSprite: "/docs/api/assets/icons.svg",
-  },
+  repository: null,
   generated: {
     directory: "_generated",
   },
@@ -24,9 +22,15 @@ const DEFAULT_REACT_OUTPUT_OPTIONS = {
     pageNavigation: true,
     sourceLinks: true,
     comments: true,
+    externalInherited: false,
   },
   theme: {
     name: "default",
+    colorScheme: "dark",
+    codeThemes: {
+      light: "github-light",
+      dark: "github-dark",
+    },
   },
 };
 
@@ -39,18 +43,25 @@ export function registerReactOutputOptions(app) {
   });
 }
 
+/**
+ * @typedef {ReturnType<typeof resolveReactOutputOptions>} ReactOutputOptions
+ */
+
+/**
+ * @param {{ app: import("typedoc").Application; outputPath: string }} input
+ */
 export function resolveReactOutputOptions({ app, outputPath }) {
   const input = app.options.getValue("reactOutput") ?? {};
+  const theme = { ...DEFAULT_REACT_OUTPUT_OPTIONS.theme, ...input.theme };
 
   return {
     outputPath,
     framework: input.framework ?? DEFAULT_REACT_OUTPUT_OPTIONS.framework,
     routeBase: input.routeBase ?? DEFAULT_REACT_OUTPUT_OPTIONS.routeBase,
     cleanOutput: input.cleanOutput ?? DEFAULT_REACT_OUTPUT_OPTIONS.cleanOutput,
-    assets: {
-      ...DEFAULT_REACT_OUTPUT_OPTIONS.assets,
-      ...input.assets,
-    },
+    repository: input.repository ?? DEFAULT_REACT_OUTPUT_OPTIONS.repository,
+    // TypeDoc's own option, so a release can pin source links to its tag.
+    revision: app.options.getValue("gitRevision") || null,
     generated: {
       ...DEFAULT_REACT_OUTPUT_OPTIONS.generated,
       ...input.generated,
@@ -68,8 +79,11 @@ export function resolveReactOutputOptions({ app, outputPath }) {
       ...input.features,
     },
     theme: {
-      ...DEFAULT_REACT_OUTPUT_OPTIONS.theme,
-      ...input.theme,
+      ...theme,
+      codeThemes: {
+        ...DEFAULT_REACT_OUTPUT_OPTIONS.theme.codeThemes,
+        ...input.theme?.codeThemes,
+      },
     },
   };
 }

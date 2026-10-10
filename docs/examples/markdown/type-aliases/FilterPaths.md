@@ -6,7 +6,7 @@
 
 # Type Alias: FilterPaths\<TDocument, TDepth\>
 
-> **FilterPaths**\<`TDocument`, `TDepth`\> = `TDepth`\[`"length"`\] *extends* [`MaxPathDepth`](MaxPathDepth.md) ? `never` : `TDocument` *extends* `object` ? \{ \[Key in keyof TDocument & string\]: Key \| (NonNullable\<TDocument\[Key\]\> extends readonly unknown\[\] \| AtomicValue ? never : NonNullable\<TDocument\[Key\]\> extends object ? \`$\{Key\}.$\{FilterPaths\<NonNullable\<(...)\>, \[(...), (...)\]\>\}\` : never) \}\[keyof `TDocument` & `string`\] : `never`
+> **FilterPaths**\<`TDocument`, `TDepth`\> = `TDepth`\[`"length"`\] *extends* [`MaxPathDepth`](MaxPathDepth.md) ? `never` : `TDocument` *extends* `object` ? \{ \[Key in keyof TDocument & string\]: Key \| (NonNullable\<TDocument\[Key\]\> extends readonly unknown\[\] \| AtomicValue ? never : NonNullable\<TDocument\[Key\]\> extends object ? \`$\{Key\}.$\{FilterPaths\<NonNullable\<TDocument\[Key\]\>, \[...TDepth, unknown\]\>\}\` : never) \}\[keyof `TDocument` & `string`\] : `never`
 
 Defined in: packages/driver/dist/filter.d.ts:57
 

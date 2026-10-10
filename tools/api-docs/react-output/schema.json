@@ -34,9 +34,6 @@
           "default": true,
           "description": "Remove the React output directory before generating documentation."
         },
-        "assets": {
-          "$ref": "#/$defs/assets"
-        },
         "generated": {
           "$ref": "#/$defs/generated"
         },
@@ -51,17 +48,11 @@
         },
         "theme": {
           "$ref": "#/$defs/theme"
-        }
-      }
-    },
-    "assets": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "iconSprite": {
-          "type": "string",
-          "default": "/docs/api/assets/icons.svg",
-          "description": "URL to the SVG sprite containing TypeDoc icons."
+        },
+        "repository": {
+          "type": ["string", "null"],
+          "default": null,
+          "description": "Repository URL used for source links, e.g. https://github.com/SinterDB/sinterdb. Detected from the git origin remote when null. Links use TypeDoc's gitRevision option, or the current commit."
         }
       }
     },
@@ -130,12 +121,17 @@
         "sourceLinks": {
           "type": "boolean",
           "default": true,
-          "description": "Include source locations and source links when available."
+          "description": "Link declarations to their original source files (resolved through declaration maps)."
         },
         "comments": {
           "type": "boolean",
           "default": true,
           "description": "Include TypeDoc comments and documentation blocks."
+        },
+        "externalInherited": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show members inherited from outside the project, such as Error.stack."
         }
       }
     },
@@ -146,7 +142,29 @@
         "name": {
           "type": "string",
           "default": "default",
-          "description": "Theme used by the generated React documentation."
+          "description": "Theme directory under react-output/themes whose components are copied into the output."
+        },
+        "colorScheme": {
+          "type": "string",
+          "enum": ["dark", "light", "system"],
+          "default": "dark",
+          "description": "Color scheme of the generated pages. \"system\" follows prefers-color-scheme, or a .dark/.light class or data-theme attribute on an ancestor."
+        },
+        "codeThemes": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "light": {
+              "type": "string",
+              "default": "github-light",
+              "description": "Shiki theme for code blocks in light mode."
+            },
+            "dark": {
+              "type": "string",
+              "default": "github-dark",
+              "description": "Shiki theme for code blocks in dark mode."
+            }
+          }
         }
       }
     }

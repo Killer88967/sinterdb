@@ -30,7 +30,7 @@ Defaults to 1. Both directions serve the same lookups today.
 
 ### field
 
-> `readonly` **field**: `Exclude`\<`TDocument` *extends* `object` ? \{ \[Key in string\]: Key \| (NonNullable\<TDocument\[Key\]\> extends AtomicValue \| readonly unknown\[\] ? never : NonNullable\<TDocument\[Key\]\> extends object ? \`$\{Key\}.$\{NonNullable\<(...)\[(...)\]\> extends object ? \{ \[Key in (...)\]: (...) \}\[(...) & (...)\] : never\}\` : never) \}\[keyof `TDocument` & `string`\] : `never`\>
+> `readonly` **field**: `Exclude`\<`TDocument` *extends* `object` ? \{ \[Key in string\]: Key \| (NonNullable\<TDocument\[Key\]\> extends AtomicValue \| readonly unknown\[\] ? never : NonNullable\<TDocument\[Key\]\> extends object ? \`$\{Key\}.$\{NonNullable\<TDocument\[Key\]\> extends object ? \{ \[Key in string\]: Key \| (NonNullable\<NonNullable\<TDocument\[Key\]\>\[Key\]\> extends AtomicValue \| readonly unknown\[\] ? never : NonNullable\<NonNullable\<TDocument\[Key\]\>\[Key\]\> extends object ? \`$\{Key\}.$\{NonNullable\<NonNullable\<TDocument\[Key\]\>\[Key\]\> extends object ? \{ \[Key in string\]: Key \| (NonNullable\<(...)\> extends (...) \| (...) ? never : (...) extends (...) ? (...) : (...)) \}\[keyof NonNullable\<(...)\[(...)\]\> & string\] : never\}\` : never) \}\[keyof NonNullable\<TDocument\[Key\]\> & string\] : never\}\` : never) \}\[keyof `TDocument` & `string`\] : `never`\>
 
 Defined in: packages/driver/dist/indexes.d.ts:11
 

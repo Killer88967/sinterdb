@@ -1,72 +1,62 @@
 import { ReflectionKind } from "typedoc";
 
-/**
- * @param {number} kind
- */
+const KIND_DIRECTORIES = new Map([
+  [ReflectionKind.Class, "classes"],
+  [ReflectionKind.Interface, "interfaces"],
+  [ReflectionKind.TypeAlias, "types"],
+  [ReflectionKind.Variable, "variables"],
+  [ReflectionKind.Function, "functions"],
+  [ReflectionKind.Enum, "enums"],
+  [ReflectionKind.Namespace, "namespaces"],
+  [ReflectionKind.Module, "modules"],
+]);
+
+/** Short kind identifier used for icons and CSS, e.g. `type-alias`. */
 export function getKindName(kind) {
-  return ReflectionKind[kind] ?? "Unknown";
+  return ReflectionKind.classString(kind).replace(/^tsd-kind-/u, "");
 }
 
-/**
- * @param {number} kind
- */
+/** Human-readable singular kind, e.g. `Type Alias`. */
+export function getKindLabel(kind) {
+  return ReflectionKind.singularString(kind);
+}
+
 export function getKindDirectory(kind) {
-  switch (kind) {
-    case ReflectionKind.Class:
-      return "classes";
-
-    case ReflectionKind.Interface:
-      return "interfaces";
-
-    case ReflectionKind.TypeAlias:
-      return "types";
-
-    case ReflectionKind.Variable:
-      return "variables";
-
-    case ReflectionKind.Function:
-      return "functions";
-
-    case ReflectionKind.Enum:
-      return "enums";
-
-    case ReflectionKind.Namespace:
-      return "namespaces";
-
-    default:
-      return "other";
-  }
+  return KIND_DIRECTORIES.get(kind) ?? "other";
 }
 
 export function createSlug(name) {
-  return name.replaceAll(/[^a-zA-Z0-9._-]/g, "-");
+  return name.replaceAll(/[^a-zA-Z0-9._-]/gu, "-");
 }
 
 export function createAnchor(name) {
-  return name
-    .replaceAll(/([a-z])([A-Z])/g, "$1-$2")
-    .replaceAll(/[^a-zA-Z0-9_-]/g, "-")
+  const anchor = name
+    .replaceAll(/([a-z0-9])([A-Z])/gu, "$1-$2")
+    .replaceAll(/[^a-zA-Z0-9_-]+/gu, "-")
+    .replaceAll(/^-+|-+$/gu, "")
     .toLowerCase();
+
+  return anchor || "member";
 }
 
 /**
- * @param {import("typedoc").DeclarationReflection} reflection
+ * Hands out anchors that are unique within one page.
  */
-export function createRoute(reflection) {
-  return [getKindDirectory(reflection.kind), createSlug(reflection.name)].join(
-    "/",
-  );
-}
+export class AnchorRegistry {
+  #used = new Set(["top", "overview", "type-parameters", "hierarchy", "index"]);
 
-/**
- * @param {Array<ReturnType<import("./reflection.js").createReflectionModel>>} reflections
- */
-export function createNavigation(reflections) {
-  return reflections.map((reflection) => ({
-    id: reflection.id,
-    name: reflection.name,
-    route: reflection.route,
-    kind: reflection.kind,
-    kindId: reflection.kindId,
-  }));
+  /** @param {string} name */
+  take(name) {
+    const base = createAnchor(name);
+    let anchor = base;
+    let counter = 2;
+
+    while (this.#used.has(anchor)) {
+      anchor = `${base}-${counter}`;
+      counter += 1;
+    }
+
+    this.#used.add(anchor);
+    return anchor;
+  }
 }
