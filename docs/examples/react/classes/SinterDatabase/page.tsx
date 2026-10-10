@@ -150,7 +150,7 @@ const page = {
                 {
                   "path": "packages/driver/src/database.ts",
                   "line": 16,
-                  "url": "https://github.com/SinterDB/sinterdb/blob/7a066a216205814e532cb431b16380b7e2dc1a3b/packages/driver/src/database.ts#L16"
+                  "url": "https://github.com/SinterDB/sinterdb/blob/58ea2c651133ad935cfae9b68769cc834dd9052e/packages/driver/src/database.ts#L16"
                 }
               ]
             }
@@ -161,7 +161,7 @@ const page = {
             {
               "path": "packages/driver/src/database.ts",
               "line": 16,
-              "url": "https://github.com/SinterDB/sinterdb/blob/7a066a216205814e532cb431b16380b7e2dc1a3b/packages/driver/src/database.ts#L16"
+              "url": "https://github.com/SinterDB/sinterdb/blob/58ea2c651133ad935cfae9b68769cc834dd9052e/packages/driver/src/database.ts#L16"
             }
           ]
         }
@@ -211,7 +211,7 @@ const page = {
             {
               "path": "packages/driver/src/database.ts",
               "line": 18,
-              "url": "https://github.com/SinterDB/sinterdb/blob/7a066a216205814e532cb431b16380b7e2dc1a3b/packages/driver/src/database.ts#L18"
+              "url": "https://github.com/SinterDB/sinterdb/blob/58ea2c651133ad935cfae9b68769cc834dd9052e/packages/driver/src/database.ts#L18"
             }
           ]
         },
@@ -254,7 +254,7 @@ const page = {
             {
               "path": "packages/driver/src/database.ts",
               "line": 14,
-              "url": "https://github.com/SinterDB/sinterdb/blob/7a066a216205814e532cb431b16380b7e2dc1a3b/packages/driver/src/database.ts#L14"
+              "url": "https://github.com/SinterDB/sinterdb/blob/58ea2c651133ad935cfae9b68769cc834dd9052e/packages/driver/src/database.ts#L14"
             }
           ]
         }
@@ -449,7 +449,7 @@ const page = {
                 {
                   "path": "packages/driver/src/database.ts",
                   "line": 33,
-                  "url": "https://github.com/SinterDB/sinterdb/blob/7a066a216205814e532cb431b16380b7e2dc1a3b/packages/driver/src/database.ts#L33"
+                  "url": "https://github.com/SinterDB/sinterdb/blob/58ea2c651133ad935cfae9b68769cc834dd9052e/packages/driver/src/database.ts#L33"
                 }
               ]
             }
@@ -460,7 +460,7 @@ const page = {
             {
               "path": "packages/driver/src/database.ts",
               "line": 33,
-              "url": "https://github.com/SinterDB/sinterdb/blob/7a066a216205814e532cb431b16380b7e2dc1a3b/packages/driver/src/database.ts#L33"
+              "url": "https://github.com/SinterDB/sinterdb/blob/58ea2c651133ad935cfae9b68769cc834dd9052e/packages/driver/src/database.ts#L33"
             }
           ]
         },
@@ -536,7 +536,7 @@ const page = {
                 {
                   "path": "packages/driver/src/database.ts",
                   "line": 40,
-                  "url": "https://github.com/SinterDB/sinterdb/blob/7a066a216205814e532cb431b16380b7e2dc1a3b/packages/driver/src/database.ts#L40"
+                  "url": "https://github.com/SinterDB/sinterdb/blob/58ea2c651133ad935cfae9b68769cc834dd9052e/packages/driver/src/database.ts#L40"
                 }
               ]
             }
@@ -547,7 +547,7 @@ const page = {
             {
               "path": "packages/driver/src/database.ts",
               "line": 40,
-              "url": "https://github.com/SinterDB/sinterdb/blob/7a066a216205814e532cb431b16380b7e2dc1a3b/packages/driver/src/database.ts#L40"
+              "url": "https://github.com/SinterDB/sinterdb/blob/58ea2c651133ad935cfae9b68769cc834dd9052e/packages/driver/src/database.ts#L40"
             }
           ]
         }
@@ -603,7 +603,7 @@ const page = {
     {
       "path": "packages/driver/src/database.ts",
       "line": 12,
-      "url": "https://github.com/SinterDB/sinterdb/blob/7a066a216205814e532cb431b16380b7e2dc1a3b/packages/driver/src/database.ts#L12"
+      "url": "https://github.com/SinterDB/sinterdb/blob/58ea2c651133ad935cfae9b68769cc834dd9052e/packages/driver/src/database.ts#L12"
     }
   ]
 } satisfies ApiPage;
