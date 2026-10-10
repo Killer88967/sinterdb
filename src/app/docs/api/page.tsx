@@ -1,5 +1,7 @@
 import { ApiIndexPage } from "./_components/api-shell";
 
+const DEV = true;
+
 const reflections = [
   {
     id: 1,
@@ -494,6 +496,9 @@ const reflections = [
 ] as const;
 
 export default function Page() {
+  if (DEV === true) {
+    return <p>Under development.</p>
+  }
   return (
     <ApiIndexPage projectName="SinterDB driver API" reflections={reflections} />
   );
