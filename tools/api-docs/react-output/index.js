@@ -12,19 +12,15 @@ import {
 export function load(app) {
   registerReactOutputOptions(app);
 
-  app.outputs.addOutput(
-    "react",
-    async (outputPath, project) => {
-      const options =
-        resolveReactOutputOptions({
-          app,
-          outputPath,
-        });
+  app.outputs.addOutput("react", async (outputPath, project) => {
+    const options = resolveReactOutputOptions({
+      app,
+      outputPath,
+    });
 
-      await generateReactOutput({
-        project,
-        options,
-      });
-    },
-  );
+    await generateReactOutput({
+      project,
+      options,
+    });
+  });
 }
