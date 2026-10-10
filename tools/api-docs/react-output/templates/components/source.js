@@ -1,5 +1,5 @@
 export function renderSourceTemplate() {
-  return `import type { ApiSource } from "./types";
+  return `import type { ApiSource } from "../_generated/model";
 
 export function SourceList({
   sources,

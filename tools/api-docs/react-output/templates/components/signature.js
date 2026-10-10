@@ -1,6 +1,6 @@
 export function renderSignatureTemplate() {
   return `import { TypeExpression } from "./type-expression";
-import type { ApiSignature } from "./types";
+import type { ApiSignature } from "../_generated/model";
 
 export function Signature({
   signature,

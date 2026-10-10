@@ -12,7 +12,10 @@ import { renderSignatureTemplate } from "./templates/components/signature.js";
 import { renderSourceTemplate } from "./templates/components/source.js";
 import { renderTypeExpressionTemplate } from "./templates/components/type-expression.js";
 import { renderTypeDocIconTemplate } from "./templates/components/typedoc-icon.js";
-import { renderTypesTemplate } from "./templates/components/types.js";
+import { renderGeneratedModelTemplate } from "./templates/generated/model.js";
+import { renderGeneratedNavigationTemplate } from "./templates/generated/navigation.js";
+import { renderGeneratedProjectTemplate } from "./templates/generated/project.js";
+import { generateDeclarations } from "./declarations/index.js";
 import { DEFAULT_STYLE } from "./styles/default.js";
 
 /**
@@ -35,6 +38,11 @@ export async function generateReactOutput({ project, options }) {
     recursive: true,
   });
 
+  await generateData(model, options);
+  await generateDeclarations({
+    outputPath: options.outputPath,
+    options,
+  });
   await generateComponents(options);
 
   await writeFile(
@@ -97,7 +105,6 @@ async function generateComponents(options) {
       }),
       "utf8",
     ),
-    writeFile(join(directory, "types.ts"), renderTypesTemplate(), "utf8"),
     writeFile(join(directory, "api.css"), DEFAULT_STYLE, "utf8"),
   ]);
 }
@@ -136,4 +143,28 @@ async function generateHierarchy(model, options) {
     }),
     "utf8",
   );
+}
+
+async function generateData(model, options) {
+  const directory = join(options.outputPath, "_generated");
+
+  await mkdir(directory, { recursive: true });
+
+  await Promise.all([
+    writeFile(
+      join(directory, "model.ts"),
+      renderGeneratedModelTemplate(),
+      "utf8",
+    ),
+    writeFile(
+      join(directory, "navigation.ts"),
+      renderGeneratedNavigationTemplate(model.navigation),
+      "utf8",
+    ),
+    writeFile(
+      join(directory, "project.ts"),
+      renderGeneratedProjectTemplate(model),
+      "utf8",
+    ),
+  ]);
 }

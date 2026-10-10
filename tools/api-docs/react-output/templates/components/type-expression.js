@@ -1,5 +1,5 @@
 export function renderTypeExpressionTemplate() {
-  return `import type { ApiType } from "./types";
+  return `import type { ApiType } from "../_generated/model";
 
 export function TypeExpression({
   type,

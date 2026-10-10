@@ -19,6 +19,35 @@
     }
   ],
   "readme": "none",
+  "reactOutput": {
+    "framework": "next",
+    "routeBase": "/docs/api",
+    "cleanOutput": true,
+    "assets": {
+      "iconSprite": "/docs/api/assets/icons.svg"
+    },
+    "generated": {
+      "directory": "_generated"
+    },
+    "components": {
+      "directory": "_components"
+    },
+    "declarations": {
+      "enabled": true,
+      "directory": "_types",
+      "moduleName": "@example/api-docs"
+    },
+    "features": {
+      "hierarchy": true,
+      "navigation": true,
+      "pageNavigation": true,
+      "sourceLinks": true,
+      "comments": true
+    },
+    "theme": {
+      "name": "default"
+    }
+  },
   "excludePrivate": true,
   "excludeProtected": true,
   "excludeInternal": true,

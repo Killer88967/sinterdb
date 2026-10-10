@@ -2,7 +2,7 @@ export function renderMemberGroupTemplate() {
   return `import { TypeExpression } from "./type-expression";
 import { Signature } from "./signature";
 import { SourceList } from "./source";
-import type { ApiMember } from "./types";
+import type { ApiMember } from "../_generated/model";
 
 export function MemberGroup({
   title,

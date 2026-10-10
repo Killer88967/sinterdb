@@ -1,5 +1,8 @@
 import { generateReactOutput } from "./generator.js";
-import { resolveReactOutputOptions } from "./options.js";
+import {
+  registerReactOutputOptions,
+  resolveReactOutputOptions,
+} from "./options.js";
 
 /**
  * TypeDoc plugin entry point.
@@ -7,15 +10,21 @@ import { resolveReactOutputOptions } from "./options.js";
  * @param {import("typedoc").Application} app
  */
 export function load(app) {
-  app.outputs.addOutput("react", async (outputPath, project) => {
-    const options = resolveReactOutputOptions({
-      app,
-      outputPath,
-    });
+  registerReactOutputOptions(app);
 
-    await generateReactOutput({
-      project,
-      options,
-    });
-  });
+  app.outputs.addOutput(
+    "react",
+    async (outputPath, project) => {
+      const options =
+        resolveReactOutputOptions({
+          app,
+          outputPath,
+        });
+
+      await generateReactOutput({
+        project,
+        options,
+      });
+    },
+  );
 }

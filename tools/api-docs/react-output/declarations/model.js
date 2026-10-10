@@ -1,4 +1,4 @@
-export function renderTypesTemplate() {
+export function renderModelDeclarations() {
   return `export interface ApiType {
   readonly kind: string;
   readonly text: string;
@@ -41,12 +41,31 @@ export interface ApiFlags {
   readonly const: boolean;
 }
 
+export interface ApiRelationships {
+  readonly inheritedFrom: string | null;
+  readonly overwrites: string | null;
+  readonly implementationOf: string | null;
+}
+
+export interface ApiHierarchy {
+  readonly extends: readonly string[];
+  readonly extendedBy: readonly string[];
+}
+
 export interface ApiNavigationItem {
   readonly id: number;
   readonly name: string;
   readonly route: string;
   readonly kind: string;
   readonly kindId: number;
+}
+
+export interface ApiTypeParameter {
+  readonly id: number;
+  readonly name: string;
+  readonly type: ApiType | null;
+  readonly default: ApiType | null;
+  readonly comment: ApiComment | null;
 }
 
 export interface ApiParameter {
@@ -62,9 +81,11 @@ export interface ApiSignature {
   readonly id: number;
   readonly name: string;
   readonly comment: ApiComment | null;
+  readonly typeParameters: readonly ApiTypeParameter[];
   readonly parameters: readonly ApiParameter[];
   readonly returnType: ApiType | null;
   readonly sources: readonly ApiSource[];
+  readonly relationships: ApiRelationships;
 }
 
 export interface ApiMember {
@@ -78,6 +99,8 @@ export interface ApiMember {
   readonly type: ApiType | null;
   readonly defaultValue: string | null;
   readonly sources: readonly ApiSource[];
+  readonly relationships: ApiRelationships;
+  readonly typeParameters: readonly ApiTypeParameter[];
   readonly signatures: readonly ApiSignature[];
   readonly typeDeclaration: readonly ApiMember[];
 }
@@ -92,9 +115,20 @@ export interface ApiReflection {
   readonly flags: ApiFlags;
   readonly comment: ApiComment | null;
   readonly type: ApiType | null;
+  readonly hierarchy: ApiHierarchy;
   readonly sources: readonly ApiSource[];
+  readonly relationships: ApiRelationships;
+  readonly typeParameters: readonly ApiTypeParameter[];
+  readonly signatures: readonly ApiSignature[];
   readonly children: readonly ApiMember[];
   readonly typeDeclaration: readonly ApiMember[];
+}
+
+export interface ApiProject {
+  readonly id: number;
+  readonly name: string;
+  readonly reflections: readonly ApiReflection[];
+  readonly navigation: readonly ApiNavigationItem[];
 }
 `;
 }

@@ -5,7 +5,7 @@ import { MemberGroup } from "./member-group";
 import { SourceList } from "./source";
 import { TypeDocIcon } from "./typedoc-icon";
 import { TypeExpression } from "./type-expression";
-import type { ApiNavigationItem, ApiReflection } from "./types";
+import type { ApiNavigationItem, ApiReflection } from "../_generated/model";
 
 const ROUTE_BASE = ${JSON.stringify(routeBase)};
 
