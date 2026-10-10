@@ -1,1057 +1,1793 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import type { Metadata } from "next";
 
-const api = {
+import { ApiReflectionPage } from "../../_components/pages";
+import type { ApiPage } from "../../_generated/model";
+
+const page = {
   "id": 731,
   "name": "UpdateFilter",
-  "slug": "UpdateFilter",
-  "route": "types/UpdateFilter",
-  "kind": "TypeAlias",
-  "kindId": 2097152,
-  "flags": {
-    "static": false,
-    "readonly": false,
-    "optional": false,
-    "abstract": false,
-    "protected": false,
-    "private": false,
-    "external": false,
-    "const": false
-  },
-  "comment": {
-    "summary": [
-      {
-        "kind": "text",
-        "text": "An update document built from operators: ",
-        "target": null
-      },
-      {
-        "kind": "code",
-        "text": "`$set`",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": ", ",
-        "target": null
-      },
-      {
-        "kind": "code",
-        "text": "`$unset`",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": ", ",
-        "target": null
-      },
-      {
-        "kind": "code",
-        "text": "`$inc`",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": ", ",
-        "target": null
-      },
-      {
-        "kind": "code",
-        "text": "`$min`",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": ",\n",
-        "target": null
-      },
-      {
-        "kind": "code",
-        "text": "`$max`",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": ", ",
-        "target": null
-      },
-      {
-        "kind": "code",
-        "text": "`$push`",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": ", ",
-        "target": null
-      },
-      {
-        "kind": "code",
-        "text": "`$addToSet`",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": " and ",
-        "target": null
-      },
-      {
-        "kind": "code",
-        "text": "`$pull`",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": ". Each operator accepts only paths\nof a matching type.",
-        "target": null
-      }
+  "kind": "type-alias",
+  "label": "Type Alias",
+  "href": "/docs/api/types/UpdateFilter",
+  "description": "An update document built from operators: $set, $unset, $inc, $min, $max, $push, $addToSet and $pull. Each operator accepts only paths of a matching type.",
+  "badges": [],
+  "declaration": [
+    [
+      "type ",
+      "kw"
     ],
-    "blockTags": []
-  },
-  "type": null,
-  "hierarchy": {
-    "extends": [],
-    "extendedBy": []
-  },
-  "sources": [
-    {
-      "fileName": "packages/driver/dist/update.d.ts",
-      "line": 38,
-      "character": 12,
-      "url": null
-    }
+    [
+      "UpdateFilter",
+      "name"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "TDocument",
+      "tp"
+    ],
+    [
+      " extends ",
+      "kw"
+    ],
+    [
+      "object",
+      "prim"
+    ],
+    [
+      "> = {",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "$addToSet",
+      "prop",
+      "/docs/api/types/UpdateFilter#add-to-set"
+    ],
+    [
+      "?: {",
+      "pn"
+    ],
+    [
+      "\n    "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "[",
+      "pn"
+    ],
+    [
+      "Path",
+      "tp"
+    ],
+    [
+      " in ",
+      "kw"
+    ],
+    [
+      "ArrayPaths",
+      "ref",
+      "/docs/api/types/ArrayPaths"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "TDocument",
+      "tp"
+    ],
+    [
+      ">]?: ",
+      "pn"
+    ],
+    [
+      "ElementOf",
+      "ref",
+      "/docs/api/types/ElementOf"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "NonNullable",
+      "ref"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "FilterPathValue",
+      "ref",
+      "/docs/api/types/FilterPathValue"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "TDocument",
+      "tp"
+    ],
+    [
+      ", ",
+      "pn"
+    ],
+    [
+      "Path",
+      "tp"
+    ],
+    [
+      ">>>;",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "};",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "$inc",
+      "prop",
+      "/docs/api/types/UpdateFilter#inc"
+    ],
+    [
+      "?: {",
+      "pn"
+    ],
+    [
+      "\n    "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "[",
+      "pn"
+    ],
+    [
+      "Path",
+      "tp"
+    ],
+    [
+      " in ",
+      "kw"
+    ],
+    [
+      "NumericPaths",
+      "ref",
+      "/docs/api/types/NumericPaths"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "TDocument",
+      "tp"
+    ],
+    [
+      ">]?: ",
+      "pn"
+    ],
+    [
+      "NonNullable",
+      "ref"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "FilterPathValue",
+      "ref",
+      "/docs/api/types/FilterPathValue"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "TDocument",
+      "tp"
+    ],
+    [
+      ", ",
+      "pn"
+    ],
+    [
+      "Path",
+      "tp"
+    ],
+    [
+      ">>;",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "};",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "$max",
+      "prop",
+      "/docs/api/types/UpdateFilter#max"
+    ],
+    [
+      "?: {",
+      "pn"
+    ],
+    [
+      "\n    "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "[",
+      "pn"
+    ],
+    [
+      "Path",
+      "tp"
+    ],
+    [
+      " in ",
+      "kw"
+    ],
+    [
+      "ComparablePaths",
+      "ref",
+      "/docs/api/types/ComparablePaths"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "TDocument",
+      "tp"
+    ],
+    [
+      ">]?: ",
+      "pn"
+    ],
+    [
+      "NonNullable",
+      "ref"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "FilterPathValue",
+      "ref",
+      "/docs/api/types/FilterPathValue"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "TDocument",
+      "tp"
+    ],
+    [
+      ", ",
+      "pn"
+    ],
+    [
+      "Path",
+      "tp"
+    ],
+    [
+      ">>;",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "};",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "$min",
+      "prop",
+      "/docs/api/types/UpdateFilter#min"
+    ],
+    [
+      "?: {",
+      "pn"
+    ],
+    [
+      "\n    "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "[",
+      "pn"
+    ],
+    [
+      "Path",
+      "tp"
+    ],
+    [
+      " in ",
+      "kw"
+    ],
+    [
+      "ComparablePaths",
+      "ref",
+      "/docs/api/types/ComparablePaths"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "TDocument",
+      "tp"
+    ],
+    [
+      ">]?: ",
+      "pn"
+    ],
+    [
+      "NonNullable",
+      "ref"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "FilterPathValue",
+      "ref",
+      "/docs/api/types/FilterPathValue"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "TDocument",
+      "tp"
+    ],
+    [
+      ", ",
+      "pn"
+    ],
+    [
+      "Path",
+      "tp"
+    ],
+    [
+      ">>;",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "};",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "$pull",
+      "prop",
+      "/docs/api/types/UpdateFilter#pull"
+    ],
+    [
+      "?: {",
+      "pn"
+    ],
+    [
+      "\n    "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "[",
+      "pn"
+    ],
+    [
+      "Path",
+      "tp"
+    ],
+    [
+      " in ",
+      "kw"
+    ],
+    [
+      "ArrayPaths",
+      "ref",
+      "/docs/api/types/ArrayPaths"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "TDocument",
+      "tp"
+    ],
+    [
+      ">]?: ",
+      "pn"
+    ],
+    [
+      "ElementOf",
+      "ref",
+      "/docs/api/types/ElementOf"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "NonNullable",
+      "ref"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "FilterPathValue",
+      "ref",
+      "/docs/api/types/FilterPathValue"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "TDocument",
+      "tp"
+    ],
+    [
+      ", ",
+      "pn"
+    ],
+    [
+      "Path",
+      "tp"
+    ],
+    [
+      ">>>;",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "};",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "$push",
+      "prop",
+      "/docs/api/types/UpdateFilter#push"
+    ],
+    [
+      "?: {",
+      "pn"
+    ],
+    [
+      "\n    "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "[",
+      "pn"
+    ],
+    [
+      "Path",
+      "tp"
+    ],
+    [
+      " in ",
+      "kw"
+    ],
+    [
+      "ArrayPaths",
+      "ref",
+      "/docs/api/types/ArrayPaths"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "TDocument",
+      "tp"
+    ],
+    [
+      ">]?: ",
+      "pn"
+    ],
+    [
+      "ElementOf",
+      "ref",
+      "/docs/api/types/ElementOf"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "NonNullable",
+      "ref"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "FilterPathValue",
+      "ref",
+      "/docs/api/types/FilterPathValue"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "TDocument",
+      "tp"
+    ],
+    [
+      ", ",
+      "pn"
+    ],
+    [
+      "Path",
+      "tp"
+    ],
+    [
+      ">>>;",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "};",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "$set",
+      "prop",
+      "/docs/api/types/UpdateFilter#set"
+    ],
+    [
+      "?: {",
+      "pn"
+    ],
+    [
+      "\n    "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "[",
+      "pn"
+    ],
+    [
+      "Path",
+      "tp"
+    ],
+    [
+      " in ",
+      "kw"
+    ],
+    [
+      "UpdatePaths",
+      "ref",
+      "/docs/api/types/UpdatePaths"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "TDocument",
+      "tp"
+    ],
+    [
+      ">]?: ",
+      "pn"
+    ],
+    [
+      "FilterPathValue",
+      "ref",
+      "/docs/api/types/FilterPathValue"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "TDocument",
+      "tp"
+    ],
+    [
+      ", ",
+      "pn"
+    ],
+    [
+      "Path",
+      "tp"
+    ],
+    [
+      ">;",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "};",
+      "pn"
+    ],
+    [
+      "\n  "
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "$unset",
+      "prop",
+      "/docs/api/types/UpdateFilter#unset"
+    ],
+    [
+      "?: { ",
+      "pn"
+    ],
+    [
+      "readonly ",
+      "kw"
+    ],
+    [
+      "[",
+      "pn"
+    ],
+    [
+      "Path",
+      "tp"
+    ],
+    [
+      " in ",
+      "kw"
+    ],
+    [
+      "UpdatePaths",
+      "ref",
+      "/docs/api/types/UpdatePaths"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "TDocument",
+      "tp"
+    ],
+    [
+      ">]?: ",
+      "pn"
+    ],
+    [
+      "true",
+      "lit"
+    ],
+    [
+      " | ",
+      "pn"
+    ],
+    [
+      "1",
+      "lit"
+    ],
+    [
+      " };",
+      "pn"
+    ],
+    [
+      "\n"
+    ],
+    [
+      "}",
+      "pn"
+    ]
   ],
-  "relationships": {
-    "inheritedFrom": null,
-    "overwrites": null,
-    "implementationOf": null
+  "comment": {
+    "summary": "<p>An update document built from operators: <code>$set</code>, <code>$unset</code>, <code>$inc</code>, <code>$min</code>,\n<code>$max</code>, <code>$push</code>, <code>$addToSet</code> and <code>$pull</code>. Each operator accepts only paths\nof a matching type.</p>",
+    "short": "An update document built from operators: <code>$set</code>, <code>$unset</code>, <code>$inc</code>, <code>$min</code>, <code>$max</code>, <code>$push</code>, <code>$addToSet</code> and <code>$pull</code>. Each operator accepts only paths of a matching type.",
+    "deprecated": null,
+    "modifiers": [],
+    "blocks": []
   },
   "typeParameters": [
     {
-      "id": 741,
       "name": "TDocument",
-      "type": {
-        "kind": "intrinsic",
-        "text": "object",
-        "name": "object",
-        "target": null,
-        "children": []
-      },
-      "default": null,
+      "code": [
+        [
+          "TDocument",
+          "tp"
+        ],
+        [
+          " extends ",
+          "kw"
+        ],
+        [
+          "object",
+          "prim"
+        ]
+      ],
       "comment": null
     }
   ],
+  "hierarchy": null,
+  "signatureSection": null,
   "signatures": [],
-  "children": [
+  "sections": [
     {
-      "id": 739,
-      "name": "$addToSet",
-      "anchor": "-add-to-set",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": true,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "Appends a value to an array unless an equal element is already present. A missing field becomes a new array.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "mapped",
-        "text": "{ readonly [Path in ArrayPaths<TDocument>]?: ElementOf<NonNullable<FilterPathValue<TDocument, Path>>> }",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
+      "id": "properties",
+      "title": "Properties",
+      "members": [
         {
-          "fileName": "packages/driver/dist/update.d.ts",
-          "line": 64,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 735,
-      "name": "$inc",
-      "anchor": "-inc",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": true,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "Adds a number to numeric fields. A missing field is set to the number.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "mapped",
-        "text": "{ readonly [Path in NumericPaths<TDocument>]?: NonNullable<FilterPathValue<TDocument, Path>> }",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
+          "id": 739,
+          "name": "$addToSet",
+          "anchor": "add-to-set",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "$addToSet",
+              "name"
+            ],
+            [
+              "?: {",
+              "pn"
+            ],
+            [
+              "\n  "
+            ],
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "[",
+              "pn"
+            ],
+            [
+              "Path",
+              "tp"
+            ],
+            [
+              " in ",
+              "kw"
+            ],
+            [
+              "ArrayPaths",
+              "ref",
+              "/docs/api/types/ArrayPaths"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              ">]?: ",
+              "pn"
+            ],
+            [
+              "ElementOf",
+              "ref",
+              "/docs/api/types/ElementOf"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "NonNullable",
+              "ref"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "FilterPathValue",
+              "ref",
+              "/docs/api/types/FilterPathValue"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              ", ",
+              "pn"
+            ],
+            [
+              "Path",
+              "tp"
+            ],
+            [
+              ">>>;",
+              "pn"
+            ],
+            [
+              "\n"
+            ],
+            [
+              "}",
+              "pn"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>Appends a value to an array unless an equal element is already present. A missing field becomes a new array.</p>",
+            "short": "Appends a value to an array unless an equal element is already present. A missing field becomes a new array.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/update.ts",
+              "line": 102,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/update.ts#L102"
+            }
+          ]
+        },
         {
-          "fileName": "packages/driver/dist/update.d.ts",
-          "line": 48,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 737,
-      "name": "$max",
-      "anchor": "-max",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": true,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "Raises a field to the given value when the value is larger. A missing field is set to the value.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "mapped",
-        "text": "{ readonly [Path in ComparablePaths<TDocument>]?: NonNullable<FilterPathValue<TDocument, Path>> }",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
+          "id": 735,
+          "name": "$inc",
+          "anchor": "inc",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "$inc",
+              "name"
+            ],
+            [
+              "?: {",
+              "pn"
+            ],
+            [
+              "\n  "
+            ],
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "[",
+              "pn"
+            ],
+            [
+              "Path",
+              "tp"
+            ],
+            [
+              " in ",
+              "kw"
+            ],
+            [
+              "NumericPaths",
+              "ref",
+              "/docs/api/types/NumericPaths"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              ">]?: ",
+              "pn"
+            ],
+            [
+              "NonNullable",
+              "ref"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "FilterPathValue",
+              "ref",
+              "/docs/api/types/FilterPathValue"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              ", ",
+              "pn"
+            ],
+            [
+              "Path",
+              "tp"
+            ],
+            [
+              ">>;",
+              "pn"
+            ],
+            [
+              "\n"
+            ],
+            [
+              "}",
+              "pn"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>Adds a number to numeric fields. A missing field is set to the number.</p>",
+            "short": "Adds a number to numeric fields. A missing field is set to the number.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/update.ts",
+              "line": 78,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/update.ts#L78"
+            }
+          ]
+        },
         {
-          "fileName": "packages/driver/dist/update.d.ts",
-          "line": 56,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 736,
-      "name": "$min",
-      "anchor": "-min",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": true,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "Lowers a field to the given value when the value is smaller. A missing field is set to the value.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "mapped",
-        "text": "{ readonly [Path in ComparablePaths<TDocument>]?: NonNullable<FilterPathValue<TDocument, Path>> }",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
+          "id": 737,
+          "name": "$max",
+          "anchor": "max",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "$max",
+              "name"
+            ],
+            [
+              "?: {",
+              "pn"
+            ],
+            [
+              "\n  "
+            ],
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "[",
+              "pn"
+            ],
+            [
+              "Path",
+              "tp"
+            ],
+            [
+              " in ",
+              "kw"
+            ],
+            [
+              "ComparablePaths",
+              "ref",
+              "/docs/api/types/ComparablePaths"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              ">]?: ",
+              "pn"
+            ],
+            [
+              "NonNullable",
+              "ref"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "FilterPathValue",
+              "ref",
+              "/docs/api/types/FilterPathValue"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              ", ",
+              "pn"
+            ],
+            [
+              "Path",
+              "tp"
+            ],
+            [
+              ">>;",
+              "pn"
+            ],
+            [
+              "\n"
+            ],
+            [
+              "}",
+              "pn"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>Raises a field to the given value when the value is larger. A missing field is set to the value.</p>",
+            "short": "Raises a field to the given value when the value is larger. A missing field is set to the value.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/update.ts",
+              "line": 90,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/update.ts#L90"
+            }
+          ]
+        },
         {
-          "fileName": "packages/driver/dist/update.d.ts",
-          "line": 52,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 740,
-      "name": "$pull",
-      "anchor": "-pull",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": true,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "Removes every matching element from an array.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "mapped",
-        "text": "{ readonly [Path in ArrayPaths<TDocument>]?: ElementOf<NonNullable<FilterPathValue<TDocument, Path>>> }",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
+          "id": 736,
+          "name": "$min",
+          "anchor": "min",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "$min",
+              "name"
+            ],
+            [
+              "?: {",
+              "pn"
+            ],
+            [
+              "\n  "
+            ],
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "[",
+              "pn"
+            ],
+            [
+              "Path",
+              "tp"
+            ],
+            [
+              " in ",
+              "kw"
+            ],
+            [
+              "ComparablePaths",
+              "ref",
+              "/docs/api/types/ComparablePaths"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              ">]?: ",
+              "pn"
+            ],
+            [
+              "NonNullable",
+              "ref"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "FilterPathValue",
+              "ref",
+              "/docs/api/types/FilterPathValue"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              ", ",
+              "pn"
+            ],
+            [
+              "Path",
+              "tp"
+            ],
+            [
+              ">>;",
+              "pn"
+            ],
+            [
+              "\n"
+            ],
+            [
+              "}",
+              "pn"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>Lowers a field to the given value when the value is smaller. A missing field is set to the value.</p>",
+            "short": "Lowers a field to the given value when the value is smaller. A missing field is set to the value.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/update.ts",
+              "line": 84,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/update.ts#L84"
+            }
+          ]
+        },
         {
-          "fileName": "packages/driver/dist/update.d.ts",
-          "line": 68,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 738,
-      "name": "$push",
-      "anchor": "-push",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": true,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "Appends a value to an array, creating the array when the field is missing.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "mapped",
-        "text": "{ readonly [Path in ArrayPaths<TDocument>]?: ElementOf<NonNullable<FilterPathValue<TDocument, Path>>> }",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
+          "id": 740,
+          "name": "$pull",
+          "anchor": "pull",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "$pull",
+              "name"
+            ],
+            [
+              "?: {",
+              "pn"
+            ],
+            [
+              "\n  "
+            ],
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "[",
+              "pn"
+            ],
+            [
+              "Path",
+              "tp"
+            ],
+            [
+              " in ",
+              "kw"
+            ],
+            [
+              "ArrayPaths",
+              "ref",
+              "/docs/api/types/ArrayPaths"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              ">]?: ",
+              "pn"
+            ],
+            [
+              "ElementOf",
+              "ref",
+              "/docs/api/types/ElementOf"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "NonNullable",
+              "ref"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "FilterPathValue",
+              "ref",
+              "/docs/api/types/FilterPathValue"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              ", ",
+              "pn"
+            ],
+            [
+              "Path",
+              "tp"
+            ],
+            [
+              ">>>;",
+              "pn"
+            ],
+            [
+              "\n"
+            ],
+            [
+              "}",
+              "pn"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>Removes every matching element from an array.</p>",
+            "short": "Removes every matching element from an array.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/update.ts",
+              "line": 108,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/update.ts#L108"
+            }
+          ]
+        },
         {
-          "fileName": "packages/driver/dist/update.d.ts",
-          "line": 60,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 733,
-      "name": "$set",
-      "anchor": "-set",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": true,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "Sets fields to values, creating them when missing.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "mapped",
-        "text": "{ readonly [Path in UpdatePaths<TDocument>]?: FilterPathValue<TDocument, Path> }",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
+          "id": 738,
+          "name": "$push",
+          "anchor": "push",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "$push",
+              "name"
+            ],
+            [
+              "?: {",
+              "pn"
+            ],
+            [
+              "\n  "
+            ],
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "[",
+              "pn"
+            ],
+            [
+              "Path",
+              "tp"
+            ],
+            [
+              " in ",
+              "kw"
+            ],
+            [
+              "ArrayPaths",
+              "ref",
+              "/docs/api/types/ArrayPaths"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              ">]?: ",
+              "pn"
+            ],
+            [
+              "ElementOf",
+              "ref",
+              "/docs/api/types/ElementOf"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "NonNullable",
+              "ref"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "FilterPathValue",
+              "ref",
+              "/docs/api/types/FilterPathValue"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              ", ",
+              "pn"
+            ],
+            [
+              "Path",
+              "tp"
+            ],
+            [
+              ">>>;",
+              "pn"
+            ],
+            [
+              "\n"
+            ],
+            [
+              "}",
+              "pn"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>Appends a value to an array, creating the array when the field is missing.</p>",
+            "short": "Appends a value to an array, creating the array when the field is missing.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/update.ts",
+              "line": 96,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/update.ts#L96"
+            }
+          ]
+        },
         {
-          "fileName": "packages/driver/dist/update.d.ts",
-          "line": 40,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 734,
-      "name": "$unset",
-      "anchor": "-unset",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": true,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "Removes fields.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "mapped",
-        "text": "{ readonly [Path in UpdatePaths<TDocument>]?: true | 1 }",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
+          "id": 733,
+          "name": "$set",
+          "anchor": "set",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "$set",
+              "name"
+            ],
+            [
+              "?: {",
+              "pn"
+            ],
+            [
+              "\n  "
+            ],
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "[",
+              "pn"
+            ],
+            [
+              "Path",
+              "tp"
+            ],
+            [
+              " in ",
+              "kw"
+            ],
+            [
+              "UpdatePaths",
+              "ref",
+              "/docs/api/types/UpdatePaths"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              ">]?: ",
+              "pn"
+            ],
+            [
+              "FilterPathValue",
+              "ref",
+              "/docs/api/types/FilterPathValue"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              ", ",
+              "pn"
+            ],
+            [
+              "Path",
+              "tp"
+            ],
+            [
+              ">;",
+              "pn"
+            ],
+            [
+              "\n"
+            ],
+            [
+              "}",
+              "pn"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>Sets fields to values, creating them when missing.</p>",
+            "short": "Sets fields to values, creating them when missing.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/update.ts",
+              "line": 67,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/update.ts#L67"
+            }
+          ]
+        },
         {
-          "fileName": "packages/driver/dist/update.d.ts",
-          "line": 44,
-          "character": 13,
-          "url": null
+          "id": 734,
+          "name": "$unset",
+          "anchor": "unset",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "$unset",
+              "name"
+            ],
+            [
+              "?: { ",
+              "pn"
+            ],
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "[",
+              "pn"
+            ],
+            [
+              "Path",
+              "tp"
+            ],
+            [
+              " in ",
+              "kw"
+            ],
+            [
+              "UpdatePaths",
+              "ref",
+              "/docs/api/types/UpdatePaths"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              ">]?: ",
+              "pn"
+            ],
+            [
+              "true",
+              "lit"
+            ],
+            [
+              " | ",
+              "pn"
+            ],
+            [
+              "1",
+              "lit"
+            ],
+            [
+              " }",
+              "pn"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>Removes fields.</p>",
+            "short": "Removes fields.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/update.ts",
+              "line": 74,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/update.ts#L74"
+            }
+          ]
         }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
+      ]
     }
   ],
-  "typeDeclaration": []
-} as const;
-const navigation = [
-  {
-    "id": 1,
-    "name": "CustomId",
-    "route": "classes/CustomId",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 285,
-    "name": "FindCursor",
-    "route": "classes/FindCursor",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 32,
-    "name": "SinterClient",
-    "route": "classes/SinterClient",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 338,
-    "name": "SinterClientOptionsError",
-    "route": "classes/SinterClientOptionsError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 357,
-    "name": "SinterClientStateError",
-    "route": "classes/SinterClientStateError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 199,
-    "name": "SinterCollection",
-    "route": "classes/SinterCollection",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 377,
-    "name": "SinterCompatibilityError",
-    "route": "classes/SinterCompatibilityError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 400,
-    "name": "SinterConnectionError",
-    "route": "classes/SinterConnectionError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 419,
-    "name": "SinterConnectionStringError",
-    "route": "classes/SinterConnectionStringError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 438,
-    "name": "SinterConnectionTimeoutError",
-    "route": "classes/SinterConnectionTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 325,
-    "name": "SinterDatabase",
-    "route": "classes/SinterDatabase",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 457,
-    "name": "SinterDocumentError",
-    "route": "classes/SinterDocumentError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 476,
-    "name": "SinterError",
-    "route": "classes/SinterError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 511,
-    "name": "SinterInsertManyError",
-    "route": "classes/SinterInsertManyError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 700,
-    "name": "SinterNamespaceError",
-    "route": "classes/SinterNamespaceError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 537,
-    "name": "SinterProtocolError",
-    "route": "classes/SinterProtocolError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 556,
-    "name": "SinterRequestTimeoutError",
-    "route": "classes/SinterRequestTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 575,
-    "name": "SinterServerError",
-    "route": "classes/SinterServerError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 598,
-    "name": "SinterSocketTimeoutError",
-    "route": "classes/SinterSocketTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 660,
-    "name": "CreateIndexResult",
-    "route": "interfaces/CreateIndexResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 723,
-    "name": "DeleteResult",
-    "route": "interfaces/DeleteResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 26,
-    "name": "Document",
-    "route": "interfaces/Document",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 664,
-    "name": "ExplainResult",
-    "route": "interfaces/ExplainResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 259,
-    "name": "FindOptions",
-    "route": "interfaces/FindOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 321,
-    "name": "FindQueryOptions",
-    "route": "interfaces/FindQueryOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 675,
-    "name": "IndexBoundInfo",
-    "route": "interfaces/IndexBoundInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 678,
-    "name": "IndexDefinition",
-    "route": "interfaces/IndexDefinition",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 685,
-    "name": "IndexInfo",
-    "route": "interfaces/IndexInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 691,
-    "name": "IndexIssue",
-    "route": "interfaces/IndexIssue",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 695,
-    "name": "IndexValidationResult",
-    "route": "interfaces/IndexValidationResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 265,
-    "name": "InsertManyResult",
-    "route": "interfaces/InsertManyResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 269,
-    "name": "InsertOneResult",
-    "route": "interfaces/InsertOneResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 281,
-    "name": "ParsedSinterConnectionString",
-    "route": "interfaces/ParsedSinterConnectionString",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 180,
-    "name": "SinterClientEvents",
-    "route": "interfaces/SinterClientEvents",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 185,
-    "name": "SinterClientOptions",
-    "route": "interfaces/SinterClientOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 189,
-    "name": "SinterPingResult",
-    "route": "interfaces/SinterPingResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 617,
-    "name": "SinterServerErrorOptions",
-    "route": "interfaces/SinterServerErrorOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 194,
-    "name": "SinterServerInfo",
-    "route": "interfaces/SinterServerInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 742,
-    "name": "UpdateOptions",
-    "route": "interfaces/UpdateOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 746,
-    "name": "UpdateResult",
-    "route": "interfaces/UpdateResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 719,
-    "name": "ArrayPaths",
-    "route": "types/ArrayPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 623,
-    "name": "AtomicValue",
-    "route": "types/AtomicValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 721,
-    "name": "ComparablePaths",
-    "route": "types/ComparablePaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 624,
-    "name": "ComparableValue",
-    "route": "types/ComparableValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 625,
-    "name": "ComparisonOperators",
-    "route": "types/ComparisonOperators",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 316,
-    "name": "CursorExecutor",
-    "route": "types/CursorExecutor",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 632,
-    "name": "ElementOf",
-    "route": "types/ElementOf",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 257,
-    "name": "EqualityFilter",
-    "route": "types/EqualityFilter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 634,
-    "name": "Filter",
-    "route": "types/Filter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 641,
-    "name": "FilterOperators",
-    "route": "types/FilterOperators",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 650,
-    "name": "FilterPaths",
-    "route": "types/FilterPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 653,
-    "name": "FilterPathValue",
-    "route": "types/FilterPathValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 673,
-    "name": "IndexablePath",
-    "route": "types/IndexablePath",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 656,
-    "name": "MaxPathDepth",
-    "route": "types/MaxPathDepth",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 726,
-    "name": "NumericPaths",
-    "route": "types/NumericPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 272,
-    "name": "OptionalId",
-    "route": "types/OptionalId",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 728,
-    "name": "PathsMatching",
-    "route": "types/PathsMatching",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 179,
-    "name": "SinterClientState",
-    "route": "types/SinterClientState",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 510,
-    "name": "SinterErrorCode",
-    "route": "types/SinterErrorCode",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 657,
-    "name": "Sort",
-    "route": "types/Sort",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 659,
-    "name": "SortDirection",
-    "route": "types/SortDirection",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 731,
-    "name": "UpdateFilter",
-    "route": "types/UpdateFilter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 744,
-    "name": "UpdatePaths",
-    "route": "types/UpdatePaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 276,
-    "name": "WithId",
-    "route": "types/WithId",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 29,
-    "name": "DEFAULT_CONNECT_TIMEOUT_MS",
-    "route": "variables/DEFAULT_CONNECT_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 30,
-    "name": "DEFAULT_REQUEST_TIMEOUT_MS",
-    "route": "variables/DEFAULT_REQUEST_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 280,
-    "name": "DEFAULT_SINTERDB_PORT",
-    "route": "variables/DEFAULT_SINTERDB_PORT",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 31,
-    "name": "DEFAULT_SOCKET_TIMEOUT_MS",
-    "route": "variables/DEFAULT_SOCKET_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 172,
-    "name": "SinterClientState",
-    "route": "variables/SinterClientState",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 496,
-    "name": "SinterErrorCode",
-    "route": "variables/SinterErrorCode",
-    "kind": "Variable",
-    "kindId": 32
-  }
-] as const;
+  "toc": [
+    {
+      "id": "properties",
+      "title": "Properties",
+      "items": [
+        {
+          "anchor": "add-to-set",
+          "name": "$addToSet",
+          "kind": "property"
+        },
+        {
+          "anchor": "inc",
+          "name": "$inc",
+          "kind": "property"
+        },
+        {
+          "anchor": "max",
+          "name": "$max",
+          "kind": "property"
+        },
+        {
+          "anchor": "min",
+          "name": "$min",
+          "kind": "property"
+        },
+        {
+          "anchor": "pull",
+          "name": "$pull",
+          "kind": "property"
+        },
+        {
+          "anchor": "push",
+          "name": "$push",
+          "kind": "property"
+        },
+        {
+          "anchor": "set",
+          "name": "$set",
+          "kind": "property"
+        },
+        {
+          "anchor": "unset",
+          "name": "$unset",
+          "kind": "property"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/driver/src/update.ts",
+      "line": 65,
+      "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/update.ts#L65"
+    }
+  ]
+} satisfies ApiPage;
+
+export const metadata: Metadata = {
+  title: page.name,
+  description: page.description || undefined,
+};
 
 export default function Page() {
-  return (
-    <ApiReflectionPage
-      projectName="SinterDB driver API"
-      api={api}
-      navigation={navigation}
-    />
-  );
+  return <ApiReflectionPage page={page} />;
 }

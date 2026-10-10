@@ -46,9 +46,6 @@
     "framework": "next",
     "routeBase": "/docs/api",
     "cleanOutput": true,
-    "assets": {
-      "iconSprite": "/docs/api/assets/icons.svg"
-    },
     "generated": {
       "directory": "_generated"
     },
@@ -65,13 +62,16 @@
       "navigation": true,
       "pageNavigation": true,
       "sourceLinks": true,
-      "comments": true
+      "comments": true,
+      "externalInherited": false
     },
     "theme": {
-      "name": "default"
+      "name": "default",
+      "colorScheme": "dark"
     }
   },
   "readme": "none",
+  "maxTypeConversionDepth": 20,
   "excludePrivate": true,
   "excludeProtected": true,
   "excludeInternal": true,

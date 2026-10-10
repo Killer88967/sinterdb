@@ -8,7 +8,7 @@ const api = {
   "kindId": 2097152,
   "route": "types/FilterPaths",
   "description": "Every dotted field path of a document type, such as `profile.name`. Arrays\nand atomic values end a path.",
-  "type": "TDepth[\"length\"] extends MaxPathDepth ? never : TDocument extends object ? { [Key in keyof TDocument & string]: Key | (NonNullable<TDocument[Key]> extends readonly unknown[] | AtomicValue ? never : NonNullable<TDocument[Key]> extends object ? `${Key}.${FilterPaths<NonNullable<(...)>, [(...), (...)]>}` : never) }[keyof TDocument & string] : never",
+  "type": "TDepth[\"length\"] extends MaxPathDepth ? never : TDocument extends object ? { [Key in keyof TDocument & string]: Key | (NonNullable<TDocument[Key]> extends readonly unknown[] | AtomicValue ? never : NonNullable<TDocument[Key]> extends object ? `${Key}.${FilterPaths<NonNullable<TDocument[Key]>, [...TDepth, unknown]>}` : never) }[keyof TDocument & string] : never",
   "flags": {
     "static": false,
     "readonly": false,

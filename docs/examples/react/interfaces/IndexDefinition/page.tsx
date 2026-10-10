@@ -1,862 +1,1033 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import type { Metadata } from "next";
 
-const api = {
+import { ApiReflectionPage } from "../../_components/pages";
+import type { ApiPage } from "../../_generated/model";
+
+const page = {
   "id": 678,
   "name": "IndexDefinition",
-  "slug": "IndexDefinition",
-  "route": "interfaces/IndexDefinition",
-  "kind": "Interface",
-  "kindId": 256,
-  "flags": {
-    "static": false,
-    "readonly": false,
-    "optional": false,
-    "abstract": false,
-    "protected": false,
-    "private": false,
-    "external": false,
-    "const": false
-  },
-  "comment": {
-    "summary": [
-      {
-        "kind": "text",
-        "text": "How to build an index, passed to ",
-        "target": null
-      },
-      {
-        "kind": "inline-tag",
-        "text": "SinterCollection.createIndex",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": ".",
-        "target": null
-      }
+  "kind": "interface",
+  "label": "Interface",
+  "href": "/docs/api/interfaces/IndexDefinition",
+  "description": "How to build an index, passed to SinterCollection.createIndex.",
+  "badges": [],
+  "declaration": [
+    [
+      "interface ",
+      "kw"
     ],
-    "blockTags": []
-  },
-  "type": null,
-  "hierarchy": {
-    "extends": [],
-    "extendedBy": []
-  },
-  "sources": [
-    {
-      "fileName": "packages/driver/dist/indexes.d.ts",
-      "line": 9,
-      "character": 17,
-      "url": null
-    }
+    [
+      "IndexDefinition",
+      "name"
+    ],
+    [
+      "<",
+      "pn"
+    ],
+    [
+      "TDocument",
+      "tp"
+    ],
+    [
+      " extends ",
+      "kw"
+    ],
+    [
+      "object",
+      "prim"
+    ],
+    [
+      " = ",
+      "pn"
+    ],
+    [
+      "Document",
+      "ref",
+      "/docs/api/interfaces/Document"
+    ],
+    [
+      ">",
+      "pn"
+    ]
   ],
-  "relationships": {
-    "inheritedFrom": null,
-    "overwrites": null,
-    "implementationOf": null
+  "comment": {
+    "summary": "<p>How to build an index, passed to <a href=\"/docs/api/classes/SinterCollection#create-index\">SinterCollection.createIndex</a>.</p>",
+    "short": "How to build an index, passed to <a href=\"/docs/api/classes/SinterCollection#create-index\">SinterCollection.createIndex</a>.",
+    "deprecated": null,
+    "modifiers": [],
+    "blocks": []
   },
   "typeParameters": [
     {
-      "id": 679,
       "name": "TDocument",
-      "type": {
-        "kind": "intrinsic",
-        "text": "object",
-        "name": "object",
-        "target": null,
-        "children": []
-      },
-      "default": {
-        "kind": "reference",
-        "text": "Document",
-        "name": "Document",
-        "target": {
-          "id": 26,
-          "name": "Document",
-          "route": "interfaces/Document"
-        },
-        "children": []
-      },
+      "code": [
+        [
+          "TDocument",
+          "tp"
+        ],
+        [
+          " extends ",
+          "kw"
+        ],
+        [
+          "object",
+          "prim"
+        ],
+        [
+          " = ",
+          "pn"
+        ],
+        [
+          "Document",
+          "ref",
+          "/docs/api/interfaces/Document"
+        ]
+      ],
       "comment": null
     }
   ],
+  "hierarchy": null,
+  "signatureSection": null,
   "signatures": [],
-  "children": [
+  "sections": [
     {
-      "id": 681,
-      "name": "direction",
-      "anchor": "direction",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": true,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "Defaults to 1. Both directions serve the same lookups today.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "union",
-        "text": "1 | -1",
-        "name": null,
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
+      "id": "properties",
+      "title": "Properties",
+      "members": [
         {
-          "fileName": "packages/driver/dist/indexes.d.ts",
-          "line": 13,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 680,
-      "name": "field",
-      "anchor": "field",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "The field to index. Dotted paths reach into nested documents.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "reference",
-        "text": "Exclude<TDocument extends object ? { [Key in string]: Key | (NonNullable<TDocument[Key]> extends AtomicValue | readonly unknown[] ? never : NonNullable<TDocument[Key]> extends object ? `${Key}.${NonNullable<(...)[(...)]> extends object ? { [Key in (...)]: (...) }[(...) & (...)] : never}` : never) }[keyof TDocument & string] : never>",
-        "name": "Exclude",
-        "target": null,
-        "children": [
-          {
-            "kind": "conditional",
-            "text": "TDocument extends object ? { [Key in string]: Key | (NonNullable<TDocument[Key]> extends AtomicValue | readonly unknown[] ? never : NonNullable<TDocument[Key]> extends object ? `${Key}.${NonNullable<(...)[(...)]> extends object ? { [Key in (...)]: (...) }[(...) & (...)] : never}` : never) }[keyof TDocument & string] : never",
-            "name": null,
-            "target": null,
-            "children": []
-          }
-        ]
-      },
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "packages/driver/dist/indexes.d.ts",
-          "line": 11,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 684,
-      "name": "name",
-      "anchor": "name",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": true,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "Defaults to the field and direction, such as ",
-            "target": null
+          "id": 681,
+          "name": "direction",
+          "anchor": "direction",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "direction",
+              "name"
+            ],
+            [
+              "?: ",
+              "pn"
+            ],
+            [
+              "1",
+              "lit"
+            ],
+            [
+              " | ",
+              "pn"
+            ],
+            [
+              "-1",
+              "lit"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>Defaults to 1. Both directions serve the same lookups today.</p>",
+            "short": "Defaults to 1. Both directions serve the same lookups today.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
           },
-          {
-            "kind": "code",
-            "text": "`email_1`",
-            "target": null
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/indexes.ts",
+              "line": 20,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/indexes.ts#L20"
+            }
+          ]
+        },
+        {
+          "id": 680,
+          "name": "field",
+          "anchor": "field",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "field",
+              "name"
+            ],
+            [
+              ": ",
+              "pn"
+            ],
+            [
+              "Exclude",
+              "ref"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              " extends ",
+              "kw"
+            ],
+            [
+              "object",
+              "prim"
+            ],
+            [
+              " ? { [",
+              "pn"
+            ],
+            [
+              "Key",
+              "tp"
+            ],
+            [
+              " in ",
+              "kw"
+            ],
+            [
+              "string",
+              "prim"
+            ],
+            [
+              "]: ",
+              "pn"
+            ],
+            [
+              "Key",
+              "tp"
+            ],
+            [
+              " | (",
+              "pn"
+            ],
+            [
+              "NonNullable",
+              "ref"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              "[",
+              "pn"
+            ],
+            [
+              "Key",
+              "tp"
+            ],
+            [
+              "]>",
+              "pn"
+            ],
+            [
+              " extends ",
+              "kw"
+            ],
+            [
+              "AtomicValue",
+              "ref",
+              "/docs/api/types/AtomicValue"
+            ],
+            [
+              " | ",
+              "pn"
+            ],
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "unknown",
+              "prim"
+            ],
+            [
+              "[] ? ",
+              "pn"
+            ],
+            [
+              "never",
+              "prim"
+            ],
+            [
+              " : ",
+              "pn"
+            ],
+            [
+              "NonNullable",
+              "ref"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              "[",
+              "pn"
+            ],
+            [
+              "Key",
+              "tp"
+            ],
+            [
+              "]>",
+              "pn"
+            ],
+            [
+              " extends ",
+              "kw"
+            ],
+            [
+              "object",
+              "prim"
+            ],
+            [
+              " ? ",
+              "pn"
+            ],
+            [
+              "`",
+              "lit"
+            ],
+            [
+              "${",
+              "pn"
+            ],
+            [
+              "Key",
+              "tp"
+            ],
+            [
+              "}",
+              "pn"
+            ],
+            [
+              ".",
+              "lit"
+            ],
+            [
+              "${",
+              "pn"
+            ],
+            [
+              "NonNullable",
+              "ref"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              "[",
+              "pn"
+            ],
+            [
+              "Key",
+              "tp"
+            ],
+            [
+              "]>",
+              "pn"
+            ],
+            [
+              " extends ",
+              "kw"
+            ],
+            [
+              "object",
+              "prim"
+            ],
+            [
+              " ? { [",
+              "pn"
+            ],
+            [
+              "Key",
+              "tp"
+            ],
+            [
+              " in ",
+              "kw"
+            ],
+            [
+              "string",
+              "prim"
+            ],
+            [
+              "]: ",
+              "pn"
+            ],
+            [
+              "Key",
+              "tp"
+            ],
+            [
+              " | (",
+              "pn"
+            ],
+            [
+              "NonNullable",
+              "ref"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "NonNullable",
+              "ref"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              "[",
+              "pn"
+            ],
+            [
+              "Key",
+              "tp"
+            ],
+            [
+              "]>[",
+              "pn"
+            ],
+            [
+              "Key",
+              "tp"
+            ],
+            [
+              "]>",
+              "pn"
+            ],
+            [
+              " extends ",
+              "kw"
+            ],
+            [
+              "AtomicValue",
+              "ref",
+              "/docs/api/types/AtomicValue"
+            ],
+            [
+              " | ",
+              "pn"
+            ],
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "unknown",
+              "prim"
+            ],
+            [
+              "[] ? ",
+              "pn"
+            ],
+            [
+              "never",
+              "prim"
+            ],
+            [
+              " : ",
+              "pn"
+            ],
+            [
+              "NonNullable",
+              "ref"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "NonNullable",
+              "ref"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              "[",
+              "pn"
+            ],
+            [
+              "Key",
+              "tp"
+            ],
+            [
+              "]>[",
+              "pn"
+            ],
+            [
+              "Key",
+              "tp"
+            ],
+            [
+              "]>",
+              "pn"
+            ],
+            [
+              " extends ",
+              "kw"
+            ],
+            [
+              "object",
+              "prim"
+            ],
+            [
+              " ? ",
+              "pn"
+            ],
+            [
+              "`",
+              "lit"
+            ],
+            [
+              "${",
+              "pn"
+            ],
+            [
+              "Key",
+              "tp"
+            ],
+            [
+              "}",
+              "pn"
+            ],
+            [
+              ".",
+              "lit"
+            ],
+            [
+              "${",
+              "pn"
+            ],
+            [
+              "NonNullable",
+              "ref"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "NonNullable",
+              "ref"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              "[",
+              "pn"
+            ],
+            [
+              "Key",
+              "tp"
+            ],
+            [
+              "]>[",
+              "pn"
+            ],
+            [
+              "Key",
+              "tp"
+            ],
+            [
+              "]>",
+              "pn"
+            ],
+            [
+              " extends ",
+              "kw"
+            ],
+            [
+              "object",
+              "prim"
+            ],
+            [
+              " ? { [",
+              "pn"
+            ],
+            [
+              "Key",
+              "tp"
+            ],
+            [
+              " in ",
+              "kw"
+            ],
+            [
+              "string",
+              "prim"
+            ],
+            [
+              "]: ",
+              "pn"
+            ],
+            [
+              "Key",
+              "tp"
+            ],
+            [
+              " | (",
+              "pn"
+            ],
+            [
+              "NonNullable",
+              "ref"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "..."
+            ],
+            [
+              ">",
+              "pn"
+            ],
+            [
+              " extends ",
+              "kw"
+            ],
+            [
+              "..."
+            ],
+            [
+              " | ",
+              "pn"
+            ],
+            [
+              "..."
+            ],
+            [
+              " ? ",
+              "pn"
+            ],
+            [
+              "never",
+              "prim"
+            ],
+            [
+              " : ",
+              "pn"
+            ],
+            [
+              "..."
+            ],
+            [
+              " extends ",
+              "kw"
+            ],
+            [
+              "..."
+            ],
+            [
+              " ? ",
+              "pn"
+            ],
+            [
+              "..."
+            ],
+            [
+              " : ",
+              "pn"
+            ],
+            [
+              "..."
+            ],
+            [
+              ") }[",
+              "pn"
+            ],
+            [
+              "keyof ",
+              "kw"
+            ],
+            [
+              "NonNullable",
+              "ref"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "..."
+            ],
+            [
+              "[",
+              "pn"
+            ],
+            [
+              "..."
+            ],
+            [
+              "]> & ",
+              "pn"
+            ],
+            [
+              "string",
+              "prim"
+            ],
+            [
+              "] : ",
+              "pn"
+            ],
+            [
+              "never",
+              "prim"
+            ],
+            [
+              "}",
+              "pn"
+            ],
+            [
+              "`",
+              "lit"
+            ],
+            [
+              " : ",
+              "pn"
+            ],
+            [
+              "never",
+              "prim"
+            ],
+            [
+              ") }[",
+              "pn"
+            ],
+            [
+              "keyof ",
+              "kw"
+            ],
+            [
+              "NonNullable",
+              "ref"
+            ],
+            [
+              "<",
+              "pn"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              "[",
+              "pn"
+            ],
+            [
+              "Key",
+              "tp"
+            ],
+            [
+              "]> & ",
+              "pn"
+            ],
+            [
+              "string",
+              "prim"
+            ],
+            [
+              "] : ",
+              "pn"
+            ],
+            [
+              "never",
+              "prim"
+            ],
+            [
+              "}",
+              "pn"
+            ],
+            [
+              "`",
+              "lit"
+            ],
+            [
+              " : ",
+              "pn"
+            ],
+            [
+              "never",
+              "prim"
+            ],
+            [
+              ") }[",
+              "pn"
+            ],
+            [
+              "keyof ",
+              "kw"
+            ],
+            [
+              "TDocument",
+              "tp"
+            ],
+            [
+              " & ",
+              "pn"
+            ],
+            [
+              "string",
+              "prim"
+            ],
+            [
+              "] : ",
+              "pn"
+            ],
+            [
+              "never",
+              "prim"
+            ],
+            [
+              ">",
+              "pn"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>The field to index. Dotted paths reach into nested documents.</p>",
+            "short": "The field to index. Dotted paths reach into nested documents.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
           },
-          {
-            "kind": "text",
-            "text": ".",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "intrinsic",
-        "text": "string",
-        "name": "string",
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/indexes.ts",
+              "line": 18,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/indexes.ts#L18"
+            }
+          ]
+        },
         {
-          "fileName": "packages/driver/dist/indexes.d.ts",
-          "line": 19,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 683,
-      "name": "sparse",
-      "anchor": "sparse",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": true,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "Documents without the field are left out, so they never conflict.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "intrinsic",
-        "text": "boolean",
-        "name": "boolean",
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
+          "id": 684,
+          "name": "name",
+          "anchor": "name",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "name",
+              "name"
+            ],
+            [
+              "?: ",
+              "pn"
+            ],
+            [
+              "string",
+              "prim"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>Defaults to the field and direction, such as <code>email_1</code>.</p>",
+            "short": "Defaults to the field and direction, such as <code>email_1</code>.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/indexes.ts",
+              "line": 26,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/indexes.ts#L26"
+            }
+          ]
+        },
         {
-          "fileName": "packages/driver/dist/indexes.d.ts",
-          "line": 17,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 682,
-      "name": "unique",
-      "anchor": "unique",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": true,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "At most one document may hold a given value, or lack the field.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "intrinsic",
-        "text": "boolean",
-        "name": "boolean",
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
+          "id": 683,
+          "name": "sparse",
+          "anchor": "sparse",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "sparse",
+              "name"
+            ],
+            [
+              "?: ",
+              "pn"
+            ],
+            [
+              "boolean",
+              "prim"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>Documents without the field are left out, so they never conflict.</p>",
+            "short": "Documents without the field are left out, so they never conflict.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/indexes.ts",
+              "line": 24,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/indexes.ts#L24"
+            }
+          ]
+        },
         {
-          "fileName": "packages/driver/dist/indexes.d.ts",
-          "line": 15,
-          "character": 13,
-          "url": null
+          "id": 682,
+          "name": "unique",
+          "anchor": "unique",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "unique",
+              "name"
+            ],
+            [
+              "?: ",
+              "pn"
+            ],
+            [
+              "boolean",
+              "prim"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>At most one document may hold a given value, or lack the field.</p>",
+            "short": "At most one document may hold a given value, or lack the field.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/indexes.ts",
+              "line": 22,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/indexes.ts#L22"
+            }
+          ]
         }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
+      ]
     }
   ],
-  "typeDeclaration": []
-} as const;
-const navigation = [
-  {
-    "id": 1,
-    "name": "CustomId",
-    "route": "classes/CustomId",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 285,
-    "name": "FindCursor",
-    "route": "classes/FindCursor",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 32,
-    "name": "SinterClient",
-    "route": "classes/SinterClient",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 338,
-    "name": "SinterClientOptionsError",
-    "route": "classes/SinterClientOptionsError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 357,
-    "name": "SinterClientStateError",
-    "route": "classes/SinterClientStateError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 199,
-    "name": "SinterCollection",
-    "route": "classes/SinterCollection",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 377,
-    "name": "SinterCompatibilityError",
-    "route": "classes/SinterCompatibilityError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 400,
-    "name": "SinterConnectionError",
-    "route": "classes/SinterConnectionError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 419,
-    "name": "SinterConnectionStringError",
-    "route": "classes/SinterConnectionStringError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 438,
-    "name": "SinterConnectionTimeoutError",
-    "route": "classes/SinterConnectionTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 325,
-    "name": "SinterDatabase",
-    "route": "classes/SinterDatabase",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 457,
-    "name": "SinterDocumentError",
-    "route": "classes/SinterDocumentError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 476,
-    "name": "SinterError",
-    "route": "classes/SinterError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 511,
-    "name": "SinterInsertManyError",
-    "route": "classes/SinterInsertManyError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 700,
-    "name": "SinterNamespaceError",
-    "route": "classes/SinterNamespaceError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 537,
-    "name": "SinterProtocolError",
-    "route": "classes/SinterProtocolError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 556,
-    "name": "SinterRequestTimeoutError",
-    "route": "classes/SinterRequestTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 575,
-    "name": "SinterServerError",
-    "route": "classes/SinterServerError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 598,
-    "name": "SinterSocketTimeoutError",
-    "route": "classes/SinterSocketTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 660,
-    "name": "CreateIndexResult",
-    "route": "interfaces/CreateIndexResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 723,
-    "name": "DeleteResult",
-    "route": "interfaces/DeleteResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 26,
-    "name": "Document",
-    "route": "interfaces/Document",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 664,
-    "name": "ExplainResult",
-    "route": "interfaces/ExplainResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 259,
-    "name": "FindOptions",
-    "route": "interfaces/FindOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 321,
-    "name": "FindQueryOptions",
-    "route": "interfaces/FindQueryOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 675,
-    "name": "IndexBoundInfo",
-    "route": "interfaces/IndexBoundInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 678,
-    "name": "IndexDefinition",
-    "route": "interfaces/IndexDefinition",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 685,
-    "name": "IndexInfo",
-    "route": "interfaces/IndexInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 691,
-    "name": "IndexIssue",
-    "route": "interfaces/IndexIssue",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 695,
-    "name": "IndexValidationResult",
-    "route": "interfaces/IndexValidationResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 265,
-    "name": "InsertManyResult",
-    "route": "interfaces/InsertManyResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 269,
-    "name": "InsertOneResult",
-    "route": "interfaces/InsertOneResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 281,
-    "name": "ParsedSinterConnectionString",
-    "route": "interfaces/ParsedSinterConnectionString",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 180,
-    "name": "SinterClientEvents",
-    "route": "interfaces/SinterClientEvents",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 185,
-    "name": "SinterClientOptions",
-    "route": "interfaces/SinterClientOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 189,
-    "name": "SinterPingResult",
-    "route": "interfaces/SinterPingResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 617,
-    "name": "SinterServerErrorOptions",
-    "route": "interfaces/SinterServerErrorOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 194,
-    "name": "SinterServerInfo",
-    "route": "interfaces/SinterServerInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 742,
-    "name": "UpdateOptions",
-    "route": "interfaces/UpdateOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 746,
-    "name": "UpdateResult",
-    "route": "interfaces/UpdateResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 719,
-    "name": "ArrayPaths",
-    "route": "types/ArrayPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 623,
-    "name": "AtomicValue",
-    "route": "types/AtomicValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 721,
-    "name": "ComparablePaths",
-    "route": "types/ComparablePaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 624,
-    "name": "ComparableValue",
-    "route": "types/ComparableValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 625,
-    "name": "ComparisonOperators",
-    "route": "types/ComparisonOperators",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 316,
-    "name": "CursorExecutor",
-    "route": "types/CursorExecutor",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 632,
-    "name": "ElementOf",
-    "route": "types/ElementOf",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 257,
-    "name": "EqualityFilter",
-    "route": "types/EqualityFilter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 634,
-    "name": "Filter",
-    "route": "types/Filter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 641,
-    "name": "FilterOperators",
-    "route": "types/FilterOperators",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 650,
-    "name": "FilterPaths",
-    "route": "types/FilterPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 653,
-    "name": "FilterPathValue",
-    "route": "types/FilterPathValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 673,
-    "name": "IndexablePath",
-    "route": "types/IndexablePath",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 656,
-    "name": "MaxPathDepth",
-    "route": "types/MaxPathDepth",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 726,
-    "name": "NumericPaths",
-    "route": "types/NumericPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 272,
-    "name": "OptionalId",
-    "route": "types/OptionalId",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 728,
-    "name": "PathsMatching",
-    "route": "types/PathsMatching",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 179,
-    "name": "SinterClientState",
-    "route": "types/SinterClientState",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 510,
-    "name": "SinterErrorCode",
-    "route": "types/SinterErrorCode",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 657,
-    "name": "Sort",
-    "route": "types/Sort",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 659,
-    "name": "SortDirection",
-    "route": "types/SortDirection",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 731,
-    "name": "UpdateFilter",
-    "route": "types/UpdateFilter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 744,
-    "name": "UpdatePaths",
-    "route": "types/UpdatePaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 276,
-    "name": "WithId",
-    "route": "types/WithId",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 29,
-    "name": "DEFAULT_CONNECT_TIMEOUT_MS",
-    "route": "variables/DEFAULT_CONNECT_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 30,
-    "name": "DEFAULT_REQUEST_TIMEOUT_MS",
-    "route": "variables/DEFAULT_REQUEST_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 280,
-    "name": "DEFAULT_SINTERDB_PORT",
-    "route": "variables/DEFAULT_SINTERDB_PORT",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 31,
-    "name": "DEFAULT_SOCKET_TIMEOUT_MS",
-    "route": "variables/DEFAULT_SOCKET_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 172,
-    "name": "SinterClientState",
-    "route": "variables/SinterClientState",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 496,
-    "name": "SinterErrorCode",
-    "route": "variables/SinterErrorCode",
-    "kind": "Variable",
-    "kindId": 32
-  }
-] as const;
+  "toc": [
+    {
+      "id": "properties",
+      "title": "Properties",
+      "items": [
+        {
+          "anchor": "direction",
+          "name": "direction",
+          "kind": "property"
+        },
+        {
+          "anchor": "field",
+          "name": "field",
+          "kind": "property"
+        },
+        {
+          "anchor": "name",
+          "name": "name",
+          "kind": "property"
+        },
+        {
+          "anchor": "sparse",
+          "name": "sparse",
+          "kind": "property"
+        },
+        {
+          "anchor": "unique",
+          "name": "unique",
+          "kind": "property"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/driver/src/indexes.ts",
+      "line": 16,
+      "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/indexes.ts#L16"
+    }
+  ]
+} satisfies ApiPage;
+
+export const metadata: Metadata = {
+  title: page.name,
+  description: page.description || undefined,
+};
 
 export default function Page() {
-  return (
-    <ApiReflectionPage
-      projectName="SinterDB driver API"
-      api={api}
-      navigation={navigation}
-    />
-  );
+  return <ApiReflectionPage page={page} />;
 }

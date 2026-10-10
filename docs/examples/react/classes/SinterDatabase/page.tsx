@@ -1,1035 +1,618 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import type { Metadata } from "next";
 
-const api = {
+import { ApiReflectionPage } from "../../_components/pages";
+import type { ApiPage } from "../../_generated/model";
+
+const page = {
   "id": 325,
   "name": "SinterDatabase",
-  "slug": "SinterDatabase",
-  "route": "classes/SinterDatabase",
-  "kind": "Class",
-  "kindId": 128,
-  "flags": {
-    "static": false,
-    "readonly": false,
-    "optional": false,
-    "abstract": false,
-    "protected": false,
-    "private": false,
-    "external": false,
-    "const": false
-  },
-  "comment": {
-    "summary": [
-      {
-        "kind": "text",
-        "text": "A handle to a database on a server.\n\nGet one from ",
-        "target": null
-      },
-      {
-        "kind": "inline-tag",
-        "text": "SinterClient.db",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": ".",
-        "target": null
-      }
+  "kind": "class",
+  "label": "Class",
+  "href": "/docs/api/classes/SinterDatabase",
+  "description": "A handle to a database on a server.",
+  "badges": [],
+  "declaration": [
+    [
+      "class ",
+      "kw"
     ],
-    "blockTags": []
-  },
-  "type": null,
-  "hierarchy": {
-    "extends": [],
-    "extendedBy": []
-  },
-  "sources": [
-    {
-      "fileName": "packages/driver/dist/database.d.ts",
-      "line": 9,
-      "character": 21,
-      "url": null
-    }
+    [
+      "SinterDatabase",
+      "name"
+    ]
   ],
-  "relationships": {
-    "inheritedFrom": null,
-    "overwrites": null,
-    "implementationOf": null
+  "comment": {
+    "summary": "<p>A handle to a database on a server.</p>\n<p>Get one from <a href=\"/docs/api/classes/SinterClient#db\">SinterClient.db</a>.</p>",
+    "short": "A handle to a database on a server.",
+    "deprecated": null,
+    "modifiers": [],
+    "blocks": []
   },
   "typeParameters": [],
+  "hierarchy": null,
+  "signatureSection": null,
   "signatures": [],
-  "children": [
+  "sections": [
     {
-      "id": 326,
-      "name": "constructor",
-      "anchor": "constructor",
-      "kind": "Constructor",
-      "kindId": 512,
-      "flags": {
-        "static": false,
-        "readonly": false,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": null,
-      "type": null,
-      "defaultValue": null,
-      "sources": [
+      "id": "constructors",
+      "title": "Constructors",
+      "members": [
         {
-          "fileName": "packages/driver/dist/database.d.ts",
-          "line": 14,
-          "character": 4,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [
-        {
-          "id": 327,
-          "name": "SinterDatabase",
+          "id": 326,
+          "name": "constructor",
+          "anchor": "constructor",
+          "kind": "constructor",
+          "label": "Constructor",
+          "badges": [],
+          "code": null,
           "comment": null,
-          "typeParameters": [],
-          "parameters": [
+          "signatures": [
             {
-              "id": 328,
-              "name": "client",
-              "flags": {
-                "static": false,
-                "readonly": false,
-                "optional": false,
-                "abstract": false,
-                "protected": false,
-                "private": false,
-                "external": false,
-                "const": false
-              },
-              "type": {
-                "kind": "reference",
-                "text": "SinterClient",
-                "name": "SinterClient",
-                "target": {
-                  "id": 32,
-                  "name": "SinterClient",
-                  "route": "classes/SinterClient"
-                },
-                "children": []
-              },
-              "defaultValue": null,
-              "comment": {
-                "summary": [
-                  {
-                    "kind": "text",
-                    "text": "The client this database belongs to.",
-                    "target": null
-                  }
+              "id": 327,
+              "code": [
+                [
+                  "new ",
+                  "kw"
                 ],
-                "blockTags": []
-              }
-            },
-            {
-              "id": 329,
-              "name": "name",
-              "flags": {
-                "static": false,
-                "readonly": false,
-                "optional": false,
-                "abstract": false,
-                "protected": false,
-                "private": false,
-                "external": false,
-                "const": false
-              },
-              "type": {
-                "kind": "intrinsic",
-                "text": "string",
-                "name": "string",
-                "target": null,
-                "children": []
-              },
-              "defaultValue": null,
-              "comment": null
+                [
+                  "SinterDatabase",
+                  "name"
+                ],
+                [
+                  "(",
+                  "pn"
+                ],
+                [
+                  "client",
+                  "param"
+                ],
+                [
+                  ": ",
+                  "pn"
+                ],
+                [
+                  "SinterClient",
+                  "ref",
+                  "/docs/api/classes/SinterClient"
+                ],
+                [
+                  ", ",
+                  "pn"
+                ],
+                [
+                  "name",
+                  "param"
+                ],
+                [
+                  ": ",
+                  "pn"
+                ],
+                [
+                  "string",
+                  "prim"
+                ],
+                [
+                  ")",
+                  "pn"
+                ]
+              ],
+              "comment": null,
+              "typeParameters": [],
+              "parameters": [
+                {
+                  "name": "client",
+                  "code": [
+                    [
+                      "client",
+                      "param"
+                    ],
+                    [
+                      ": ",
+                      "pn"
+                    ],
+                    [
+                      "SinterClient",
+                      "ref",
+                      "/docs/api/classes/SinterClient"
+                    ]
+                  ],
+                  "comment": {
+                    "summary": "<p>The client this database belongs to.</p>",
+                    "short": "The client this database belongs to.",
+                    "deprecated": null,
+                    "modifiers": [],
+                    "blocks": []
+                  },
+                  "members": []
+                },
+                {
+                  "name": "name",
+                  "code": [
+                    [
+                      "name",
+                      "param"
+                    ],
+                    [
+                      ": ",
+                      "pn"
+                    ],
+                    [
+                      "string",
+                      "prim"
+                    ]
+                  ],
+                  "comment": null,
+                  "members": []
+                }
+              ],
+              "returns": null,
+              "sources": [
+                {
+                  "path": "packages/driver/src/database.ts",
+                  "line": 16,
+                  "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/database.ts#L16"
+                }
+              ]
             }
           ],
-          "returnType": {
-            "kind": "reference",
-            "text": "SinterDatabase",
-            "name": "SinterDatabase",
-            "target": {
-              "id": 325,
-              "name": "SinterDatabase",
-              "route": "classes/SinterDatabase"
-            },
-            "children": []
-          },
+          "members": [],
+          "relations": [],
           "sources": [
             {
-              "fileName": "packages/driver/dist/database.d.ts",
-              "line": 14,
-              "character": 4,
-              "url": null
+              "path": "packages/driver/src/database.ts",
+              "line": 16,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/database.ts#L16"
             }
-          ],
-          "relationships": {
-            "inheritedFrom": null,
-            "overwrites": null,
-            "implementationOf": null
-          }
+          ]
         }
-      ],
-      "typeDeclaration": []
+      ]
     },
     {
-      "id": 330,
-      "name": "client",
-      "anchor": "client",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "The client this database belongs to.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "reference",
-        "text": "SinterClient",
-        "name": "SinterClient",
-        "target": {
-          "id": 32,
-          "name": "SinterClient",
-          "route": "classes/SinterClient"
+      "id": "properties",
+      "title": "Properties",
+      "members": [
+        {
+          "id": 330,
+          "name": "client",
+          "anchor": "client",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "client",
+              "name"
+            ],
+            [
+              ": ",
+              "pn"
+            ],
+            [
+              "SinterClient",
+              "ref",
+              "/docs/api/classes/SinterClient"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>The client this database belongs to.</p>",
+            "short": "The client this database belongs to.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/database.ts",
+              "line": 18,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/database.ts#L18"
+            }
+          ]
         },
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
         {
-          "fileName": "packages/driver/dist/database.d.ts",
-          "line": 11,
-          "character": 13,
-          "url": null
+          "id": 331,
+          "name": "name",
+          "anchor": "name",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "name",
+              "name"
+            ],
+            [
+              ": ",
+              "pn"
+            ],
+            [
+              "string",
+              "prim"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>The database name.</p>",
+            "short": "The database name.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/database.ts",
+              "line": 14,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/database.ts#L14"
+            }
+          ]
         }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
+      ]
     },
     {
-      "id": 331,
-      "name": "name",
-      "anchor": "name",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "The database name.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "intrinsic",
-        "text": "string",
-        "name": "string",
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
+      "id": "methods",
+      "title": "Methods",
+      "members": [
         {
-          "fileName": "packages/driver/dist/database.d.ts",
-          "line": 13,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 332,
-      "name": "collection",
-      "anchor": "collection",
-      "kind": "Method",
-      "kindId": 2048,
-      "flags": {
-        "static": false,
-        "readonly": false,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": null,
-      "type": null,
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "packages/driver/dist/database.d.ts",
-          "line": 25,
-          "character": 4,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [
-        {
-          "id": 333,
+          "id": 332,
           "name": "collection",
-          "comment": {
-            "summary": [
-              {
-                "kind": "text",
-                "text": "Returns a handle to a collection. No request is sent; the collection is\ncreated by the first write.",
-                "target": null
-              }
-            ],
-            "blockTags": []
-          },
-          "typeParameters": [
+          "anchor": "collection",
+          "kind": "method",
+          "label": "Method",
+          "badges": [],
+          "code": null,
+          "comment": null,
+          "signatures": [
             {
-              "id": 334,
-              "name": "TDocument",
-              "type": {
-                "kind": "intrinsic",
-                "text": "object",
-                "name": "object",
-                "target": null,
-                "children": []
-              },
-              "default": {
-                "kind": "reference",
-                "text": "Document",
-                "name": "Document",
-                "target": {
-                  "id": 26,
-                  "name": "Document",
-                  "route": "interfaces/Document"
-                },
-                "children": []
-              },
-              "comment": {
-                "summary": [
-                  {
-                    "kind": "text",
-                    "text": "The shape of the documents, used for\n  type-checking.",
-                    "target": null
-                  }
+              "id": 333,
+              "code": [
+                [
+                  "collection",
+                  "name"
                 ],
-                "blockTags": []
-              }
-            }
-          ],
-          "parameters": [
-            {
-              "id": 335,
-              "name": "name",
-              "flags": {
-                "static": false,
-                "readonly": false,
-                "optional": false,
-                "abstract": false,
-                "protected": false,
-                "private": false,
-                "external": false,
-                "const": false
-              },
-              "type": {
-                "kind": "intrinsic",
-                "text": "string",
-                "name": "string",
-                "target": null,
-                "children": []
-              },
-              "defaultValue": null,
-              "comment": {
-                "summary": [
-                  {
-                    "kind": "text",
-                    "text": "The collection name.",
-                    "target": null
-                  }
+                [
+                  "<",
+                  "pn"
                 ],
-                "blockTags": []
-              }
-            }
-          ],
-          "returnType": {
-            "kind": "reference",
-            "text": "SinterCollection<TDocument>",
-            "name": "SinterCollection",
-            "target": {
-              "id": 199,
-              "name": "SinterCollection",
-              "route": "classes/SinterCollection"
-            },
-            "children": [
-              {
-                "kind": "reference",
-                "text": "TDocument",
-                "name": "TDocument",
-                "target": {
-                  "id": 334,
+                [
+                  "TDocument",
+                  "tp"
+                ],
+                [
+                  " extends ",
+                  "kw"
+                ],
+                [
+                  "object",
+                  "prim"
+                ],
+                [
+                  " = ",
+                  "pn"
+                ],
+                [
+                  "Document",
+                  "ref",
+                  "/docs/api/interfaces/Document"
+                ],
+                [
+                  ">(",
+                  "pn"
+                ],
+                [
+                  "\n  "
+                ],
+                [
+                  "name",
+                  "param"
+                ],
+                [
+                  ": ",
+                  "pn"
+                ],
+                [
+                  "string",
+                  "prim"
+                ],
+                [
+                  ",",
+                  "pn"
+                ],
+                [
+                  "\n"
+                ],
+                [
+                  "): ",
+                  "pn"
+                ],
+                [
+                  "SinterCollection",
+                  "ref",
+                  "/docs/api/classes/SinterCollection"
+                ],
+                [
+                  "<",
+                  "pn"
+                ],
+                [
+                  "TDocument",
+                  "tp"
+                ],
+                [
+                  ">",
+                  "pn"
+                ]
+              ],
+              "comment": {
+                "summary": "<p>Returns a handle to a collection. No request is sent; the collection is\ncreated by the first write.</p>",
+                "short": "Returns a handle to a collection. No request is sent; the collection is created by the first write.",
+                "deprecated": null,
+                "modifiers": [],
+                "blocks": []
+              },
+              "typeParameters": [
+                {
                   "name": "TDocument",
-                  "route": "other/TDocument"
-                },
-                "children": []
-              }
-            ]
-          },
-          "sources": [
-            {
-              "fileName": "packages/driver/dist/database.d.ts",
-              "line": 25,
-              "character": 4,
-              "url": null
+                  "code": [
+                    [
+                      "TDocument",
+                      "tp"
+                    ],
+                    [
+                      " extends ",
+                      "kw"
+                    ],
+                    [
+                      "object",
+                      "prim"
+                    ],
+                    [
+                      " = ",
+                      "pn"
+                    ],
+                    [
+                      "Document",
+                      "ref",
+                      "/docs/api/interfaces/Document"
+                    ]
+                  ],
+                  "comment": {
+                    "summary": "<p>The shape of the documents, used for\ntype-checking.</p>",
+                    "short": "The shape of the documents, used for   type-checking.",
+                    "deprecated": null,
+                    "modifiers": [],
+                    "blocks": []
+                  }
+                }
+              ],
+              "parameters": [
+                {
+                  "name": "name",
+                  "code": [
+                    [
+                      "name",
+                      "param"
+                    ],
+                    [
+                      ": ",
+                      "pn"
+                    ],
+                    [
+                      "string",
+                      "prim"
+                    ]
+                  ],
+                  "comment": {
+                    "summary": "<p>The collection name.</p>",
+                    "short": "The collection name.",
+                    "deprecated": null,
+                    "modifiers": [],
+                    "blocks": []
+                  },
+                  "members": []
+                }
+              ],
+              "returns": {
+                "code": [
+                  [
+                    "SinterCollection",
+                    "ref",
+                    "/docs/api/classes/SinterCollection"
+                  ],
+                  [
+                    "<",
+                    "pn"
+                  ],
+                  [
+                    "TDocument",
+                    "tp"
+                  ],
+                  [
+                    ">",
+                    "pn"
+                  ]
+                ],
+                "html": null
+              },
+              "sources": [
+                {
+                  "path": "packages/driver/src/database.ts",
+                  "line": 33,
+                  "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/database.ts#L33"
+                }
+              ]
             }
           ],
-          "relationships": {
-            "inheritedFrom": null,
-            "overwrites": null,
-            "implementationOf": null
-          }
-        }
-      ],
-      "typeDeclaration": []
-    },
-    {
-      "id": 336,
-      "name": "listCollections",
-      "anchor": "list-collections",
-      "kind": "Method",
-      "kindId": 2048,
-      "flags": {
-        "static": false,
-        "readonly": false,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": null,
-      "type": null,
-      "defaultValue": null,
-      "sources": [
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/database.ts",
+              "line": 33,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/database.ts#L33"
+            }
+          ]
+        },
         {
-          "fileName": "packages/driver/dist/database.d.ts",
-          "line": 27,
-          "character": 4,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [
-        {
-          "id": 337,
+          "id": 336,
           "name": "listCollections",
-          "comment": {
-            "summary": [
-              {
-                "kind": "text",
-                "text": "Lists the names of the collections in this database.",
-                "target": null
-              }
-            ],
-            "blockTags": []
-          },
-          "typeParameters": [],
-          "parameters": [],
-          "returnType": {
-            "kind": "reference",
-            "text": "Promise<string[]>",
-            "name": "Promise",
-            "target": null,
-            "children": [
-              {
-                "kind": "array",
-                "text": "string[]",
-                "name": null,
-                "target": null,
-                "children": []
-              }
-            ]
-          },
-          "sources": [
+          "anchor": "list-collections",
+          "kind": "method",
+          "label": "Method",
+          "badges": [],
+          "code": null,
+          "comment": null,
+          "signatures": [
             {
-              "fileName": "packages/driver/dist/database.d.ts",
-              "line": 27,
-              "character": 4,
-              "url": null
+              "id": 337,
+              "code": [
+                [
+                  "listCollections",
+                  "name"
+                ],
+                [
+                  "(): ",
+                  "pn"
+                ],
+                [
+                  "Promise",
+                  "ref"
+                ],
+                [
+                  "<",
+                  "pn"
+                ],
+                [
+                  "string",
+                  "prim"
+                ],
+                [
+                  "[]>",
+                  "pn"
+                ]
+              ],
+              "comment": {
+                "summary": "<p>Lists the names of the collections in this database.</p>",
+                "short": "Lists the names of the collections in this database.",
+                "deprecated": null,
+                "modifiers": [],
+                "blocks": []
+              },
+              "typeParameters": [],
+              "parameters": [],
+              "returns": {
+                "code": [
+                  [
+                    "Promise",
+                    "ref"
+                  ],
+                  [
+                    "<",
+                    "pn"
+                  ],
+                  [
+                    "string",
+                    "prim"
+                  ],
+                  [
+                    "[]>",
+                    "pn"
+                  ]
+                ],
+                "html": null
+              },
+              "sources": [
+                {
+                  "path": "packages/driver/src/database.ts",
+                  "line": 40,
+                  "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/database.ts#L40"
+                }
+              ]
             }
           ],
-          "relationships": {
-            "inheritedFrom": null,
-            "overwrites": null,
-            "implementationOf": null
-          }
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/driver/src/database.ts",
+              "line": 40,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/database.ts#L40"
+            }
+          ]
         }
-      ],
-      "typeDeclaration": []
+      ]
     }
   ],
-  "typeDeclaration": []
-} as const;
-const navigation = [
-  {
-    "id": 1,
-    "name": "CustomId",
-    "route": "classes/CustomId",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 285,
-    "name": "FindCursor",
-    "route": "classes/FindCursor",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 32,
-    "name": "SinterClient",
-    "route": "classes/SinterClient",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 338,
-    "name": "SinterClientOptionsError",
-    "route": "classes/SinterClientOptionsError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 357,
-    "name": "SinterClientStateError",
-    "route": "classes/SinterClientStateError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 199,
-    "name": "SinterCollection",
-    "route": "classes/SinterCollection",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 377,
-    "name": "SinterCompatibilityError",
-    "route": "classes/SinterCompatibilityError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 400,
-    "name": "SinterConnectionError",
-    "route": "classes/SinterConnectionError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 419,
-    "name": "SinterConnectionStringError",
-    "route": "classes/SinterConnectionStringError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 438,
-    "name": "SinterConnectionTimeoutError",
-    "route": "classes/SinterConnectionTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 325,
-    "name": "SinterDatabase",
-    "route": "classes/SinterDatabase",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 457,
-    "name": "SinterDocumentError",
-    "route": "classes/SinterDocumentError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 476,
-    "name": "SinterError",
-    "route": "classes/SinterError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 511,
-    "name": "SinterInsertManyError",
-    "route": "classes/SinterInsertManyError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 700,
-    "name": "SinterNamespaceError",
-    "route": "classes/SinterNamespaceError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 537,
-    "name": "SinterProtocolError",
-    "route": "classes/SinterProtocolError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 556,
-    "name": "SinterRequestTimeoutError",
-    "route": "classes/SinterRequestTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 575,
-    "name": "SinterServerError",
-    "route": "classes/SinterServerError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 598,
-    "name": "SinterSocketTimeoutError",
-    "route": "classes/SinterSocketTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 660,
-    "name": "CreateIndexResult",
-    "route": "interfaces/CreateIndexResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 723,
-    "name": "DeleteResult",
-    "route": "interfaces/DeleteResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 26,
-    "name": "Document",
-    "route": "interfaces/Document",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 664,
-    "name": "ExplainResult",
-    "route": "interfaces/ExplainResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 259,
-    "name": "FindOptions",
-    "route": "interfaces/FindOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 321,
-    "name": "FindQueryOptions",
-    "route": "interfaces/FindQueryOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 675,
-    "name": "IndexBoundInfo",
-    "route": "interfaces/IndexBoundInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 678,
-    "name": "IndexDefinition",
-    "route": "interfaces/IndexDefinition",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 685,
-    "name": "IndexInfo",
-    "route": "interfaces/IndexInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 691,
-    "name": "IndexIssue",
-    "route": "interfaces/IndexIssue",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 695,
-    "name": "IndexValidationResult",
-    "route": "interfaces/IndexValidationResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 265,
-    "name": "InsertManyResult",
-    "route": "interfaces/InsertManyResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 269,
-    "name": "InsertOneResult",
-    "route": "interfaces/InsertOneResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 281,
-    "name": "ParsedSinterConnectionString",
-    "route": "interfaces/ParsedSinterConnectionString",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 180,
-    "name": "SinterClientEvents",
-    "route": "interfaces/SinterClientEvents",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 185,
-    "name": "SinterClientOptions",
-    "route": "interfaces/SinterClientOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 189,
-    "name": "SinterPingResult",
-    "route": "interfaces/SinterPingResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 617,
-    "name": "SinterServerErrorOptions",
-    "route": "interfaces/SinterServerErrorOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 194,
-    "name": "SinterServerInfo",
-    "route": "interfaces/SinterServerInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 742,
-    "name": "UpdateOptions",
-    "route": "interfaces/UpdateOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 746,
-    "name": "UpdateResult",
-    "route": "interfaces/UpdateResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 719,
-    "name": "ArrayPaths",
-    "route": "types/ArrayPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 623,
-    "name": "AtomicValue",
-    "route": "types/AtomicValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 721,
-    "name": "ComparablePaths",
-    "route": "types/ComparablePaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 624,
-    "name": "ComparableValue",
-    "route": "types/ComparableValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 625,
-    "name": "ComparisonOperators",
-    "route": "types/ComparisonOperators",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 316,
-    "name": "CursorExecutor",
-    "route": "types/CursorExecutor",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 632,
-    "name": "ElementOf",
-    "route": "types/ElementOf",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 257,
-    "name": "EqualityFilter",
-    "route": "types/EqualityFilter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 634,
-    "name": "Filter",
-    "route": "types/Filter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 641,
-    "name": "FilterOperators",
-    "route": "types/FilterOperators",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 650,
-    "name": "FilterPaths",
-    "route": "types/FilterPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 653,
-    "name": "FilterPathValue",
-    "route": "types/FilterPathValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 673,
-    "name": "IndexablePath",
-    "route": "types/IndexablePath",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 656,
-    "name": "MaxPathDepth",
-    "route": "types/MaxPathDepth",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 726,
-    "name": "NumericPaths",
-    "route": "types/NumericPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 272,
-    "name": "OptionalId",
-    "route": "types/OptionalId",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 728,
-    "name": "PathsMatching",
-    "route": "types/PathsMatching",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 179,
-    "name": "SinterClientState",
-    "route": "types/SinterClientState",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 510,
-    "name": "SinterErrorCode",
-    "route": "types/SinterErrorCode",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 657,
-    "name": "Sort",
-    "route": "types/Sort",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 659,
-    "name": "SortDirection",
-    "route": "types/SortDirection",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 731,
-    "name": "UpdateFilter",
-    "route": "types/UpdateFilter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 744,
-    "name": "UpdatePaths",
-    "route": "types/UpdatePaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 276,
-    "name": "WithId",
-    "route": "types/WithId",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 29,
-    "name": "DEFAULT_CONNECT_TIMEOUT_MS",
-    "route": "variables/DEFAULT_CONNECT_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 30,
-    "name": "DEFAULT_REQUEST_TIMEOUT_MS",
-    "route": "variables/DEFAULT_REQUEST_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 280,
-    "name": "DEFAULT_SINTERDB_PORT",
-    "route": "variables/DEFAULT_SINTERDB_PORT",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 31,
-    "name": "DEFAULT_SOCKET_TIMEOUT_MS",
-    "route": "variables/DEFAULT_SOCKET_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 172,
-    "name": "SinterClientState",
-    "route": "variables/SinterClientState",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 496,
-    "name": "SinterErrorCode",
-    "route": "variables/SinterErrorCode",
-    "kind": "Variable",
-    "kindId": 32
-  }
-] as const;
+  "toc": [
+    {
+      "id": "constructors",
+      "title": "Constructors",
+      "items": [
+        {
+          "anchor": "constructor",
+          "name": "constructor",
+          "kind": "constructor"
+        }
+      ]
+    },
+    {
+      "id": "properties",
+      "title": "Properties",
+      "items": [
+        {
+          "anchor": "client",
+          "name": "client",
+          "kind": "property"
+        },
+        {
+          "anchor": "name",
+          "name": "name",
+          "kind": "property"
+        }
+      ]
+    },
+    {
+      "id": "methods",
+      "title": "Methods",
+      "items": [
+        {
+          "anchor": "collection",
+          "name": "collection",
+          "kind": "method"
+        },
+        {
+          "anchor": "list-collections",
+          "name": "listCollections",
+          "kind": "method"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/driver/src/database.ts",
+      "line": 12,
+      "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/database.ts#L12"
+    }
+  ]
+} satisfies ApiPage;
+
+export const metadata: Metadata = {
+  title: page.name,
+  description: page.description || undefined,
+};
 
 export default function Page() {
-  return (
-    <ApiReflectionPage
-      projectName="SinterDB driver API"
-      api={api}
-      navigation={navigation}
-    />
-  );
+  return <ApiReflectionPage page={page} />;
 }

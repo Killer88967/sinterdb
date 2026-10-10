@@ -1,1376 +1,296 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import type { Metadata } from "next";
 
-const api = {
+import { ApiReflectionPage } from "../../_components/pages";
+import type { ApiPage } from "../../_generated/model";
+
+const page = {
   "id": 457,
   "name": "SinterDocumentError",
-  "slug": "SinterDocumentError",
-  "route": "classes/SinterDocumentError",
-  "kind": "Class",
-  "kindId": 128,
-  "flags": {
-    "static": false,
-    "readonly": false,
-    "optional": false,
-    "abstract": false,
-    "protected": false,
-    "private": false,
-    "external": false,
-    "const": false
-  },
-  "comment": {
-    "summary": [
-      {
-        "kind": "text",
-        "text": "A request could not be encoded, so nothing was sent and the connection is\nunaffected. The usual causes are a value the database cannot store (such as\n",
-        "target": null
-      },
-      {
-        "kind": "code",
-        "text": "`undefined`",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": ", a function, or a class instance like ",
-        "target": null
-      },
-      {
-        "kind": "code",
-        "text": "`Map`",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": "), a document nested\nmore than 100 levels deep, or a request larger than 16 MiB. The ",
-        "target": null
-      },
-      {
-        "kind": "code",
-        "text": "`cause`",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": " says\nwhich. Code ",
-        "target": null
-      },
-      {
-        "kind": "code",
-        "text": "`INVALID_DOCUMENT`",
-        "target": null
-      },
-      {
-        "kind": "text",
-        "text": ".",
-        "target": null
-      }
+  "kind": "class",
+  "label": "Class",
+  "href": "/docs/api/classes/SinterDocumentError",
+  "description": "A request could not be encoded, so nothing was sent and the connection is unaffected. The usual causes are a value the database cannot store (such as undefined, a function, or a class instance like Map), a document nested more than 100 levels deep, or a request larger than 16 MiB. The cause says which. Code INVALID_DOCUMENT.",
+  "badges": [],
+  "declaration": [
+    [
+      "class ",
+      "kw"
     ],
-    "blockTags": []
-  },
-  "type": null,
-  "hierarchy": {
-    "extends": [
-      "SinterError"
+    [
+      "SinterDocumentError",
+      "name"
     ],
-    "extendedBy": []
-  },
-  "sources": [
-    {
-      "fileName": "packages/driver/dist/errors.d.ts",
-      "line": 74,
-      "character": 21,
-      "url": null
-    }
+    [
+      " extends ",
+      "kw"
+    ],
+    [
+      "SinterError",
+      "ref",
+      "/docs/api/classes/SinterError"
+    ]
   ],
-  "relationships": {
-    "inheritedFrom": null,
-    "overwrites": null,
-    "implementationOf": null
+  "comment": {
+    "summary": "<p>A request could not be encoded, so nothing was sent and the connection is\nunaffected. The usual causes are a value the database cannot store (such as\n<code>undefined</code>, a function, or a class instance like <code>Map</code>), a document nested\nmore than 100 levels deep, or a request larger than 16 MiB. The <code>cause</code> says\nwhich. Code <code>INVALID_DOCUMENT</code>.</p>",
+    "short": "A request could not be encoded, so nothing was sent and the connection is unaffected. The usual causes are a value the database cannot store (such as <code>undefined</code>, a function, or a class instance like <code>Map</code>), a document nested more than 100 levels deep, or a request larger than 16 MiB. The <code>cause</code> says which. Code <code>INVALID_DOCUMENT</code>.",
+    "deprecated": null,
+    "modifiers": [],
+    "blocks": []
   },
   "typeParameters": [],
-  "signatures": [],
-  "children": [
-    {
-      "id": 467,
-      "name": "constructor",
-      "anchor": "constructor",
-      "kind": "Constructor",
-      "kindId": 512,
-      "flags": {
-        "static": false,
-        "readonly": false,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": null,
-      "type": null,
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "packages/driver/dist/errors.d.ts",
-          "line": 75,
-          "character": 4,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": "constructor",
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [
-        {
-          "id": 468,
-          "name": "SinterDocumentError",
-          "comment": null,
-          "typeParameters": [],
-          "parameters": [
-            {
-              "id": 469,
-              "name": "message",
-              "flags": {
-                "static": false,
-                "readonly": false,
-                "optional": false,
-                "abstract": false,
-                "protected": false,
-                "private": false,
-                "external": false,
-                "const": false
-              },
-              "type": {
-                "kind": "intrinsic",
-                "text": "string",
-                "name": "string",
-                "target": null,
-                "children": []
-              },
-              "defaultValue": null,
-              "comment": null
-            },
-            {
-              "id": 470,
-              "name": "options",
-              "flags": {
-                "static": false,
-                "readonly": false,
-                "optional": true,
-                "abstract": false,
-                "protected": false,
-                "private": false,
-                "external": false,
-                "const": false
-              },
-              "type": {
-                "kind": "reference",
-                "text": "ErrorOptions",
-                "name": "ErrorOptions",
-                "target": null,
-                "children": []
-              },
-              "defaultValue": null,
-              "comment": null
-            }
-          ],
-          "returnType": {
-            "kind": "reference",
-            "text": "SinterDocumentError",
+  "hierarchy": {
+    "name": "Error",
+    "href": null,
+    "kind": null,
+    "current": false,
+    "children": [
+      {
+        "name": "SinterError",
+        "href": "/docs/api/classes/SinterError",
+        "kind": "class",
+        "current": false,
+        "children": [
+          {
             "name": "SinterDocumentError",
-            "target": {
-              "id": 457,
-              "name": "SinterDocumentError",
-              "route": "classes/SinterDocumentError"
-            },
+            "href": null,
+            "kind": "class",
+            "current": true,
             "children": []
-          },
-          "sources": [
-            {
-              "fileName": "packages/driver/dist/errors.d.ts",
-              "line": 75,
-              "character": 4,
-              "url": null
-            }
-          ],
-          "relationships": {
-            "inheritedFrom": null,
-            "overwrites": "SinterError",
-            "implementationOf": null
           }
-        }
-      ],
-      "typeDeclaration": []
-    },
+        ]
+      }
+    ]
+  },
+  "signatureSection": null,
+  "signatures": [],
+  "sections": [
     {
-      "id": 475,
-      "name": "cause",
-      "anchor": "cause",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": false,
-        "optional": true,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": true,
-        "const": false
-      },
-      "comment": null,
-      "type": {
-        "kind": "intrinsic",
-        "text": "unknown",
-        "name": "unknown",
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
+      "id": "constructors",
+      "title": "Constructors",
+      "members": [
         {
-          "fileName": "node_modules/.pnpm/typescript@6.0.3/node_modules/typescript/lib/lib.es2022.error.d.ts",
-          "line": 24,
-          "character": 4,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": "cause",
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 471,
-      "name": "code",
-      "anchor": "code",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": true,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "A stable identifier for the kind of failure; see ",
-            "target": null
-          },
-          {
-            "kind": "inline-tag",
-            "text": "SinterErrorCode",
-            "target": null
-          },
-          {
-            "kind": "text",
-            "text": ".",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "reference",
-        "text": "SinterErrorCode",
-        "name": "SinterErrorCode",
-        "target": {
-          "id": 510,
-          "name": "SinterErrorCode",
-          "route": "types/SinterErrorCode"
-        },
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "packages/driver/dist/errors.d.ts",
-          "line": 53,
-          "character": 13,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": "code",
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 473,
-      "name": "message",
-      "anchor": "message",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": false,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": true,
-        "const": false
-      },
-      "comment": null,
-      "type": {
-        "kind": "intrinsic",
-        "text": "string",
-        "name": "string",
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "node_modules/.pnpm/typescript@6.0.3/node_modules/typescript/lib/lib.es5.d.ts",
-          "line": 1075,
-          "character": 4,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": "message",
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 472,
-      "name": "name",
-      "anchor": "name",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": false,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": true,
-        "const": false
-      },
-      "comment": null,
-      "type": {
-        "kind": "intrinsic",
-        "text": "string",
-        "name": "string",
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "node_modules/.pnpm/typescript@6.0.3/node_modules/typescript/lib/lib.es5.d.ts",
-          "line": 1074,
-          "character": 4,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": "name",
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 474,
-      "name": "stack",
-      "anchor": "stack",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": false,
-        "readonly": false,
-        "optional": true,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": true,
-        "const": false
-      },
-      "comment": null,
-      "type": {
-        "kind": "intrinsic",
-        "text": "string",
-        "name": "string",
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "node_modules/.pnpm/typescript@6.0.3/node_modules/typescript/lib/lib.es5.d.ts",
-          "line": 1076,
-          "character": 4,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": "stack",
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 466,
-      "name": "stackTraceLimit",
-      "anchor": "stack-trace-limit",
-      "kind": "Property",
-      "kindId": 1024,
-      "flags": {
-        "static": true,
-        "readonly": false,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": true,
-        "const": false
-      },
-      "comment": {
-        "summary": [
-          {
-            "kind": "text",
-            "text": "The ",
-            "target": null
-          },
-          {
-            "kind": "code",
-            "text": "`Error.stackTraceLimit`",
-            "target": null
-          },
-          {
-            "kind": "text",
-            "text": " property specifies the number of stack frames\ncollected by a stack trace (whether generated by ",
-            "target": null
-          },
-          {
-            "kind": "code",
-            "text": "`new Error().stack`",
-            "target": null
-          },
-          {
-            "kind": "text",
-            "text": " or\n",
-            "target": null
-          },
-          {
-            "kind": "code",
-            "text": "`Error.captureStackTrace(obj)`",
-            "target": null
-          },
-          {
-            "kind": "text",
-            "text": ").\n\nThe default value is ",
-            "target": null
-          },
-          {
-            "kind": "code",
-            "text": "`10`",
-            "target": null
-          },
-          {
-            "kind": "text",
-            "text": " but may be set to any valid JavaScript number. Changes\nwill affect any stack trace captured _after_ the value has been changed.\n\nIf set to a non-number value, or set to a negative number, stack traces will\nnot capture any frames.",
-            "target": null
-          }
-        ],
-        "blockTags": []
-      },
-      "type": {
-        "kind": "intrinsic",
-        "text": "number",
-        "name": "number",
-        "target": null,
-        "children": []
-      },
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/globals.d.ts",
-          "line": 67,
-          "character": 4,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": "stackTraceLimit",
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 458,
-      "name": "captureStackTrace",
-      "anchor": "capture-stack-trace",
-      "kind": "Method",
-      "kindId": 2048,
-      "flags": {
-        "static": true,
-        "readonly": false,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": true,
-        "const": false
-      },
-      "comment": null,
-      "type": null,
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/globals.d.ts",
-          "line": 51,
-          "character": 4,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": "captureStackTrace",
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [
-        {
-          "id": 459,
-          "name": "captureStackTrace",
-          "comment": {
-            "summary": [
-              {
-                "kind": "text",
-                "text": "Creates a ",
-                "target": null
-              },
-              {
-                "kind": "code",
-                "text": "`.stack`",
-                "target": null
-              },
-              {
-                "kind": "text",
-                "text": " property on ",
-                "target": null
-              },
-              {
-                "kind": "code",
-                "text": "`targetObject`",
-                "target": null
-              },
-              {
-                "kind": "text",
-                "text": ", which when accessed returns\na string representing the location in the code at which\n",
-                "target": null
-              },
-              {
-                "kind": "code",
-                "text": "`Error.captureStackTrace()`",
-                "target": null
-              },
-              {
-                "kind": "text",
-                "text": " was called.\n\n",
-                "target": null
-              },
-              {
-                "kind": "code",
-                "text": "```js\nconst myObject = {};\nError.captureStackTrace(myObject);\nmyObject.stack;  // Similar to `new Error().stack`\n```",
-                "target": null
-              },
-              {
-                "kind": "text",
-                "text": "\n\nThe first line of the trace will be prefixed with\n",
-                "target": null
-              },
-              {
-                "kind": "code",
-                "text": "`${myObject.name}: ${myObject.message}`",
-                "target": null
-              },
-              {
-                "kind": "text",
-                "text": ".\n\nThe optional ",
-                "target": null
-              },
-              {
-                "kind": "code",
-                "text": "`constructorOpt`",
-                "target": null
-              },
-              {
-                "kind": "text",
-                "text": " argument accepts a function. If given, all frames\nabove ",
-                "target": null
-              },
-              {
-                "kind": "code",
-                "text": "`constructorOpt`",
-                "target": null
-              },
-              {
-                "kind": "text",
-                "text": ", including ",
-                "target": null
-              },
-              {
-                "kind": "code",
-                "text": "`constructorOpt`",
-                "target": null
-              },
-              {
-                "kind": "text",
-                "text": ", will be omitted from the\ngenerated stack trace.\n\nThe ",
-                "target": null
-              },
-              {
-                "kind": "code",
-                "text": "`constructorOpt`",
-                "target": null
-              },
-              {
-                "kind": "text",
-                "text": " argument is useful for hiding implementation\ndetails of error generation from the user. For instance:\n\n",
-                "target": null
-              },
-              {
-                "kind": "code",
-                "text": "```js\nfunction a() {\n  b();\n}\n\nfunction b() {\n  c();\n}\n\nfunction c() {\n  // Create an error without stack trace to avoid calculating the stack trace twice.\n  const { stackTraceLimit } = Error;\n  Error.stackTraceLimit = 0;\n  const error = new Error();\n  Error.stackTraceLimit = stackTraceLimit;\n\n  // Capture the stack trace above function b\n  Error.captureStackTrace(error, b); // Neither function c, nor b is included in the stack trace\n  throw error;\n}\n\na();\n```",
-                "target": null
-              }
-            ],
-            "blockTags": []
-          },
-          "typeParameters": [],
-          "parameters": [
+          "id": 467,
+          "name": "constructor",
+          "anchor": "constructor",
+          "kind": "constructor",
+          "label": "Constructor",
+          "badges": [],
+          "code": null,
+          "comment": null,
+          "signatures": [
             {
-              "id": 460,
-              "name": "targetObject",
-              "flags": {
-                "static": false,
-                "readonly": false,
-                "optional": false,
-                "abstract": false,
-                "protected": false,
-                "private": false,
-                "external": true,
-                "const": false
-              },
-              "type": {
-                "kind": "intrinsic",
-                "text": "object",
-                "name": "object",
-                "target": null,
-                "children": []
-              },
-              "defaultValue": null,
-              "comment": null
-            },
-            {
-              "id": 461,
-              "name": "constructorOpt",
-              "flags": {
-                "static": false,
-                "readonly": false,
-                "optional": true,
-                "abstract": false,
-                "protected": false,
-                "private": false,
-                "external": true,
-                "const": false
-              },
-              "type": {
-                "kind": "reference",
-                "text": "Function",
-                "name": "Function",
-                "target": null,
-                "children": []
-              },
-              "defaultValue": null,
-              "comment": null
-            }
-          ],
-          "returnType": {
-            "kind": "intrinsic",
-            "text": "void",
-            "name": "void",
-            "target": null,
-            "children": []
-          },
-          "sources": [
-            {
-              "fileName": "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/globals.d.ts",
-              "line": 51,
-              "character": 4,
-              "url": null
-            }
-          ],
-          "relationships": {
-            "inheritedFrom": "captureStackTrace",
-            "overwrites": null,
-            "implementationOf": null
-          }
-        }
-      ],
-      "typeDeclaration": []
-    },
-    {
-      "id": 462,
-      "name": "prepareStackTrace",
-      "anchor": "prepare-stack-trace",
-      "kind": "Method",
-      "kindId": 2048,
-      "flags": {
-        "static": true,
-        "readonly": false,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": true,
-        "const": false
-      },
-      "comment": null,
-      "type": null,
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/globals.d.ts",
-          "line": 55,
-          "character": 4,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": "prepareStackTrace",
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [
-        {
-          "id": 463,
-          "name": "prepareStackTrace",
-          "comment": {
-            "summary": [],
-            "blockTags": [
-              {
-                "tag": "@see",
-                "content": [
-                  {
-                    "kind": "text",
-                    "text": "https://v8.dev/docs/stack-trace-api#customizing-stack-traces",
-                    "target": null
-                  }
+              "id": 468,
+              "code": [
+                [
+                  "new ",
+                  "kw"
+                ],
+                [
+                  "SinterDocumentError",
+                  "name"
+                ],
+                [
+                  "(",
+                  "pn"
+                ],
+                [
+                  "message",
+                  "param"
+                ],
+                [
+                  ": ",
+                  "pn"
+                ],
+                [
+                  "string",
+                  "prim"
+                ],
+                [
+                  ", ",
+                  "pn"
+                ],
+                [
+                  "options",
+                  "param"
+                ],
+                [
+                  "?: ",
+                  "pn"
+                ],
+                [
+                  "ErrorOptions",
+                  "ref"
+                ],
+                [
+                  ")",
+                  "pn"
                 ]
-              }
-            ]
-          },
-          "typeParameters": [],
-          "parameters": [
-            {
-              "id": 464,
-              "name": "err",
-              "flags": {
-                "static": false,
-                "readonly": false,
-                "optional": false,
-                "abstract": false,
-                "protected": false,
-                "private": false,
-                "external": true,
-                "const": false
-              },
-              "type": {
-                "kind": "reference",
-                "text": "Error",
-                "name": "Error",
-                "target": null,
-                "children": []
-              },
-              "defaultValue": null,
-              "comment": null
-            },
-            {
-              "id": 465,
-              "name": "stackTraces",
-              "flags": {
-                "static": false,
-                "readonly": false,
-                "optional": false,
-                "abstract": false,
-                "protected": false,
-                "private": false,
-                "external": true,
-                "const": false
-              },
-              "type": {
-                "kind": "array",
-                "text": "CallSite[]",
-                "name": null,
-                "target": null,
-                "children": []
-              },
-              "defaultValue": null,
-              "comment": null
+              ],
+              "comment": null,
+              "typeParameters": [],
+              "parameters": [
+                {
+                  "name": "message",
+                  "code": [
+                    [
+                      "message",
+                      "param"
+                    ],
+                    [
+                      ": ",
+                      "pn"
+                    ],
+                    [
+                      "string",
+                      "prim"
+                    ]
+                  ],
+                  "comment": null,
+                  "members": []
+                },
+                {
+                  "name": "options",
+                  "code": [
+                    [
+                      "options",
+                      "param"
+                    ],
+                    [
+                      "?: ",
+                      "pn"
+                    ],
+                    [
+                      "ErrorOptions",
+                      "ref"
+                    ]
+                  ],
+                  "comment": null,
+                  "members": []
+                }
+              ],
+              "returns": null,
+              "sources": [
+                {
+                  "path": "packages/driver/src/errors.ts",
+                  "line": 100,
+                  "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/errors.ts#L100"
+                }
+              ]
             }
           ],
-          "returnType": {
-            "kind": "intrinsic",
-            "text": "any",
-            "name": "any",
-            "target": null,
-            "children": []
-          },
+          "members": [],
+          "relations": [
+            {
+              "label": "Overrides",
+              "name": "SinterError.constructor",
+              "href": "/docs/api/classes/SinterError#constructor"
+            }
+          ],
           "sources": [
             {
-              "fileName": "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/globals.d.ts",
-              "line": 55,
-              "character": 4,
-              "url": null
+              "path": "packages/driver/src/errors.ts",
+              "line": 100,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/errors.ts#L100"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "properties",
+      "title": "Properties",
+      "members": [
+        {
+          "id": 471,
+          "name": "code",
+          "anchor": "code",
+          "kind": "property",
+          "label": "Property",
+          "badges": [],
+          "code": [
+            [
+              "readonly ",
+              "kw"
+            ],
+            [
+              "code",
+              "name"
+            ],
+            [
+              ": ",
+              "pn"
+            ],
+            [
+              "SinterErrorCode",
+              "ref",
+              "/docs/api/types/SinterErrorCode"
+            ]
+          ],
+          "comment": {
+            "summary": "<p>A stable identifier for the kind of failure; see <a href=\"/docs/api/variables/SinterErrorCode\">SinterErrorCode</a>.</p>",
+            "short": "A stable identifier for the kind of failure; see <a href=\"/docs/api/variables/SinterErrorCode\">SinterErrorCode</a>.",
+            "deprecated": null,
+            "modifiers": [],
+            "blocks": []
+          },
+          "signatures": [],
+          "members": [],
+          "relations": [
+            {
+              "label": "Inherited from",
+              "name": "SinterError.code",
+              "href": "/docs/api/classes/SinterError#code"
             }
           ],
-          "relationships": {
-            "inheritedFrom": "prepareStackTrace",
-            "overwrites": null,
-            "implementationOf": null
-          }
+          "sources": [
+            {
+              "path": "packages/driver/src/errors.ts",
+              "line": 58,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/errors.ts#L58"
+            }
+          ]
         }
-      ],
-      "typeDeclaration": []
+      ]
     }
   ],
-  "typeDeclaration": []
-} as const;
-const navigation = [
-  {
-    "id": 1,
-    "name": "CustomId",
-    "route": "classes/CustomId",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 285,
-    "name": "FindCursor",
-    "route": "classes/FindCursor",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 32,
-    "name": "SinterClient",
-    "route": "classes/SinterClient",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 338,
-    "name": "SinterClientOptionsError",
-    "route": "classes/SinterClientOptionsError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 357,
-    "name": "SinterClientStateError",
-    "route": "classes/SinterClientStateError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 199,
-    "name": "SinterCollection",
-    "route": "classes/SinterCollection",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 377,
-    "name": "SinterCompatibilityError",
-    "route": "classes/SinterCompatibilityError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 400,
-    "name": "SinterConnectionError",
-    "route": "classes/SinterConnectionError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 419,
-    "name": "SinterConnectionStringError",
-    "route": "classes/SinterConnectionStringError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 438,
-    "name": "SinterConnectionTimeoutError",
-    "route": "classes/SinterConnectionTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 325,
-    "name": "SinterDatabase",
-    "route": "classes/SinterDatabase",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 457,
-    "name": "SinterDocumentError",
-    "route": "classes/SinterDocumentError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 476,
-    "name": "SinterError",
-    "route": "classes/SinterError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 511,
-    "name": "SinterInsertManyError",
-    "route": "classes/SinterInsertManyError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 700,
-    "name": "SinterNamespaceError",
-    "route": "classes/SinterNamespaceError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 537,
-    "name": "SinterProtocolError",
-    "route": "classes/SinterProtocolError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 556,
-    "name": "SinterRequestTimeoutError",
-    "route": "classes/SinterRequestTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 575,
-    "name": "SinterServerError",
-    "route": "classes/SinterServerError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 598,
-    "name": "SinterSocketTimeoutError",
-    "route": "classes/SinterSocketTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 660,
-    "name": "CreateIndexResult",
-    "route": "interfaces/CreateIndexResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 723,
-    "name": "DeleteResult",
-    "route": "interfaces/DeleteResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 26,
-    "name": "Document",
-    "route": "interfaces/Document",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 664,
-    "name": "ExplainResult",
-    "route": "interfaces/ExplainResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 259,
-    "name": "FindOptions",
-    "route": "interfaces/FindOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 321,
-    "name": "FindQueryOptions",
-    "route": "interfaces/FindQueryOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 675,
-    "name": "IndexBoundInfo",
-    "route": "interfaces/IndexBoundInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 678,
-    "name": "IndexDefinition",
-    "route": "interfaces/IndexDefinition",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 685,
-    "name": "IndexInfo",
-    "route": "interfaces/IndexInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 691,
-    "name": "IndexIssue",
-    "route": "interfaces/IndexIssue",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 695,
-    "name": "IndexValidationResult",
-    "route": "interfaces/IndexValidationResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 265,
-    "name": "InsertManyResult",
-    "route": "interfaces/InsertManyResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 269,
-    "name": "InsertOneResult",
-    "route": "interfaces/InsertOneResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 281,
-    "name": "ParsedSinterConnectionString",
-    "route": "interfaces/ParsedSinterConnectionString",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 180,
-    "name": "SinterClientEvents",
-    "route": "interfaces/SinterClientEvents",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 185,
-    "name": "SinterClientOptions",
-    "route": "interfaces/SinterClientOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 189,
-    "name": "SinterPingResult",
-    "route": "interfaces/SinterPingResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 617,
-    "name": "SinterServerErrorOptions",
-    "route": "interfaces/SinterServerErrorOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 194,
-    "name": "SinterServerInfo",
-    "route": "interfaces/SinterServerInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 742,
-    "name": "UpdateOptions",
-    "route": "interfaces/UpdateOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 746,
-    "name": "UpdateResult",
-    "route": "interfaces/UpdateResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 719,
-    "name": "ArrayPaths",
-    "route": "types/ArrayPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 623,
-    "name": "AtomicValue",
-    "route": "types/AtomicValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 721,
-    "name": "ComparablePaths",
-    "route": "types/ComparablePaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 624,
-    "name": "ComparableValue",
-    "route": "types/ComparableValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 625,
-    "name": "ComparisonOperators",
-    "route": "types/ComparisonOperators",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 316,
-    "name": "CursorExecutor",
-    "route": "types/CursorExecutor",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 632,
-    "name": "ElementOf",
-    "route": "types/ElementOf",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 257,
-    "name": "EqualityFilter",
-    "route": "types/EqualityFilter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 634,
-    "name": "Filter",
-    "route": "types/Filter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 641,
-    "name": "FilterOperators",
-    "route": "types/FilterOperators",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 650,
-    "name": "FilterPaths",
-    "route": "types/FilterPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 653,
-    "name": "FilterPathValue",
-    "route": "types/FilterPathValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 673,
-    "name": "IndexablePath",
-    "route": "types/IndexablePath",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 656,
-    "name": "MaxPathDepth",
-    "route": "types/MaxPathDepth",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 726,
-    "name": "NumericPaths",
-    "route": "types/NumericPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 272,
-    "name": "OptionalId",
-    "route": "types/OptionalId",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 728,
-    "name": "PathsMatching",
-    "route": "types/PathsMatching",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 179,
-    "name": "SinterClientState",
-    "route": "types/SinterClientState",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 510,
-    "name": "SinterErrorCode",
-    "route": "types/SinterErrorCode",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 657,
-    "name": "Sort",
-    "route": "types/Sort",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 659,
-    "name": "SortDirection",
-    "route": "types/SortDirection",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 731,
-    "name": "UpdateFilter",
-    "route": "types/UpdateFilter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 744,
-    "name": "UpdatePaths",
-    "route": "types/UpdatePaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 276,
-    "name": "WithId",
-    "route": "types/WithId",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 29,
-    "name": "DEFAULT_CONNECT_TIMEOUT_MS",
-    "route": "variables/DEFAULT_CONNECT_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 30,
-    "name": "DEFAULT_REQUEST_TIMEOUT_MS",
-    "route": "variables/DEFAULT_REQUEST_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 280,
-    "name": "DEFAULT_SINTERDB_PORT",
-    "route": "variables/DEFAULT_SINTERDB_PORT",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 31,
-    "name": "DEFAULT_SOCKET_TIMEOUT_MS",
-    "route": "variables/DEFAULT_SOCKET_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 172,
-    "name": "SinterClientState",
-    "route": "variables/SinterClientState",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 496,
-    "name": "SinterErrorCode",
-    "route": "variables/SinterErrorCode",
-    "kind": "Variable",
-    "kindId": 32
-  }
-] as const;
+  "toc": [
+    {
+      "id": "constructors",
+      "title": "Constructors",
+      "items": [
+        {
+          "anchor": "constructor",
+          "name": "constructor",
+          "kind": "constructor"
+        }
+      ]
+    },
+    {
+      "id": "properties",
+      "title": "Properties",
+      "items": [
+        {
+          "anchor": "code",
+          "name": "code",
+          "kind": "property"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/driver/src/errors.ts",
+      "line": 99,
+      "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/errors.ts#L99"
+    }
+  ]
+} satisfies ApiPage;
+
+export const metadata: Metadata = {
+  title: page.name,
+  description: page.description || undefined,
+};
 
 export default function Page() {
-  return (
-    <ApiReflectionPage
-      projectName="SinterDB driver API"
-      api={api}
-      navigation={navigation}
-    />
-  );
+  return <ApiReflectionPage page={page} />;
 }

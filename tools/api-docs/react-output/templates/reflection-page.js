@@ -1,25 +1,27 @@
-export function renderReflectionPageTemplate({
-  projectName,
-  reflection,
-  navigation,
-}) {
-  return `import { ApiReflectionPage } from "../../_components/api-shell";
+import { relativePrefix, serialize } from "./serialize.js";
 
-const api = ${serialize(reflection)} as const;
-const navigation = ${serialize(navigation)} as const;
+export function renderReflectionPageTemplate({
+  route,
+  page,
+  componentsDirectory,
+  generatedDirectory,
+}) {
+  const up = relativePrefix(route);
+
+  return `import type { Metadata } from "next";
+
+import { ApiReflectionPage } from "${up}${componentsDirectory}/pages";
+import type { ApiPage } from "${up}${generatedDirectory}/model";
+
+const page = ${serialize(page)} satisfies ApiPage;
+
+export const metadata: Metadata = {
+  title: page.name,
+  description: page.description || undefined,
+};
 
 export default function Page() {
-  return (
-    <ApiReflectionPage
-      projectName=${JSON.stringify(projectName)}
-      api={api}
-      navigation={navigation}
-    />
-  );
+  return <ApiReflectionPage page={page} />;
 }
 `;
-}
-
-function serialize(value) {
-  return JSON.stringify(value, null, 2);
 }

@@ -1,131 +1,169 @@
-export interface ApiType {
-  readonly kind: string;
-  readonly text: string;
-  readonly name: string | null;
-  readonly targetId: number | null;
-  readonly children: readonly ApiType[];
-}
+/**
+ * A run of syntax-highlighted code: `[text, kind?, href?]`.
+ *
+ * Kinds: `kw` keyword, `name` declared name, `ref` type reference,
+ * `tp` type parameter, `prim` intrinsic type, `lit` literal, `pn`
+ * punctuation, `param` parameter, `prop` property.
+ */
+export type ApiToken = readonly [text: string, kind?: string | null, href?: string];
 
-export interface ApiSource {
-  readonly fileName: string | null;
-  readonly line: number | null;
-  readonly character: number | null;
-  readonly url: string | null;
-}
-
-export interface ApiCommentPart {
-  readonly kind: string;
-  readonly text: string;
-  readonly target: string | null;
-}
+export type ApiCode = readonly ApiToken[];
 
 export interface ApiCommentBlock {
   readonly tag: string;
-  readonly content: readonly ApiCommentPart[];
+  readonly title: string;
+  /** Rendered HTML. */
+  readonly html: string;
 }
 
 export interface ApiComment {
-  readonly summary: readonly ApiCommentPart[];
-  readonly blockTags: readonly ApiCommentBlock[];
+  /** Rendered HTML of the summary. */
+  readonly summary: string;
+  /** Inline HTML of the first summary paragraph. */
+  readonly short: string;
+  /** Rendered HTML; an empty string when deprecated without a reason. */
+  readonly deprecated: string | null;
+  /** Modifier tags such as `beta`. */
+  readonly modifiers: readonly string[];
+  readonly blocks: readonly ApiCommentBlock[];
 }
 
-export interface ApiFlags {
-  readonly static: boolean;
-  readonly readonly: boolean;
-  readonly optional: boolean;
-  readonly abstract: boolean;
-  readonly protected: boolean;
-  readonly private: boolean;
-  readonly external: boolean;
-  readonly const: boolean;
-}
-
-export interface ApiRelationships {
-  readonly inheritedFrom: string | null;
-  readonly overwrites: string | null;
-  readonly implementationOf: string | null;
-}
-
-export interface ApiHierarchy {
-  readonly extends: readonly string[];
-  readonly extendedBy: readonly string[];
-}
-
-export interface ApiNavigationItem {
-  readonly id: number;
-  readonly name: string;
-  readonly route: string;
-  readonly kind: string;
-  readonly kindId: number;
+export interface ApiSource {
+  readonly path: string;
+  readonly line: number;
+  readonly url: string | null;
 }
 
 export interface ApiTypeParameter {
-  readonly id: number;
   readonly name: string;
-  readonly type: ApiType | null;
-  readonly default: ApiType | null;
+  readonly code: ApiCode;
   readonly comment: ApiComment | null;
 }
 
 export interface ApiParameter {
-  readonly id: number;
   readonly name: string;
-  readonly flags: ApiFlags;
-  readonly type: ApiType | null;
-  readonly defaultValue: string | null;
+  readonly code: ApiCode;
   readonly comment: ApiComment | null;
+  /** Properties when the parameter is typed as an object literal. */
+  readonly members: readonly ApiMember[];
 }
 
 export interface ApiSignature {
   readonly id: number;
-  readonly name: string;
+  readonly code: ApiCode;
   readonly comment: ApiComment | null;
   readonly typeParameters: readonly ApiTypeParameter[];
   readonly parameters: readonly ApiParameter[];
-  readonly returnType: ApiType | null;
+  readonly returns: {
+    readonly code: ApiCode;
+    readonly html: string | null;
+  } | null;
   readonly sources: readonly ApiSource[];
-  readonly relationships: ApiRelationships;
+}
+
+export interface ApiRelation {
+  readonly label: string;
+  readonly name: string;
+  readonly href: string | null;
 }
 
 export interface ApiMember {
   readonly id: number;
   readonly name: string;
-  readonly anchor: string;
+  readonly anchor: string | null;
+  /** Kind identifier, e.g. `property` or `type-alias`. */
   readonly kind: string;
-  readonly kindId: number;
-  readonly flags: ApiFlags;
+  /** Human-readable kind, e.g. `Property`. */
+  readonly label: string;
+  readonly badges: readonly string[];
+  /** Declaration for members without signatures. */
+  readonly code: ApiCode | null;
   readonly comment: ApiComment | null;
-  readonly type: ApiType | null;
-  readonly defaultValue: string | null;
-  readonly sources: readonly ApiSource[];
-  readonly relationships: ApiRelationships;
-  readonly typeParameters: readonly ApiTypeParameter[];
   readonly signatures: readonly ApiSignature[];
-  readonly typeDeclaration: readonly ApiMember[];
+  /** Properties when the member is typed as an object literal. */
+  readonly members: readonly ApiMember[];
+  readonly relations: readonly ApiRelation[];
+  readonly sources: readonly ApiSource[];
 }
 
-export interface ApiReflection {
+export interface ApiSection {
+  readonly id: string;
+  readonly title: string;
+  readonly members: readonly ApiMember[];
+}
+
+export interface ApiTocEntry {
+  readonly id: string;
+  readonly title: string;
+  readonly items: readonly {
+    readonly anchor: string;
+    readonly name: string;
+    readonly kind: string;
+  }[];
+}
+
+export interface ApiHierarchyNode {
+  readonly name: string;
+  readonly href: string | null;
+  readonly kind: string | null;
+  readonly current: boolean;
+  readonly children: readonly ApiHierarchyNode[];
+}
+
+export interface ApiPage {
   readonly id: number;
   readonly name: string;
-  readonly slug: string;
-  readonly route: string;
   readonly kind: string;
-  readonly kindId: number;
-  readonly flags: ApiFlags;
+  readonly label: string;
+  readonly href: string;
+  /** Plain-text summary for metadata. */
+  readonly description: string;
+  readonly badges: readonly string[];
+  readonly declaration: ApiCode | null;
   readonly comment: ApiComment | null;
-  readonly type: ApiType | null;
-  readonly hierarchy: ApiHierarchy;
-  readonly sources: readonly ApiSource[];
-  readonly relationships: ApiRelationships;
   readonly typeParameters: readonly ApiTypeParameter[];
+  readonly hierarchy: ApiHierarchyNode | null;
+  readonly signatureSection: {
+    readonly id: string;
+    readonly title: string;
+  } | null;
   readonly signatures: readonly ApiSignature[];
-  readonly children: readonly ApiMember[];
-  readonly typeDeclaration: readonly ApiMember[];
+  readonly sections: readonly ApiSection[];
+  readonly toc: readonly ApiTocEntry[];
+  readonly sources: readonly ApiSource[];
+}
+
+export interface ApiNavigationItem {
+  readonly id: number;
+  readonly name: string;
+  readonly href: string;
+  readonly kind: string;
+  readonly deprecated: boolean;
+}
+
+export interface ApiNavigationGroup {
+  readonly id: string;
+  readonly title: string;
+  readonly items: readonly ApiNavigationItem[];
+}
+
+export interface ApiIndexItem extends ApiNavigationItem {
+  readonly label: string;
+  /** Inline HTML of the first summary paragraph. */
+  readonly short: string;
+}
+
+export interface ApiIndexGroup {
+  readonly id: string;
+  readonly title: string;
+  readonly items: readonly ApiIndexItem[];
 }
 
 export interface ApiProject {
-  readonly id: number;
   readonly name: string;
-  readonly reflections: readonly ApiReflection[];
-  readonly navigation: readonly ApiNavigationItem[];
+  readonly href: string;
+  /** Rendered HTML of the project comment, if any. */
+  readonly summary: string;
+  readonly hierarchyHref: string | null;
+  readonly navigation: readonly ApiNavigationGroup[];
 }

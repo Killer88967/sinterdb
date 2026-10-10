@@ -1,1182 +1,769 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import type { Metadata } from "next";
 
-const api = {
+import { ApiReflectionPage } from "../../_components/pages";
+import type { ApiPage } from "../../_generated/model";
+
+const page = {
   "id": 1,
   "name": "CustomId",
-  "slug": "CustomId",
-  "route": "classes/CustomId",
-  "kind": "Class",
-  "kindId": 128,
-  "flags": {
-    "static": false,
-    "readonly": false,
-    "optional": false,
-    "abstract": false,
-    "protected": false,
-    "private": false,
-    "external": false,
-    "const": false
-  },
+  "kind": "class",
+  "label": "Class",
+  "href": "/docs/api/classes/CustomId",
+  "description": "",
+  "badges": [],
+  "declaration": [
+    [
+      "class ",
+      "kw"
+    ],
+    [
+      "CustomId",
+      "name"
+    ]
+  ],
   "comment": null,
-  "type": null,
-  "hierarchy": {
-    "extends": [],
-    "extendedBy": []
-  },
+  "typeParameters": [],
+  "hierarchy": null,
+  "signatureSection": null,
+  "signatures": [],
+  "sections": [
+    {
+      "id": "accessors",
+      "title": "Accessors",
+      "members": [
+        {
+          "id": 13,
+          "name": "timestamp",
+          "anchor": "timestamp",
+          "kind": "accessor",
+          "label": "Accessor",
+          "badges": [],
+          "code": null,
+          "comment": null,
+          "signatures": [
+            {
+              "id": 14,
+              "code": [
+                [
+                  "get ",
+                  "kw"
+                ],
+                [
+                  "timestamp",
+                  "name"
+                ],
+                [
+                  "(): ",
+                  "pn"
+                ],
+                [
+                  "Date",
+                  "ref"
+                ]
+              ],
+              "comment": null,
+              "typeParameters": [],
+              "parameters": [],
+              "returns": {
+                "code": [
+                  [
+                    "Date",
+                    "ref"
+                  ]
+                ],
+                "html": null
+              },
+              "sources": [
+                {
+                  "path": "packages/protocol/src/custom-id.ts",
+                  "line": 58,
+                  "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/protocol/src/custom-id.ts#L58"
+                }
+              ]
+            }
+          ],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/protocol/src/custom-id.ts",
+              "line": 58,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/protocol/src/custom-id.ts#L58"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "methods",
+      "title": "Methods",
+      "members": [
+        {
+          "id": 15,
+          "name": "equals",
+          "anchor": "equals",
+          "kind": "method",
+          "label": "Method",
+          "badges": [],
+          "code": null,
+          "comment": null,
+          "signatures": [
+            {
+              "id": 16,
+              "code": [
+                [
+                  "equals",
+                  "name"
+                ],
+                [
+                  "(",
+                  "pn"
+                ],
+                [
+                  "other",
+                  "param"
+                ],
+                [
+                  ": ",
+                  "pn"
+                ],
+                [
+                  "CustomId",
+                  "ref",
+                  "/docs/api/classes/CustomId"
+                ],
+                [
+                  "): ",
+                  "pn"
+                ],
+                [
+                  "boolean",
+                  "prim"
+                ]
+              ],
+              "comment": null,
+              "typeParameters": [],
+              "parameters": [
+                {
+                  "name": "other",
+                  "code": [
+                    [
+                      "other",
+                      "param"
+                    ],
+                    [
+                      ": ",
+                      "pn"
+                    ],
+                    [
+                      "CustomId",
+                      "ref",
+                      "/docs/api/classes/CustomId"
+                    ]
+                  ],
+                  "comment": null,
+                  "members": []
+                }
+              ],
+              "returns": {
+                "code": [
+                  [
+                    "boolean",
+                    "prim"
+                  ]
+                ],
+                "html": null
+              },
+              "sources": [
+                {
+                  "path": "packages/protocol/src/custom-id.ts",
+                  "line": 68,
+                  "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/protocol/src/custom-id.ts#L68"
+                }
+              ]
+            }
+          ],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/protocol/src/custom-id.ts",
+              "line": 68,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/protocol/src/custom-id.ts#L68"
+            }
+          ]
+        },
+        {
+          "id": 18,
+          "name": "toBytes",
+          "anchor": "to-bytes",
+          "kind": "method",
+          "label": "Method",
+          "badges": [],
+          "code": null,
+          "comment": null,
+          "signatures": [
+            {
+              "id": 19,
+              "code": [
+                [
+                  "toBytes",
+                  "name"
+                ],
+                [
+                  "(): ",
+                  "pn"
+                ],
+                [
+                  "Uint8Array",
+                  "ref"
+                ]
+              ],
+              "comment": null,
+              "typeParameters": [],
+              "parameters": [],
+              "returns": {
+                "code": [
+                  [
+                    "Uint8Array",
+                    "ref"
+                  ]
+                ],
+                "html": null
+              },
+              "sources": [
+                {
+                  "path": "packages/protocol/src/custom-id.ts",
+                  "line": 76,
+                  "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/protocol/src/custom-id.ts#L76"
+                }
+              ]
+            }
+          ],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/protocol/src/custom-id.ts",
+              "line": 76,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/protocol/src/custom-id.ts#L76"
+            }
+          ]
+        },
+        {
+          "id": 20,
+          "name": "toHexString",
+          "anchor": "to-hex-string",
+          "kind": "method",
+          "label": "Method",
+          "badges": [],
+          "code": null,
+          "comment": null,
+          "signatures": [
+            {
+              "id": 21,
+              "code": [
+                [
+                  "toHexString",
+                  "name"
+                ],
+                [
+                  "(): ",
+                  "pn"
+                ],
+                [
+                  "string",
+                  "prim"
+                ]
+              ],
+              "comment": null,
+              "typeParameters": [],
+              "parameters": [],
+              "returns": {
+                "code": [
+                  [
+                    "string",
+                    "prim"
+                  ]
+                ],
+                "html": null
+              },
+              "sources": [
+                {
+                  "path": "packages/protocol/src/custom-id.ts",
+                  "line": 80,
+                  "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/protocol/src/custom-id.ts#L80"
+                }
+              ]
+            }
+          ],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/protocol/src/custom-id.ts",
+              "line": 80,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/protocol/src/custom-id.ts#L80"
+            }
+          ]
+        },
+        {
+          "id": 24,
+          "name": "toJSON",
+          "anchor": "to-json",
+          "kind": "method",
+          "label": "Method",
+          "badges": [],
+          "code": null,
+          "comment": null,
+          "signatures": [
+            {
+              "id": 25,
+              "code": [
+                [
+                  "toJSON",
+                  "name"
+                ],
+                [
+                  "(): ",
+                  "pn"
+                ],
+                [
+                  "string",
+                  "prim"
+                ]
+              ],
+              "comment": null,
+              "typeParameters": [],
+              "parameters": [],
+              "returns": {
+                "code": [
+                  [
+                    "string",
+                    "prim"
+                  ]
+                ],
+                "html": null
+              },
+              "sources": [
+                {
+                  "path": "packages/protocol/src/custom-id.ts",
+                  "line": 90,
+                  "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/protocol/src/custom-id.ts#L90"
+                }
+              ]
+            }
+          ],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/protocol/src/custom-id.ts",
+              "line": 90,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/protocol/src/custom-id.ts#L90"
+            }
+          ]
+        },
+        {
+          "id": 22,
+          "name": "toString",
+          "anchor": "to-string",
+          "kind": "method",
+          "label": "Method",
+          "badges": [],
+          "code": null,
+          "comment": null,
+          "signatures": [
+            {
+              "id": 23,
+              "code": [
+                [
+                  "toString",
+                  "name"
+                ],
+                [
+                  "(): ",
+                  "pn"
+                ],
+                [
+                  "string",
+                  "prim"
+                ]
+              ],
+              "comment": null,
+              "typeParameters": [],
+              "parameters": [],
+              "returns": {
+                "code": [
+                  [
+                    "string",
+                    "prim"
+                  ]
+                ],
+                "html": null
+              },
+              "sources": [
+                {
+                  "path": "packages/protocol/src/custom-id.ts",
+                  "line": 86,
+                  "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/protocol/src/custom-id.ts#L86"
+                }
+              ]
+            }
+          ],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/protocol/src/custom-id.ts",
+              "line": 86,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/protocol/src/custom-id.ts#L86"
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "name": "fromBytes",
+          "anchor": "from-bytes",
+          "kind": "method",
+          "label": "Method",
+          "badges": [
+            "static"
+          ],
+          "code": null,
+          "comment": null,
+          "signatures": [
+            {
+              "id": 5,
+              "code": [
+                [
+                  "static ",
+                  "kw"
+                ],
+                [
+                  "fromBytes",
+                  "name"
+                ],
+                [
+                  "(",
+                  "pn"
+                ],
+                [
+                  "value",
+                  "param"
+                ],
+                [
+                  ": ",
+                  "pn"
+                ],
+                [
+                  "Uint8Array",
+                  "ref"
+                ],
+                [
+                  "): ",
+                  "pn"
+                ],
+                [
+                  "CustomId",
+                  "ref",
+                  "/docs/api/classes/CustomId"
+                ]
+              ],
+              "comment": null,
+              "typeParameters": [],
+              "parameters": [
+                {
+                  "name": "value",
+                  "code": [
+                    [
+                      "value",
+                      "param"
+                    ],
+                    [
+                      ": ",
+                      "pn"
+                    ],
+                    [
+                      "Uint8Array",
+                      "ref"
+                    ]
+                  ],
+                  "comment": null,
+                  "members": []
+                }
+              ],
+              "returns": {
+                "code": [
+                  [
+                    "CustomId",
+                    "ref",
+                    "/docs/api/classes/CustomId"
+                  ]
+                ],
+                "html": null
+              },
+              "sources": [
+                {
+                  "path": "packages/protocol/src/custom-id.ts",
+                  "line": 23,
+                  "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/protocol/src/custom-id.ts#L23"
+                }
+              ]
+            }
+          ],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/protocol/src/custom-id.ts",
+              "line": 23,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/protocol/src/custom-id.ts#L23"
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "name": "fromHexString",
+          "anchor": "from-hex-string",
+          "kind": "method",
+          "label": "Method",
+          "badges": [
+            "static"
+          ],
+          "code": null,
+          "comment": null,
+          "signatures": [
+            {
+              "id": 8,
+              "code": [
+                [
+                  "static ",
+                  "kw"
+                ],
+                [
+                  "fromHexString",
+                  "name"
+                ],
+                [
+                  "(",
+                  "pn"
+                ],
+                [
+                  "value",
+                  "param"
+                ],
+                [
+                  ": ",
+                  "pn"
+                ],
+                [
+                  "string",
+                  "prim"
+                ],
+                [
+                  "): ",
+                  "pn"
+                ],
+                [
+                  "CustomId",
+                  "ref",
+                  "/docs/api/classes/CustomId"
+                ]
+              ],
+              "comment": null,
+              "typeParameters": [],
+              "parameters": [
+                {
+                  "name": "value",
+                  "code": [
+                    [
+                      "value",
+                      "param"
+                    ],
+                    [
+                      ": ",
+                      "pn"
+                    ],
+                    [
+                      "string",
+                      "prim"
+                    ]
+                  ],
+                  "comment": null,
+                  "members": []
+                }
+              ],
+              "returns": {
+                "code": [
+                  [
+                    "CustomId",
+                    "ref",
+                    "/docs/api/classes/CustomId"
+                  ]
+                ],
+                "html": null
+              },
+              "sources": [
+                {
+                  "path": "packages/protocol/src/custom-id.ts",
+                  "line": 37,
+                  "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/protocol/src/custom-id.ts#L37"
+                }
+              ]
+            }
+          ],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/protocol/src/custom-id.ts",
+              "line": 37,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/protocol/src/custom-id.ts#L37"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "generate",
+          "anchor": "generate",
+          "kind": "method",
+          "label": "Method",
+          "badges": [
+            "static"
+          ],
+          "code": null,
+          "comment": null,
+          "signatures": [
+            {
+              "id": 3,
+              "code": [
+                [
+                  "static ",
+                  "kw"
+                ],
+                [
+                  "generate",
+                  "name"
+                ],
+                [
+                  "(): ",
+                  "pn"
+                ],
+                [
+                  "CustomId",
+                  "ref",
+                  "/docs/api/classes/CustomId"
+                ]
+              ],
+              "comment": null,
+              "typeParameters": [],
+              "parameters": [],
+              "returns": {
+                "code": [
+                  [
+                    "CustomId",
+                    "ref",
+                    "/docs/api/classes/CustomId"
+                  ]
+                ],
+                "html": null
+              },
+              "sources": [
+                {
+                  "path": "packages/protocol/src/custom-id.ts",
+                  "line": 13,
+                  "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/protocol/src/custom-id.ts#L13"
+                }
+              ]
+            }
+          ],
+          "members": [],
+          "relations": [],
+          "sources": [
+            {
+              "path": "packages/protocol/src/custom-id.ts",
+              "line": 13,
+              "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/protocol/src/custom-id.ts#L13"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "toc": [
+    {
+      "id": "accessors",
+      "title": "Accessors",
+      "items": [
+        {
+          "anchor": "timestamp",
+          "name": "timestamp",
+          "kind": "accessor"
+        }
+      ]
+    },
+    {
+      "id": "methods",
+      "title": "Methods",
+      "items": [
+        {
+          "anchor": "equals",
+          "name": "equals",
+          "kind": "method"
+        },
+        {
+          "anchor": "to-bytes",
+          "name": "toBytes",
+          "kind": "method"
+        },
+        {
+          "anchor": "to-hex-string",
+          "name": "toHexString",
+          "kind": "method"
+        },
+        {
+          "anchor": "to-json",
+          "name": "toJSON",
+          "kind": "method"
+        },
+        {
+          "anchor": "to-string",
+          "name": "toString",
+          "kind": "method"
+        },
+        {
+          "anchor": "from-bytes",
+          "name": "fromBytes",
+          "kind": "method"
+        },
+        {
+          "anchor": "from-hex-string",
+          "name": "fromHexString",
+          "kind": "method"
+        },
+        {
+          "anchor": "generate",
+          "name": "generate",
+          "kind": "method"
+        }
+      ]
+    }
+  ],
   "sources": [
     {
-      "fileName": "packages/protocol/dist/custom-id.d.ts",
-      "line": 3,
-      "character": 21,
-      "url": null
+      "path": "packages/protocol/src/custom-id.ts",
+      "line": 10,
+      "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/protocol/src/custom-id.ts#L10"
     }
-  ],
-  "relationships": {
-    "inheritedFrom": null,
-    "overwrites": null,
-    "implementationOf": null
-  },
-  "typeParameters": [],
-  "signatures": [],
-  "children": [
-    {
-      "id": 13,
-      "name": "timestamp",
-      "anchor": "timestamp",
-      "kind": "Accessor",
-      "kindId": 262144,
-      "flags": {
-        "static": false,
-        "readonly": false,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": null,
-      "type": null,
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "packages/protocol/dist/custom-id.d.ts",
-          "line": 9,
-          "character": 8,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [],
-      "typeDeclaration": []
-    },
-    {
-      "id": 15,
-      "name": "equals",
-      "anchor": "equals",
-      "kind": "Method",
-      "kindId": 2048,
-      "flags": {
-        "static": false,
-        "readonly": false,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": null,
-      "type": null,
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "packages/protocol/dist/custom-id.d.ts",
-          "line": 10,
-          "character": 4,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [
-        {
-          "id": 16,
-          "name": "equals",
-          "comment": null,
-          "typeParameters": [],
-          "parameters": [
-            {
-              "id": 17,
-              "name": "other",
-              "flags": {
-                "static": false,
-                "readonly": false,
-                "optional": false,
-                "abstract": false,
-                "protected": false,
-                "private": false,
-                "external": false,
-                "const": false
-              },
-              "type": {
-                "kind": "reference",
-                "text": "CustomId",
-                "name": "CustomId",
-                "target": {
-                  "id": 1,
-                  "name": "CustomId",
-                  "route": "classes/CustomId"
-                },
-                "children": []
-              },
-              "defaultValue": null,
-              "comment": null
-            }
-          ],
-          "returnType": {
-            "kind": "intrinsic",
-            "text": "boolean",
-            "name": "boolean",
-            "target": null,
-            "children": []
-          },
-          "sources": [
-            {
-              "fileName": "packages/protocol/dist/custom-id.d.ts",
-              "line": 10,
-              "character": 4,
-              "url": null
-            }
-          ],
-          "relationships": {
-            "inheritedFrom": null,
-            "overwrites": null,
-            "implementationOf": null
-          }
-        }
-      ],
-      "typeDeclaration": []
-    },
-    {
-      "id": 18,
-      "name": "toBytes",
-      "anchor": "to-bytes",
-      "kind": "Method",
-      "kindId": 2048,
-      "flags": {
-        "static": false,
-        "readonly": false,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": null,
-      "type": null,
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "packages/protocol/dist/custom-id.d.ts",
-          "line": 11,
-          "character": 4,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [
-        {
-          "id": 19,
-          "name": "toBytes",
-          "comment": null,
-          "typeParameters": [],
-          "parameters": [],
-          "returnType": {
-            "kind": "reference",
-            "text": "Uint8Array",
-            "name": "Uint8Array",
-            "target": null,
-            "children": []
-          },
-          "sources": [
-            {
-              "fileName": "packages/protocol/dist/custom-id.d.ts",
-              "line": 11,
-              "character": 4,
-              "url": null
-            }
-          ],
-          "relationships": {
-            "inheritedFrom": null,
-            "overwrites": null,
-            "implementationOf": null
-          }
-        }
-      ],
-      "typeDeclaration": []
-    },
-    {
-      "id": 20,
-      "name": "toHexString",
-      "anchor": "to-hex-string",
-      "kind": "Method",
-      "kindId": 2048,
-      "flags": {
-        "static": false,
-        "readonly": false,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": null,
-      "type": null,
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "packages/protocol/dist/custom-id.d.ts",
-          "line": 12,
-          "character": 4,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [
-        {
-          "id": 21,
-          "name": "toHexString",
-          "comment": null,
-          "typeParameters": [],
-          "parameters": [],
-          "returnType": {
-            "kind": "intrinsic",
-            "text": "string",
-            "name": "string",
-            "target": null,
-            "children": []
-          },
-          "sources": [
-            {
-              "fileName": "packages/protocol/dist/custom-id.d.ts",
-              "line": 12,
-              "character": 4,
-              "url": null
-            }
-          ],
-          "relationships": {
-            "inheritedFrom": null,
-            "overwrites": null,
-            "implementationOf": null
-          }
-        }
-      ],
-      "typeDeclaration": []
-    },
-    {
-      "id": 24,
-      "name": "toJSON",
-      "anchor": "to-json",
-      "kind": "Method",
-      "kindId": 2048,
-      "flags": {
-        "static": false,
-        "readonly": false,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": null,
-      "type": null,
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "packages/protocol/dist/custom-id.d.ts",
-          "line": 14,
-          "character": 4,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [
-        {
-          "id": 25,
-          "name": "toJSON",
-          "comment": null,
-          "typeParameters": [],
-          "parameters": [],
-          "returnType": {
-            "kind": "intrinsic",
-            "text": "string",
-            "name": "string",
-            "target": null,
-            "children": []
-          },
-          "sources": [
-            {
-              "fileName": "packages/protocol/dist/custom-id.d.ts",
-              "line": 14,
-              "character": 4,
-              "url": null
-            }
-          ],
-          "relationships": {
-            "inheritedFrom": null,
-            "overwrites": null,
-            "implementationOf": null
-          }
-        }
-      ],
-      "typeDeclaration": []
-    },
-    {
-      "id": 22,
-      "name": "toString",
-      "anchor": "to-string",
-      "kind": "Method",
-      "kindId": 2048,
-      "flags": {
-        "static": false,
-        "readonly": false,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": null,
-      "type": null,
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "packages/protocol/dist/custom-id.d.ts",
-          "line": 13,
-          "character": 4,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [
-        {
-          "id": 23,
-          "name": "toString",
-          "comment": null,
-          "typeParameters": [],
-          "parameters": [],
-          "returnType": {
-            "kind": "intrinsic",
-            "text": "string",
-            "name": "string",
-            "target": null,
-            "children": []
-          },
-          "sources": [
-            {
-              "fileName": "packages/protocol/dist/custom-id.d.ts",
-              "line": 13,
-              "character": 4,
-              "url": null
-            }
-          ],
-          "relationships": {
-            "inheritedFrom": null,
-            "overwrites": null,
-            "implementationOf": null
-          }
-        }
-      ],
-      "typeDeclaration": []
-    },
-    {
-      "id": 4,
-      "name": "fromBytes",
-      "anchor": "from-bytes",
-      "kind": "Method",
-      "kindId": 2048,
-      "flags": {
-        "static": true,
-        "readonly": false,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": null,
-      "type": null,
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "packages/protocol/dist/custom-id.d.ts",
-          "line": 7,
-          "character": 11,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [
-        {
-          "id": 5,
-          "name": "fromBytes",
-          "comment": null,
-          "typeParameters": [],
-          "parameters": [
-            {
-              "id": 6,
-              "name": "value",
-              "flags": {
-                "static": false,
-                "readonly": false,
-                "optional": false,
-                "abstract": false,
-                "protected": false,
-                "private": false,
-                "external": false,
-                "const": false
-              },
-              "type": {
-                "kind": "reference",
-                "text": "Uint8Array",
-                "name": "Uint8Array",
-                "target": null,
-                "children": []
-              },
-              "defaultValue": null,
-              "comment": null
-            }
-          ],
-          "returnType": {
-            "kind": "reference",
-            "text": "CustomId",
-            "name": "CustomId",
-            "target": {
-              "id": 1,
-              "name": "CustomId",
-              "route": "classes/CustomId"
-            },
-            "children": []
-          },
-          "sources": [
-            {
-              "fileName": "packages/protocol/dist/custom-id.d.ts",
-              "line": 7,
-              "character": 11,
-              "url": null
-            }
-          ],
-          "relationships": {
-            "inheritedFrom": null,
-            "overwrites": null,
-            "implementationOf": null
-          }
-        }
-      ],
-      "typeDeclaration": []
-    },
-    {
-      "id": 7,
-      "name": "fromHexString",
-      "anchor": "from-hex-string",
-      "kind": "Method",
-      "kindId": 2048,
-      "flags": {
-        "static": true,
-        "readonly": false,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": null,
-      "type": null,
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "packages/protocol/dist/custom-id.d.ts",
-          "line": 8,
-          "character": 11,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [
-        {
-          "id": 8,
-          "name": "fromHexString",
-          "comment": null,
-          "typeParameters": [],
-          "parameters": [
-            {
-              "id": 9,
-              "name": "value",
-              "flags": {
-                "static": false,
-                "readonly": false,
-                "optional": false,
-                "abstract": false,
-                "protected": false,
-                "private": false,
-                "external": false,
-                "const": false
-              },
-              "type": {
-                "kind": "intrinsic",
-                "text": "string",
-                "name": "string",
-                "target": null,
-                "children": []
-              },
-              "defaultValue": null,
-              "comment": null
-            }
-          ],
-          "returnType": {
-            "kind": "reference",
-            "text": "CustomId",
-            "name": "CustomId",
-            "target": {
-              "id": 1,
-              "name": "CustomId",
-              "route": "classes/CustomId"
-            },
-            "children": []
-          },
-          "sources": [
-            {
-              "fileName": "packages/protocol/dist/custom-id.d.ts",
-              "line": 8,
-              "character": 11,
-              "url": null
-            }
-          ],
-          "relationships": {
-            "inheritedFrom": null,
-            "overwrites": null,
-            "implementationOf": null
-          }
-        }
-      ],
-      "typeDeclaration": []
-    },
-    {
-      "id": 2,
-      "name": "generate",
-      "anchor": "generate",
-      "kind": "Method",
-      "kindId": 2048,
-      "flags": {
-        "static": true,
-        "readonly": false,
-        "optional": false,
-        "abstract": false,
-        "protected": false,
-        "private": false,
-        "external": false,
-        "const": false
-      },
-      "comment": null,
-      "type": null,
-      "defaultValue": null,
-      "sources": [
-        {
-          "fileName": "packages/protocol/dist/custom-id.d.ts",
-          "line": 6,
-          "character": 11,
-          "url": null
-        }
-      ],
-      "relationships": {
-        "inheritedFrom": null,
-        "overwrites": null,
-        "implementationOf": null
-      },
-      "typeParameters": [],
-      "signatures": [
-        {
-          "id": 3,
-          "name": "generate",
-          "comment": null,
-          "typeParameters": [],
-          "parameters": [],
-          "returnType": {
-            "kind": "reference",
-            "text": "CustomId",
-            "name": "CustomId",
-            "target": {
-              "id": 1,
-              "name": "CustomId",
-              "route": "classes/CustomId"
-            },
-            "children": []
-          },
-          "sources": [
-            {
-              "fileName": "packages/protocol/dist/custom-id.d.ts",
-              "line": 6,
-              "character": 11,
-              "url": null
-            }
-          ],
-          "relationships": {
-            "inheritedFrom": null,
-            "overwrites": null,
-            "implementationOf": null
-          }
-        }
-      ],
-      "typeDeclaration": []
-    }
-  ],
-  "typeDeclaration": []
-} as const;
-const navigation = [
-  {
-    "id": 1,
-    "name": "CustomId",
-    "route": "classes/CustomId",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 285,
-    "name": "FindCursor",
-    "route": "classes/FindCursor",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 32,
-    "name": "SinterClient",
-    "route": "classes/SinterClient",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 338,
-    "name": "SinterClientOptionsError",
-    "route": "classes/SinterClientOptionsError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 357,
-    "name": "SinterClientStateError",
-    "route": "classes/SinterClientStateError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 199,
-    "name": "SinterCollection",
-    "route": "classes/SinterCollection",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 377,
-    "name": "SinterCompatibilityError",
-    "route": "classes/SinterCompatibilityError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 400,
-    "name": "SinterConnectionError",
-    "route": "classes/SinterConnectionError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 419,
-    "name": "SinterConnectionStringError",
-    "route": "classes/SinterConnectionStringError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 438,
-    "name": "SinterConnectionTimeoutError",
-    "route": "classes/SinterConnectionTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 325,
-    "name": "SinterDatabase",
-    "route": "classes/SinterDatabase",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 457,
-    "name": "SinterDocumentError",
-    "route": "classes/SinterDocumentError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 476,
-    "name": "SinterError",
-    "route": "classes/SinterError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 511,
-    "name": "SinterInsertManyError",
-    "route": "classes/SinterInsertManyError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 700,
-    "name": "SinterNamespaceError",
-    "route": "classes/SinterNamespaceError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 537,
-    "name": "SinterProtocolError",
-    "route": "classes/SinterProtocolError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 556,
-    "name": "SinterRequestTimeoutError",
-    "route": "classes/SinterRequestTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 575,
-    "name": "SinterServerError",
-    "route": "classes/SinterServerError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 598,
-    "name": "SinterSocketTimeoutError",
-    "route": "classes/SinterSocketTimeoutError",
-    "kind": "Class",
-    "kindId": 128
-  },
-  {
-    "id": 660,
-    "name": "CreateIndexResult",
-    "route": "interfaces/CreateIndexResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 723,
-    "name": "DeleteResult",
-    "route": "interfaces/DeleteResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 26,
-    "name": "Document",
-    "route": "interfaces/Document",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 664,
-    "name": "ExplainResult",
-    "route": "interfaces/ExplainResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 259,
-    "name": "FindOptions",
-    "route": "interfaces/FindOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 321,
-    "name": "FindQueryOptions",
-    "route": "interfaces/FindQueryOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 675,
-    "name": "IndexBoundInfo",
-    "route": "interfaces/IndexBoundInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 678,
-    "name": "IndexDefinition",
-    "route": "interfaces/IndexDefinition",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 685,
-    "name": "IndexInfo",
-    "route": "interfaces/IndexInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 691,
-    "name": "IndexIssue",
-    "route": "interfaces/IndexIssue",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 695,
-    "name": "IndexValidationResult",
-    "route": "interfaces/IndexValidationResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 265,
-    "name": "InsertManyResult",
-    "route": "interfaces/InsertManyResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 269,
-    "name": "InsertOneResult",
-    "route": "interfaces/InsertOneResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 281,
-    "name": "ParsedSinterConnectionString",
-    "route": "interfaces/ParsedSinterConnectionString",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 180,
-    "name": "SinterClientEvents",
-    "route": "interfaces/SinterClientEvents",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 185,
-    "name": "SinterClientOptions",
-    "route": "interfaces/SinterClientOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 189,
-    "name": "SinterPingResult",
-    "route": "interfaces/SinterPingResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 617,
-    "name": "SinterServerErrorOptions",
-    "route": "interfaces/SinterServerErrorOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 194,
-    "name": "SinterServerInfo",
-    "route": "interfaces/SinterServerInfo",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 742,
-    "name": "UpdateOptions",
-    "route": "interfaces/UpdateOptions",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 746,
-    "name": "UpdateResult",
-    "route": "interfaces/UpdateResult",
-    "kind": "Interface",
-    "kindId": 256
-  },
-  {
-    "id": 719,
-    "name": "ArrayPaths",
-    "route": "types/ArrayPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 623,
-    "name": "AtomicValue",
-    "route": "types/AtomicValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 721,
-    "name": "ComparablePaths",
-    "route": "types/ComparablePaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 624,
-    "name": "ComparableValue",
-    "route": "types/ComparableValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 625,
-    "name": "ComparisonOperators",
-    "route": "types/ComparisonOperators",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 316,
-    "name": "CursorExecutor",
-    "route": "types/CursorExecutor",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 632,
-    "name": "ElementOf",
-    "route": "types/ElementOf",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 257,
-    "name": "EqualityFilter",
-    "route": "types/EqualityFilter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 634,
-    "name": "Filter",
-    "route": "types/Filter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 641,
-    "name": "FilterOperators",
-    "route": "types/FilterOperators",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 650,
-    "name": "FilterPaths",
-    "route": "types/FilterPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 653,
-    "name": "FilterPathValue",
-    "route": "types/FilterPathValue",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 673,
-    "name": "IndexablePath",
-    "route": "types/IndexablePath",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 656,
-    "name": "MaxPathDepth",
-    "route": "types/MaxPathDepth",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 726,
-    "name": "NumericPaths",
-    "route": "types/NumericPaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 272,
-    "name": "OptionalId",
-    "route": "types/OptionalId",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 728,
-    "name": "PathsMatching",
-    "route": "types/PathsMatching",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 179,
-    "name": "SinterClientState",
-    "route": "types/SinterClientState",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 510,
-    "name": "SinterErrorCode",
-    "route": "types/SinterErrorCode",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 657,
-    "name": "Sort",
-    "route": "types/Sort",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 659,
-    "name": "SortDirection",
-    "route": "types/SortDirection",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 731,
-    "name": "UpdateFilter",
-    "route": "types/UpdateFilter",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 744,
-    "name": "UpdatePaths",
-    "route": "types/UpdatePaths",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 276,
-    "name": "WithId",
-    "route": "types/WithId",
-    "kind": "TypeAlias",
-    "kindId": 2097152
-  },
-  {
-    "id": 29,
-    "name": "DEFAULT_CONNECT_TIMEOUT_MS",
-    "route": "variables/DEFAULT_CONNECT_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 30,
-    "name": "DEFAULT_REQUEST_TIMEOUT_MS",
-    "route": "variables/DEFAULT_REQUEST_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 280,
-    "name": "DEFAULT_SINTERDB_PORT",
-    "route": "variables/DEFAULT_SINTERDB_PORT",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 31,
-    "name": "DEFAULT_SOCKET_TIMEOUT_MS",
-    "route": "variables/DEFAULT_SOCKET_TIMEOUT_MS",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 172,
-    "name": "SinterClientState",
-    "route": "variables/SinterClientState",
-    "kind": "Variable",
-    "kindId": 32
-  },
-  {
-    "id": 496,
-    "name": "SinterErrorCode",
-    "route": "variables/SinterErrorCode",
-    "kind": "Variable",
-    "kindId": 32
-  }
-] as const;
+  ]
+} satisfies ApiPage;
+
+export const metadata: Metadata = {
+  title: page.name,
+  description: page.description || undefined,
+};
 
 export default function Page() {
-  return (
-    <ApiReflectionPage
-      projectName="SinterDB driver API"
-      api={api}
-      navigation={navigation}
-    />
-  );
+  return <ApiReflectionPage page={page} />;
 }
