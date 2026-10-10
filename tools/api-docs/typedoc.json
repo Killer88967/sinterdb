@@ -3,6 +3,7 @@
   "name": "SinterDB driver API",
   "entryPoints": ["../../packages/driver/dist/index.d.ts"],
   "tsconfig": "./tsconfig.json",
+  "plugin": ["./react-output/index.js", "typedoc-plugin-markdown"],
   "outputs": [
     {
       "name": "html",
@@ -17,7 +18,6 @@
       "path": "../../docs/api/markdown"
     }
   ],
-  "plugin": ["./react-output.js", "typedoc-plugin-markdown"],
   "readme": "none",
   "excludePrivate": true,
   "excludeProtected": true,
