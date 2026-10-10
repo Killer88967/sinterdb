@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "allOf": [
+    {
+      "$ref": "https://typedoc.org/schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "reactOutput": {
+          "$ref": "#/$defs/reactOutput"
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "reactOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "framework": {
+          "type": "string",
+          "enum": ["next"],
+          "default": "next",
+          "description": "React framework target used by the generated output."
+        },
+        "routeBase": {
+          "type": "string",
+          "default": "/docs/api",
+          "description": "Base route used when generating links between API pages."
+        },
+        "cleanOutput": {
+          "type": "boolean",
+          "default": true,
+          "description": "Remove the React output directory before generating documentation."
+        },
+        "assets": {
+          "$ref": "#/$defs/assets"
+        },
+        "generated": {
+          "$ref": "#/$defs/generated"
+        },
+        "components": {
+          "$ref": "#/$defs/components"
+        },
+        "declarations": {
+          "$ref": "#/$defs/declarations"
+        },
+        "features": {
+          "$ref": "#/$defs/features"
+        },
+        "theme": {
+          "$ref": "#/$defs/theme"
+        }
+      }
+    },
+    "assets": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "iconSprite": {
+          "type": "string",
+          "default": "/docs/api/assets/icons.svg",
+          "description": "URL to the SVG sprite containing TypeDoc icons."
+        }
+      }
+    },
+    "generated": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "directory": {
+          "type": "string",
+          "default": "_generated",
+          "description": "Directory containing generated model and project data."
+        }
+      }
+    },
+    "components": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "directory": {
+          "type": "string",
+          "default": "_components",
+          "description": "Directory containing generated React components."
+        }
+      }
+    },
+    "declarations": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Generate TypeScript declaration files for the React output API."
+        },
+        "directory": {
+          "type": "string",
+          "default": "_types",
+          "description": "Directory containing generated TypeScript declaration files."
+        },
+        "moduleName": {
+          "type": ["string", "null"],
+          "default": null,
+          "description": "Optional ambient module name exposing the generated React documentation types."
+        }
+      }
+    },
+    "features": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "hierarchy": {
+          "type": "boolean",
+          "default": true,
+          "description": "Generate the API hierarchy page and hierarchy information."
+        },
+        "navigation": {
+          "type": "boolean",
+          "default": true,
+          "description": "Generate site-wide API navigation."
+        },
+        "pageNavigation": {
+          "type": "boolean",
+          "default": true,
+          "description": "Generate per-page member navigation."
+        },
+        "sourceLinks": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include source locations and source links when available."
+        },
+        "comments": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include TypeDoc comments and documentation blocks."
+        }
+      }
+    },
+    "theme": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "default": "default",
+          "description": "Theme used by the generated React documentation."
+        }
+      }
+    }
+  }
+}

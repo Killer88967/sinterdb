@@ -1,5 +1,5 @@
 {
-  "$schema": "https://typedoc.org/schema.json",
+  "$schema": "./react-output/schema.json",
   "name": "SinterDB driver API",
   "entryPoints": ["../../packages/driver/dist/index.d.ts"],
   "tsconfig": "./tsconfig.json",
@@ -18,7 +18,6 @@
       "path": "../../docs/api/markdown"
     }
   ],
-  "readme": "none",
   "reactOutput": {
     "framework": "next",
     "routeBase": "/docs/api",
@@ -35,7 +34,7 @@
     "declarations": {
       "enabled": true,
       "directory": "_types",
-      "moduleName": "@example/api-docs"
+      "moduleName": null
     },
     "features": {
       "hierarchy": true,
@@ -48,6 +47,7 @@
       "name": "default"
     }
   },
+  "readme": "none",
   "excludePrivate": true,
   "excludeProtected": true,
   "excludeInternal": true,

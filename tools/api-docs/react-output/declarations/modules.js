@@ -36,7 +36,7 @@ export function renderModuleDeclarations({ moduleName }) {
   }
 
   const modelTypes = MODEL_TYPES.map(
-    (name) => `  export type ${name} = import("../_generated/model").${name};`,
+    (name) => `  export type ${name} = import("./model").${name};`,
   ).join("\n");
 
   const rendererTypes = RENDERER_TYPES.map(
