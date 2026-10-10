@@ -1,7 +1,9 @@
 export function renderMemberGroupTemplate() {
-  return `import { TypeExpression } from "./type-expression";
+  return `import { Comment } from "./comment";
 import { Signature } from "./signature";
 import { SourceList } from "./source";
+import { TypeExpression } from "./type-expression";
+import { TypeDocIcon } from "./typedoc-icon";
 import type { ApiMember } from "../_generated/model";
 
 export function MemberGroup({
@@ -9,9 +11,7 @@ export function MemberGroup({
   members,
 }: {
   readonly title: string;
-
-  readonly members:
-    readonly ApiMember[];
+  readonly members: readonly ApiMember[];
 }) {
   if (members.length === 0) {
     return null;
@@ -19,60 +19,67 @@ export function MemberGroup({
 
   return (
     <section className="typedoc-member-group">
-      <h2>
-        {title}
-      </h2>
+      <h2>{title}</h2>
 
-      {members.map(
-        (member) => (
-          <article
-            key={member.id}
-            id={member.anchor}
-            className="typedoc-member"
-          >
+      {members.map((member) => (
+        <article
+          key={member.id}
+          id={member.anchor}
+          className="typedoc-member"
+        >
+          <header className="typedoc-member-header">
             <h3>
-              {member.name}
+              <TypeDocIcon
+                kind={member.kindId}
+                label={member.kind}
+              />
+
+              <span>{member.name}</span>
             </h3>
 
-            {member.type && (
-              <div className="typedoc-signature">
-                <span>
-                  {member.name}
-                </span>
+            <div className="typedoc-member-flags">
+              {member.flags.static && (
+                <span>Static</span>
+              )}
 
-                {member.flags.optional
-                  ? "?: "
-                  : ": "}
+              {member.flags.readonly && (
+                <span>Readonly</span>
+              )}
 
-                <TypeExpression
-                  type={
-                    member.type
-                  }
-                />
-              </div>
-            )}
+              {member.flags.optional && (
+                <span>Optional</span>
+              )}
 
-            {member.signatures.map(
-              (signature) => (
-                <Signature
-                  key={
-                    signature.id
-                  }
-                  signature={
-                    signature
-                  }
-                />
-              ),
-            )}
+              {member.flags.abstract && (
+                <span>Abstract</span>
+              )}
+            </div>
+          </header>
 
-            <SourceList
-              sources={
-                member.sources
-              }
+          {member.type && (
+            <div className="typedoc-signature">
+              <span>{member.name}</span>
+
+              {member.flags.optional
+                ? "?: "
+                : ": "}
+
+              <TypeExpression type={member.type} />
+            </div>
+          )}
+
+          {member.signatures.map((signature) => (
+            <Signature
+              key={signature.id}
+              signature={signature}
             />
-          </article>
-        ),
-      )}
+          ))}
+
+          <Comment comment={member.comment} />
+
+          <SourceList sources={member.sources} />
+        </article>
+      ))}
     </section>
   );
 }

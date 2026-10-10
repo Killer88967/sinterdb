@@ -7,6 +7,7 @@ import { renderIndexPageTemplate } from "./templates/index-page.js";
 import { renderReflectionPageTemplate } from "./templates/reflection-page.js";
 import { renderHierarchyPageTemplate } from "./templates/hierarchy-page.js";
 import { renderApiShellTemplate } from "./templates/components/api-shell.js";
+import { renderMemberIndexTemplate } from "./templates/components/member-index.js";
 import { renderMemberGroupTemplate } from "./templates/components/member-group.js";
 import { renderSignatureTemplate } from "./templates/components/signature.js";
 import { renderSourceTemplate } from "./templates/components/source.js";
@@ -83,6 +84,11 @@ async function generateComponents(options) {
       "utf8",
     ),
     writeFile(
+      join(directory, "member-index.tsx"),
+      renderMemberIndexTemplate(),
+      "utf8",
+    ),
+    writeFile(
       join(directory, "member-group.tsx"),
       renderMemberGroupTemplate(),
       "utf8",
@@ -101,7 +107,7 @@ async function generateComponents(options) {
     writeFile(
       join(directory, "typedoc-icon.tsx"),
       renderTypeDocIconTemplate({
-        iconSpritePath: options.iconSpritePath,
+        iconSpritePath: options.assets.iconSprite,
       }),
       "utf8",
     ),

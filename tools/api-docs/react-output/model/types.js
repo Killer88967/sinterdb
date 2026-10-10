@@ -1,3 +1,5 @@
+import { createRoute } from "./navigation.js";
+
 /**
  * @typedef {object} TypeModel
  * @property {string} kind
@@ -22,33 +24,45 @@ export function createTypeModel(type) {
     return null;
   }
 
-  const model = {
+  return {
     kind: type.type ?? "unknown",
     text: type.toString(),
     name: getTypeName(type),
-    targetId: getTargetId(type),
-    children: [],
+    target: getTypeTarget(type),
+    children: type.typeArguments?.map(createTypeModel).filter(Boolean) ?? [],
   };
-
-  if ("typeArguments" in type && Array.isArray(type.typeArguments)) {
-    model.children = type.typeArguments.map(createTypeModel).filter(Boolean);
-  }
-
-  return model;
 }
 
 function getTypeName(type) {
-  if ("name" in type && typeof type.name === "string") {
+  if (typeof type.name === "string") {
     return type.name;
   }
 
   return null;
 }
 
-function getTargetId(type) {
-  if (!("reflection" in type) || !type.reflection) {
+function getTypeTarget(type) {
+  const reflection = getTargetReflection(type);
+
+  if (!reflection) {
     return null;
   }
 
-  return type.reflection.id ?? null;
+  return {
+    id: reflection.id,
+    name: reflection.name,
+    route: createRoute(reflection),
+  };
+}
+
+function getTargetReflection(type) {
+  if (type.reflection && typeof type.reflection.id === "number") {
+    return type.reflection;
+  }
+
+  if (type.target && typeof type.target.id === "number") {
+    return type.target;
+  }
+
+  return null;
 }
