@@ -1,8 +1,9 @@
-import Link from "next/link";
-
+import { Comment } from "./comment";
 import { MemberGroup } from "./member-group";
+import { MemberIndex } from "./member-index";
+import { Navigation } from "./navigation";
+import { PageNavigation } from "./page-navigation";
 import { SourceList } from "./source";
-import { TypeDocIcon } from "./typedoc-icon";
 import { TypeExpression } from "./type-expression";
 import type { ApiNavigationItem, ApiReflection } from "../_generated/model";
 
@@ -16,19 +17,21 @@ export function ApiIndexPage({
   readonly reflections: readonly ApiNavigationItem[];
 }) {
   return (
-    <main className="typedoc-content">
-      <h1>{projectName}</h1>
+    <div className="typedoc-layout">
+      <Navigation
+        projectName={projectName}
+        navigation={reflections}
+        routeBase={ROUTE_BASE}
+      />
 
-      <div className="typedoc-index">
-        {reflections.map((reflection) => (
-          <Link key={reflection.id} href={ROUTE_BASE + "/" + reflection.route}>
-            <TypeDocIcon kind={reflection.kindId} label={reflection.kind} />
+      <main className="typedoc-content">
+        <header className="typedoc-page-header">
+          <h1>{projectName}</h1>
+        </header>
 
-            <span>{reflection.name}</span>
-          </Link>
-        ))}
-      </div>
-    </main>
+        <MemberIndex reflections={reflections} routeBase={ROUTE_BASE} />
+      </main>
+    </div>
   );
 }
 
@@ -41,58 +44,91 @@ export function ApiReflectionPage({
   readonly api: ApiReflection;
   readonly navigation: readonly ApiNavigationItem[];
 }) {
-  void projectName;
-  void navigation;
-
-  const constructors = api.children.filter(
-    (member) => member.kind === "Constructor",
-  );
-
-  const properties = api.children.filter(
-    (member) => member.kind === "Property",
-  );
-
-  const accessors = api.children.filter((member) => member.kind === "Accessor");
-
-  const methods = api.children.filter((member) => member.kind === "Method");
-
   return (
-    <main className="typedoc-content">
-      <h1>
-        {api.kind} {api.name}
-      </h1>
+    <div className="typedoc-layout">
+      <Navigation
+        projectName={projectName}
+        navigation={navigation}
+        routeBase={ROUTE_BASE}
+      />
 
-      {api.type && (
-        <div className="typedoc-signature">
-          <TypeExpression type={api.type} />
-        </div>
-      )}
+      <main className="typedoc-content">
+        <header className="typedoc-page-header">
+          <div className="typedoc-kind">{api.kind}</div>
 
-      <SourceList sources={api.sources} />
+          <h1>{api.name}</h1>
 
-      <MemberGroup title="Constructors" members={constructors} />
+          {api.type && (
+            <div className="typedoc-signature">
+              <TypeExpression type={api.type} />
+            </div>
+          )}
 
-      <MemberGroup title="Properties" members={properties} />
+          <Comment comment={api.comment} />
 
-      <MemberGroup title="Accessors" members={accessors} />
+          <SourceList sources={api.sources} />
+        </header>
 
-      <MemberGroup title="Methods" members={methods} />
-    </main>
+        <MemberIndex reflection={api} routeBase={ROUTE_BASE} />
+
+        <MemberGroup
+          title="Constructors"
+          members={api.children.filter(
+            (member) => member.kind === "Constructor",
+          )}
+        />
+
+        <MemberGroup
+          title="Properties"
+          members={api.children.filter((member) => member.kind === "Property")}
+        />
+
+        <MemberGroup
+          title="Accessors"
+          members={api.children.filter((member) => member.kind === "Accessor")}
+        />
+
+        <MemberGroup
+          title="Methods"
+          members={api.children.filter((member) => member.kind === "Method")}
+        />
+      </main>
+
+      <PageNavigation reflection={api} />
+    </div>
   );
 }
 
 export function ApiHierarchyPage({
   projectName,
+  classes,
+  navigation,
 }: {
   readonly projectName: string;
   readonly classes: readonly ApiReflection[];
   readonly navigation: readonly ApiNavigationItem[];
 }) {
   return (
-    <main className="typedoc-content">
-      <h1>{projectName}</h1>
+    <div className="typedoc-layout">
+      <Navigation
+        projectName={projectName}
+        navigation={navigation}
+        routeBase={ROUTE_BASE}
+      />
 
-      <h2>Hierarchy Summary</h2>
-    </main>
+      <main className="typedoc-content">
+        <header className="typedoc-page-header">
+          <h1>Hierarchy</h1>
+        </header>
+
+        <div className="typedoc-hierarchy">
+          {classes.map((reflection) => (
+            <div key={reflection.id} className="typedoc-hierarchy-entry">
+              {reflection.name}
+            </div>
+          ))}
+        </div>
+      </main>
+    </div>
   );
 }

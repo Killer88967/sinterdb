@@ -61,7 +61,7 @@ const api = {
     kind: "intersection",
     text: "{ readonly [Path in FilterPaths<TDocument>]?: FilterPathValue<TDocument, Path> | FilterOperators<FilterPathValue<TDocument, Path>> } & { _id?: CustomId | FilterOperators<CustomId>; $and?: readonly Filter<TDocument>[]; $nor?: readonly Filter<TDocument>[]; $or?: readonly Filter<TDocument>[] }",
     name: null,
-    targetId: null,
+    target: null,
     children: [],
   },
   hierarchy: {
@@ -89,7 +89,7 @@ const api = {
         kind: "intrinsic",
         text: "object",
         name: "object",
-        targetId: null,
+        target: null,
         children: [],
       },
       default: null,

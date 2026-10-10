@@ -51,7 +51,7 @@ const api = {
     kind: "reflection",
     text: "(command: string, parameters: Document) => Promise<DocumentValue>",
     name: null,
-    targetId: null,
+    target: null,
     children: [],
   },
   hierarchy: {

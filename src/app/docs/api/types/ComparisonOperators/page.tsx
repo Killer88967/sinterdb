@@ -71,7 +71,7 @@ const api = {
     kind: "conditional",
     text: "[Extract<TValue, ComparableValue>] extends [never] ? unknown : { $gt?: Extract<TValue, ComparableValue>; $gte?: Extract<TValue, ComparableValue>; $lt?: Extract<TValue, ComparableValue>; $lte?: Extract<TValue, ComparableValue> }",
     name: null,
-    targetId: null,
+    target: null,
     children: [],
   },
   hierarchy: {

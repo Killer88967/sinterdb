@@ -41,19 +41,27 @@ const api = {
     kind: "reference",
     text: 'Exclude<FilterPaths<TDocument>, "_id" | `_id.${string}`>',
     name: "Exclude",
-    targetId: null,
+    target: null,
     children: [
       {
         kind: "reference",
         text: "FilterPaths<TDocument>",
         name: "FilterPaths",
-        targetId: 650,
+        target: {
+          id: 650,
+          name: "FilterPaths",
+          route: "types/FilterPaths",
+        },
         children: [
           {
             kind: "reference",
             text: "TDocument",
             name: "TDocument",
-            targetId: 745,
+            target: {
+              id: 745,
+              name: "TDocument",
+              route: "other/TDocument",
+            },
             children: [],
           },
         ],
@@ -62,7 +70,7 @@ const api = {
         kind: "union",
         text: '"_id" | `_id.${string}`',
         name: null,
-        targetId: null,
+        target: null,
         children: [],
       },
     ],
@@ -92,7 +100,7 @@ const api = {
         kind: "intrinsic",
         text: "object",
         name: "object",
-        targetId: null,
+        target: null,
         children: [],
       },
       default: null,

@@ -132,7 +132,11 @@ const api = {
                 kind: "reference",
                 text: "CustomId",
                 name: "CustomId",
-                targetId: 1,
+                target: {
+                  id: 1,
+                  name: "CustomId",
+                  route: "classes/CustomId",
+                },
                 children: [],
               },
               defaultValue: null,
@@ -143,7 +147,7 @@ const api = {
             kind: "intrinsic",
             text: "boolean",
             name: "boolean",
-            targetId: null,
+            target: null,
             children: [],
           },
           sources: [
@@ -207,7 +211,7 @@ const api = {
             kind: "reference",
             text: "Uint8Array",
             name: "Uint8Array",
-            targetId: null,
+            target: null,
             children: [],
           },
           sources: [
@@ -271,7 +275,7 @@ const api = {
             kind: "intrinsic",
             text: "string",
             name: "string",
-            targetId: null,
+            target: null,
             children: [],
           },
           sources: [
@@ -335,7 +339,7 @@ const api = {
             kind: "intrinsic",
             text: "string",
             name: "string",
-            targetId: null,
+            target: null,
             children: [],
           },
           sources: [
@@ -399,7 +403,7 @@ const api = {
             kind: "intrinsic",
             text: "string",
             name: "string",
-            targetId: null,
+            target: null,
             children: [],
           },
           sources: [
@@ -476,7 +480,7 @@ const api = {
                 kind: "reference",
                 text: "Uint8Array",
                 name: "Uint8Array",
-                targetId: null,
+                target: null,
                 children: [],
               },
               defaultValue: null,
@@ -487,7 +491,11 @@ const api = {
             kind: "reference",
             text: "CustomId",
             name: "CustomId",
-            targetId: 1,
+            target: {
+              id: 1,
+              name: "CustomId",
+              route: "classes/CustomId",
+            },
             children: [],
           },
           sources: [
@@ -564,7 +572,7 @@ const api = {
                 kind: "intrinsic",
                 text: "string",
                 name: "string",
-                targetId: null,
+                target: null,
                 children: [],
               },
               defaultValue: null,
@@ -575,7 +583,11 @@ const api = {
             kind: "reference",
             text: "CustomId",
             name: "CustomId",
-            targetId: 1,
+            target: {
+              id: 1,
+              name: "CustomId",
+              route: "classes/CustomId",
+            },
             children: [],
           },
           sources: [
@@ -639,7 +651,11 @@ const api = {
             kind: "reference",
             text: "CustomId",
             name: "CustomId",
-            targetId: 1,
+            target: {
+              id: 1,
+              name: "CustomId",
+              route: "classes/CustomId",
+            },
             children: [],
           },
           sources: [

@@ -46,7 +46,7 @@ const api = {
     kind: "union",
     text: "1 | -1",
     name: null,
-    targetId: null,
+    target: null,
     children: [],
   },
   hierarchy: {

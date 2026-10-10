@@ -31,7 +31,7 @@ const api = {
     kind: "mapped",
     text: "{ readonly [Key in keyof TDocument]?: TDocument[Key] }",
     name: null,
-    targetId: null,
+    target: null,
     children: [],
   },
   hierarchy: {
@@ -59,7 +59,7 @@ const api = {
         kind: "intrinsic",
         text: "object",
         name: "object",
-        targetId: null,
+        target: null,
         children: [],
       },
       default: null,

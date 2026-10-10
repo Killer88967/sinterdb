@@ -78,7 +78,7 @@ const api = {
         kind: "intrinsic",
         text: "boolean",
         name: "boolean",
-        targetId: null,
+        target: null,
         children: [],
       },
       defaultValue: null,

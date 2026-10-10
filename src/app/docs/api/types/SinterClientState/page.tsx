@@ -41,7 +41,7 @@ const api = {
     kind: "indexedAccess",
     text: "typeof SinterClientState[keyof typeof SinterClientState]",
     name: null,
-    targetId: null,
+    target: null,
     children: [],
   },
   hierarchy: {

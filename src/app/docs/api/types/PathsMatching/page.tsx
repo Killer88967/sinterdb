@@ -41,7 +41,7 @@ const api = {
     kind: "indexedAccess",
     text: "{ [Path in UpdatePaths<TDocument>]: [NonNullable<FilterPathValue<TDocument, Path>>] extends [TKind] ? Path : never }[UpdatePaths<TDocument>]",
     name: null,
-    targetId: null,
+    target: null,
     children: [],
   },
   hierarchy: {
@@ -69,7 +69,7 @@ const api = {
         kind: "intrinsic",
         text: "object",
         name: "object",
-        targetId: null,
+        target: null,
         children: [],
       },
       default: null,

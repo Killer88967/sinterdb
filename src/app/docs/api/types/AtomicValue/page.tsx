@@ -41,7 +41,7 @@ const api = {
     kind: "union",
     text: "ComparableValue | boolean | null",
     name: null,
-    targetId: null,
+    target: null,
     children: [],
   },
   hierarchy: {

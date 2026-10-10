@@ -91,7 +91,7 @@ const api = {
     kind: "intersection",
     text: "{ $eq?: TValue; $exists?: boolean; $in?: readonly (TValue | ElementOf<TValue>)[]; $ne?: TValue; $nin?: readonly (TValue | ElementOf<TValue>)[]; $not?: FilterOperators<TValue> } & ComparisonOperators<TValue>",
     name: null,
-    targetId: null,
+    target: null,
     children: [],
   },
   hierarchy: {

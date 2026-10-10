@@ -31,7 +31,7 @@ const api = {
     kind: "conditional",
     text: "TPath extends keyof TDocument ? TDocument[TPath] : TPath extends `${infer THead}.${infer TRest}` ? THead extends keyof TDocument ? FilterPathValue<NonNullable<TDocument[THead]>, TRest> : never : never",
     name: null,
-    targetId: null,
+    target: null,
     children: [],
   },
   hierarchy: {
@@ -66,7 +66,7 @@ const api = {
         kind: "intrinsic",
         text: "string",
         name: "string",
-        targetId: null,
+        target: null,
         children: [],
       },
       default: null,

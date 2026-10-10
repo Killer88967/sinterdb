@@ -1,8 +1,14 @@
+export interface ApiTypeTarget {
+  readonly id: number;
+  readonly name: string;
+  readonly route: string;
+}
+
 export interface ApiType {
   readonly kind: string;
   readonly text: string;
   readonly name: string | null;
-  readonly targetId: number | null;
+  readonly target: ApiTypeTarget | null;
   readonly children: readonly ApiType[];
 }
 

@@ -41,7 +41,7 @@ const api = {
     kind: "typeOperator",
     text: 'readonly (readonly [path: FilterPaths<TDocument> | "_id", direction: SortDirection])[]',
     name: null,
-    targetId: null,
+    target: null,
     children: [],
   },
   hierarchy: {
@@ -69,7 +69,7 @@ const api = {
         kind: "intrinsic",
         text: "object",
         name: "object",
-        targetId: null,
+        target: null,
         children: [],
       },
       default: null,

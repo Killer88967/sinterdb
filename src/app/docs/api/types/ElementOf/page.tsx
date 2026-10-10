@@ -31,7 +31,7 @@ const api = {
     kind: "conditional",
     text: "TValue extends readonly (infer TElement)[] ? TElement : TValue",
     name: null,
-    targetId: null,
+    target: null,
     children: [],
   },
   hierarchy: {

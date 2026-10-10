@@ -71,7 +71,7 @@ const api = {
     kind: "union",
     text: "string | number | bigint | Date | Uint8Array | CustomId",
     name: null,
-    targetId: null,
+    target: null,
     children: [],
   },
   hierarchy: {

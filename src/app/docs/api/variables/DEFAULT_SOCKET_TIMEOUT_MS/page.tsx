@@ -41,7 +41,7 @@ const api = {
     kind: "literal",
     text: "0",
     name: null,
-    targetId: null,
+    target: null,
     children: [],
   },
   hierarchy: {
