@@ -36,7 +36,7 @@ export class GroupCommitter implements DurabilityBarrier {
     }
   }
 
-  public run(): void {
+  private run(): void {
     this.scheduled = false;
 
     const callbacks = this.waiting;

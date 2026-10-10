@@ -233,7 +233,7 @@ export class WriteAheadLog {
 
       if (this.mode === "flushed") {
         if (this.groupCommit) {
-          this.unsynced;
+          this.unsynced = true;
         } else {
           fsyncSync(this.fd as number);
         }

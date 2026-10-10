@@ -282,7 +282,7 @@ export class StorageEngine {
     return this.checkpointFailure;
   }
 
-  /** FLushes all write since the last commit. See `groupCommit`. */
+  /** Flushes all write since the last commit. See `groupCommit`. */
   public commit(): void {
     if (this.closed) {
       return;
