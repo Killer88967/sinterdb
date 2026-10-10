@@ -35,6 +35,9 @@ async function startServer(
     ...(command.dataDir === undefined
       ? {}
       : { dataDirectory: command.dataDir }),
+    ...(command.writeConcern === undefined
+      ? {}
+      : { writeConcern: command.writeConcern }),
     ...(command.durability === undefined
       ? {}
       : { durability: command.durability }),
@@ -122,7 +125,7 @@ async function startServer(
       : {
           storage: "disk",
           dataDirectory: server.config.dataDirectory,
-          durability: server.config.durability,
+          writeConcern: server.config.writeConcern,
           databases: server.catalog.databaseCount,
           collections: server.catalog.collectionCount,
           checkpointLsn: String(server.recovery?.checkpointLsn ?? 0n),

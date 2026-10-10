@@ -12,7 +12,7 @@ describe("resolveServerConfig", () => {
     expect(resolveServerConfig({}, {})).toEqual({
       host: DEFAULT_SERVER_HOST,
       port: DEFAULT_SERVER_PORT,
-      durability: "fsync",
+      writeConcern: "flushed",
       reclaimLock: false,
     });
   });
@@ -29,7 +29,7 @@ describe("resolveServerConfig", () => {
     ).toEqual({
       host: "0.0.0.0",
       port: 5000,
-      durability: "fsync",
+      writeConcern: "flushed",
       reclaimLock: false,
     });
   });
@@ -49,7 +49,7 @@ describe("resolveServerConfig", () => {
     ).toEqual({
       host: "127.0.0.1",
       port: 6000,
-      durability: "fsync",
+      writeConcern: "flushed",
       reclaimLock: false,
     });
   });
@@ -95,30 +95,30 @@ describe("resolveServerConfig storage options", () => {
     expect(resolveServerConfig({}, {})).not.toHaveProperty("dataDirectory");
   });
 
-  it("reads the data directory and durability from input", () => {
+  it("reads the data directory and write concern from input", () => {
     expect(
       resolveServerConfig(
-        { dataDirectory: "  /var/lib/sinterdb  ", durability: "buffered" },
+        { dataDirectory: "  /var/lib/sinterdb  ", writeConcern: "memory" },
         {},
       ),
     ).toMatchObject({
       dataDirectory: "/var/lib/sinterdb",
-      durability: "buffered",
+      writeConcern: "memory",
     });
   });
 
-  it("reads the data directory and durability from the environment", () => {
+  it("reads the data directory and write concern from the environment", () => {
     expect(
       resolveServerConfig(
         {},
-        { SINTERDB_DATA_DIR: "/data", SINTERDB_DURABILITY: "buffered" },
+        { SINTERDB_DATA_DIR: "/data", SINTERDB_WRITE_CONCERN: "journaled" },
       ),
-    ).toMatchObject({ dataDirectory: "/data", durability: "buffered" });
+    ).toMatchObject({ dataDirectory: "/data", writeConcern: "journaled" });
   });
 
-  it("defaults to fsync durability with a data directory", () => {
+  it("defaults to the flushed write concern with a data directory", () => {
     expect(resolveServerConfig({ dataDirectory: "/data" }, {})).toMatchObject({
-      durability: "fsync",
+      writeConcern: "flushed",
       reclaimLock: false,
     });
   });
@@ -126,10 +126,43 @@ describe("resolveServerConfig storage options", () => {
   it("gives explicit input precedence over the environment", () => {
     expect(
       resolveServerConfig(
-        { dataDirectory: "/explicit", durability: "fsync" },
-        { SINTERDB_DATA_DIR: "/env", SINTERDB_DURABILITY: "buffered" },
+        { dataDirectory: "/explicit", writeConcern: "flushed" },
+        { SINTERDB_DATA_DIR: "/env", SINTERDB_WRITE_CONCERN: "memory" },
       ),
-    ).toMatchObject({ dataDirectory: "/explicit", durability: "fsync" });
+    ).toMatchObject({ dataDirectory: "/explicit", writeConcern: "flushed" });
+  });
+
+  it("maps the deprecated durability names to write concerns", () => {
+    expect(
+      resolveServerConfig({ dataDirectory: "/d", durability: "buffered" }, {}),
+    ).toMatchObject({ writeConcern: "journaled" });
+    expect(
+      resolveServerConfig({ dataDirectory: "/d", durability: "fsync" }, {}),
+    ).toMatchObject({ writeConcern: "flushed" });
+    expect(
+      resolveServerConfig(
+        {},
+        { SINTERDB_DATA_DIR: "/d", SINTERDB_DURABILITY: "buffered" },
+      ),
+    ).toMatchObject({ writeConcern: "journaled" });
+  });
+
+  it("rejects setting both a write concern and a durability mode", () => {
+    expect(() =>
+      resolveServerConfig(
+        { dataDirectory: "/d", writeConcern: "memory", durability: "fsync" },
+        {},
+      ),
+    ).toThrow(ServerConfigurationError);
+  });
+
+  it("rejects an unknown write concern", () => {
+    expect(() =>
+      resolveServerConfig({ dataDirectory: "/d", writeConcern: "fast" }, {}),
+    ).toThrow(ServerConfigurationError);
+    expect(() =>
+      resolveServerConfig({ dataDirectory: "/d", writeConcern: "fsync" }, {}),
+    ).toThrow(ServerConfigurationError);
   });
 
   it("rejects an empty data directory", () => {
@@ -138,19 +171,13 @@ describe("resolveServerConfig storage options", () => {
     );
   });
 
-  it("rejects an unknown durability mode", () => {
-    expect(() =>
-      resolveServerConfig({ dataDirectory: "/data", durability: "fast" }, {}),
-    ).toThrow(ServerConfigurationError);
-  });
-
-  it("rejects a durability mode without a data directory", () => {
+  it("rejects a write concern without a data directory", () => {
     try {
-      resolveServerConfig({ durability: "fsync" }, {});
+      resolveServerConfig({ writeConcern: "flushed" }, {});
       throw new Error("Expected a configuration error.");
     } catch (error: unknown) {
       expect(error).toBeInstanceOf(ServerConfigurationError);
-      expect((error as ServerConfigurationError).option).toBe("durability");
+      expect((error as ServerConfigurationError).option).toBe("writeConcern");
     }
   });
 });

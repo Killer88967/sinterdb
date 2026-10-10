@@ -11,7 +11,7 @@ export {
 } from "./write-ahead-log.js";
 
 export type {
-  DurabilityMode,
+  WriteConcern,
   WalRecord,
   WriteAheadLogOptions,
 } from "./write-ahead-log.js";

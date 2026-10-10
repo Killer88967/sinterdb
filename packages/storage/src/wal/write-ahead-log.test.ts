@@ -24,7 +24,12 @@ import {
   SEGMENT_HEADER_SIZE,
   encodeRecord,
 } from "./format.js";
-import { WriteAheadLog, type WalRecord } from "./write-ahead-log.js";
+import {
+  MEMORY_FLUSH_BYTES,
+  WriteAheadLog,
+  type WalRecord,
+  type WriteConcern,
+} from "./write-ahead-log.js";
 
 let directory: string;
 
@@ -58,8 +63,8 @@ function onlySegment(): string {
   return join(directory, files[0] as string);
 }
 
-function writeLog(count: number, durability: "buffered" | "fsync" = "fsync") {
-  const log = WriteAheadLog.open({ directory, durability });
+function writeLog(count: number, writeConcern: WriteConcern = "flushed") {
+  const log = WriteAheadLog.open({ directory, writeConcern });
 
   for (let index = 1; index <= count; index += 1) {
     log.append(1, payload(`record-${index}`));
@@ -96,11 +101,11 @@ describe("WriteAheadLog basics", () => {
     log.close();
   });
 
-  for (const durability of ["buffered", "fsync"] as const) {
-    it(`reopens and continues numbering in ${durability} mode`, () => {
-      writeLog(3, durability);
+  for (const writeConcern of ["memory", "journaled", "flushed"] as const) {
+    it(`reopens and continues numbering in ${writeConcern} mode`, () => {
+      writeLog(3, writeConcern);
 
-      const log = WriteAheadLog.open({ directory, durability });
+      const log = WriteAheadLog.open({ directory, writeConcern });
 
       expect(log.lastLsn).toBe(3n);
       expect(log.append(1, payload("next"))).toBe(4n);
@@ -128,7 +133,7 @@ describe("WriteAheadLog basics", () => {
 
   it("rejects invalid options", () => {
     expect(() =>
-      WriteAheadLog.open({ directory, durability: "never" as never }),
+      WriteAheadLog.open({ directory, writeConcern: "never" as never }),
     ).toThrow(TypeError);
 
     expect(() =>
@@ -502,5 +507,113 @@ describe("corruption detection", () => {
     );
     expect(existsSync(path)).toBe(true);
     expect(readFileSync(path).equals(before)).toBe(true);
+  });
+});
+
+describe("WriteAheadLog memory write concern", () => {
+  it("keeps records in memory until they are flushed", () => {
+    const log = WriteAheadLog.open({ directory, writeConcern: "memory" });
+    const headerOnly = statSync(onlySegment()).size;
+
+    log.append(1, payload("a"));
+    log.append(1, payload("b"));
+
+    expect(log.lastLsn).toBe(2n);
+    expect(log.pendingByteCount).toBeGreaterThan(0);
+    expect(statSync(onlySegment()).size).toBe(headerOnly);
+
+    log.flush();
+
+    expect(log.pendingByteCount).toBe(0);
+    expect(statSync(onlySegment()).size).toBeGreaterThan(headerOnly);
+
+    log.close();
+  });
+
+  it("writes pending records once enough bytes are waiting", () => {
+    const log = WriteAheadLog.open({ directory, writeConcern: "memory" });
+    const big = new Uint8Array(MEMORY_FLUSH_BYTES);
+
+    log.append(1, big);
+
+    expect(log.pendingByteCount).toBe(0);
+    expect(statSync(onlySegment()).size).toBeGreaterThan(MEMORY_FLUSH_BYTES);
+
+    log.close();
+  });
+
+  it("writes pending records when the log closes", () => {
+    const log = WriteAheadLog.open({ directory, writeConcern: "memory" });
+
+    log.append(1, payload("a"));
+    log.append(1, payload("b"));
+    log.close();
+
+    const reopened = WriteAheadLog.open({ directory });
+
+    expect(texts(reopened.records())).toEqual(["a", "b"]);
+
+    reopened.close();
+  });
+
+  it("includes pending records when it is read or synced", () => {
+    const log = WriteAheadLog.open({ directory, writeConcern: "memory" });
+
+    log.append(1, payload("a"));
+
+    expect(texts(log.records())).toEqual(["a"]);
+
+    log.append(1, payload("b"));
+    log.sync();
+
+    expect(log.pendingByteCount).toBe(0);
+
+    log.close();
+  });
+
+  it("keeps order across segment rotation", () => {
+    const log = WriteAheadLog.open({
+      directory,
+      writeConcern: "memory",
+      segmentSizeBytes: SEGMENT_HEADER_SIZE + 200,
+    });
+
+    for (let index = 1; index <= 12; index += 1) {
+      log.append(1, payload(`record-${index}-${"x".repeat(40)}`));
+    }
+
+    log.close();
+
+    const reopened = WriteAheadLog.open({ directory });
+
+    expect(reopened.segmentCount).toBeGreaterThan(2);
+    expect(texts(reopened.records()).map((text) => text.split("-")[1])).toEqual(
+      Array.from({ length: 12 }, (_, index) => String(index + 1)),
+    );
+
+    reopened.close();
+  });
+
+  it("loses only unwritten records when the process dies", () => {
+    const log = WriteAheadLog.open({ directory, writeConcern: "memory" });
+
+    log.append(1, payload("kept"));
+    log.flush();
+    log.append(1, payload("lost"));
+
+    // Reading the directory without closing the log models a crash: nothing
+    // pending has reached the file.
+    const reader = WriteAheadLog.open({ directory });
+
+    expect(texts(reader.records())).toEqual(["kept"]);
+
+    reader.close();
+    log.close();
+  });
+
+  it("rejects an unknown write concern", () => {
+    expect(() =>
+      WriteAheadLog.open({ directory, writeConcern: "buffered" as never }),
+    ).toThrow(TypeError);
   });
 });

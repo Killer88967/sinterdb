@@ -39,7 +39,9 @@ afterEach(async () => {
   rmSync(directory, { recursive: true, force: true });
 });
 
-function create(options: { durability?: string } = {}): SinterServer {
+function create(
+  options: { writeConcern?: string; durability?: string } = {},
+): SinterServer {
   const server = new SinterServer(
     { port: 0, dataDirectory: directory, ...options },
     {},
@@ -184,12 +186,25 @@ describe("SinterServer with a data directory", () => {
     expect(existsSync(join(directory, "LOCK"))).toBe(false);
   });
 
-  it("accepts a buffered durability mode", async () => {
+  it("accepts the journaled and memory write concerns", async () => {
+    for (const writeConcern of ["journaled", "memory"] as const) {
+      const server = create({ writeConcern });
+
+      await server.start();
+
+      expect(server.config.writeConcern).toBe(writeConcern);
+      expect(server.catalog.getOrCreateCollection("a", "b")).toBeDefined();
+
+      await server.stop();
+    }
+  });
+
+  it("still accepts the deprecated buffered durability mode", async () => {
     const server = create({ durability: "buffered" });
 
     await server.start();
 
-    expect(server.config.durability).toBe("buffered");
+    expect(server.config.writeConcern).toBe("journaled");
     expect(server.catalog.getOrCreateCollection("a", "b")).toBeDefined();
   });
 });

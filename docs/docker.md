@@ -78,8 +78,8 @@ to publish on another host port.
 
 Each of these comes from an environment variable listed in the
 [configuration reference](./configuration.md), so you can change them with
-`--env`, for example `--env SINTERDB_DURABILITY=buffered`, or pass flags after
-the image name, for example `sinterdb-local --durability buffered`. Flags win
+`--env`, for example `--env SINTERDB_WRITE_CONCERN=journaled`, or pass flags after
+the image name, for example `sinterdb-local --write-concern journaled`. Flags win
 over environment variables.
 
 If you change the port, publish the new port as well. The image's health check

@@ -99,6 +99,16 @@ breaking change.
 
 Each breaking change lands here in the release that makes it.
 
+### 0.2.0
+
+- **Write concerns replace durability modes.** `--write-concern <level>` and
+  `SINTERDB_WRITE_CONCERN` take `flushed` (the old `fsync`, still the default),
+  `journaled` (the old `buffered`) or `memory`. `--durability` and
+  `SINTERDB_DURABILITY` keep working with the old names, but they are
+  deprecated and setting both an old and a new option is an error. The
+  `server.started` log line reports `writeConcern` instead of `durability`.
+  Data files are unchanged.
+
 ### 0.1.0
 
 - **The CLI package is `@sinterdb/cli`.** Earlier GitHub release tarballs named

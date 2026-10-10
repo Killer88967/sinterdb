@@ -25,18 +25,26 @@ import {
   scanRecord,
 } from "./format.js";
 
-export type DurabilityMode = "buffered" | "fsync";
+export type WriteConcern = "memory" | "journaled" | "flushed";
 
 export const DEFAULT_SEGMENT_SIZE_BYTES = 64 * 1024 * 1024;
+
+/**
+ * With the `memory` write concern, appended records wait in memory until this
+ * many bytes are pending, a flush is requested or the log closes.
+ */
+export const MEMORY_FLUSH_BYTES = 64 * 1024;
 
 export interface WriteAheadLogOptions {
   readonly directory: string;
   /**
-   * `fsync` waits for the operating system to flush each append to stable
-   * storage. `buffered` only waits for the write to reach the operating
-   * system, which survives a process crash but not a power loss.
+   * `flushed` waits for the operating system to flush each append to stable
+   * storage. `journaled` only waits for the write to reach the operating
+   * system, which survives a process crash but not a power loss. `memory`
+   * keeps appends in this process until `flush` or `sync` is called, enough
+   * bytes are pending or the log closes, so a crash can lose them.
    */
-  readonly durability?: DurabilityMode;
+  readonly writeConcern?: WriteConcern;
   readonly segmentSizeBytes?: number;
 }
 
@@ -58,12 +66,14 @@ export class WriteAheadLog {
   private fd: number | undefined;
   private position: number;
   private nextLsn: bigint;
+  private pending: Uint8Array[] = [];
+  private pendingBytes = 0;
   private broken = false;
   private closed = false;
 
   private constructor(
     private readonly directory: string,
-    private readonly mode: DurabilityMode,
+    private readonly mode: WriteConcern,
     private readonly segmentSizeBytes: number,
     segments: SegmentInfo[],
     fd: number,
@@ -77,12 +87,14 @@ export class WriteAheadLog {
   }
 
   public static open(options: WriteAheadLogOptions): WriteAheadLog {
-    const mode = options.durability ?? "fsync";
+    const mode = options.writeConcern ?? "flushed";
     const segmentSizeBytes =
       options.segmentSizeBytes ?? DEFAULT_SEGMENT_SIZE_BYTES;
 
-    if (mode !== "buffered" && mode !== "fsync") {
-      throw new TypeError('Durability must be "buffered" or "fsync".');
+    if (mode !== "memory" && mode !== "journaled" && mode !== "flushed") {
+      throw new TypeError(
+        'Write concern must be "memory", "journaled" or "flushed".',
+      );
     }
 
     if (
@@ -99,7 +111,7 @@ export class WriteAheadLog {
     }
 
     const recovered = recoverSegments(options.directory);
-    const durable = mode === "fsync";
+    const durable = mode === "flushed";
 
     if (recovered.segments.length === 0) {
       const created = createSegment(options.directory, 1n, durable);
@@ -142,8 +154,13 @@ export class WriteAheadLog {
     );
   }
 
-  public get durability(): DurabilityMode {
+  public get writeConcern(): WriteConcern {
     return this.mode;
+  }
+
+  /** Bytes appended but not yet written to the operating system. */
+  public get pendingByteCount(): number {
+    return this.pendingBytes;
   }
 
   public get lastLsn(): bigint {
@@ -175,10 +192,23 @@ export class WriteAheadLog {
       this.rotate();
     }
 
+    if (this.mode === "memory") {
+      this.pending.push(record);
+      this.pendingBytes += record.byteLength;
+      this.position += record.byteLength;
+      this.nextLsn = lsn + 1n;
+
+      if (this.pendingBytes >= MEMORY_FLUSH_BYTES) {
+        this.flush();
+      }
+
+      return lsn;
+    }
+
     try {
       writeFully(this.fd as number, record, this.position);
 
-      if (this.mode === "fsync") {
+      if (this.mode === "flushed") {
         fsyncSync(this.fd as number);
       }
     } catch (error: unknown) {
@@ -193,8 +223,43 @@ export class WriteAheadLog {
     return lsn;
   }
 
-  public sync(): void {
+  /**
+   * Writes pending records to the operating system without waiting for stable
+   * storage. It does nothing unless the write concern is `memory`.
+   */
+  public flush(): void {
     this.assertWritable();
+
+    if (this.pendingBytes === 0) {
+      return;
+    }
+
+    const bytes = new Uint8Array(this.pendingBytes);
+    let offset = 0;
+
+    for (const chunk of this.pending) {
+      bytes.set(chunk, offset);
+      offset += chunk.byteLength;
+    }
+
+    try {
+      writeFully(this.fd as number, bytes, this.position - this.pendingBytes);
+    } catch (error: unknown) {
+      this.broken = true;
+
+      throw ioError(
+        "write pending records to the log",
+        this.activePath(),
+        error,
+      );
+    }
+
+    this.pending = [];
+    this.pendingBytes = 0;
+  }
+
+  public sync(): void {
+    this.flush();
 
     try {
       fsyncSync(this.fd as number);
@@ -207,6 +272,10 @@ export class WriteAheadLog {
 
   public *records(afterLsn = 0n): IterableIterator<WalRecord> {
     this.assertOpen();
+
+    if (!this.broken) {
+      this.flush();
+    }
 
     for (let index = 0; index < this.segments.length; index += 1) {
       const segment = this.segments[index] as SegmentInfo;
@@ -284,7 +353,7 @@ export class WriteAheadLog {
       removed += 1;
     }
 
-    if (removed > 0 && this.mode === "fsync") {
+    if (removed > 0 && this.mode === "flushed") {
       syncDirectory(this.directory);
     }
 
@@ -294,6 +363,16 @@ export class WriteAheadLog {
   public close(): void {
     if (this.closed) {
       return;
+    }
+
+    let pendingError: unknown;
+
+    if (!this.broken) {
+      try {
+        this.flush();
+      } catch (error: unknown) {
+        pendingError = error;
+      }
     }
 
     this.closed = true;
@@ -309,10 +388,16 @@ export class WriteAheadLog {
         throw ioError("close the log", this.directory, error);
       }
     }
+
+    if (pendingError !== undefined) {
+      throw pendingError;
+    }
   }
 
   private rotate(): void {
-    const durable = this.mode === "fsync";
+    const durable = this.mode === "flushed";
+
+    this.flush();
 
     try {
       if (durable) {

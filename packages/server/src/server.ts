@@ -130,7 +130,7 @@ export class SinterServer extends EventEmitter {
       try {
         this.engine = StorageEngine.open({
           directory: this.config.dataDirectory,
-          durability: this.config.durability,
+          writeConcern: this.config.writeConcern,
           reclaimLock: this.config.reclaimLock,
           ...(this.config.checkpointThresholdBytes === undefined
             ? {}

@@ -39,21 +39,29 @@ Do not edit these files by hand.
 If step 2 fails, the change is not applied to memory and the client receives an
 error. Every record carries checksums and a sequence number.
 
-## Durability modes
+## Write concerns
 
-Choose a mode with `--durability <mode>` or `SINTERDB_DURABILITY`.
+Choose a level with `--write-concern <level>` or `SINTERDB_WRITE_CONCERN`.
 
-| Mode              | A write is acknowledged when...                | Survives a server crash | Survives power loss or an operating-system crash |
-| ----------------- | ---------------------------------------------- | ----------------------- | ------------------------------------------------ |
-| `fsync` (default) | the log has been flushed to stable storage     | Yes                     | Yes, if the storage hardware honors flushes      |
-| `buffered`        | the log write has reached the operating system | Yes                     | No. Recent writes can be lost                    |
+| Level               | A write is acknowledged when...                                 | Survives a server crash          | Survives power loss or an operating-system crash |
+| ------------------- | --------------------------------------------------------------- | -------------------------------- | ------------------------------------------------ |
+| `flushed` (default) | the log has been flushed to stable storage                      | Yes                              | Yes, if the storage hardware honors flushes      |
+| `journaled`         | the log write has reached the operating system                  | Yes                              | No. Recent writes can be lost                    |
+| `memory`            | it is applied in memory; the log is written within about 100 ms | No. The last ~100 ms can be lost | No. Recent writes can be lost                    |
 
-`buffered` is faster. Use `fsync` for data you cannot afford to lose.
+`journaled` and `memory` are faster. Use `flushed` for data you cannot afford to
+lose. With `memory`, records wait in the server until 64 KiB are pending, 100
+milliseconds pass, a checkpoint starts or the server stops cleanly, whichever
+comes first. The log is never reordered: after a crash you recover a prefix of
+the writes, not a mixture.
+
+The older `--durability` flag and `SINTERDB_DURABILITY` still work. `fsync` means
+`flushed` and `buffered` means `journaled`.
 
 > [!NOTE]
 > The automated crash tests terminate the server with `SIGKILL` and verify
 > that recovery is exact. They cannot simulate losing power, so protection
-> against power loss in `fsync` mode rests on the engine flushing at the right
+> against power loss in `flushed` mode rests on the engine flushing at the right
 > moments: after each log append, when creating a log segment, and when
 > publishing a snapshot or removing files.
 

@@ -55,11 +55,11 @@ function emptyState(): State {
   return { rows: new Map(), indexes: new Set() };
 }
 
-type Durability = "fsync" | "buffered";
+type WriteConcern = "flushed" | "journaled";
 
 interface WorkerConfig {
   directory: string;
-  durability: Durability;
+  writeConcern: WriteConcern;
   seed: number;
   maxOps: number;
   segmentSizeBytes?: number;
@@ -435,7 +435,7 @@ function verifyRecovery(
 
 interface RoundsOptions {
   directory: string;
-  durability: Durability;
+  writeConcern: WriteConcern;
   rounds: number;
   seed: number;
   segmentSizeBytes?: number;
@@ -458,7 +458,7 @@ async function runRounds(
     const result = await runWorker(
       {
         directory: options.directory,
-        durability: options.durability,
+        writeConcern: options.writeConcern,
         seed: options.seed * 1000 + round,
         maxOps: 100_000,
         ...(options.segmentSizeBytes === undefined
@@ -498,34 +498,34 @@ function snapshotCount(directory: string): number {
 describe("killing the process with SIGKILL during writes", () => {
   const configurations: {
     name: string;
-    durability: Durability;
+    writeConcern: WriteConcern;
     segmentSizeBytes?: number;
     checkpointThresholdBytes?: number;
     seed: number;
   }[] = [
     {
       name: "fsync with constant checkpoints and tiny segments",
-      durability: "fsync",
+      writeConcern: "flushed",
       segmentSizeBytes: 1024,
       checkpointThresholdBytes: 700,
       seed: 11,
     },
     {
       name: "buffered with constant checkpoints and tiny segments",
-      durability: "buffered",
+      writeConcern: "journaled",
       segmentSizeBytes: 1024,
       checkpointThresholdBytes: 700,
       seed: 22,
     },
     {
       name: "fsync with default checkpoints and tiny segments",
-      durability: "fsync",
+      writeConcern: "flushed",
       segmentSizeBytes: 2048,
       seed: 33,
     },
     {
       name: "buffered with infrequent checkpoints",
-      durability: "buffered",
+      writeConcern: "journaled",
       checkpointThresholdBytes: 5000,
       seed: 44,
     },
@@ -539,7 +539,7 @@ describe("killing the process with SIGKILL during writes", () => {
         const directory = join(root, "data");
         const { kills } = await runRounds({
           directory,
-          durability: configuration.durability,
+          writeConcern: configuration.writeConcern,
           rounds: 14,
           seed: configuration.seed,
           ...(configuration.segmentSizeBytes === undefined
@@ -574,17 +574,17 @@ describe("killing the process in the middle of a checkpoint", () => {
     "log-truncated",
   ];
 
-  for (const durability of ["fsync", "buffered"] as const) {
+  for (const writeConcern of ["flushed", "journaled"] as const) {
     for (const stage of stages) {
       it(
-        `recovers after SIGKILL at ${stage} in ${durability} mode`,
+        `recovers after SIGKILL at ${stage} in ${writeConcern} mode`,
         { timeout: 60_000 },
         async () => {
           const directory = join(root, "data");
           const first = await runWorker(
             {
               directory,
-              durability,
+              writeConcern,
               seed: 7,
               maxOps: 50_000,
               segmentSizeBytes: 1024,
@@ -607,7 +607,7 @@ describe("killing the process in the middle of a checkpoint", () => {
           const second = await runWorker(
             {
               directory,
-              durability,
+              writeConcern,
               seed: 8,
               maxOps: 100_000,
               segmentSizeBytes: 1024,
@@ -696,7 +696,7 @@ describe("damaged files after a crash", () => {
       const directory = join(root, "data");
       const { history } = await runRounds({
         directory,
-        durability: "fsync",
+        writeConcern: "flushed",
         rounds: 4,
         seed: 55,
         segmentSizeBytes: 1024,

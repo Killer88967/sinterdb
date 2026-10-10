@@ -417,7 +417,7 @@ async function main(): Promise<void> {
     console.error("Reads and bulk writes (disk, fsync)...");
     results.push(
       ...(await withServer(
-        { dataDirectory: directories[0]!.path, durability: "fsync" },
+        { dataDirectory: directories[0]!.path, writeConcern: "flushed" },
         (server) => readScenarios(workload, server),
       )),
     );
@@ -425,15 +425,15 @@ async function main(): Promise<void> {
     console.error("Single writes with fsync...");
     results.push(
       ...(await withServer(
-        { dataDirectory: directories[1]!.path, durability: "fsync" },
+        { dataDirectory: directories[1]!.path, writeConcern: "flushed" },
         (server) => writeScenarios(workload, server, "disk, fsync"),
       )),
     );
 
-    console.error("Single writes with buffered durability...");
+    console.error("Single writes with the journaled write concern...");
     results.push(
       ...(await withServer(
-        { dataDirectory: directories[2]!.path, durability: "buffered" },
+        { dataDirectory: directories[2]!.path, writeConcern: "journaled" },
         (server) => writeScenarios(workload, server, "disk, buffered"),
       )),
     );

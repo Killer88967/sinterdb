@@ -11,7 +11,7 @@ export const SERVER_BINARY = fileURLToPath(
 export interface ServerOptions {
   /** A directory to keep data in. Without one the server keeps memory only. */
   readonly dataDirectory?: string;
-  readonly durability?: "fsync" | "buffered";
+  readonly writeConcern?: "flushed" | "journaled" | "memory";
 }
 
 export interface RunningServer {
@@ -35,8 +35,8 @@ export function startServer(
     argumentsList.push("--data-dir", options.dataDirectory);
   }
 
-  if (options.durability !== undefined) {
-    argumentsList.push("--durability", options.durability);
+  if (options.writeConcern !== undefined) {
+    argumentsList.push("--write-concern", options.writeConcern);
   }
 
   return new Promise((resolve, reject) => {

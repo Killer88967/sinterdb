@@ -1,8 +1,8 @@
-import type { DurabilityMode } from "@sinterdb-internal/storage";
+import type { WriteConcern } from "@sinterdb-internal/storage";
 
 export const DEFAULT_SERVER_HOST = "127.0.0.1";
 export const DEFAULT_SERVER_PORT = 4721;
-export const DEFAULT_DURABILITY: DurabilityMode = "fsync";
+export const DEFAULT_WRITE_CONCERN: WriteConcern = "flushed";
 
 export interface ServerConfig {
   host: string;
@@ -12,7 +12,7 @@ export interface ServerConfig {
    * data in memory and loses it on shutdown.
    */
   dataDirectory?: string;
-  durability: DurabilityMode;
+  writeConcern: WriteConcern;
   /**
    * Bytes of log written between automatic checkpoints. The storage engine's
    * default applies when it is not set.
@@ -29,6 +29,8 @@ export interface ServerConfigInput {
   host?: string;
   port?: number | string;
   dataDirectory?: string;
+  writeConcern?: string;
+  /** Deprecated name for `writeConcern` that accepts `fsync` and `buffered`. */
   durability?: string;
   checkpointThresholdBytes?: number | string;
   reclaimLock?: boolean | string;
@@ -42,6 +44,7 @@ export const SERVER_ENVIRONMENT_VARIABLES = [
   "SINTERDB_HOST",
   "SINTERDB_PORT",
   "SINTERDB_DATA_DIR",
+  "SINTERDB_WRITE_CONCERN",
   "SINTERDB_DURABILITY",
   "SINTERDB_CHECKPOINT_BYTES",
   "SINTERDB_RECLAIM_LOCK",
@@ -55,6 +58,7 @@ export type ServerConfigurationOption =
   | "host"
   | "port"
   | "dataDirectory"
+  | "writeConcern"
   | "durability"
   | "checkpointThresholdBytes"
   | "reclaimLock";
@@ -79,12 +83,12 @@ export function resolveServerConfig(
   const dataDirectory = resolveDataDirectory(
     input.dataDirectory ?? environment.SINTERDB_DATA_DIR,
   );
-  const requestDurability = input.durability ?? environment.SINTERDB_DURABILITY;
+  const writeConcern = resolveWriteConcern(input, environment);
 
-  if (requestDurability !== undefined && dataDirectory === undefined) {
+  if (writeConcern.requested && dataDirectory === undefined) {
     throw new ServerConfigurationError(
-      "durability",
-      "A durability mode only applies when a data directory is configured.",
+      "writeConcern",
+      "A write concern only applies when a data directory is configured.",
     );
   }
 
@@ -114,7 +118,7 @@ export function resolveServerConfig(
     host,
     port,
     ...(dataDirectory === undefined ? {} : { dataDirectory }),
-    durability: resolveDurability(requestDurability),
+    writeConcern: writeConcern.value,
     ...(checkpointThresholdBytes === undefined
       ? {}
       : { checkpointThresholdBytes }),
@@ -171,21 +175,52 @@ function resolveDataDirectory(value: string | undefined): string | undefined {
   return directory;
 }
 
-function resolveDurability(value: string | undefined): DurabilityMode {
-  if (value === undefined) {
-    return DEFAULT_DURABILITY;
-  }
+const DEPRECATED_DURABILITY_NAMES: Readonly<Record<string, WriteConcern>> = {
+  buffered: "journaled",
+  fsync: "flushed",
+};
 
-  const mode = value.trim();
+function resolveWriteConcern(
+  input: ServerConfigInput,
+  environment: ServerEnvironment,
+): { value: WriteConcern; requested: boolean } {
+  const preferred = input.writeConcern ?? environment.SINTERDB_WRITE_CONCERN;
+  const deprecated = input.durability ?? environment.SINTERDB_DURABILITY;
 
-  if (mode !== "buffered" && mode !== "fsync") {
+  if (preferred !== undefined && deprecated !== undefined) {
     throw new ServerConfigurationError(
-      "durability",
-      `Server durability must be "buffered" or "fsync"; received ${JSON.stringify(value)}.`,
+      "writeConcern",
+      "Set the write concern or the deprecated durability mode, not both.",
     );
   }
 
-  return mode;
+  if (preferred !== undefined) {
+    const mode = preferred.trim();
+
+    if (mode !== "memory" && mode !== "journaled" && mode !== "flushed") {
+      throw new ServerConfigurationError(
+        "writeConcern",
+        `Server write concern must be "memory", "journaled" or "flushed"; received ${JSON.stringify(preferred)}.`,
+      );
+    }
+
+    return { value: mode, requested: true };
+  }
+
+  if (deprecated !== undefined) {
+    const mapped = DEPRECATED_DURABILITY_NAMES[deprecated.trim()];
+
+    if (mapped === undefined) {
+      throw new ServerConfigurationError(
+        "durability",
+        `Server durability must be "buffered" or "fsync"; received ${JSON.stringify(deprecated)}. Use a write concern instead.`,
+      );
+    }
+
+    return { value: mapped, requested: true };
+  }
+
+  return { value: DEFAULT_WRITE_CONCERN, requested: false };
 }
 
 function resolveCheckpointThreshold(

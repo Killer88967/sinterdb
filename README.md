@@ -192,7 +192,7 @@ Implemented so far:
 - Immutable `_id` enforcement and all-or-nothing multi-document updates
 - Typed `UpdateFilter<TDocument>` API
 - Durable storage with a write-ahead log, atomic multi-document writes, and
-  configurable `fsync` or `buffered` acknowledgement
+  configurable `flushed`, `journaled` or `memory` write concerns
 - Checkpoints, log compaction, and startup recovery from snapshots
 - Data directory locking and storage format versioning
 - Crash tests that terminate the server with `SIGKILL` during writes and

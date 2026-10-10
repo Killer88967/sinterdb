@@ -48,7 +48,10 @@ Options:
   --host <host>       Address to listen on
   -p, --port <port>   TCP port to listen on
   --data-dir <path>   Store data durably in this directory
-  --durability <mode> How writes are acknowledged: fsync (default) or buffered
+  --write-concern <level>
+                      How writes are acknowledged: flushed (default),
+                      journaled or memory
+  --durability <mode> Deprecated: fsync means flushed, buffered means journaled
   --checkpoint-bytes <n>
                       Bytes of log between automatic checkpoints (default 64 MiB)
   -h, --help          Show the help message
@@ -73,7 +76,7 @@ Port `0` asks the operating system to select an available temporary port.
 | `SINTERDB_HOST`             | Listening address                | `127.0.0.1` |
 | `SINTERDB_PORT`             | TCP port                         | `4721`      |
 | `SINTERDB_DATA_DIR`         | Data directory                   | none        |
-| `SINTERDB_DURABILITY`       | `fsync` or `buffered`            | `fsync`     |
+| `SINTERDB_WRITE_CONCERN`    | `flushed`, `journaled`, `memory` | `flushed`   |
 | `SINTERDB_CHECKPOINT_BYTES` | Bytes of log between checkpoints | 64 MiB      |
 
 Command-line options take precedence over environment variables.
@@ -85,15 +88,16 @@ sinterd --data-dir /var/lib/sinterdb
 ```
 
 With a data directory, acknowledged writes survive restarts and crashes. See
-[Durable Storage](../../docs/storage.md) for the durability modes, checkpoints,
+[Durable Storage](../../docs/storage.md) for the write concerns, checkpoints,
 recovery, and backups.
 
-| Mode       | A write is acknowledged when...                 | Survives a power loss |
-| ---------- | ----------------------------------------------- | --------------------- |
-| `fsync`    | it has been flushed to stable storage (default) | Yes                   |
-| `buffered` | it has reached the operating system             | No                    |
+| Level       | A write is acknowledged when...                 | Survives a power loss |
+| ----------- | ----------------------------------------------- | --------------------- |
+| `flushed`   | it has been flushed to stable storage (default) | Yes                   |
+| `journaled` | it has reached the operating system             | No                    |
+| `memory`    | it is applied in memory (logged within ~100 ms) | No                    |
 
-`--durability` and `--checkpoint-bytes` require `--data-dir`.
+`--write-concern` and `--checkpoint-bytes` require `--data-dir`.
 
 ## Structured Logging
 
@@ -112,7 +116,7 @@ Lifecycle events are written as newline-delimited JSON:
     "version": "0.1.0",
     "storage": "disk",
     "dataDirectory": "/var/lib/sinterdb",
-    "durability": "fsync",
+    "writeConcern": "flushed",
     "databases": 1,
     "collections": 2,
     "checkpointLsn": "1042",

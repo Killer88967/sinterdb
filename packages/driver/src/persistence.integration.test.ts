@@ -27,7 +27,7 @@ afterEach(() => {
 
 async function withServer<T>(
   run: (client: SinterClient) => Promise<T>,
-  options: { durability?: string } = {},
+  options: { writeConcern?: string } = {},
 ): Promise<T> {
   const server = await startTestServer({
     dataDirectory: directory,
@@ -145,12 +145,12 @@ describe("persistence through the driver", () => {
     });
   });
 
-  it("works in buffered mode", async () => {
+  it("works with the journaled write concern", async () => {
     await withServer(
       async (client) => {
         await client.db().collection("things").insertOne({ n: 1 });
       },
-      { durability: "buffered" },
+      { writeConcern: "journaled" },
     );
 
     await withServer(
@@ -159,7 +159,25 @@ describe("persistence through the driver", () => {
           await client.db().collection("things").find().toArray(),
         ).toHaveLength(1);
       },
-      { durability: "buffered" },
+      { writeConcern: "journaled" },
+    );
+  });
+
+  it("works with the memory write concern", async () => {
+    await withServer(
+      async (client) => {
+        await client.db().collection("things").insertOne({ n: 1 });
+      },
+      { writeConcern: "memory" },
+    );
+
+    await withServer(
+      async (client) => {
+        expect(
+          await client.db().collection("things").find().toArray(),
+        ).toHaveLength(1);
+      },
+      { writeConcern: "memory" },
     );
   });
 

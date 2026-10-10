@@ -52,17 +52,24 @@ describe("parseCliArguments", () => {
     );
   });
 
-  it("parses the data directory and durability options", () => {
+  it("parses the data directory and write concern options", () => {
     expect(
       parseCliArguments([
         "--data-dir",
         "/var/lib/sinterdb",
-        "--durability",
-        "buffered",
+        "--write-concern",
+        "journaled",
       ]),
     ).toEqual({
       kind: "start",
       dataDir: "/var/lib/sinterdb",
+      writeConcern: "journaled",
+    });
+  });
+
+  it("still parses the deprecated durability option", () => {
+    expect(parseCliArguments(["--durability", "buffered"])).toEqual({
+      kind: "start",
       durability: "buffered",
     });
   });
@@ -106,6 +113,7 @@ describe("parseCliArguments", () => {
   it("rejects storage options without values", () => {
     expect(() => parseCliArguments(["--data-dir"])).toThrow(CliUsageError);
     expect(() => parseCliArguments(["--durability"])).toThrow(CliUsageError);
+    expect(() => parseCliArguments(["--write-concern"])).toThrow(CliUsageError);
   });
 
   it("documents every option and environment variable", () => {
@@ -113,13 +121,16 @@ describe("parseCliArguments", () => {
       "--host",
       "-p, --port",
       "--data-dir",
+      "--write-concern",
       "--durability",
       "--checkpoint-bytes",
       "SINTERDB_DATA_DIR",
+      "SINTERDB_WRITE_CONCERN",
       "SINTERDB_DURABILITY",
       "SINTERDB_CHECKPOINT_BYTES",
-      "fsync",
-      "buffered",
+      "flushed",
+      "journaled",
+      "memory",
     ]) {
       expect(HELP_TEXT).toContain(text);
     }

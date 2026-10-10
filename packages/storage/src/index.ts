@@ -54,7 +54,7 @@ export type {
   IndexSpec,
 } from "./indexing/index.js";
 export type {
-  DurabilityMode,
+  WriteConcern,
   WalRecord,
   WriteAheadLogOptions,
 } from "./wal/index.js";

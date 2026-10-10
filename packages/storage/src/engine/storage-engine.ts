@@ -22,7 +22,7 @@ import {
 import {
   RECORD_HEADER_SIZE,
   WriteAheadLog,
-  type DurabilityMode,
+  type WriteConcern,
   type WalRecord,
 } from "../wal/index.js";
 import {
@@ -53,9 +53,17 @@ export const STORAGE_FORMAT_VERSION = 2;
 
 export const DEFAULT_CHECKPOINT_THRESHOLD_BYTES = 64 * 1024 * 1024;
 
+export const DEFAULT_MEMORY_FLUSH_INTERVAL_MS = 100;
+
 export interface StorageEngineOptions {
   readonly directory: string;
-  readonly durability?: DurabilityMode;
+  /** How a write is acknowledged. Defaults to `flushed`. */
+  readonly writeConcern?: WriteConcern;
+  /**
+   * With the `memory` write concern, pending log records are written to the
+   * operating system at least this often. Defaults to 100 milliseconds.
+   */
+  readonly memoryFlushIntervalMs?: number;
   readonly segmentSizeBytes?: number;
   /**
    * A checkpoint is taken automatically once this many bytes of log have been
@@ -140,6 +148,7 @@ export class StorageEngine {
     Map<string, InMemoryCollection>
   >();
   private closed = false;
+  private flushTimer: ReturnType<typeof setInterval> | undefined;
   private lastCheckpoint = 0n;
   private bytesSinceCheckpoint = 0;
   private nextCheckpointAt: number;
@@ -173,6 +182,15 @@ export class StorageEngine {
       );
     }
 
+    const flushInterval =
+      options.memoryFlushIntervalMs ?? DEFAULT_MEMORY_FLUSH_INTERVAL_MS;
+
+    if (!Number.isSafeInteger(flushInterval) || flushInterval < 1) {
+      throw new TypeError(
+        "The memory flush interval must be a positive safe integer.",
+      );
+    }
+
     const settings: Settings = {
       checkpointThresholdBytes: threshold,
       checkpointOnClose: options.checkpointOnClose ?? true,
@@ -194,9 +212,9 @@ export class StorageEngine {
 
       const log = WriteAheadLog.open({
         directory: join(root, "wal"),
-        ...(options.durability === undefined
+        ...(options.writeConcern === undefined
           ? {}
-          : { durability: options.durability }),
+          : { writeConcern: options.writeConcern }),
         ...(options.segmentSizeBytes === undefined
           ? {}
           : { segmentSizeBytes: options.segmentSizeBytes }),
@@ -206,6 +224,10 @@ export class StorageEngine {
         const engine = new StorageEngine(root, log, lock, settings);
 
         engine.recover();
+
+        if (log.writeConcern === "memory") {
+          engine.startFlushTimer(flushInterval);
+        }
 
         return engine;
       } catch (error: unknown) {
@@ -224,8 +246,8 @@ export class StorageEngine {
     return this.root;
   }
 
-  public get durability(): DurabilityMode {
-    return this.log.durability;
+  public get writeConcern(): WriteConcern {
+    return this.log.writeConcern;
   }
 
   public get lastLsn(): bigint {
@@ -312,6 +334,11 @@ export class StorageEngine {
     }
 
     this.closed = true;
+
+    if (this.flushTimer !== undefined) {
+      clearInterval(this.flushTimer);
+      this.flushTimer = undefined;
+    }
 
     try {
       this.log.close();
@@ -422,6 +449,18 @@ export class StorageEngine {
     collections.set(collection, created);
 
     return created;
+  }
+
+  private startFlushTimer(intervalMs: number): void {
+    this.flushTimer = setInterval(() => {
+      try {
+        this.log.flush();
+      } catch {
+        // The log marks itself failed, so the next write reports the error.
+      }
+    }, intervalMs);
+
+    this.flushTimer.unref();
   }
 
   private assertOpen(): void {

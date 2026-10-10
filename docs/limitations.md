@@ -25,7 +25,7 @@ issue.
   See [storage.md](./storage.md#backups).
 - **Linux is the tested platform.** Continuous integration runs on Linux with
   Node.js 24 and 26. macOS and Windows may work but are not tested, and the
-  durability guarantees of `fsync` depend on the operating system and disk.
+  durability guarantees of the `flushed` write concern depend on the operating system and disk.
 - **Node.js 24 or later** is required, for the server and the driver.
 - There is no published Docker image yet. Build it from the repository; see
   [docker.md](./docker.md).

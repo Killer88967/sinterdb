@@ -61,7 +61,7 @@ start:
 ```ts
 const server = new SinterServer({
   dataDirectory: "./data",
-  durability: "fsync",
+  writeConcern: "flushed",
   checkpointThresholdBytes: 64 * 1024 * 1024,
 });
 
@@ -73,10 +73,10 @@ console.log(server.recovery);
 | Option                     | Environment variable        | Default          |
 | -------------------------- | --------------------------- | ---------------- |
 | `dataDirectory`            | `SINTERDB_DATA_DIR`         | none (in memory) |
-| `durability`               | `SINTERDB_DURABILITY`       | `fsync`          |
+| `writeConcern`             | `SINTERDB_WRITE_CONCERN`    | `flushed`        |
 | `checkpointThresholdBytes` | `SINTERDB_CHECKPOINT_BYTES` | 64 MiB           |
 
-`durability` and `checkpointThresholdBytes` only apply with a `dataDirectory`.
+`writeConcern` and `checkpointThresholdBytes` only apply with a `dataDirectory`.
 For a server with a data directory, `start()` takes the directory lock and
 recovers the data before listening. `server.catalog` and `server.recovery` are
 only available while it is running. `stop()` writes a final checkpoint.

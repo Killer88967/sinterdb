@@ -12,14 +12,15 @@ Start the server with options on the command line, in environment variables, or
 both. When both are set, **the command line wins**, then the environment, then
 the default.
 
-| Option               | Flag                     | Environment variable        | Default     |
-| -------------------- | ------------------------ | --------------------------- | ----------- |
-| Listening address    | `--host <host>`          | `SINTERDB_HOST`             | `127.0.0.1` |
-| Listening port       | `-p, --port <port>`      | `SINTERDB_PORT`             | `4721`      |
-| Data directory       | `--data-dir <path>`      | `SINTERDB_DATA_DIR`         | none        |
-| Durability mode      | `--durability <mode>`    | `SINTERDB_DURABILITY`       | `fsync`     |
-| Checkpoint threshold | `--checkpoint-bytes <n>` | `SINTERDB_CHECKPOINT_BYTES` | `64 MiB`    |
-| Reclaim lock         | `--reclaim-lock`         | `SINTERDB_RECLAIM_LOCK`     | `false`     |
+| Option                       | Flag                      | Environment variable        | Default     |
+| ---------------------------- | ------------------------- | --------------------------- | ----------- |
+| Listening address            | `--host <host>`           | `SINTERDB_HOST`             | `127.0.0.1` |
+| Listening port               | `-p, --port <port>`       | `SINTERDB_PORT`             | `4721`      |
+| Data directory               | `--data-dir <path>`       | `SINTERDB_DATA_DIR`         | none        |
+| Write concern                | `--write-concern <level>` | `SINTERDB_WRITE_CONCERN`    | `flushed`   |
+| Durability mode (deprecated) | `--durability <mode>`     | `SINTERDB_DURABILITY`       | none        |
+| Checkpoint threshold         | `--checkpoint-bytes <n>`  | `SINTERDB_CHECKPOINT_BYTES` | `64 MiB`    |
+| Reclaim lock                 | `--reclaim-lock`          | `SINTERDB_RECLAIM_LOCK`     | `false`     |
 
 Two more flags do not start a server: `-h, --help` prints the usage text, and
 `-v, --version` prints the server version.
@@ -46,8 +47,8 @@ and survive a restart. The directory is created if it does not exist, and a
 second server cannot open a directory that another is using. See
 [storage.md](./storage.md) for the layout and recovery.
 
-`--durability`, `--checkpoint-bytes` and `--reclaim-lock` only make sense with a
-data directory. Setting any of them without `--data-dir` is a configuration
+`--write-concern`, `--durability`, `--checkpoint-bytes` and `--reclaim-lock`
+only make sense with a data directory. Setting any of them without `--data-dir` is a configuration
 error.
 
 `--reclaim-lock` (or `SINTERDB_RECLAIM_LOCK=true`) makes the server take over a
@@ -56,15 +57,21 @@ unless the directory is only ever used by one server at a time and the host name
 changes between runs, which is the case for containers. The Docker image turns
 it on. See [the data directory lock](./storage.md#the-data-directory-lock).
 
-### Durability
+### Write concern
 
-| Mode       | A write is acknowledged when...     | Survives a server crash | Survives power loss |
-| ---------- | ----------------------------------- | ----------------------- | ------------------- |
-| `fsync`    | it has reached stable storage       | yes                     | yes                 |
-| `buffered` | it has reached the operating system | yes                     | no, may be lost     |
+| Level       | A write is acknowledged when...                             | Survives a server crash          | Survives power loss |
+| ----------- | ----------------------------------------------------------- | -------------------------------- | ------------------- |
+| `flushed`   | it has reached stable storage                               | yes                              | yes                 |
+| `journaled` | it has reached the operating system                         | yes                              | no, may be lost     |
+| `memory`    | it has been applied in memory, and is logged within ~100 ms | no, the last ~100 ms may be lost | no, may be lost     |
 
-`fsync` is the default and the safe choice. `buffered` is faster and fits data
-you can recreate.
+`flushed` is the default and the safe choice. `journaled` is faster and fits
+data you can recreate. `memory` is the fastest and fits caches and scratch data.
+A clean stop writes everything pending at every level.
+
+`--durability` and `SINTERDB_DURABILITY` are the deprecated names from 0.1.0.
+They still work: `fsync` means `flushed` and `buffered` means `journaled`. Set
+only one of the two.
 
 ### Checkpoints
 
