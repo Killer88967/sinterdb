@@ -1,155 +1,98 @@
 import Link from "next/link";
 
+import { MemberGroup } from "./member-group";
+import { SourceList } from "./source";
 import { TypeDocIcon } from "./typedoc-icon";
+import { TypeExpression } from "./type-expression";
+import type { ApiNavigationItem, ApiReflection } from "../_generated/model";
 
-import type {
-  ApiNavigationItem,
-} from "./types";
+const ROUTE_BASE = "/docs/api";
 
-interface ApiShellProps {
-  readonly projectName: string;
-
-  readonly navigation:
-    readonly ApiNavigationItem[];
-
-  readonly activeId?: number;
-
-  readonly pageNavigation?: React.ReactNode;
-
-  readonly children: React.ReactNode;
-}
-
-export function ApiShell({
+export function ApiIndexPage({
   projectName,
-  navigation,
-  activeId,
-  pageNavigation,
-  children,
-}: ApiShellProps) {
-  const grouped =
-    Map.groupBy(
-      navigation,
-      (item) => item.kind,
-    );
-
+  reflections,
+}: {
+  readonly projectName: string;
+  readonly reflections: readonly ApiNavigationItem[];
+}) {
   return (
-    <div className="typedoc-shell">
-      <header className="typedoc-toolbar">
-        <div className="typedoc-toolbar-inner">
-          <Link
-            href="/docs/api"
-            className="typedoc-toolbar-title"
-          >
-            {projectName}
+    <main className="typedoc-content">
+      <h1>{projectName}</h1>
+
+      <div className="typedoc-index">
+        {reflections.map((reflection) => (
+          <Link key={reflection.id} href={ROUTE_BASE + "/" + reflection.route}>
+            <TypeDocIcon kind={reflection.kindId} label={reflection.kind} />
+
+            <span>{reflection.name}</span>
           </Link>
-
-          <div className="typedoc-toolbar-actions">
-            <Link
-              href="/docs/api/hierarchy"
-              className="typedoc-toolbar-link"
-            >
-              Hierarchy
-            </Link>
-          </div>
-        </div>
-      </header>
-
-      <div className="typedoc-layout">
-        <main className="typedoc-content">
-          {children}
-        </main>
-
-        <aside className="typedoc-sidebar">
-          <div className="typedoc-page-menu">
-            {pageNavigation}
-          </div>
-
-          <div className="typedoc-site-menu">
-            <Link
-              href="/docs/api"
-              className="typedoc-site-title"
-            >
-              {projectName}
-            </Link>
-
-            <nav className="typedoc-site-navigation">
-              {[
-                ...grouped.entries(),
-              ].map(
-                ([kind, items]) => (
-                  <details
-                    key={kind}
-                    open
-                    className="typedoc-nav-group"
-                  >
-                    <summary>
-                      {formatKind(kind)}
-                    </summary>
-
-                    <div>
-                      {items.map(
-                        (item) => (
-                          <Link
-                            key={
-                              item.id
-                            }
-                            href={
-                              "/docs/api/" +
-                              item.route
-                            }
-                            className={
-                              "typedoc-nav-link " +
-                              (
-                                activeId ===
-                                item.id
-                                  ? "typedoc-nav-link-active"
-                                  : ""
-                              )
-                            }
-                          >
-                            <TypeDocIcon
-                              kind={
-                                item.kindId
-                              }
-                              label={
-                                item.kind
-                              }
-                              className="size-4"
-                            />
-
-                            <span>
-                              {item.name}
-                            </span>
-                          </Link>
-                        ),
-                      )}
-                    </div>
-                  </details>
-                ),
-              )}
-            </nav>
-          </div>
-        </aside>
+        ))}
       </div>
-
-      <footer className="typedoc-footer">
-        Generated from the SinterDB
-        TypeScript API.
-      </footer>
-    </div>
+    </main>
   );
 }
 
-function formatKind(kind: string) {
-  if (kind === "TypeAlias") {
-    return "Type Aliases";
-  }
+export function ApiReflectionPage({
+  projectName,
+  api,
+  navigation,
+}: {
+  readonly projectName: string;
+  readonly api: ApiReflection;
+  readonly navigation: readonly ApiNavigationItem[];
+}) {
+  void projectName;
+  void navigation;
+
+  const constructors = api.children.filter(
+    (member) => member.kind === "Constructor",
+  );
+
+  const properties = api.children.filter(
+    (member) => member.kind === "Property",
+  );
+
+  const accessors = api.children.filter((member) => member.kind === "Accessor");
+
+  const methods = api.children.filter((member) => member.kind === "Method");
 
   return (
-    kind
-      .replace(
-        /([a-z])([A-Z])/g,
-        "$1 $2",
-      ) + "s"
+    <main className="typedoc-content">
+      <h1>
+        {api.kind} {api.name}
+      </h1>
+
+      {api.type && (
+        <div className="typedoc-signature">
+          <TypeExpression type={api.type} />
+        </div>
+      )}
+
+      <SourceList sources={api.sources} />
+
+      <MemberGroup title="Constructors" members={constructors} />
+
+      <MemberGroup title="Properties" members={properties} />
+
+      <MemberGroup title="Accessors" members={accessors} />
+
+      <MemberGroup title="Methods" members={methods} />
+    </main>
+  );
+}
+
+export function ApiHierarchyPage({
+  projectName,
+}: {
+  readonly projectName: string;
+  readonly classes: readonly ApiReflection[];
+  readonly navigation: readonly ApiNavigationItem[];
+}) {
+  return (
+    <main className="typedoc-content">
+      <h1>{projectName}</h1>
+
+      <h2>Hierarchy Summary</h2>
+    </main>
   );
 }
