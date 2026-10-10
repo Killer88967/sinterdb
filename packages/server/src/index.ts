@@ -32,6 +32,7 @@ export {
   DEFAULT_CURSOR_BATCH_SIZE,
   DEFAULT_CURSOR_IDLE_TIMEOUT_MS,
 } from "./cursor-manager.js";
+export { GroupCommitter } from "./group-commit.js";
 
 export type {
   ServerConfig,
@@ -53,3 +54,4 @@ export type {
 } from "./catalog.js";
 export type { ServerCommand as ServerCommandValue } from "./command-dispatcher.js";
 export type { CursorBatch, CursorManagerOptions } from "./cursor-manager.js";
+export type { DurabilityBarrier } from "./group-commit.js";

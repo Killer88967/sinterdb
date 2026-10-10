@@ -99,7 +99,7 @@ const page = {
             {
               "path": "packages/driver/src/errors.ts",
               "line": 47,
-              "url": "https://github.com/SinterDB/sinterdb/blob/f31850c00d96a0b76dcc0a500eb51f4d297d77e4/packages/driver/src/errors.ts#L47"
+              "url": "https://github.com/SinterDB/sinterdb/blob/0abd6913cb30527171740c96fe2127d96bd284c4/packages/driver/src/errors.ts#L47"
             }
           ]
         },
@@ -142,7 +142,7 @@ const page = {
             {
               "path": "packages/driver/src/errors.ts",
               "line": 45,
-              "url": "https://github.com/SinterDB/sinterdb/blob/f31850c00d96a0b76dcc0a500eb51f4d297d77e4/packages/driver/src/errors.ts#L45"
+              "url": "https://github.com/SinterDB/sinterdb/blob/0abd6913cb30527171740c96fe2127d96bd284c4/packages/driver/src/errors.ts#L45"
             }
           ]
         },
@@ -185,7 +185,7 @@ const page = {
             {
               "path": "packages/driver/src/errors.ts",
               "line": 43,
-              "url": "https://github.com/SinterDB/sinterdb/blob/f31850c00d96a0b76dcc0a500eb51f4d297d77e4/packages/driver/src/errors.ts#L43"
+              "url": "https://github.com/SinterDB/sinterdb/blob/0abd6913cb30527171740c96fe2127d96bd284c4/packages/driver/src/errors.ts#L43"
             }
           ]
         },
@@ -228,7 +228,7 @@ const page = {
             {
               "path": "packages/driver/src/errors.ts",
               "line": 41,
-              "url": "https://github.com/SinterDB/sinterdb/blob/f31850c00d96a0b76dcc0a500eb51f4d297d77e4/packages/driver/src/errors.ts#L41"
+              "url": "https://github.com/SinterDB/sinterdb/blob/0abd6913cb30527171740c96fe2127d96bd284c4/packages/driver/src/errors.ts#L41"
             }
           ]
         }
@@ -267,7 +267,7 @@ const page = {
     {
       "path": "packages/driver/src/errors.ts",
       "line": 39,
-      "url": "https://github.com/SinterDB/sinterdb/blob/f31850c00d96a0b76dcc0a500eb51f4d297d77e4/packages/driver/src/errors.ts#L39"
+      "url": "https://github.com/SinterDB/sinterdb/blob/0abd6913cb30527171740c96fe2127d96bd284c4/packages/driver/src/errors.ts#L39"
     }
   ]
 } satisfies ApiPage;

@@ -58,6 +58,22 @@ the writes, not a mixture.
 The older `--durability` flag and `SINTERDB_DURABILITY` still work. `fsync` means
 `flushed` and `buffered` means `journaled`.
 
+### Group commit
+
+With `flushed`, the server does not flush once per write. Writes that arrive in
+the same turn of the event loop, from one connection or many, share one flush.
+The server holds every reply until that flush is done, so a write you were told
+succeeded is always on stable storage. Nothing to configure: it is on for
+`flushed` and does not exist for the other levels.
+
+Two things follow from it. A single client doing one write at a time sees no
+change. Many clients, or one client with many requests in flight, get more
+writes per second, because the flush is the slow part.
+
+A reply to a read is also held while writes are waiting for a flush, so nobody is
+ever shown data that a crash could still take away. If the flush fails, the server
+closes the connections whose replies were waiting instead of reporting success.
+
 > [!NOTE]
 > The automated crash tests terminate the server with `SIGKILL` and verify
 > that recovery is exact. They cannot simulate losing power, so protection

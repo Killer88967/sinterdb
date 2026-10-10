@@ -753,3 +753,45 @@ describe("StorageEngine memory write concern", () => {
     expect(() => open({ memoryFlushIntervalMs: 0 })).toThrow(TypeError);
   });
 });
+
+describe("StorageEngine group commit", () => {
+  it("reports uncommitted writes until commit is called", () => {
+    const engine = open({ groupCommit: true });
+
+    expect(engine.hasUncommittedWrites).toBe(false);
+
+    engine.openCollection("app", "users");
+
+    expect(engine.hasUncommittedWrites).toBe(true);
+
+    engine.commit();
+
+    expect(engine.hasUncommittedWrites).toBe(false);
+  });
+
+  it("restores committed and uncommitted writes after a clean close", () => {
+    let engine = open({ groupCommit: true });
+
+    engine.openCollection("app", "users");
+    engine = reopen(engine, { groupCommit: true });
+
+    expect(engine.listCollections("app")).toEqual(["users"]);
+  });
+
+  it("is off by default", () => {
+    const engine = open();
+
+    engine.openCollection("app", "users");
+
+    expect(engine.hasUncommittedWrites).toBe(false);
+  });
+
+  it("ignores commit once it is closed", () => {
+    const engine = open({ groupCommit: true });
+
+    engine.close();
+
+    expect(engine.hasUncommittedWrites).toBe(false);
+    expect(() => engine.commit()).not.toThrow();
+  });
+});

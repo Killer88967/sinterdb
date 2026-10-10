@@ -16,6 +16,7 @@ import { StorageEngine, type RecoveryReport } from "@sinterdb-internal/storage";
 import { ServerSession } from "./session.js";
 import { InMemoryCatalog } from "./catalog.js";
 import { CommandDispatcher } from "./command-dispatcher.js";
+import { GroupCommitter } from "./group-commit.js";
 
 export const DEFAULT_STOP_TIMEOUT_MS = 5_000;
 
@@ -61,6 +62,7 @@ export class SinterServer extends EventEmitter {
   private netServer: NetServer | undefined;
   private readonly sockets = new Set<Socket>();
   private dispatcher: CommandDispatcher | undefined;
+  private committer: GroupCommitter | undefined;
   private currentState: SinterServerState = SinterServerState.Stopped;
   private currentAddress: SinterServerAddress | undefined;
   private stopOperation: Promise<void> | undefined;
@@ -131,6 +133,7 @@ export class SinterServer extends EventEmitter {
         this.engine = StorageEngine.open({
           directory: this.config.dataDirectory,
           writeConcern: this.config.writeConcern,
+          groupCommit: this.config.writeConcern === "flushed",
           reclaimLock: this.config.reclaimLock,
           ...(this.config.checkpointThresholdBytes === undefined
             ? {}
@@ -146,6 +149,10 @@ export class SinterServer extends EventEmitter {
 
       this.currentCatalog = new InMemoryCatalog(this.engine);
       this.dispatcher = new CommandDispatcher(this.currentCatalog);
+      this.committer =
+        this.config.writeConcern === "flushed"
+          ? new GroupCommitter(this.engine)
+          : undefined;
     }
 
     const server = createServer((socket) => {
@@ -240,6 +247,7 @@ export class SinterServer extends EventEmitter {
     this.engine = undefined;
     this.currentCatalog = undefined;
     this.dispatcher = undefined;
+    this.committer = undefined;
 
     engine.close();
   }
@@ -249,6 +257,7 @@ export class SinterServer extends EventEmitter {
 
     new ServerSession(socket, {
       dispatcher: this.dispatcher as CommandDispatcher,
+      ...(this.committer === undefined ? {} : { durability: this.committer }),
       onError: (error) => this.emit("error", error),
       onConnectionError: (error) => this.emit("connectionError", error),
     });

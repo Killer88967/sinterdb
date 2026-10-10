@@ -3,11 +3,17 @@
     "scope": "typescript",
     "prefix": "public get",
     "body": [
-      "/** $4 */",
+      "/** */",
       "public get ${1:name}(): ${2:void} {",
-      "  return $3",
+      "  return ${3}",
       "}",
     ],
     "description": "Insert a public get",
+  },
+  "Interface Definition": {
+    "scope": "typescript",
+    "prefix": "interface",
+    "body": "interface ${1:Name} {$2};",
+    "description": "Insert a interface",
   },
 }

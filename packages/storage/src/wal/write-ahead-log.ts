@@ -45,6 +45,12 @@ export interface WriteAheadLogOptions {
    * bytes are pending or the log closes, so a crash can lose them.
    */
   readonly writeConcern?: WriteConcern;
+  /**
+   * With the `flushed` write concern, append without flushing and let the
+   * caller flush many appends at once with `commit`. Until `commit` returns,
+   * an append is not yet durable.
+   */
+  readonly groupCommit?: boolean;
   readonly segmentSizeBytes?: number;
 }
 
@@ -68,12 +74,14 @@ export class WriteAheadLog {
   private nextLsn: bigint;
   private pending: Uint8Array[] = [];
   private pendingBytes = 0;
+  private unsynced = false;
   private broken = false;
   private closed = false;
 
   private constructor(
     private readonly directory: string,
     private readonly mode: WriteConcern,
+    private readonly groupCommit: boolean,
     private readonly segmentSizeBytes: number,
     segments: SegmentInfo[],
     fd: number,
@@ -94,6 +102,14 @@ export class WriteAheadLog {
     if (mode !== "memory" && mode !== "journaled" && mode !== "flushed") {
       throw new TypeError(
         'Write concern must be "memory", "journaled" or "flushed".',
+      );
+    }
+
+    const groupCommit = options.groupCommit ?? false;
+
+    if (groupCommit && mode !== "flushed") {
+      throw new TypeError(
+        'Group commit only applies to the "flushed" write concern.',
       );
     }
 
@@ -119,6 +135,7 @@ export class WriteAheadLog {
       return new WriteAheadLog(
         options.directory,
         mode,
+        groupCommit,
         segmentSizeBytes,
         [created.info],
         created.fd,
@@ -146,6 +163,7 @@ export class WriteAheadLog {
     return new WriteAheadLog(
       options.directory,
       mode,
+      groupCommit,
       segmentSizeBytes,
       recovered.segments,
       fd,
@@ -156,6 +174,11 @@ export class WriteAheadLog {
 
   public get writeConcern(): WriteConcern {
     return this.mode;
+  }
+
+  /** True when appended records have not been flushed by `commit` yet. */
+  public get hasUncommittedWrites(): boolean {
+    return this.unsynced;
   }
 
   /** Bytes appended but not yet written to the operating system. */
@@ -209,7 +232,11 @@ export class WriteAheadLog {
       writeFully(this.fd as number, record, this.position);
 
       if (this.mode === "flushed") {
-        fsyncSync(this.fd as number);
+        if (this.groupCommit) {
+          this.unsynced;
+        } else {
+          fsyncSync(this.fd as number);
+        }
       }
     } catch (error: unknown) {
       this.broken = true;
@@ -258,11 +285,34 @@ export class WriteAheadLog {
     this.pendingBytes = 0;
   }
 
+  /**
+   * Flushes every record appended since the last commit to stable storage with
+   * one operation. It does nothing when nothing is waiting.
+   */
+  public commit(): void {
+    if (!this.unsynced || this.closed) {
+      return;
+    }
+
+    this.assertWritable();
+
+    try {
+      fsyncSync(this.fd as number);
+    } catch (error: unknown) {
+      this.broken = true;
+
+      throw ioError("flush the log", this.activePath(), error);
+    }
+
+    this.unsynced = false;
+  }
+
   public sync(): void {
     this.flush();
 
     try {
       fsyncSync(this.fd as number);
+      this.unsynced = false;
     } catch (error: unknown) {
       this.broken = true;
 
@@ -370,6 +420,7 @@ export class WriteAheadLog {
     if (!this.broken) {
       try {
         this.flush();
+        this.commit();
       } catch (error: unknown) {
         pendingError = error;
       }
@@ -402,6 +453,7 @@ export class WriteAheadLog {
     try {
       if (durable) {
         fsyncSync(this.fd as number);
+        this.unsynced = false;
       }
 
       closeSync(this.fd as number);

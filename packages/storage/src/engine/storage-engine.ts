@@ -60,6 +60,12 @@ export interface StorageEngineOptions {
   /** How a write is acknowledged. Defaults to `flushed`. */
   readonly writeConcern?: WriteConcern;
   /**
+   * With the `flushed` write concern, a write is not flushed to stable storage
+   * until `commit` is called, so many writes can share one flush. Callers must
+   * not acknowledge a write before `commit` returns. Defaults to false.
+   */
+  readonly groupCommit?: boolean;
+  /**
    * With the `memory` write concern, pending log records are written to the
    * operating system at least this often. Defaults to 100 milliseconds.
    */
@@ -215,6 +221,9 @@ export class StorageEngine {
         ...(options.writeConcern === undefined
           ? {}
           : { writeConcern: options.writeConcern }),
+        ...(options.groupCommit === undefined
+          ? {}
+          : { groupCommit: options.groupCommit }),
         ...(options.segmentSizeBytes === undefined
           ? {}
           : { segmentSizeBytes: options.segmentSizeBytes }),
@@ -250,6 +259,11 @@ export class StorageEngine {
     return this.log.writeConcern;
   }
 
+  /** True while some writes are applied but not yet flushed by `commit`. */
+  public get hasUncommittedWrites(): boolean {
+    return !this.closed && this.log.hasUncommittedWrites;
+  }
+
   public get lastLsn(): bigint {
     return this.log.lastLsn;
   }
@@ -266,6 +280,15 @@ export class StorageEngine {
   /** The error from the most recent automatic checkpoint that failed. */
   public get lastCheckpointError(): unknown {
     return this.checkpointFailure;
+  }
+
+  /** FLushes all write since the last commit. See `groupCommit`. */
+  public commit(): void {
+    if (this.closed) {
+      return;
+    }
+
+    this.log.commit();
   }
 
   public listDatabases(): string[] {
