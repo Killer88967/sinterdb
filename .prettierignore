@@ -27,3 +27,4 @@ pnpm-lock.yaml
 **/etc/*.api.md
 
 docs/api/
+docs/examples/

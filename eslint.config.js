@@ -20,6 +20,7 @@ export default defineConfig([
       "**/tmp/",
       "**/*.{ts,tsx,mts,cts}",
       "docs/api/",
+      "docs/examples/",
       "data/",
       ".sinterdb/",
       "sinterdb-data/",
@@ -27,7 +28,6 @@ export default defineConfig([
     ],
     "Global ignores",
   ),
-
   {
     name: "Linter options",
 
@@ -35,9 +35,7 @@ export default defineConfig([
       reportUnusedDisableDirectives: "error",
     },
   },
-
   eslint.configs.recommended,
-
   {
     files: ["**/*.{js,mjs,cjs}"],
 

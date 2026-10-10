@@ -22,6 +22,14 @@
       "path": "../../docs/api/react"
     },
     {
+      "name": "markdown",
+      "path": "../../docs/api/markdown"
+    },
+    {
+      "name": "html",
+      "path": "../../docs/examples/static"
+    },
+    {
       "name": "reactOg",
       "path": "../../docs/examples/reactOg"
     },
@@ -31,7 +39,7 @@
     },
     {
       "name": "markdown",
-      "path": "../../docs/api/markdown"
+      "path": "../../docs/examples/markdown"
     }
   ],
   "reactOutput": {

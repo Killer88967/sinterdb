@@ -74,7 +74,7 @@ Desktop.ini
 *.swo
 *~
 
-# Dont ask
+# Don't ask
 .vscode
 /release
 

@@ -12,7 +12,6 @@
  */
 export function createSources(reflection) {
   return (
-    // FIXME: reflection doesn't have a property called "sources"
     reflection.sources?.map((source) => ({
       fileName: source.fileName ?? null,
       line: source.line ?? null,

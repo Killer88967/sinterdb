@@ -11,7 +11,7 @@
 
 ARG NODE_VERSION=24
 # Keep in step with "packageManager" in package.json; a test checks this.
-ARG PNPM_VERSION=12.10.1
+ARG PNPM_VERSION=12.11.2
 
 FROM node:${NODE_VERSION}-slim AS build
 
