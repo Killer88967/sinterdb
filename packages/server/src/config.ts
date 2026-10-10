@@ -122,7 +122,7 @@ export function resolveServerConfig(
     input.checkpointIntervalSeconds ?? environment.SINTERDB_CHECKPOINT_INTERVAL,
   );
 
-  if (checkpointIntervalSeconds !== undefined) {
+  if (checkpointIntervalSeconds !== undefined && dataDirectory === undefined) {
     throw new ServerConfigurationError(
       "checkpointIntervalSeconds",
       "A checkpoint interval only applies when a data directory is configured.",
