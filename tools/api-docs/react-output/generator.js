@@ -7,8 +7,11 @@ import { renderIndexPageTemplate } from "./templates/index-page.js";
 import { renderReflectionPageTemplate } from "./templates/reflection-page.js";
 import { renderHierarchyPageTemplate } from "./templates/hierarchy-page.js";
 import { renderApiShellTemplate } from "./templates/components/api-shell.js";
+import { renderCommentTemplate } from "./templates/components/comment.js";
 import { renderMemberIndexTemplate } from "./templates/components/member-index.js";
 import { renderMemberGroupTemplate } from "./templates/components/member-group.js";
+import { renderNavigationTemplate } from "./templates/components/navigation.js";
+import { renderPageNavigationTemplate } from "./templates/components/page-navigation.js";
 import { renderSignatureTemplate } from "./templates/components/signature.js";
 import { renderSourceTemplate } from "./templates/components/source.js";
 import { renderTypeExpressionTemplate } from "./templates/components/type-expression.js";
@@ -69,7 +72,7 @@ export async function generateReactOutput({ project, options }) {
 }
 
 async function generateComponents(options) {
-  const directory = join(options.outputPath, "_components");
+  const directory = join(options.outputPath, options.components.directory);
 
   await mkdir(directory, {
     recursive: true,
@@ -81,6 +84,16 @@ async function generateComponents(options) {
       renderApiShellTemplate({
         routeBase: options.routeBase,
       }),
+      "utf8",
+    ),
+    writeFile(
+      join(directory, "navigation.tsx"),
+      renderNavigationTemplate(),
+      "utf8",
+    ),
+    writeFile(
+      join(directory, "page-navigation.tsx"),
+      renderPageNavigationTemplate(),
       "utf8",
     ),
     writeFile(
@@ -98,7 +111,7 @@ async function generateComponents(options) {
       renderSignatureTemplate(),
       "utf8",
     ),
-    writeFile(join(directory, "source.tsx"), renderSourceTemplate(), "utf8"),
+    writeFile(join(directory, "comment.tsx"), renderCommentTemplate(), "utf8"),
     writeFile(
       join(directory, "type-expression.tsx"),
       renderTypeExpressionTemplate(),
@@ -111,6 +124,7 @@ async function generateComponents(options) {
       }),
       "utf8",
     ),
+    writeFile(join(directory, "source.tsx"), renderSourceTemplate(), "utf8"),
     writeFile(join(directory, "api.css"), DEFAULT_STYLE, "utf8"),
   ]);
 }
@@ -152,7 +166,7 @@ async function generateHierarchy(model, options) {
 }
 
 async function generateData(model, options) {
-  const directory = join(options.outputPath, "_generated");
+  const directory = join(options.outputPath, options.generated.directory);
 
   await mkdir(directory, { recursive: true });
 
