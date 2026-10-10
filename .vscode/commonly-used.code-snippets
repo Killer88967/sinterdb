@@ -10,7 +10,7 @@
     ],
     "description": "Insert a public get",
   },
-  "Interface Definition": {
+  "Interface": {
     "scope": "typescript",
     "prefix": "interface",
     "body": "interface ${1:Name} {$2};",

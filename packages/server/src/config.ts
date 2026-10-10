@@ -3,6 +3,7 @@ import type { WriteConcern } from "@sinterdb-internal/storage";
 export const DEFAULT_SERVER_HOST = "127.0.0.1";
 export const DEFAULT_SERVER_PORT = 4721;
 export const DEFAULT_WRITE_CONCERN: WriteConcern = "flushed";
+export const DEFAULT_CHECKPOINT_KEEP = 2;
 
 export interface ServerConfig {
   host: string;
@@ -18,6 +19,10 @@ export interface ServerConfig {
    * default applies when it is not set.
    */
   checkpointThresholdBytes?: number;
+  /** Seconds between time-based checkpoints. Off when it is not set. */
+  checkpointIntervalSeconds?: number;
+  /** Snapshots to keep after checkpoint, at least 2. */
+  checkpointKeep: number;
   /**
    * Take over a data directory lock left by a process on another host or
    * container. Off by default.
@@ -30,9 +35,15 @@ export interface ServerConfigInput {
   port?: number | string;
   dataDirectory?: string;
   writeConcern?: string;
-  /** Deprecated name for `writeConcern` that accepts `fsync` and `buffered`. */
+  /**
+   * Deprecated name for `writeConcern` that accepts `fsync` and `buffered`.
+   *
+   * @deprecated use `writeConcern`.
+   */
   durability?: string;
   checkpointThresholdBytes?: number | string;
+  checkpointIntervalSeconds?: number | string;
+  checkpointKeep?: number | string;
   reclaimLock?: boolean | string;
 }
 
@@ -47,6 +58,8 @@ export const SERVER_ENVIRONMENT_VARIABLES = [
   "SINTERDB_WRITE_CONCERN",
   "SINTERDB_DURABILITY",
   "SINTERDB_CHECKPOINT_BYTES",
+  "SINTERDB_CHECKPOINT_INTERVAL",
+  "SINTERDB_CHECKPOINT_KEEP",
   "SINTERDB_RECLAIM_LOCK",
 ] as const;
 
@@ -61,6 +74,8 @@ export type ServerConfigurationOption =
   | "writeConcern"
   | "durability"
   | "checkpointThresholdBytes"
+  | "checkpointIntervalSeconds"
+  | "checkpointKeep"
   | "reclaimLock";
 
 export class ServerConfigurationError extends Error {
@@ -103,6 +118,28 @@ export function resolveServerConfig(
     );
   }
 
+  const checkpointIntervalSeconds = resolveCheckpointInterval(
+    input.checkpointIntervalSeconds ?? environment.SINTERDB_CHECKPOINT_INTERVAL,
+  );
+
+  if (checkpointIntervalSeconds !== undefined) {
+    throw new ServerConfigurationError(
+      "checkpointIntervalSeconds",
+      "A checkpoint interval only applies when a data directory is configured.",
+    );
+  }
+
+  const requestKeep =
+    input.checkpointKeep ?? environment.SINTERDB_CHECKPOINT_KEEP;
+  const checkpointKeep = resolveCheckpointKeep(requestKeep);
+
+  if (requestKeep !== undefined && dataDirectory === undefined) {
+    throw new ServerConfigurationError(
+      "checkpointKeep",
+      "The number of snapshots to keep only applies when a data directory is configured.",
+    );
+  }
+
   const reclaimLock = resolveReclaimLock(
     input.reclaimLock ?? environment.SINTERDB_RECLAIM_LOCK,
   );
@@ -122,6 +159,10 @@ export function resolveServerConfig(
     ...(checkpointThresholdBytes === undefined
       ? {}
       : { checkpointThresholdBytes }),
+    ...(checkpointIntervalSeconds === undefined
+      ? {}
+      : { checkpointIntervalSeconds }),
+    checkpointKeep,
     reclaimLock,
   };
 }
@@ -245,6 +286,50 @@ function resolveCheckpointThreshold(
   }
 
   return bytes;
+}
+
+function resolveCheckpointInterval(
+  value: number | string | undefined,
+): number | undefined {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  const seconds = toNumber(value);
+
+  if (!Number.isSafeInteger(seconds) || seconds < 1 || seconds > 2_000_000) {
+    throw new ServerConfigurationError(
+      "checkpointIntervalSeconds",
+      `Checkpoint interval must be a whole number of seconds from 1 to 2000000; received: ${JSON.stringify(value)}.`,
+    );
+  }
+
+  return seconds;
+}
+
+function resolveCheckpointKeep(value: number | string | undefined): number {
+  if (value === undefined) {
+    return DEFAULT_CHECKPOINT_KEEP;
+  }
+
+  const keep = toNumber(value);
+
+  if (!Number.isSafeInteger(keep) || keep < 2 || keep > 100) {
+    throw new ServerConfigurationError(
+      "checkpointKeep",
+      `The number of snapshots to keep must be a whole number from 2 to 100; received ${JSON.stringify(value)}.`,
+    );
+  }
+
+  return keep;
+}
+
+function toNumber(value: number | string): number {
+  return typeof value === "number"
+    ? value
+    : value.trim().length === 0
+      ? Number.NaN
+      : Number(value);
 }
 
 function resolveReclaimLock(value: boolean | string | undefined): boolean {

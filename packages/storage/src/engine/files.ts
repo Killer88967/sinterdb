@@ -34,6 +34,11 @@ export function writeFileAtomic(
   }
 
   closeSync(fd);
-  renameSync(temporary, path);
+  try {
+    renameSync(temporary, path);
+  } catch (error: unknown) {
+    unlinkSync(temporary);
+    throw error;
+  }
   syncDirectory(directory);
 }

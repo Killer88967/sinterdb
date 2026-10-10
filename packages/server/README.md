@@ -70,13 +70,15 @@ await server.start();
 console.log(server.recovery);
 ```
 
-| Option                     | Environment variable        | Default          |
-| -------------------------- | --------------------------- | ---------------- |
-| `dataDirectory`            | `SINTERDB_DATA_DIR`         | none (in memory) |
-| `writeConcern`             | `SINTERDB_WRITE_CONCERN`    | `flushed`        |
-| `checkpointThresholdBytes` | `SINTERDB_CHECKPOINT_BYTES` | 64 MiB           |
+| Option                      | Environment variable           | Default          |
+| --------------------------- | ------------------------------ | ---------------- |
+| `dataDirectory`             | `SINTERDB_DATA_DIR`            | none (in memory) |
+| `writeConcern`              | `SINTERDB_WRITE_CONCERN`       | `flushed`        |
+| `checkpointThresholdBytes`  | `SINTERDB_CHECKPOINT_BYTES`    | 64 MiB           |
+| `checkpointIntervalSeconds` | `SINTERDB_CHECKPOINT_INTERVAL` | none             |
+| `checkpointKeep`            | `SINTERDB_CHECKPOINT_KEEP`     | 2                |
 
-`writeConcern` and `checkpointThresholdBytes` only apply with a `dataDirectory`.
+`writeConcern` and the checkpoint options only apply with a `dataDirectory`.
 For a server with a data directory, `start()` takes the directory lock and
 recovers the data before listening. `server.catalog` and `server.recovery` are
 only available while it is running. `stop()` writes a final checkpoint.

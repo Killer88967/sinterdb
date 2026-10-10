@@ -24,6 +24,7 @@ export {
   syncDirectory,
 } from "./wal/index.js";
 export {
+  DEFAULT_CHECKPOINT_RETENTION,
   DEFAULT_CHECKPOINT_THRESHOLD_BYTES,
   STORAGE_FORMAT,
   STORAGE_FORMAT_VERSION,

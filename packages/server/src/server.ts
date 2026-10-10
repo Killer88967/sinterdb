@@ -134,6 +134,13 @@ export class SinterServer extends EventEmitter {
           directory: this.config.dataDirectory,
           writeConcern: this.config.writeConcern,
           groupCommit: this.config.writeConcern === "flushed",
+          checkpointRetention: this.config.checkpointKeep,
+          ...(this.config.checkpointIntervalSeconds === undefined
+            ? {}
+            : {
+                checkpointIntervalMs:
+                  this.config.checkpointIntervalSeconds * 1000,
+              }),
           reclaimLock: this.config.reclaimLock,
           ...(this.config.checkpointThresholdBytes === undefined
             ? {}

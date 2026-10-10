@@ -44,6 +44,12 @@ async function startServer(
     ...(command.checkpointBytes === undefined
       ? {}
       : { checkpointThresholdBytes: command.checkpointBytes }),
+    ...(command.checkpointInterval === undefined
+      ? {}
+      : { checkpointIntervalSeconds: command.checkpointInterval }),
+    ...(command.checkpointKeep === undefined
+      ? {}
+      : { checkpointKeep: command.checkpointKeep }),
     ...(command.reclaimLock === true ? { reclaimLock: true } : {}),
   };
 

@@ -71,13 +71,15 @@ Port `0` asks the operating system to select an available temporary port.
 
 ## Environment Variables
 
-| Variable                    | Purpose                          | Default     |
-| --------------------------- | -------------------------------- | ----------- |
-| `SINTERDB_HOST`             | Listening address                | `127.0.0.1` |
-| `SINTERDB_PORT`             | TCP port                         | `4721`      |
-| `SINTERDB_DATA_DIR`         | Data directory                   | none        |
-| `SINTERDB_WRITE_CONCERN`    | `flushed`, `journaled`, `memory` | `flushed`   |
-| `SINTERDB_CHECKPOINT_BYTES` | Bytes of log between checkpoints | 64 MiB      |
+| Variable                       | Purpose                                | Default     |
+| ------------------------------ | -------------------------------------- | ----------- |
+| `SINTERDB_HOST`                | Listening address                      | `127.0.0.1` |
+| `SINTERDB_PORT`                | TCP port                               | `4721`      |
+| `SINTERDB_DATA_DIR`            | Data directory                         | none        |
+| `SINTERDB_WRITE_CONCERN`       | `flushed`, `journaled`, `memory`       | `flushed`   |
+| `SINTERDB_CHECKPOINT_BYTES`    | Bytes of log between checkpoints       | 64 MiB      |
+| `SINTERDB_CHECKPOINT_INTERVAL` | Seconds between time-based checkpoints | none        |
+| `SINTERDB_CHECKPOINT_KEEP`     | Snapshots to keep                      | `2`         |
 
 Command-line options take precedence over environment variables.
 
@@ -97,7 +99,7 @@ recovery, and backups.
 | `journaled` | it has reached the operating system             | No                    |
 | `memory`    | it is applied in memory (logged within ~100 ms) | No                    |
 
-`--write-concern` and `--checkpoint-bytes` require `--data-dir`.
+`--write-concern` and the checkpoint options require `--data-dir`.
 
 ## Structured Logging
 

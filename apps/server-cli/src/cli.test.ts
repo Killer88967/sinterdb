@@ -74,6 +74,21 @@ describe("parseCliArguments", () => {
     });
   });
 
+  it("parses the checkpoint schedule and retention options", () => {
+    expect(
+      parseCliArguments([
+        "--checkpoint-interval",
+        "30",
+        "--checkpoint-keep",
+        "3",
+      ]),
+    ).toEqual({
+      kind: "start",
+      checkpointInterval: "30",
+      checkpointKeep: "3",
+    });
+  });
+
   it("parses the data directory on its own", () => {
     expect(parseCliArguments(["--data-dir", "./data"])).toEqual({
       kind: "start",
@@ -114,6 +129,12 @@ describe("parseCliArguments", () => {
     expect(() => parseCliArguments(["--data-dir"])).toThrow(CliUsageError);
     expect(() => parseCliArguments(["--durability"])).toThrow(CliUsageError);
     expect(() => parseCliArguments(["--write-concern"])).toThrow(CliUsageError);
+    expect(() => parseCliArguments(["--checkpoint-interval"])).toThrow(
+      CliUsageError,
+    );
+    expect(() => parseCliArguments(["--checkpoint-keep"])).toThrow(
+      CliUsageError,
+    );
   });
 
   it("documents every option and environment variable", () => {
@@ -124,10 +145,14 @@ describe("parseCliArguments", () => {
       "--write-concern",
       "--durability",
       "--checkpoint-bytes",
+      "--checkpoint-interval",
+      "--checkpoint-keep",
       "SINTERDB_DATA_DIR",
       "SINTERDB_WRITE_CONCERN",
       "SINTERDB_DURABILITY",
       "SINTERDB_CHECKPOINT_BYTES",
+      "SINTERDB_CHECKPOINT_INTERVAL",
+      "SINTERDB_CHECKPOINT_KEEP",
       "flushed",
       "journaled",
       "memory",

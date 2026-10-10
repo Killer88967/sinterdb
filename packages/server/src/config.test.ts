@@ -13,6 +13,7 @@ describe("resolveServerConfig", () => {
       host: DEFAULT_SERVER_HOST,
       port: DEFAULT_SERVER_PORT,
       writeConcern: "flushed",
+      checkpointKeep: 2,
       reclaimLock: false,
     });
   });
@@ -30,6 +31,7 @@ describe("resolveServerConfig", () => {
       host: "0.0.0.0",
       port: 5000,
       writeConcern: "flushed",
+      checkpointKeep: 2,
       reclaimLock: false,
     });
   });
@@ -50,6 +52,7 @@ describe("resolveServerConfig", () => {
       host: "127.0.0.1",
       port: 6000,
       writeConcern: "flushed",
+      checkpointKeep: 2,
       reclaimLock: false,
     });
   });
@@ -288,6 +291,66 @@ describe("resolveServerConfig reclaim lock", () => {
     );
     expect(resolveServerConfig({ reclaimLock: false }, {}).reclaimLock).toBe(
       false,
+    );
+  });
+});
+
+describe("resolveServerConfig checkpoint schedule and retention", () => {
+  it("keeps two snapshots and has no interval by default", () => {
+    const config = resolveServerConfig({ dataDirectory: "/d" }, {});
+
+    expect(config.checkpointKeep).toBe(2);
+    expect(config).not.toHaveProperty("checkpointIntervalSeconds");
+  });
+
+  it("reads the interval and snapshot count from input and the environment", () => {
+    expect(
+      resolveServerConfig(
+        {
+          dataDirectory: "/d",
+          checkpointIntervalSeconds: "30",
+          checkpointKeep: 4,
+        },
+        {},
+      ),
+    ).toMatchObject({ checkpointIntervalSeconds: 30, checkpointKeep: 4 });
+    expect(
+      resolveServerConfig(
+        {},
+        {
+          SINTERDB_DATA_DIR: "/d",
+          SINTERDB_CHECKPOINT_INTERVAL: "60",
+          SINTERDB_CHECKPOINT_KEEP: "3",
+        },
+      ),
+    ).toMatchObject({ checkpointIntervalSeconds: 60, checkpointKeep: 3 });
+  });
+
+  it("rejects an invalid interval", () => {
+    for (const value of ["0", "-1", "1.5", "abc", "", 3_000_000]) {
+      expect(() =>
+        resolveServerConfig(
+          { dataDirectory: "/d", checkpointIntervalSeconds: value },
+          {},
+        ),
+      ).toThrow(ServerConfigurationError);
+    }
+  });
+
+  it("rejects keeping fewer than two snapshots or an invalid count", () => {
+    for (const value of ["1", "0", "101", "x", "2.5", ""]) {
+      expect(() =>
+        resolveServerConfig({ dataDirectory: "/d", checkpointKeep: value }, {}),
+      ).toThrow(ServerConfigurationError);
+    }
+  });
+
+  it("rejects both options without a data directory", () => {
+    expect(() =>
+      resolveServerConfig({ checkpointIntervalSeconds: 10 }, {}),
+    ).toThrow(ServerConfigurationError);
+    expect(() => resolveServerConfig({ checkpointKeep: 3 }, {})).toThrow(
+      ServerConfigurationError,
     );
   });
 });

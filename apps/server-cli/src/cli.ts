@@ -15,6 +15,12 @@ Options:
   --durability <mode> Deprecated: fsync means flushed, buffered means journaled
   --checkpoint-bytes <n>
                       Bytes of log between automatic checkpoints (default 64 MiB)
+  --checkpoint-interval <seconds>
+                      Also checkpoint at least this often when data changed
+                      (default: only by size)
+  --checkpoint-keep <n>
+                      Snapshots to keep after a checkpoint, at least 2
+                      (default 2)
   --reclaim-lock      Take over a data directory lock left by another host or
                       container. Only use it when no other server can be using
                       the directory
@@ -40,6 +46,10 @@ Environment:
   SINTERDB_DURABILITY    Deprecated name for SINTERDB_WRITE_CONCERN
   SINTERDB_CHECKPOINT_BYTES
                          Default bytes of log between checkpoints
+  SINTERDB_CHECKPOINT_INTERVAL
+                         Default seconds between time-based checkpoints
+  SINTERDB_CHECKPOINT_KEEP
+                         Default number of snapshots to keep
   SINTERDB_RECLAIM_LOCK  Set to true to take over a lock left by another host
 
 `;
@@ -53,6 +63,8 @@ export type CliCommand =
       writeConcern?: string;
       durability?: string;
       checkpointBytes?: string;
+      checkpointInterval?: string;
+      checkpointKeep?: string;
       reclaimLock?: boolean;
     }
   | {
@@ -100,6 +112,12 @@ export function parseCliArguments(arguments_: readonly string[]): CliCommand {
         "reclaim-lock": {
           type: "boolean",
         },
+        "checkpoint-interval": {
+          type: "string",
+        },
+        "checkpoint-keep": {
+          type: "string",
+        },
         help: {
           type: "boolean",
           short: "h",
@@ -126,6 +144,11 @@ export function parseCliArguments(arguments_: readonly string[]): CliCommand {
   const writeConcern = readStringOption(parsed.values, "write-concern");
   const durability = readStringOption(parsed.values, "durability");
   const checkpointBytes = readStringOption(parsed.values, "checkpoint-bytes");
+  const checkpointInterval = readStringOption(
+    parsed.values,
+    "checkpoint-interval",
+  );
+  const checkpointKeep = readStringOption(parsed.values, "checkpoint-keep");
   const reclaimLock = readBooleanOption(parsed.values, "reclaim-lock");
 
   if (help && version) {
@@ -152,6 +175,8 @@ export function parseCliArguments(arguments_: readonly string[]): CliCommand {
     ...(writeConcern === undefined ? {} : { writeConcern }),
     ...(durability === undefined ? {} : { durability }),
     ...(checkpointBytes === undefined ? {} : { checkpointBytes }),
+    ...(checkpointInterval === undefined ? {} : { checkpointInterval }),
+    ...(checkpointKeep === undefined ? {} : { checkpointKeep }),
     ...(reclaimLock ? { reclaimLock } : {}),
   };
 }

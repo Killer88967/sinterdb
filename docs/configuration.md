@@ -12,15 +12,17 @@ Start the server with options on the command line, in environment variables, or
 both. When both are set, **the command line wins**, then the environment, then
 the default.
 
-| Option                       | Flag                      | Environment variable        | Default     |
-| ---------------------------- | ------------------------- | --------------------------- | ----------- |
-| Listening address            | `--host <host>`           | `SINTERDB_HOST`             | `127.0.0.1` |
-| Listening port               | `-p, --port <port>`       | `SINTERDB_PORT`             | `4721`      |
-| Data directory               | `--data-dir <path>`       | `SINTERDB_DATA_DIR`         | none        |
-| Write concern                | `--write-concern <level>` | `SINTERDB_WRITE_CONCERN`    | `flushed`   |
-| Durability mode (deprecated) | `--durability <mode>`     | `SINTERDB_DURABILITY`       | none        |
-| Checkpoint threshold         | `--checkpoint-bytes <n>`  | `SINTERDB_CHECKPOINT_BYTES` | `64 MiB`    |
-| Reclaim lock                 | `--reclaim-lock`          | `SINTERDB_RECLAIM_LOCK`     | `false`     |
+| Option                       | Flag                             | Environment variable           | Default     |
+| ---------------------------- | -------------------------------- | ------------------------------ | ----------- |
+| Listening address            | `--host <host>`                  | `SINTERDB_HOST`                | `127.0.0.1` |
+| Listening port               | `-p, --port <port>`              | `SINTERDB_PORT`                | `4721`      |
+| Data directory               | `--data-dir <path>`              | `SINTERDB_DATA_DIR`            | none        |
+| Write concern                | `--write-concern <level>`        | `SINTERDB_WRITE_CONCERN`       | `flushed`   |
+| Durability mode (deprecated) | `--durability <mode>`            | `SINTERDB_DURABILITY`          | none        |
+| Checkpoint threshold         | `--checkpoint-bytes <n>`         | `SINTERDB_CHECKPOINT_BYTES`    | `64 MiB`    |
+| Checkpoint interval          | `--checkpoint-interval <seconds` | `SINTERDB_CHECKPOINT_INTERVAL` | none        |
+| Snapshots kept               | `--checkpoint-keep <n>`          | `SINTERDB_CHECKPOINT_KEEP`     | `2`         |
+| Reclaim lock                 | `--reclaim-lock`                 | `SINTERDB_RECLAIM_LOCK`        | `false`     |
 
 Two more flags do not start a server: `-h, --help` prints the usage text, and
 `-v, --version` prints the server version.
@@ -47,8 +49,9 @@ and survive a restart. The directory is created if it does not exist, and a
 second server cannot open a directory that another is using. See
 [storage.md](./storage.md) for the layout and recovery.
 
-`--write-concern`, `--durability`, `--checkpoint-bytes` and `--reclaim-lock`
-only make sense with a data directory. Setting any of them without `--data-dir` is a configuration
+`--write-concern`, `--durability`, `--checkpoint-bytes`, `--checkpoint-interval`,
+`--checkpoint-keep` and `--reclaim-lock` only make sense with a data directory.
+Setting any of them without `--data-dir` is a configuration
 error.
 
 `--reclaim-lock` (or `SINTERDB_RECLAIM_LOCK=true`) makes the server take over a
@@ -79,6 +82,18 @@ only one of the two.
 an automatic checkpoint. It must be a positive integer. A checkpoint is also
 taken when the server stops cleanly. A larger value means fewer checkpoints but
 more log to replay after a crash.
+
+`--checkpoint-interval` adds a clock to the size rule. The server also takes a
+checkpoint every that many seconds, but only when something was written since the
+last one, so an idle server does no work. It must be a whole number of seconds
+from 1 to 2000000. Without it, only the size rule and a clean stop take
+checkpoints.
+
+`--checkpoint-keep` is how many snapshots stay on disk after a checkpoint, from 2
+to 100. The server also keeps the log since the oldest kept snapshot, so keeping
+more snapshots uses more disk and gives recovery more older states to fall back
+on if the newest ones are damaged. Two is the smallest allowed value, because two
+is what makes a damaged newest snapshot recoverable.
 
 ### Stopping the server
 

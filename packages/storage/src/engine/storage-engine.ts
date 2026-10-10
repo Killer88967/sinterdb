@@ -3,6 +3,7 @@ import {
   mkdirSync,
   readFileSync,
   readdirSync,
+  rmSync,
   unlinkSync,
 } from "node:fs";
 import { join } from "node:path";
@@ -50,10 +51,13 @@ export const STORAGE_FORMAT = "sinterdb-data";
  * directories are upgraded in place when they are opened.
  */
 export const STORAGE_FORMAT_VERSION = 2;
-
 export const DEFAULT_CHECKPOINT_THRESHOLD_BYTES = 64 * 1024 * 1024;
-
 export const DEFAULT_MEMORY_FLUSH_INTERVAL_MS = 100;
+/**
+ * Snapshots kept after a checkpoint. Keeping two means a damaged newest
+ * snapshot never loses data, so this is also the smallest allowed value.
+ */
+export const DEFAULT_CHECKPOINT_RETENTION = 2;
 
 export interface StorageEngineOptions {
   readonly directory: string;
@@ -76,6 +80,16 @@ export interface StorageEngineOptions {
    * written since the previous one.
    */
   readonly checkpointThresholdBytes?: number;
+  /**
+   * Also take a checkpoint at least this often, in milliseconds, while writes
+   * have happened since the last one. Off by default.
+   */
+  readonly checkpointIntervalMs?: number;
+  /**
+   * How many snapshots to keep, at least 2. The log since the oldest kept
+   * snapshot is kept too. Defaults to 2.
+   */
+  readonly checkpointRetention?: number;
   /**
    * Take a final checkpoint when the engine is closed so the next start has
    * little or nothing to replay. Defaults to true.
@@ -134,6 +148,7 @@ interface RecoveredState {
 
 interface Settings {
   readonly checkpointThresholdBytes: number;
+  readonly checkpointRetention: number;
   readonly checkpointOnClose: boolean;
   readonly onCheckpointStage: (stage: CheckpointStage) => void;
 }
@@ -155,6 +170,7 @@ export class StorageEngine {
   >();
   private closed = false;
   private flushTimer: ReturnType<typeof setInterval> | undefined;
+  private checkpointTimer: ReturnType<typeof setInterval> | undefined;
   private lastCheckpoint = 0n;
   private bytesSinceCheckpoint = 0;
   private nextCheckpointAt: number;
@@ -197,8 +213,29 @@ export class StorageEngine {
       );
     }
 
+    const retention =
+      options.checkpointRetention ?? DEFAULT_CHECKPOINT_RETENTION;
+
+    if (!Number.isSafeInteger(retention) || retention < 2) {
+      throw new TypeError(
+        "The checkpoint retention must be an integer of at least 2.",
+      );
+    }
+
+    const interval = options.checkpointIntervalMs;
+
+    if (
+      interval !== undefined &&
+      (!Number.isSafeInteger(interval) || interval < 1)
+    ) {
+      throw new TypeError(
+        "The checkpoint interval must be a positive safe integer.",
+      );
+    }
+
     const settings: Settings = {
       checkpointThresholdBytes: threshold,
+      checkpointRetention: retention,
       checkpointOnClose: options.checkpointOnClose ?? true,
       onCheckpointStage: options.onCheckpointStage ?? (() => undefined),
     };
@@ -236,6 +273,10 @@ export class StorageEngine {
 
         if (log.writeConcern === "memory") {
           engine.startFlushTimer(flushInterval);
+        }
+
+        if (interval !== undefined) {
+          engine.startCheckpointTimer(interval);
         }
 
         return engine;
@@ -363,6 +404,11 @@ export class StorageEngine {
       this.flushTimer = undefined;
     }
 
+    if (this.checkpointTimer !== undefined) {
+      clearInterval(this.checkpointTimer);
+      this.checkpointTimer = undefined;
+    }
+
     try {
       this.log.close();
     } catch (error: unknown) {
@@ -417,16 +463,16 @@ export class StorageEngine {
     const snapshots = listCheckpoints(directory);
     let removedSnapshots = 0;
 
-    for (const old of snapshots.slice(2)) {
+    for (const old of snapshots.slice(this.settings.checkpointRetention)) {
       unlinkSync(old.path);
       removedSnapshots += 1;
     }
 
     stage("snapshots-pruned");
 
-    const previous = snapshots[1];
+    const oldestKept = snapshots[this.settings.checkpointRetention - 1];
     const removedSegments =
-      previous === undefined ? 0 : this.log.truncateThrough(previous.lsn);
+      oldestKept === undefined ? 0 : this.log.truncateThrough(oldestKept.lsn);
 
     stage("log-truncated");
 
@@ -484,6 +530,22 @@ export class StorageEngine {
     }, intervalMs);
 
     this.flushTimer.unref();
+  }
+
+  private startCheckpointTimer(intervalMs: number): void {
+    this.checkpointTimer = setInterval(() => {
+      if (this.closed) {
+        return;
+      }
+
+      try {
+        this.checkpoint();
+      } catch (error: unknown) {
+        this.checkpointFailure = error;
+      }
+    }, intervalMs);
+
+    this.checkpointTimer.unref();
   }
 
   private assertOpen(): void {
@@ -776,6 +838,9 @@ function toOperation(
 
 function prepareManifest(root: string): void {
   const path = join(root, "manifest.json");
+  // A crash while replacing this manifest can leave the temporary copy behind.
+  // The real manifest is untouched at that point, so the copy is just debris.
+  rmSync(`${path}.tmp`, { force: true });
 
   if (!existsSync(path)) {
     if (hasLogData(root)) {

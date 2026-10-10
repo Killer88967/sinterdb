@@ -92,10 +92,18 @@ checkpoint, and then removes log segments it no longer needs.
   almost nothing to replay.
 - A snapshot is written to a temporary file, flushed, and atomically renamed, so
   a crash never leaves a half-written snapshot in place.
-- The two newest snapshots are kept, together with the log since the older one.
-  If the newest snapshot is ever damaged, recovery falls back to the older
-  snapshot plus the log and loses nothing. This also means the first checkpoint
-  frees no log space, and disk use can reach two to three times the data size.
+- A checkpoint is also taken every `--checkpoint-interval` seconds when that is
+  set, but only if something was written since the last one.
+- The two newest snapshots are kept by default, together with the log since the
+  older one. `--checkpoint-keep <n>` keeps more, up to 100. If the newest
+  snapshot is ever damaged, recovery falls back to the next one plus the log and
+  loses nothing. This also means the first checkpoint frees no log space, and
+  disk use can reach two to three times the data size, more with a larger
+  `--checkpoint-keep`.
+- `manifest.json` is replaced the same way as a snapshot: written to a temporary
+  file, flushed, renamed over the old one, and the directory flushed. A crash in
+  the middle leaves the old manifest intact. A leftover `manifest.json.tmp` is
+  deleted on the next start.
 - Checkpoints run on the main thread and block the server while they are
   written. Large datasets pause briefly at each checkpoint.
 - Checkpoints only start between writes, never in the middle of one.
