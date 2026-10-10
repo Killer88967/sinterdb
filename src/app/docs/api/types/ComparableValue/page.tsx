@@ -1,12 +1,15 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 624,
   name: "ComparableValue",
   slug: "ComparableValue",
-  route: "types/ComparableValue",
   kind: "TypeAlias",
   kindId: 2097152,
+  route: "types/ComparableValue",
+  description:
+    "Values that can be compared with `$gt`, `$gte`, `$lt` and `$lte`.",
+  type: "string | number | bigint | Date | Uint8Array | CustomId",
   flags: {
     static: false,
     readonly: false,
@@ -15,87 +18,22 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "Values that can be compared with ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`$gt`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ", ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`$gte`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ", ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`$lt`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: " and ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`$lte`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ".",
-        target: null,
-      },
-    ],
-    blockTags: [],
-  },
-  type: {
-    kind: "union",
-    text: "string | number | bigint | Date | Uint8Array | CustomId",
-    name: null,
-    target: null,
-    children: [],
+  source: {
+    fileName: "packages/driver/dist/filter.d.ts",
+    line: 3,
+    character: 12,
+    url: null,
   },
   hierarchy: {
     extends: [],
     extendedBy: [],
   },
-  sources: [
-    {
-      fileName: "packages/driver/dist/filter.d.ts",
-      line: 3,
-      character: 12,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
-  },
   typeParameters: [],
   signatures: [],
   children: [],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -591,7 +529,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

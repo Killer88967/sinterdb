@@ -1,12 +1,15 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 650,
   name: "FilterPaths",
   slug: "FilterPaths",
-  route: "types/FilterPaths",
   kind: "TypeAlias",
   kindId: 2097152,
+  route: "types/FilterPaths",
+  description:
+    "Every dotted field path of a document type, such as `profile.name`. Arrays\nand atomic values end a path.",
+  type: 'TDepth["length"] extends MaxPathDepth ? never : TDocument extends object ? { [Key in keyof TDocument & string]: Key | (NonNullable<TDocument[Key]> extends readonly unknown[] | AtomicValue ? never : NonNullable<TDocument[Key]> extends object ? `${Key}.${FilterPaths<NonNullable<(...)>, [(...), (...)]>}` : never) }[keyof TDocument & string] : never',
   flags: {
     static: false,
     readonly: false,
@@ -15,84 +18,35 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "Every dotted field path of a document type, such as ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`profile.name`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ". Arrays\nand atomic values end a path.",
-        target: null,
-      },
-    ],
-    blockTags: [],
-  },
-  type: {
-    kind: "conditional",
-    text: 'TDepth["length"] extends MaxPathDepth ? never : TDocument extends object ? { [Key in keyof TDocument & string]: Key | (NonNullable<TDocument[Key]> extends readonly unknown[] | AtomicValue ? never : NonNullable<TDocument[Key]> extends object ? `${Key}.${FilterPaths<NonNullable<(...)>, [(...), (...)]>}` : never) }[keyof TDocument & string] : never',
-    name: null,
-    target: null,
-    children: [],
+  source: {
+    fileName: "packages/driver/dist/filter.d.ts",
+    line: 57,
+    character: 12,
+    url: null,
   },
   hierarchy: {
     extends: [],
     extendedBy: [],
   },
-  sources: [
-    {
-      fileName: "packages/driver/dist/filter.d.ts",
-      line: 57,
-      character: 12,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
-  },
   typeParameters: [
     {
-      id: 651,
       name: "TDocument",
       type: null,
       default: null,
-      comment: null,
+      description: "",
     },
     {
-      id: 652,
       name: "TDepth",
-      type: {
-        kind: "typeOperator",
-        text: "readonly unknown[]",
-        name: null,
-        target: null,
-        children: [],
-      },
-      default: {
-        kind: "tuple",
-        text: "[]",
-        name: null,
-        target: null,
-        children: [],
-      },
-      comment: null,
+      type: "readonly unknown[]",
+      default: "[]",
+      description: "",
     },
   ],
   signatures: [],
   children: [],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -588,7 +542,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

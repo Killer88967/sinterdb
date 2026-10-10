@@ -1,12 +1,14 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 746,
   name: "UpdateResult",
   slug: "UpdateResult",
-  route: "interfaces/UpdateResult",
   kind: "Interface",
   kindId: 256,
+  route: "interfaces/UpdateResult",
+  description: "The result of an update or replace.",
+  type: null,
   flags: {
     static: false,
     readonly: false,
@@ -15,35 +17,16 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "The result of an update or replace.",
-        target: null,
-      },
-    ],
-    blockTags: [],
+  source: {
+    fileName: "packages/driver/dist/update.d.ts",
+    line: 73,
+    character: 17,
+    url: null,
   },
-  type: null,
   hierarchy: {
     extends: [],
     extendedBy: [],
-  },
-  sources: [
-    {
-      fileName: "packages/driver/dist/update.d.ts",
-      line: 73,
-      character: 17,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
   },
   typeParameters: [],
   signatures: [],
@@ -54,6 +37,8 @@ const api = {
       anchor: "acknowledged",
       kind: "Property",
       kindId: 1024,
+      description: "Always `true`; a failed update throws instead.",
+      type: "true",
       flags: {
         static: false,
         readonly: true,
@@ -62,52 +47,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Always ",
-            target: null,
-          },
-          {
-            kind: "code",
-            text: "`true`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: "; a failed update throws instead.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/update.d.ts",
+        line: 75,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "literal",
-        text: "true",
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/update.d.ts",
-          line: 75,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 748,
@@ -115,6 +62,8 @@ const api = {
       anchor: "matched-count",
       kind: "Property",
       kindId: 1024,
+      description: "How many documents matched the filter.",
+      type: "number",
       flags: {
         static: false,
         readonly: true,
@@ -123,42 +72,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "How many documents matched the filter.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/update.d.ts",
+        line: 77,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "number",
-        name: "number",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/update.d.ts",
-          line: 77,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 749,
@@ -166,6 +87,9 @@ const api = {
       anchor: "modified-count",
       kind: "Property",
       kindId: 1024,
+      description:
+        "How many documents actually changed. A document whose stored bytes are\nidentical after the update is not counted.",
+      type: "number",
       flags: {
         static: false,
         readonly: true,
@@ -174,42 +98,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "How many documents actually changed. A document whose stored bytes are\nidentical after the update is not counted.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/update.d.ts",
+        line: 82,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "number",
-        name: "number",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/update.d.ts",
-          line: 82,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 750,
@@ -217,6 +113,9 @@ const api = {
       anchor: "upserted-id",
       kind: "Property",
       kindId: 1024,
+      description:
+        "The `_id` of the inserted document when an upsert inserted one, otherwise\n`null`. In that case `matchedCount` is 0.",
+      type: "CustomId | null",
       flags: {
         static: false,
         readonly: true,
@@ -225,76 +124,18 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The ",
-            target: null,
-          },
-          {
-            kind: "code",
-            text: "`_id`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: " of the inserted document when an upsert inserted one, otherwise\n",
-            target: null,
-          },
-          {
-            kind: "code",
-            text: "`null`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: ". In that case ",
-            target: null,
-          },
-          {
-            kind: "code",
-            text: "`matchedCount`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: " is 0.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/update.d.ts",
+        line: 87,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "union",
-        text: "CustomId | null",
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/update.d.ts",
-          line: 87,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
   ],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -790,7 +631,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

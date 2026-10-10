@@ -1,12 +1,15 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 32,
   name: "SinterClient",
   slug: "SinterClient",
-  route: "classes/SinterClient",
   kind: "Class",
   kindId: 128,
+  route: "classes/SinterClient",
+  description:
+    "A connection to a SinterDB server.\n\nCreate a client from a `sinterdb://` connection string, call `connect()`,\nand then use `db()` to reach databases and collections. Commands sent\nbefore `connect()` completes throw a SinterClientStateError. Call\n`close()` when finished.",
+  type: null,
   flags: {
     static: false,
     readonly: false,
@@ -15,95 +18,16 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "A connection to a SinterDB server.\n\nCreate a client from a ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`sinterdb://`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: " connection string, call ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`connect()`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ",\nand then use ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`db()`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: " to reach databases and collections. Commands sent\nbefore ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`connect()`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: " completes throw a ",
-        target: null,
-      },
-      {
-        kind: "inline-tag",
-        text: "SinterClientStateError",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ". Call\n",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`close()`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: " when finished.",
-        target: null,
-      },
-    ],
-    blockTags: [],
+  source: {
+    fileName: "packages/driver/dist/client.d.ts",
+    line: 115,
+    character: 21,
+    url: null,
   },
-  type: null,
   hierarchy: {
     extends: ["EventEmitter<SinterClientEvents>"],
     extendedBy: [],
-  },
-  sources: [
-    {
-      fileName: "packages/driver/dist/client.d.ts",
-      line: 115,
-      character: 21,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
   },
   typeParameters: [],
   signatures: [],
@@ -114,6 +38,8 @@ const api = {
       anchor: "constructor",
       kind: "Constructor",
       kindId: 512,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -122,110 +48,45 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 133,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: "EventEmitter<SinterClientEvents>.constructor",
-        implementationOf: null,
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 133,
+        character: 4,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 34,
           name: "SinterClient",
-          comment: null,
+          description: "",
           typeParameters: [],
           parameters: [
             {
-              id: 35,
               name: "connectionString",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: false,
-                const: false,
-              },
-              type: {
-                kind: "intrinsic",
-                text: "string",
-                name: "string",
-                target: null,
-                children: [],
-              },
+              type: "string",
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
             {
-              id: 36,
               name: "options",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: true,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: false,
-                const: false,
-              },
-              type: {
-                kind: "reference",
-                text: "SinterClientOptions",
-                name: "SinterClientOptions",
-                target: {
-                  id: 185,
-                  name: "SinterClientOptions",
-                  route: "interfaces/SinterClientOptions",
-                },
-                children: [],
-              },
+              type: "SinterClientOptions",
+              optional: true,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
           ],
-          returnType: {
-            kind: "reference",
-            text: "SinterClient",
-            name: "SinterClient",
-            target: {
-              id: 32,
-              name: "SinterClient",
-              route: "classes/SinterClient",
-            },
-            children: [],
-          },
-          sources: [
-            {
-              fileName: "packages/driver/dist/client.d.ts",
-              line: 133,
-              character: 4,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: null,
-            overwrites: "EventEmitter<SinterClientEvents>.constructor",
-            implementationOf: null,
+          returns: "SinterClient",
+          returnsDescription: "",
+          source: {
+            fileName: "packages/driver/dist/client.d.ts",
+            line: 133,
+            character: 4,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 38,
@@ -233,6 +94,8 @@ const api = {
       anchor: "connect-timeout-ms",
       kind: "Property",
       kindId: 1024,
+      description: "The effective connect timeout in milliseconds.",
+      type: "number",
       flags: {
         static: false,
         readonly: true,
@@ -241,42 +104,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The effective connect timeout in milliseconds.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 121,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "number",
-        name: "number",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 121,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 39,
@@ -284,6 +119,8 @@ const api = {
       anchor: "request-timeout-ms",
       kind: "Property",
       kindId: 1024,
+      description: "The effective request timeout in milliseconds.",
+      type: "number",
       flags: {
         static: false,
         readonly: true,
@@ -292,42 +129,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The effective request timeout in milliseconds.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 123,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "number",
-        name: "number",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 123,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 40,
@@ -335,6 +144,9 @@ const api = {
       anchor: "socket-timeout-ms",
       kind: "Property",
       kindId: 1024,
+      description:
+        "The effective idle socket timeout in milliseconds, or 0 when disabled.",
+      type: "number",
       flags: {
         static: false,
         readonly: true,
@@ -343,42 +155,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The effective idle socket timeout in milliseconds, or 0 when disabled.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 127,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "number",
-        name: "number",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 127,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 37,
@@ -386,6 +170,9 @@ const api = {
       anchor: "target",
       kind: "Property",
       kindId: 1024,
+      description:
+        "The host, port and optional database parsed from the connection string.",
+      type: "ParsedSinterConnectionString",
       flags: {
         static: false,
         readonly: true,
@@ -394,46 +181,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The host, port and optional database parsed from the connection string.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 119,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "reference",
-        text: "ParsedSinterConnectionString",
-        name: "ParsedSinterConnectionString",
-        target: {
-          id: 281,
-          name: "ParsedSinterConnectionString",
-          route: "interfaces/ParsedSinterConnectionString",
-        },
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 119,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 48,
@@ -441,6 +196,8 @@ const api = {
       anchor: "connected",
       kind: "Accessor",
       kindId: 262144,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -449,27 +206,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 137,
-          character: 8,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 137,
+        character: 8,
+        url: null,
       },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 50,
@@ -477,6 +221,8 @@ const api = {
       anchor: "server-info",
       kind: "Accessor",
       kindId: 262144,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -485,27 +231,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 142,
-          character: 8,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 142,
+        character: 8,
+        url: null,
       },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 46,
@@ -513,6 +246,8 @@ const api = {
       anchor: "state",
       kind: "Accessor",
       kindId: 262144,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -521,27 +256,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 135,
-          character: 8,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 135,
+        character: 8,
+        url: null,
       },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 167,
@@ -549,6 +271,8 @@ const api = {
       anchor: "-capture-rejection-symbol-",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -557,192 +281,55 @@ const api = {
         protected: false,
         private: false,
         external: true,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName:
-            "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-          line: 87,
-          character: 16,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: "EventEmitter.[captureRejectionSymbol]",
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName:
+          "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+        line: 87,
+        character: 16,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 168,
           name: "[captureRejectionSymbol]",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "The ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`Symbol.for('nodejs.rejection')`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " method is called in case a\npromise rejection happens when emitting an event and\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`captureRejections`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " is enabled on the emitter.\nIt is possible to use ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`events.captureRejectionSymbol`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " in\nplace of ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`Symbol.for('nodejs.rejection')`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ".\n\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "```js\nimport { EventEmitter, captureRejectionSymbol } from 'node:events';\n\nclass MyClass extends EventEmitter {\n  constructor() {\n    super({ captureRejections: true });\n  }\n\n  [captureRejectionSymbol](err, event, ...args) {\n    console.log('rejection happened for', event, 'with', err, ...args);\n    this.destroy(err);\n  }\n\n  destroy(err) {\n    // Tear the resource down here.\n  }\n}\n```",
-                target: null,
-              },
-            ],
-            blockTags: [
-              {
-                tag: "@since",
-                content: [
-                  {
-                    kind: "text",
-                    text: "v13.4.0, v12.16.0",
-                    target: null,
-                  },
-                ],
-              },
-            ],
-          },
+          description:
+            "The `Symbol.for('nodejs.rejection')` method is called in case a\npromise rejection happens when emitting an event and\n`captureRejections` is enabled on the emitter.\nIt is possible to use `events.captureRejectionSymbol` in\nplace of `Symbol.for('nodejs.rejection')`.\n\n```js\nimport { EventEmitter, captureRejectionSymbol } from 'node:events';\n\nclass MyClass extends EventEmitter {\n  constructor() {\n    super({ captureRejections: true });\n  }\n\n  [captureRejectionSymbol](err, event, ...args) {\n    console.log('rejection happened for', event, 'with', err, ...args);\n    this.destroy(err);\n  }\n\n  destroy(err) {\n    // Tear the resource down here.\n  }\n}\n```",
           typeParameters: [],
           parameters: [
             {
-              id: 169,
               name: "error",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "reference",
-                text: "Error",
-                name: "Error",
-                target: null,
-                children: [],
-              },
+              type: "Error",
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
             {
-              id: 170,
               name: "event",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "union",
-                text: "string | symbol",
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: "string | symbol",
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
             {
-              id: 171,
               name: "args",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "array",
-                text: "any[]",
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: "any[]",
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
           ],
-          returnType: {
-            kind: "intrinsic",
-            text: "void",
-            name: "void",
-            target: null,
-            children: [],
-          },
-          sources: [
-            {
-              fileName:
-                "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-              line: 87,
-              character: 16,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: "EventEmitter.[captureRejectionSymbol]",
-            overwrites: null,
-            implementationOf: null,
+          returns: "void",
+          returnsDescription: "",
+          source: {
+            fileName:
+              "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+            line: 87,
+            character: 16,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 73,
@@ -750,6 +337,8 @@ const api = {
       anchor: "add-listener",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -758,148 +347,53 @@ const api = {
         protected: false,
         private: false,
         external: true,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName:
-            "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-          line: 92,
-          character: 16,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: "EventEmitter.addListener",
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName:
+          "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+        line: 92,
+        character: 16,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 74,
           name: "addListener",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Alias for ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`emitter.on(eventName, listener)`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ".",
-                target: null,
-              },
-            ],
-            blockTags: [
-              {
-                tag: "@since",
-                content: [
-                  {
-                    kind: "text",
-                    text: "v0.1.26",
-                    target: null,
-                  },
-                ],
-              },
-            ],
-          },
+          description: "Alias for `emitter.on(eventName, listener)`.",
           typeParameters: [
             {
-              id: 75,
               name: "E",
-              type: {
-                kind: "union",
-                text: "string | symbol",
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: "string | symbol",
               default: null,
-              comment: null,
             },
           ],
           parameters: [
             {
-              id: 76,
               name: "eventName",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "union",
-                text: '"connecting" | "connected" | "closed" | E | (keyof EventEmitterEventMap) | "error"',
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: '"connecting" | "connected" | "closed" | E | (keyof EventEmitterEventMap) | "error"',
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
             {
-              id: 77,
               name: "listener",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "reflection",
-                text: "(args: E extends keyof SinterClientEvents ? SinterClientEvents[E] : E extends keyof EventEmitterEventMap ? EventEmitterEventMap[E] : any[]) => void",
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: "(args: E extends keyof SinterClientEvents ? SinterClientEvents[E] : E extends keyof EventEmitterEventMap ? EventEmitterEventMap[E] : any[]) => void",
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
           ],
-          returnType: {
-            kind: "intrinsic",
-            text: "this",
-            name: "this",
-            target: null,
-            children: [],
-          },
-          sources: [
-            {
-              fileName:
-                "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-              line: 92,
-              character: 16,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: "EventEmitter.addListener",
-            overwrites: null,
-            implementationOf: null,
+          returns: "this",
+          returnsDescription: "",
+          source: {
+            fileName:
+              "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+            line: 92,
+            character: 16,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 66,
@@ -907,6 +401,8 @@ const api = {
       anchor: "close",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -915,72 +411,31 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 188,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 188,
+        character: 4,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 67,
           name: "close",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Closes the connection. Requests still waiting for a response fail.\nClosing a closed client does nothing.",
-                target: null,
-              },
-            ],
-            blockTags: [],
-          },
+          description:
+            "Closes the connection. Requests still waiting for a response fail.\nClosing a closed client does nothing.",
           typeParameters: [],
           parameters: [],
-          returnType: {
-            kind: "reference",
-            text: "Promise<void>",
-            name: "Promise",
-            target: null,
-            children: [
-              {
-                kind: "intrinsic",
-                text: "void",
-                name: "void",
-                target: null,
-                children: [],
-              },
-            ],
-          },
-          sources: [
-            {
-              fileName: "packages/driver/dist/client.d.ts",
-              line: 188,
-              character: 4,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: null,
-            overwrites: null,
-            implementationOf: null,
+          returns: "Promise<void>",
+          returnsDescription: "",
+          source: {
+            fileName: "packages/driver/dist/client.d.ts",
+            line: 188,
+            character: 4,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 52,
@@ -988,6 +443,8 @@ const api = {
       anchor: "connect",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -996,127 +453,31 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 153,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 153,
+        character: 4,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 53,
           name: "connect",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Opens the connection and performs the protocol handshake.\n\nCalling ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`connect()`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " on a connected client resolves immediately, and\nconcurrent calls share one attempt. If the attempt fails, the client\nreturns to ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`new`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " and ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`connect()`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " may be tried again. A closed client\nrejects with a ",
-                target: null,
-              },
-              {
-                kind: "inline-tag",
-                text: "SinterClientStateError",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ".",
-                target: null,
-              },
-            ],
-            blockTags: [
-              {
-                tag: "@returns",
-                content: [
-                  {
-                    kind: "text",
-                    text: "This client, so calls can be chained.",
-                    target: null,
-                  },
-                ],
-              },
-            ],
-          },
+          description:
+            "Opens the connection and performs the protocol handshake.\n\nCalling `connect()` on a connected client resolves immediately, and\nconcurrent calls share one attempt. If the attempt fails, the client\nreturns to `new` and `connect()` may be tried again. A closed client\nrejects with a SinterClientStateError.",
           typeParameters: [],
           parameters: [],
-          returnType: {
-            kind: "reference",
-            text: "Promise<SinterClient>",
-            name: "Promise",
-            target: null,
-            children: [
-              {
-                kind: "reference",
-                text: "SinterClient",
-                name: "SinterClient",
-                target: {
-                  id: 32,
-                  name: "SinterClient",
-                  route: "classes/SinterClient",
-                },
-                children: [],
-              },
-            ],
-          },
-          sources: [
-            {
-              fileName: "packages/driver/dist/client.d.ts",
-              line: 153,
-              character: 4,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: null,
-            overwrites: null,
-            implementationOf: null,
+          returns: "Promise<SinterClient>",
+          returnsDescription: "This client, so calls can be chained.",
+          source: {
+            fileName: "packages/driver/dist/client.d.ts",
+            line: 153,
+            character: 4,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 63,
@@ -1124,6 +485,8 @@ const api = {
       anchor: "db",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -1132,127 +495,40 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 183,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 183,
+        character: 4,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 64,
           name: "db",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Returns a handle to a database.\n\nThe handle is created locally; no request is sent, and the database is\ncreated on the server by the first write. Without ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`name`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ", the database\nfrom the connection string is used.",
-                target: null,
-              },
-            ],
-            blockTags: [
-              {
-                tag: "@throws",
-                content: [
-                  {
-                    kind: "inline-tag",
-                    text: "SinterNamespaceError",
-                    target: null,
-                  },
-                  {
-                    kind: "text",
-                    text: " when neither is available, or when\n  the name is invalid.",
-                    target: null,
-                  },
-                ],
-              },
-            ],
-          },
+          description:
+            "Returns a handle to a database.\n\nThe handle is created locally; no request is sent, and the database is\ncreated on the server by the first write. Without `name`, the database\nfrom the connection string is used.",
           typeParameters: [],
           parameters: [
             {
-              id: 65,
               name: "name",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: true,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: false,
-                const: false,
-              },
-              type: {
-                kind: "intrinsic",
-                text: "string",
-                name: "string",
-                target: null,
-                children: [],
-              },
+              type: "string",
+              optional: true,
               defaultValue: null,
-              comment: {
-                summary: [
-                  {
-                    kind: "text",
-                    text: "The database name. Optional when the connection string\n  names one.",
-                    target: null,
-                  },
-                ],
-                blockTags: [],
-              },
+              description:
+                "The database name. Optional when the connection string\n  names one.",
             },
           ],
-          returnType: {
-            kind: "reference",
-            text: "SinterDatabase",
-            name: "SinterDatabase",
-            target: {
-              id: 325,
-              name: "SinterDatabase",
-              route: "classes/SinterDatabase",
-            },
-            children: [],
-          },
-          sources: [
-            {
-              fileName: "packages/driver/dist/client.d.ts",
-              line: 183,
-              character: 4,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: null,
-            overwrites: null,
-            implementationOf: null,
+          returns: "SinterDatabase",
+          returnsDescription: "",
+          source: {
+            fileName: "packages/driver/dist/client.d.ts",
+            line: 183,
+            character: 4,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 81,
@@ -1260,6 +536,8 @@ const api = {
       anchor: "emit",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -1268,173 +546,54 @@ const api = {
         protected: false,
         private: false,
         external: true,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName:
-            "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-          line: 134,
-          character: 16,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: "EventEmitter.emit",
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName:
+          "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+        line: 134,
+        character: 16,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 82,
           name: "emit",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Synchronously calls each of the listeners registered for the event named\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`eventName`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ", in the order they were registered, passing the supplied arguments\nto each.\n\nReturns ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`true`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " if the event had listeners, ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`false`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " otherwise.\n\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "```js\nimport { EventEmitter } from 'node:events';\nconst myEmitter = new EventEmitter();\n\n// First listener\nmyEmitter.on('event', function firstListener() {\n  console.log('Helloooo! first listener');\n});\n// Second listener\nmyEmitter.on('event', function secondListener(arg1, arg2) {\n  console.log(`event with parameters ${arg1}, ${arg2} in second listener`);\n});\n// Third listener\nmyEmitter.on('event', function thirdListener(...args) {\n  const parameters = args.join(', ');\n  console.log(`event with parameters ${parameters} in third listener`);\n});\n\nconsole.log(myEmitter.listeners('event'));\n\nmyEmitter.emit('event', 1, 2, 3, 4, 5);\n\n// Prints:\n// [\n//   [Function: firstListener],\n//   [Function: secondListener],\n//   [Function: thirdListener]\n// ]\n// Helloooo! first listener\n// event with parameters 1, 2 in second listener\n// event with parameters 1, 2, 3, 4, 5 in third listener\n```",
-                target: null,
-              },
-            ],
-            blockTags: [
-              {
-                tag: "@since",
-                content: [
-                  {
-                    kind: "text",
-                    text: "v0.1.26",
-                    target: null,
-                  },
-                ],
-              },
-            ],
-          },
+          description:
+            "Synchronously calls each of the listeners registered for the event named\n`eventName`, in the order they were registered, passing the supplied arguments\nto each.\n\nReturns `true` if the event had listeners, `false` otherwise.\n\n```js\nimport { EventEmitter } from 'node:events';\nconst myEmitter = new EventEmitter();\n\n// First listener\nmyEmitter.on('event', function firstListener() {\n  console.log('Helloooo! first listener');\n});\n// Second listener\nmyEmitter.on('event', function secondListener(arg1, arg2) {\n  console.log(`event with parameters ${arg1}, ${arg2} in second listener`);\n});\n// Third listener\nmyEmitter.on('event', function thirdListener(...args) {\n  const parameters = args.join(', ');\n  console.log(`event with parameters ${parameters} in third listener`);\n});\n\nconsole.log(myEmitter.listeners('event'));\n\nmyEmitter.emit('event', 1, 2, 3, 4, 5);\n\n// Prints:\n// [\n//   [Function: firstListener],\n//   [Function: secondListener],\n//   [Function: thirdListener]\n// ]\n// Helloooo! first listener\n// event with parameters 1, 2 in second listener\n// event with parameters 1, 2, 3, 4, 5 in third listener\n```",
           typeParameters: [
             {
-              id: 83,
               name: "E",
-              type: {
-                kind: "union",
-                text: "string | symbol",
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: "string | symbol",
               default: null,
-              comment: null,
             },
           ],
           parameters: [
             {
-              id: 84,
               name: "eventName",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "union",
-                text: '"connecting" | "connected" | "closed" | (keyof EventEmitterEventMap) | "error" | E',
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: '"connecting" | "connected" | "closed" | (keyof EventEmitterEventMap) | "error" | E',
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
             {
-              id: 85,
               name: "args",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "conditional",
-                text: "E extends keyof SinterClientEvents ? SinterClientEvents[E] : E extends keyof EventEmitterEventMap ? EventEmitterEventMap[E] : any[]",
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: "E extends keyof SinterClientEvents ? SinterClientEvents[E] : E extends keyof EventEmitterEventMap ? EventEmitterEventMap[E] : any[]",
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
           ],
-          returnType: {
-            kind: "intrinsic",
-            text: "boolean",
-            name: "boolean",
-            target: null,
-            children: [],
-          },
-          sources: [
-            {
-              fileName:
-                "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-              line: 134,
-              character: 16,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: "EventEmitter.emit",
-            overwrites: null,
-            implementationOf: null,
+          returns: "boolean",
+          returnsDescription: "",
+          source: {
+            fileName:
+              "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+            line: 134,
+            character: 16,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 86,
@@ -1442,6 +601,8 @@ const api = {
       anchor: "event-names",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -1450,82 +611,33 @@ const api = {
         protected: false,
         private: false,
         external: true,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName:
-            "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-          line: 154,
-          character: 16,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: "EventEmitter.eventNames",
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName:
+          "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+        line: 154,
+        character: 16,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 87,
           name: "eventNames",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Returns an array listing the events for which the emitter has registered\nlisteners.\n\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "```js\nimport { EventEmitter } from 'node:events';\n\nconst myEE = new EventEmitter();\nmyEE.on('foo', () => {});\nmyEE.on('bar', () => {});\n\nconst sym = Symbol('symbol');\nmyEE.on(sym, () => {});\n\nconsole.log(myEE.eventNames());\n// Prints: [ 'foo', 'bar', Symbol(symbol) ]\n```",
-                target: null,
-              },
-            ],
-            blockTags: [
-              {
-                tag: "@since",
-                content: [
-                  {
-                    kind: "text",
-                    text: "v6.0.0",
-                    target: null,
-                  },
-                ],
-              },
-            ],
-          },
+          description:
+            "Returns an array listing the events for which the emitter has registered\nlisteners.\n\n```js\nimport { EventEmitter } from 'node:events';\n\nconst myEE = new EventEmitter();\nmyEE.on('foo', () => {});\nmyEE.on('bar', () => {});\n\nconst sym = Symbol('symbol');\nmyEE.on(sym, () => {});\n\nconsole.log(myEE.eventNames());\n// Prints: [ 'foo', 'bar', Symbol(symbol) ]\n```",
           typeParameters: [],
           parameters: [],
-          returnType: {
-            kind: "array",
-            text: "(string | symbol)[]",
-            name: null,
-            target: null,
-            children: [],
-          },
-          sources: [
-            {
-              fileName:
-                "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-              line: 154,
-              character: 16,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: "EventEmitter.eventNames",
-            overwrites: null,
-            implementationOf: null,
+          returns: "(string | symbol)[]",
+          returnsDescription: "",
+          source: {
+            fileName:
+              "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+            line: 154,
+            character: 16,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 56,
@@ -1533,6 +645,8 @@ const api = {
       anchor: "execute-command",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -1541,183 +655,54 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 168,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 168,
+        character: 4,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 57,
           name: "executeCommand",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Sends a command by name and returns the raw result.\n\nThis is the low-level entry point behind the collection and database\nmethods. Prefer those; the command names and parameters are part of the\nwire protocol, not of the typed API.",
-                target: null,
-              },
-            ],
-            blockTags: [],
-          },
+          description:
+            "Sends a command by name and returns the raw result.\n\nThis is the low-level entry point behind the collection and database\nmethods. Prefer those; the command names and parameters are part of the\nwire protocol, not of the typed API.",
           typeParameters: [],
           parameters: [
             {
-              id: 58,
               name: "database",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: false,
-                const: false,
-              },
-              type: {
-                kind: "union",
-                text: "string | undefined",
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: "string | undefined",
+              optional: false,
               defaultValue: null,
-              comment: {
-                summary: [
-                  {
-                    kind: "text",
-                    text: "The database to run the command in, or ",
-                    target: null,
-                  },
-                  {
-                    kind: "code",
-                    text: "`undefined`",
-                    target: null,
-                  },
-                  {
-                    kind: "text",
-                    text: " for\n  server-wide commands.",
-                    target: null,
-                  },
-                ],
-                blockTags: [],
-              },
+              description:
+                "The database to run the command in, or `undefined` for\n  server-wide commands.",
             },
             {
-              id: 59,
               name: "command",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: false,
-                const: false,
-              },
-              type: {
-                kind: "intrinsic",
-                text: "string",
-                name: "string",
-                target: null,
-                children: [],
-              },
+              type: "string",
+              optional: false,
               defaultValue: null,
-              comment: {
-                summary: [
-                  {
-                    kind: "text",
-                    text: "The command name.",
-                    target: null,
-                  },
-                ],
-                blockTags: [],
-              },
+              description: "The command name.",
             },
             {
-              id: 60,
               name: "parameters",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: false,
-                const: false,
-              },
-              type: {
-                kind: "reference",
-                text: "Document",
-                name: "Document",
-                target: {
-                  id: 26,
-                  name: "Document",
-                  route: "interfaces/Document",
-                },
-                children: [],
-              },
+              type: "Document",
+              optional: false,
               defaultValue: null,
-              comment: {
-                summary: [
-                  {
-                    kind: "text",
-                    text: "The command parameters.",
-                    target: null,
-                  },
-                ],
-                blockTags: [],
-              },
+              description: "The command parameters.",
             },
           ],
-          returnType: {
-            kind: "reference",
-            text: "Promise<DocumentValue>",
-            name: "Promise",
-            target: null,
-            children: [
-              {
-                kind: "reference",
-                text: "DocumentValue",
-                name: "DocumentValue",
-                target: null,
-                children: [],
-              },
-            ],
-          },
-          sources: [
-            {
-              fileName: "packages/driver/dist/client.d.ts",
-              line: 168,
-              character: 4,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: null,
-            overwrites: null,
-            implementationOf: null,
+          returns: "Promise<DocumentValue>",
+          returnsDescription: "",
+          source: {
+            fileName: "packages/driver/dist/client.d.ts",
+            line: 168,
+            character: 4,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 88,
@@ -1725,6 +710,8 @@ const api = {
       anchor: "get-max-listeners",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -1733,107 +720,33 @@ const api = {
         protected: false,
         private: false,
         external: true,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName:
-            "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-          line: 161,
-          character: 16,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: "EventEmitter.getMaxListeners",
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName:
+          "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+        line: 161,
+        character: 16,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 89,
           name: "getMaxListeners",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Returns the current max listener value for the ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`EventEmitter`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " which is either\nset by ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`emitter.setMaxListeners(n)`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " or defaults to\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`events.defaultMaxListeners`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ".",
-                target: null,
-              },
-            ],
-            blockTags: [
-              {
-                tag: "@since",
-                content: [
-                  {
-                    kind: "text",
-                    text: "v1.0.0",
-                    target: null,
-                  },
-                ],
-              },
-            ],
-          },
+          description:
+            "Returns the current max listener value for the `EventEmitter` which is either\nset by `emitter.setMaxListeners(n)` or defaults to\n`events.defaultMaxListeners`.",
           typeParameters: [],
           parameters: [],
-          returnType: {
-            kind: "intrinsic",
-            text: "number",
-            name: "number",
-            target: null,
-            children: [],
-          },
-          sources: [
-            {
-              fileName:
-                "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-              line: 161,
-              character: 16,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: "EventEmitter.getMaxListeners",
-            overwrites: null,
-            implementationOf: null,
+          returns: "number",
+          returnsDescription: "",
+          source: {
+            fileName:
+              "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+            line: 161,
+            character: 16,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 61,
@@ -1841,6 +754,8 @@ const api = {
       anchor: "list-databases",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -1849,72 +764,30 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 170,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 170,
+        character: 4,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 62,
           name: "listDatabases",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Lists the names of the databases on the server.",
-                target: null,
-              },
-            ],
-            blockTags: [],
-          },
+          description: "Lists the names of the databases on the server.",
           typeParameters: [],
           parameters: [],
-          returnType: {
-            kind: "reference",
-            text: "Promise<string[]>",
-            name: "Promise",
-            target: null,
-            children: [
-              {
-                kind: "array",
-                text: "string[]",
-                name: null,
-                target: null,
-                children: [],
-              },
-            ],
-          },
-          sources: [
-            {
-              fileName: "packages/driver/dist/client.d.ts",
-              line: 170,
-              character: 4,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: null,
-            overwrites: null,
-            implementationOf: null,
+          returns: "Promise<string[]>",
+          returnsDescription: "",
+          source: {
+            fileName: "packages/driver/dist/client.d.ts",
+            line: 170,
+            character: 4,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 90,
@@ -1922,6 +795,8 @@ const api = {
       anchor: "listener-count",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -1930,176 +805,54 @@ const api = {
         protected: false,
         private: false,
         external: true,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName:
-            "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-          line: 170,
-          character: 16,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: "EventEmitter.listenerCount",
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName:
+          "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+        line: 170,
+        character: 16,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 91,
           name: "listenerCount",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Returns the number of listeners listening for the event named ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`eventName`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ".\nIf ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`listener`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " is provided, it will return how many times the listener is found\nin the list of the listeners of the event.",
-                target: null,
-              },
-            ],
-            blockTags: [
-              {
-                tag: "@since",
-                content: [
-                  {
-                    kind: "text",
-                    text: "v3.2.0",
-                    target: null,
-                  },
-                ],
-              },
-            ],
-          },
+          description:
+            "Returns the number of listeners listening for the event named `eventName`.\nIf `listener` is provided, it will return how many times the listener is found\nin the list of the listeners of the event.",
           typeParameters: [
             {
-              id: 92,
               name: "E",
-              type: {
-                kind: "union",
-                text: "string | symbol",
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: "string | symbol",
               default: null,
-              comment: null,
             },
           ],
           parameters: [
             {
-              id: 93,
               name: "eventName",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "union",
-                text: '"connecting" | "connected" | "closed" | (keyof EventEmitterEventMap) | "error" | E',
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: '"connecting" | "connected" | "closed" | (keyof EventEmitterEventMap) | "error" | E',
+              optional: false,
               defaultValue: null,
-              comment: {
-                summary: [
-                  {
-                    kind: "text",
-                    text: "The name of the event being listened for",
-                    target: null,
-                  },
-                ],
-                blockTags: [],
-              },
+              description: "The name of the event being listened for",
             },
             {
-              id: 94,
               name: "listener",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: true,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "reflection",
-                text: "(args: E extends keyof SinterClientEvents ? SinterClientEvents[E] : E extends keyof EventEmitterEventMap ? EventEmitterEventMap[E] : any[]) => void",
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: "(args: E extends keyof SinterClientEvents ? SinterClientEvents[E] : E extends keyof EventEmitterEventMap ? EventEmitterEventMap[E] : any[]) => void",
+              optional: true,
               defaultValue: null,
-              comment: {
-                summary: [
-                  {
-                    kind: "text",
-                    text: "The event handler function",
-                    target: null,
-                  },
-                ],
-                blockTags: [],
-              },
+              description: "The event handler function",
             },
           ],
-          returnType: {
-            kind: "intrinsic",
-            text: "number",
-            name: "number",
-            target: null,
-            children: [],
-          },
-          sources: [
-            {
-              fileName:
-                "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-              line: 170,
-              character: 16,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: "EventEmitter.listenerCount",
-            overwrites: null,
-            implementationOf: null,
+          returns: "number",
+          returnsDescription: "",
+          source: {
+            fileName:
+              "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+            line: 170,
+            character: 16,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 98,
@@ -2107,6 +860,8 @@ const api = {
       anchor: "listeners",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -2115,130 +870,48 @@ const api = {
         protected: false,
         private: false,
         external: true,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName:
-            "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-          line: 186,
-          character: 16,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: "EventEmitter.listeners",
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName:
+          "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+        line: 186,
+        character: 16,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 99,
           name: "listeners",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Returns a copy of the array of listeners for the event named ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`eventName`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ".\n\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "```js\nserver.on('connection', (stream) => {\n  console.log('someone connected!');\n});\nconsole.log(util.inspect(server.listeners('connection')));\n// Prints: [ [Function] ]\n```",
-                target: null,
-              },
-            ],
-            blockTags: [
-              {
-                tag: "@since",
-                content: [
-                  {
-                    kind: "text",
-                    text: "v0.1.26",
-                    target: null,
-                  },
-                ],
-              },
-            ],
-          },
+          description:
+            "Returns a copy of the array of listeners for the event named `eventName`.\n\n```js\nserver.on('connection', (stream) => {\n  console.log('someone connected!');\n});\nconsole.log(util.inspect(server.listeners('connection')));\n// Prints: [ [Function] ]\n```",
           typeParameters: [
             {
-              id: 100,
               name: "E",
-              type: {
-                kind: "union",
-                text: "string | symbol",
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: "string | symbol",
               default: null,
-              comment: null,
             },
           ],
           parameters: [
             {
-              id: 101,
               name: "eventName",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "union",
-                text: '"connecting" | "connected" | "closed" | (keyof EventEmitterEventMap) | "error" | E',
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: '"connecting" | "connected" | "closed" | (keyof EventEmitterEventMap) | "error" | E',
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
           ],
-          returnType: {
-            kind: "array",
-            text: "((args: E extends keyof SinterClientEvents ? SinterClientEvents[E] : E extends keyof EventEmitterEventMap ? EventEmitterEventMap[E] : any[]) => void)[]",
-            name: null,
-            target: null,
-            children: [],
-          },
-          sources: [
-            {
-              fileName:
-                "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-              line: 186,
-              character: 16,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: "EventEmitter.listeners",
-            overwrites: null,
-            implementationOf: null,
+          returns:
+            "((args: E extends keyof SinterClientEvents ? SinterClientEvents[E] : E extends keyof EventEmitterEventMap ? EventEmitterEventMap[E] : any[]) => void)[]",
+          returnsDescription: "",
+          source: {
+            fileName:
+              "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+            line: 186,
+            character: 16,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 105,
@@ -2246,6 +919,8 @@ const api = {
       anchor: "off",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -2254,148 +929,53 @@ const api = {
         protected: false,
         private: false,
         external: true,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName:
-            "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-          line: 191,
-          character: 16,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: "EventEmitter.off",
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName:
+          "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+        line: 191,
+        character: 16,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 106,
           name: "off",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Alias for ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`emitter.removeListener()`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ".",
-                target: null,
-              },
-            ],
-            blockTags: [
-              {
-                tag: "@since",
-                content: [
-                  {
-                    kind: "text",
-                    text: "v10.0.0",
-                    target: null,
-                  },
-                ],
-              },
-            ],
-          },
+          description: "Alias for `emitter.removeListener()`.",
           typeParameters: [
             {
-              id: 107,
               name: "E",
-              type: {
-                kind: "union",
-                text: "string | symbol",
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: "string | symbol",
               default: null,
-              comment: null,
             },
           ],
           parameters: [
             {
-              id: 108,
               name: "eventName",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "union",
-                text: '"connecting" | "connected" | "closed" | (keyof EventEmitterEventMap) | "error" | E',
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: '"connecting" | "connected" | "closed" | (keyof EventEmitterEventMap) | "error" | E',
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
             {
-              id: 109,
               name: "listener",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "reflection",
-                text: "(args: E extends keyof SinterClientEvents ? SinterClientEvents[E] : E extends keyof EventEmitterEventMap ? EventEmitterEventMap[E] : any[]) => void",
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: "(args: E extends keyof SinterClientEvents ? SinterClientEvents[E] : E extends keyof EventEmitterEventMap ? EventEmitterEventMap[E] : any[]) => void",
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
           ],
-          returnType: {
-            kind: "intrinsic",
-            text: "this",
-            name: "this",
-            target: null,
-            children: [],
-          },
-          sources: [
-            {
-              fileName:
-                "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-              line: 191,
-              character: 16,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: "EventEmitter.off",
-            overwrites: null,
-            implementationOf: null,
+          returns: "this",
+          returnsDescription: "",
+          source: {
+            fileName:
+              "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+            line: 191,
+            character: 16,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 113,
@@ -2403,6 +983,8 @@ const api = {
       anchor: "on",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -2411,251 +993,54 @@ const api = {
         protected: false,
         private: false,
         external: true,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName:
-            "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-          line: 225,
-          character: 16,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: "EventEmitter.on",
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName:
+          "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+        line: 225,
+        character: 16,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 114,
           name: "on",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Adds the ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`listener`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " function to the end of the listeners array for the\nevent named ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`eventName`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ". No checks are made to see if the ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`listener`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " has\nalready been added. Multiple calls passing the same combination of ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`eventName`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: "\nand ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`listener`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " will result in the ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`listener`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " being added, and called, multiple\ntimes.\n\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "```js\nserver.on('connection', (stream) => {\n  console.log('someone connected!');\n});\n```",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: "\n\nReturns a reference to the ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`EventEmitter`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ", so that calls can be chained.\n\nBy default, event listeners are invoked in the order they are added. The\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`emitter.prependListener()`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " method can be used as an alternative to add the\nevent listener to the beginning of the listeners array.\n\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "```js\nimport { EventEmitter } from 'node:events';\nconst myEE = new EventEmitter();\nmyEE.on('foo', () => console.log('a'));\nmyEE.prependListener('foo', () => console.log('b'));\nmyEE.emit('foo');\n// Prints:\n//   b\n//   a\n```",
-                target: null,
-              },
-            ],
-            blockTags: [
-              {
-                tag: "@since",
-                content: [
-                  {
-                    kind: "text",
-                    text: "v0.1.101",
-                    target: null,
-                  },
-                ],
-              },
-            ],
-          },
+          description:
+            "Adds the `listener` function to the end of the listeners array for the\nevent named `eventName`. No checks are made to see if the `listener` has\nalready been added. Multiple calls passing the same combination of `eventName`\nand `listener` will result in the `listener` being added, and called, multiple\ntimes.\n\n```js\nserver.on('connection', (stream) => {\n  console.log('someone connected!');\n});\n```\n\nReturns a reference to the `EventEmitter`, so that calls can be chained.\n\nBy default, event listeners are invoked in the order they are added. The\n`emitter.prependListener()` method can be used as an alternative to add the\nevent listener to the beginning of the listeners array.\n\n```js\nimport { EventEmitter } from 'node:events';\nconst myEE = new EventEmitter();\nmyEE.on('foo', () => console.log('a'));\nmyEE.prependListener('foo', () => console.log('b'));\nmyEE.emit('foo');\n// Prints:\n//   b\n//   a\n```",
           typeParameters: [
             {
-              id: 115,
               name: "E",
-              type: {
-                kind: "union",
-                text: "string | symbol",
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: "string | symbol",
               default: null,
-              comment: null,
             },
           ],
           parameters: [
             {
-              id: 116,
               name: "eventName",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "union",
-                text: '"connecting" | "connected" | "closed" | (keyof EventEmitterEventMap) | "error" | E',
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: '"connecting" | "connected" | "closed" | (keyof EventEmitterEventMap) | "error" | E',
+              optional: false,
               defaultValue: null,
-              comment: {
-                summary: [
-                  {
-                    kind: "text",
-                    text: "The name of the event.",
-                    target: null,
-                  },
-                ],
-                blockTags: [],
-              },
+              description: "The name of the event.",
             },
             {
-              id: 117,
               name: "listener",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "reflection",
-                text: "(args: E extends keyof SinterClientEvents ? SinterClientEvents[E] : E extends keyof EventEmitterEventMap ? EventEmitterEventMap[E] : any[]) => void",
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: "(args: E extends keyof SinterClientEvents ? SinterClientEvents[E] : E extends keyof EventEmitterEventMap ? EventEmitterEventMap[E] : any[]) => void",
+              optional: false,
               defaultValue: null,
-              comment: {
-                summary: [
-                  {
-                    kind: "text",
-                    text: "The callback function",
-                    target: null,
-                  },
-                ],
-                blockTags: [],
-              },
+              description: "The callback function",
             },
           ],
-          returnType: {
-            kind: "intrinsic",
-            text: "this",
-            name: "this",
-            target: null,
-            children: [],
-          },
-          sources: [
-            {
-              fileName:
-                "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-              line: 225,
-              character: 16,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: "EventEmitter.on",
-            overwrites: null,
-            implementationOf: null,
+          returns: "this",
+          returnsDescription: "",
+          source: {
+            fileName:
+              "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+            line: 225,
+            character: 16,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 121,
@@ -2663,6 +1048,8 @@ const api = {
       anchor: "once",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -2671,221 +1058,54 @@ const api = {
         protected: false,
         private: false,
         external: true,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName:
-            "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-          line: 256,
-          character: 16,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: "EventEmitter.once",
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName:
+          "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+        line: 256,
+        character: 16,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 122,
           name: "once",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Adds a **one-time** ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`listener`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " function for the event named ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`eventName`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ". The\nnext time ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`eventName`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " is triggered, this listener is removed and then invoked.\n\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "```js\nserver.once('connection', (stream) => {\n  console.log('Ah, we have our first user!');\n});\n```",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: "\n\nReturns a reference to the ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`EventEmitter`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ", so that calls can be chained.\n\nBy default, event listeners are invoked in the order they are added. The\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`emitter.prependOnceListener()`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " method can be used as an alternative to add the\nevent listener to the beginning of the listeners array.\n\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "```js\nimport { EventEmitter } from 'node:events';\nconst myEE = new EventEmitter();\nmyEE.once('foo', () => console.log('a'));\nmyEE.prependOnceListener('foo', () => console.log('b'));\nmyEE.emit('foo');\n// Prints:\n//   b\n//   a\n```",
-                target: null,
-              },
-            ],
-            blockTags: [
-              {
-                tag: "@since",
-                content: [
-                  {
-                    kind: "text",
-                    text: "v0.3.0",
-                    target: null,
-                  },
-                ],
-              },
-            ],
-          },
+          description:
+            "Adds a **one-time** `listener` function for the event named `eventName`. The\nnext time `eventName` is triggered, this listener is removed and then invoked.\n\n```js\nserver.once('connection', (stream) => {\n  console.log('Ah, we have our first user!');\n});\n```\n\nReturns a reference to the `EventEmitter`, so that calls can be chained.\n\nBy default, event listeners are invoked in the order they are added. The\n`emitter.prependOnceListener()` method can be used as an alternative to add the\nevent listener to the beginning of the listeners array.\n\n```js\nimport { EventEmitter } from 'node:events';\nconst myEE = new EventEmitter();\nmyEE.once('foo', () => console.log('a'));\nmyEE.prependOnceListener('foo', () => console.log('b'));\nmyEE.emit('foo');\n// Prints:\n//   b\n//   a\n```",
           typeParameters: [
             {
-              id: 123,
               name: "E",
-              type: {
-                kind: "union",
-                text: "string | symbol",
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: "string | symbol",
               default: null,
-              comment: null,
             },
           ],
           parameters: [
             {
-              id: 124,
               name: "eventName",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "union",
-                text: '"connecting" | "connected" | "closed" | (keyof EventEmitterEventMap) | "error" | E',
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: '"connecting" | "connected" | "closed" | (keyof EventEmitterEventMap) | "error" | E',
+              optional: false,
               defaultValue: null,
-              comment: {
-                summary: [
-                  {
-                    kind: "text",
-                    text: "The name of the event.",
-                    target: null,
-                  },
-                ],
-                blockTags: [],
-              },
+              description: "The name of the event.",
             },
             {
-              id: 125,
               name: "listener",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "reflection",
-                text: "(args: E extends keyof SinterClientEvents ? SinterClientEvents[E] : E extends keyof EventEmitterEventMap ? EventEmitterEventMap[E] : any[]) => void",
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: "(args: E extends keyof SinterClientEvents ? SinterClientEvents[E] : E extends keyof EventEmitterEventMap ? EventEmitterEventMap[E] : any[]) => void",
+              optional: false,
               defaultValue: null,
-              comment: {
-                summary: [
-                  {
-                    kind: "text",
-                    text: "The callback function",
-                    target: null,
-                  },
-                ],
-                blockTags: [],
-              },
+              description: "The callback function",
             },
           ],
-          returnType: {
-            kind: "intrinsic",
-            text: "this",
-            name: "this",
-            target: null,
-            children: [],
-          },
-          sources: [
-            {
-              fileName:
-                "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-              line: 256,
-              character: 16,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: "EventEmitter.once",
-            overwrites: null,
-            implementationOf: null,
+          returns: "this",
+          returnsDescription: "",
+          source: {
+            fileName:
+              "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+            line: 256,
+            character: 16,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 54,
@@ -2893,6 +1113,8 @@ const api = {
       anchor: "ping",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -2901,76 +1123,31 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 155,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 155,
+        character: 4,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 55,
           name: "ping",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Sends a ping to the server and measures the round trip.",
-                target: null,
-              },
-            ],
-            blockTags: [],
-          },
+          description:
+            "Sends a ping to the server and measures the round trip.",
           typeParameters: [],
           parameters: [],
-          returnType: {
-            kind: "reference",
-            text: "Promise<SinterPingResult>",
-            name: "Promise",
-            target: null,
-            children: [
-              {
-                kind: "reference",
-                text: "SinterPingResult",
-                name: "SinterPingResult",
-                target: {
-                  id: 189,
-                  name: "SinterPingResult",
-                  route: "interfaces/SinterPingResult",
-                },
-                children: [],
-              },
-            ],
-          },
-          sources: [
-            {
-              fileName: "packages/driver/dist/client.d.ts",
-              line: 155,
-              character: 4,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: null,
-            overwrites: null,
-            implementationOf: null,
+          returns: "Promise<SinterPingResult>",
+          returnsDescription: "",
+          source: {
+            fileName: "packages/driver/dist/client.d.ts",
+            line: 155,
+            character: 4,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 129,
@@ -2978,6 +1155,8 @@ const api = {
       anchor: "prepend-listener",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -2986,236 +1165,54 @@ const api = {
         protected: false,
         private: false,
         external: true,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName:
-            "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-          line: 275,
-          character: 16,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: "EventEmitter.prependListener",
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName:
+          "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+        line: 275,
+        character: 16,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 130,
           name: "prependListener",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Adds the ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`listener`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " function to the _beginning_ of the listeners array for the\nevent named ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`eventName`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ". No checks are made to see if the ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`listener`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " has\nalready been added. Multiple calls passing the same combination of ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`eventName`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: "\nand ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`listener`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " will result in the ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`listener`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " being added, and called, multiple\ntimes.\n\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "```js\nserver.prependListener('connection', (stream) => {\n  console.log('someone connected!');\n});\n```",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: "\n\nReturns a reference to the ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`EventEmitter`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ", so that calls can be chained.",
-                target: null,
-              },
-            ],
-            blockTags: [
-              {
-                tag: "@since",
-                content: [
-                  {
-                    kind: "text",
-                    text: "v6.0.0",
-                    target: null,
-                  },
-                ],
-              },
-            ],
-          },
+          description:
+            "Adds the `listener` function to the _beginning_ of the listeners array for the\nevent named `eventName`. No checks are made to see if the `listener` has\nalready been added. Multiple calls passing the same combination of `eventName`\nand `listener` will result in the `listener` being added, and called, multiple\ntimes.\n\n```js\nserver.prependListener('connection', (stream) => {\n  console.log('someone connected!');\n});\n```\n\nReturns a reference to the `EventEmitter`, so that calls can be chained.",
           typeParameters: [
             {
-              id: 131,
               name: "E",
-              type: {
-                kind: "union",
-                text: "string | symbol",
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: "string | symbol",
               default: null,
-              comment: null,
             },
           ],
           parameters: [
             {
-              id: 132,
               name: "eventName",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "union",
-                text: '"connecting" | "connected" | "closed" | (keyof EventEmitterEventMap) | "error" | E',
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: '"connecting" | "connected" | "closed" | (keyof EventEmitterEventMap) | "error" | E',
+              optional: false,
               defaultValue: null,
-              comment: {
-                summary: [
-                  {
-                    kind: "text",
-                    text: "The name of the event.",
-                    target: null,
-                  },
-                ],
-                blockTags: [],
-              },
+              description: "The name of the event.",
             },
             {
-              id: 133,
               name: "listener",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "reflection",
-                text: "(args: E extends keyof SinterClientEvents ? SinterClientEvents[E] : E extends keyof EventEmitterEventMap ? EventEmitterEventMap[E] : any[]) => void",
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: "(args: E extends keyof SinterClientEvents ? SinterClientEvents[E] : E extends keyof EventEmitterEventMap ? EventEmitterEventMap[E] : any[]) => void",
+              optional: false,
               defaultValue: null,
-              comment: {
-                summary: [
-                  {
-                    kind: "text",
-                    text: "The callback function",
-                    target: null,
-                  },
-                ],
-                blockTags: [],
-              },
+              description: "The callback function",
             },
           ],
-          returnType: {
-            kind: "intrinsic",
-            text: "this",
-            name: "this",
-            target: null,
-            children: [],
-          },
-          sources: [
-            {
-              fileName:
-                "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-              line: 275,
-              character: 16,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: "EventEmitter.prependListener",
-            overwrites: null,
-            implementationOf: null,
+          returns: "this",
+          returnsDescription: "",
+          source: {
+            fileName:
+              "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+            line: 275,
+            character: 16,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 137,
@@ -3223,6 +1220,8 @@ const api = {
       anchor: "prepend-once-listener",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -3231,206 +1230,54 @@ const api = {
         protected: false,
         private: false,
         external: true,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName:
-            "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-          line: 292,
-          character: 16,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: "EventEmitter.prependOnceListener",
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName:
+          "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+        line: 292,
+        character: 16,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 138,
           name: "prependOnceListener",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Adds a **one-time** ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`listener`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " function for the event named ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`eventName`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " to the\n_beginning_ of the listeners array. The next time ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`eventName`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " is triggered, this\nlistener is removed, and then invoked.\n\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "```js\nserver.prependOnceListener('connection', (stream) => {\n  console.log('Ah, we have our first user!');\n});\n```",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: "\n\nReturns a reference to the ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`EventEmitter`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ", so that calls can be chained.",
-                target: null,
-              },
-            ],
-            blockTags: [
-              {
-                tag: "@since",
-                content: [
-                  {
-                    kind: "text",
-                    text: "v6.0.0",
-                    target: null,
-                  },
-                ],
-              },
-            ],
-          },
+          description:
+            "Adds a **one-time** `listener` function for the event named `eventName` to the\n_beginning_ of the listeners array. The next time `eventName` is triggered, this\nlistener is removed, and then invoked.\n\n```js\nserver.prependOnceListener('connection', (stream) => {\n  console.log('Ah, we have our first user!');\n});\n```\n\nReturns a reference to the `EventEmitter`, so that calls can be chained.",
           typeParameters: [
             {
-              id: 139,
               name: "E",
-              type: {
-                kind: "union",
-                text: "string | symbol",
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: "string | symbol",
               default: null,
-              comment: null,
             },
           ],
           parameters: [
             {
-              id: 140,
               name: "eventName",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "union",
-                text: '"connecting" | "connected" | "closed" | (keyof EventEmitterEventMap) | "error" | E',
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: '"connecting" | "connected" | "closed" | (keyof EventEmitterEventMap) | "error" | E',
+              optional: false,
               defaultValue: null,
-              comment: {
-                summary: [
-                  {
-                    kind: "text",
-                    text: "The name of the event.",
-                    target: null,
-                  },
-                ],
-                blockTags: [],
-              },
+              description: "The name of the event.",
             },
             {
-              id: 141,
               name: "listener",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "reflection",
-                text: "(args: E extends keyof SinterClientEvents ? SinterClientEvents[E] : E extends keyof EventEmitterEventMap ? EventEmitterEventMap[E] : any[]) => void",
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: "(args: E extends keyof SinterClientEvents ? SinterClientEvents[E] : E extends keyof EventEmitterEventMap ? EventEmitterEventMap[E] : any[]) => void",
+              optional: false,
               defaultValue: null,
-              comment: {
-                summary: [
-                  {
-                    kind: "text",
-                    text: "The callback function",
-                    target: null,
-                  },
-                ],
-                blockTags: [],
-              },
+              description: "The callback function",
             },
           ],
-          returnType: {
-            kind: "intrinsic",
-            text: "this",
-            name: "this",
-            target: null,
-            children: [],
-          },
-          sources: [
-            {
-              fileName:
-                "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-              line: 292,
-              character: 16,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: "EventEmitter.prependOnceListener",
-            overwrites: null,
-            implementationOf: null,
+          returns: "this",
+          returnsDescription: "",
+          source: {
+            fileName:
+              "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+            line: 292,
+            character: 16,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 145,
@@ -3438,6 +1285,8 @@ const api = {
       anchor: "raw-listeners",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -3446,140 +1295,48 @@ const api = {
         protected: false,
         private: false,
         external: true,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName:
-            "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-          line: 326,
-          character: 16,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: "EventEmitter.rawListeners",
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName:
+          "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+        line: 326,
+        character: 16,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 146,
           name: "rawListeners",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Returns a copy of the array of listeners for the event named ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`eventName`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ",\nincluding any wrappers (such as those created by ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`.once()`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ").\n\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "```js\nimport { EventEmitter } from 'node:events';\nconst emitter = new EventEmitter();\nemitter.once('log', () => console.log('log once'));\n\n// Returns a new Array with a function `onceWrapper` which has a property\n// `listener` which contains the original listener bound above\nconst listeners = emitter.rawListeners('log');\nconst logFnWrapper = listeners[0];\n\n// Logs \"log once\" to the console and does not unbind the `once` event\nlogFnWrapper.listener();\n\n// Logs \"log once\" to the console and removes the listener\nlogFnWrapper();\n\nemitter.on('log', () => console.log('log persistently'));\n// Will return a new Array with a single function bound by `.on()` above\nconst newListeners = emitter.rawListeners('log');\n\n// Logs \"log persistently\" twice\nnewListeners[0]();\nemitter.emit('log');\n```",
-                target: null,
-              },
-            ],
-            blockTags: [
-              {
-                tag: "@since",
-                content: [
-                  {
-                    kind: "text",
-                    text: "v9.4.0",
-                    target: null,
-                  },
-                ],
-              },
-            ],
-          },
+          description:
+            "Returns a copy of the array of listeners for the event named `eventName`,\nincluding any wrappers (such as those created by `.once()`).\n\n```js\nimport { EventEmitter } from 'node:events';\nconst emitter = new EventEmitter();\nemitter.once('log', () => console.log('log once'));\n\n// Returns a new Array with a function `onceWrapper` which has a property\n// `listener` which contains the original listener bound above\nconst listeners = emitter.rawListeners('log');\nconst logFnWrapper = listeners[0];\n\n// Logs \"log once\" to the console and does not unbind the `once` event\nlogFnWrapper.listener();\n\n// Logs \"log once\" to the console and removes the listener\nlogFnWrapper();\n\nemitter.on('log', () => console.log('log persistently'));\n// Will return a new Array with a single function bound by `.on()` above\nconst newListeners = emitter.rawListeners('log');\n\n// Logs \"log persistently\" twice\nnewListeners[0]();\nemitter.emit('log');\n```",
           typeParameters: [
             {
-              id: 147,
               name: "E",
-              type: {
-                kind: "union",
-                text: "string | symbol",
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: "string | symbol",
               default: null,
-              comment: null,
             },
           ],
           parameters: [
             {
-              id: 148,
               name: "eventName",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "union",
-                text: '"connecting" | "connected" | "closed" | (keyof EventEmitterEventMap) | "error" | E',
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: '"connecting" | "connected" | "closed" | (keyof EventEmitterEventMap) | "error" | E',
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
           ],
-          returnType: {
-            kind: "array",
-            text: "((args: E extends keyof SinterClientEvents ? SinterClientEvents[E] : E extends keyof EventEmitterEventMap ? EventEmitterEventMap[E] : any[]) => void)[]",
-            name: null,
-            target: null,
-            children: [],
-          },
-          sources: [
-            {
-              fileName:
-                "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-              line: 326,
-              character: 16,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: "EventEmitter.rawListeners",
-            overwrites: null,
-            implementationOf: null,
+          returns:
+            "((args: E extends keyof SinterClientEvents ? SinterClientEvents[E] : E extends keyof EventEmitterEventMap ? EventEmitterEventMap[E] : any[]) => void)[]",
+          returnsDescription: "",
+          source: {
+            fileName:
+              "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+            line: 326,
+            character: 16,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 152,
@@ -3587,6 +1344,8 @@ const api = {
       anchor: "remove-all-listeners",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -3595,145 +1354,47 @@ const api = {
         protected: false,
         private: false,
         external: true,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName:
-            "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-          line: 338,
-          character: 16,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: "EventEmitter.removeAllListeners",
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName:
+          "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+        line: 338,
+        character: 16,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 153,
           name: "removeAllListeners",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Removes all listeners, or those of the specified ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`eventName`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ".\n\nIt is bad practice to remove listeners added elsewhere in the code,\nparticularly when the ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`EventEmitter`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " instance was created by some other\ncomponent or module (e.g. sockets or file streams).\n\nReturns a reference to the ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`EventEmitter`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ", so that calls can be chained.",
-                target: null,
-              },
-            ],
-            blockTags: [
-              {
-                tag: "@since",
-                content: [
-                  {
-                    kind: "text",
-                    text: "v0.1.26",
-                    target: null,
-                  },
-                ],
-              },
-            ],
-          },
+          description:
+            "Removes all listeners, or those of the specified `eventName`.\n\nIt is bad practice to remove listeners added elsewhere in the code,\nparticularly when the `EventEmitter` instance was created by some other\ncomponent or module (e.g. sockets or file streams).\n\nReturns a reference to the `EventEmitter`, so that calls can be chained.",
           typeParameters: [
             {
-              id: 154,
               name: "E",
-              type: {
-                kind: "union",
-                text: "string | symbol",
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: "string | symbol",
               default: null,
-              comment: null,
             },
           ],
           parameters: [
             {
-              id: 155,
               name: "eventName",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: true,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "union",
-                text: '"connecting" | "connected" | "closed" | (keyof EventEmitterEventMap) | "error" | E',
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: '"connecting" | "connected" | "closed" | (keyof EventEmitterEventMap) | "error" | E',
+              optional: true,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
           ],
-          returnType: {
-            kind: "intrinsic",
-            text: "this",
-            name: "this",
-            target: null,
-            children: [],
-          },
-          sources: [
-            {
-              fileName:
-                "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-              line: 338,
-              character: 16,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: "EventEmitter.removeAllListeners",
-            overwrites: null,
-            implementationOf: null,
+          returns: "this",
+          returnsDescription: "",
+          source: {
+            fileName:
+              "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+            line: 338,
+            character: 16,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 156,
@@ -3741,6 +1402,8 @@ const api = {
       anchor: "remove-listener",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -3749,288 +1412,54 @@ const api = {
         protected: false,
         private: false,
         external: true,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName:
-            "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-          line: 425,
-          character: 16,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: "EventEmitter.removeListener",
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName:
+          "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+        line: 425,
+        character: 16,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 157,
           name: "removeListener",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Removes the specified ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`listener`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " from the listener array for the event named\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`eventName`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ".\n\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "```js\nconst callback = (stream) => {\n  console.log('someone connected!');\n};\nserver.on('connection', callback);\n// ...\nserver.removeListener('connection', callback);\n```",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: "\n\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`removeListener()`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " will remove, at most, one instance of a listener from the\nlistener array. If any single listener has been added multiple times to the\nlistener array for the specified ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`eventName`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ", then ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`removeListener()`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " must be\ncalled multiple times to remove each instance.\n\nOnce an event is emitted, all listeners attached to it at the\ntime of emitting are called in order. This implies that any\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`removeListener()`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " or ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`removeAllListeners()`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " calls _after_ emitting and\n_before_ the last listener finishes execution will not remove them from\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`emit()`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " in progress. Subsequent events behave as expected.\n\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "```js\nimport { EventEmitter } from 'node:events';\nclass MyEmitter extends EventEmitter {}\nconst myEmitter = new MyEmitter();\n\nconst callbackA = () => {\n  console.log('A');\n  myEmitter.removeListener('event', callbackB);\n};\n\nconst callbackB = () => {\n  console.log('B');\n};\n\nmyEmitter.on('event', callbackA);\n\nmyEmitter.on('event', callbackB);\n\n// callbackA removes listener callbackB but it will still be called.\n// Internal listener array at time of emit [callbackA, callbackB]\nmyEmitter.emit('event');\n// Prints:\n//   A\n//   B\n\n// callbackB is now removed.\n// Internal listener array [callbackA]\nmyEmitter.emit('event');\n// Prints:\n//   A\n```",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: "\n\nBecause listeners are managed using an internal array, calling this will\nchange the position indexes of any listener registered _after_ the listener\nbeing removed. This will not impact the order in which listeners are called,\nbut it means that any copies of the listener array as returned by\nthe ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`emitter.listeners()`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " method will need to be recreated.\n\nWhen a single function has been added as a handler multiple times for a single\nevent (as in the example below), ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`removeListener()`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " will remove the most\nrecently added instance. In the example the ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`once('ping')`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: "\nlistener is removed:\n\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "```js\nimport { EventEmitter } from 'node:events';\nconst ee = new EventEmitter();\n\nfunction pong() {\n  console.log('pong');\n}\n\nee.on('ping', pong);\nee.once('ping', pong);\nee.removeListener('ping', pong);\n\nee.emit('ping');\nee.emit('ping');\n```",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: "\n\nReturns a reference to the ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`EventEmitter`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ", so that calls can be chained.",
-                target: null,
-              },
-            ],
-            blockTags: [
-              {
-                tag: "@since",
-                content: [
-                  {
-                    kind: "text",
-                    text: "v0.1.26",
-                    target: null,
-                  },
-                ],
-              },
-            ],
-          },
+          description:
+            "Removes the specified `listener` from the listener array for the event named\n`eventName`.\n\n```js\nconst callback = (stream) => {\n  console.log('someone connected!');\n};\nserver.on('connection', callback);\n// ...\nserver.removeListener('connection', callback);\n```\n\n`removeListener()` will remove, at most, one instance of a listener from the\nlistener array. If any single listener has been added multiple times to the\nlistener array for the specified `eventName`, then `removeListener()` must be\ncalled multiple times to remove each instance.\n\nOnce an event is emitted, all listeners attached to it at the\ntime of emitting are called in order. This implies that any\n`removeListener()` or `removeAllListeners()` calls _after_ emitting and\n_before_ the last listener finishes execution will not remove them from\n`emit()` in progress. Subsequent events behave as expected.\n\n```js\nimport { EventEmitter } from 'node:events';\nclass MyEmitter extends EventEmitter {}\nconst myEmitter = new MyEmitter();\n\nconst callbackA = () => {\n  console.log('A');\n  myEmitter.removeListener('event', callbackB);\n};\n\nconst callbackB = () => {\n  console.log('B');\n};\n\nmyEmitter.on('event', callbackA);\n\nmyEmitter.on('event', callbackB);\n\n// callbackA removes listener callbackB but it will still be called.\n// Internal listener array at time of emit [callbackA, callbackB]\nmyEmitter.emit('event');\n// Prints:\n//   A\n//   B\n\n// callbackB is now removed.\n// Internal listener array [callbackA]\nmyEmitter.emit('event');\n// Prints:\n//   A\n```\n\nBecause listeners are managed using an internal array, calling this will\nchange the position indexes of any listener registered _after_ the listener\nbeing removed. This will not impact the order in which listeners are called,\nbut it means that any copies of the listener array as returned by\nthe `emitter.listeners()` method will need to be recreated.\n\nWhen a single function has been added as a handler multiple times for a single\nevent (as in the example below), `removeListener()` will remove the most\nrecently added instance. In the example the `once('ping')`\nlistener is removed:\n\n```js\nimport { EventEmitter } from 'node:events';\nconst ee = new EventEmitter();\n\nfunction pong() {\n  console.log('pong');\n}\n\nee.on('ping', pong);\nee.once('ping', pong);\nee.removeListener('ping', pong);\n\nee.emit('ping');\nee.emit('ping');\n```\n\nReturns a reference to the `EventEmitter`, so that calls can be chained.",
           typeParameters: [
             {
-              id: 158,
               name: "E",
-              type: {
-                kind: "union",
-                text: "string | symbol",
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: "string | symbol",
               default: null,
-              comment: null,
             },
           ],
           parameters: [
             {
-              id: 159,
               name: "eventName",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "union",
-                text: '"connecting" | "connected" | "closed" | (keyof EventEmitterEventMap) | "error" | E',
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: '"connecting" | "connected" | "closed" | (keyof EventEmitterEventMap) | "error" | E',
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
             {
-              id: 160,
               name: "listener",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "reflection",
-                text: "(args: E extends keyof SinterClientEvents ? SinterClientEvents[E] : E extends keyof EventEmitterEventMap ? EventEmitterEventMap[E] : any[]) => void",
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: "(args: E extends keyof SinterClientEvents ? SinterClientEvents[E] : E extends keyof EventEmitterEventMap ? EventEmitterEventMap[E] : any[]) => void",
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
           ],
-          returnType: {
-            kind: "intrinsic",
-            text: "this",
-            name: "this",
-            target: null,
-            children: [],
-          },
-          sources: [
-            {
-              fileName:
-                "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-              line: 425,
-              character: 16,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: "EventEmitter.removeListener",
-            overwrites: null,
-            implementationOf: null,
+          returns: "this",
+          returnsDescription: "",
+          source: {
+            fileName:
+              "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+            line: 425,
+            character: 16,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 164,
@@ -4038,6 +1467,8 @@ const api = {
       anchor: "set-max-listeners",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -4046,175 +1477,45 @@ const api = {
         protected: false,
         private: false,
         external: true,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName:
-            "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-          line: 436,
-          character: 16,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: "EventEmitter.setMaxListeners",
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName:
+          "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+        line: 436,
+        character: 16,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 165,
           name: "setMaxListeners",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "By default ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`EventEmitter`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: "s will print a warning if more than ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`10`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " listeners are\nadded for a particular event. This is a useful default that helps finding\nmemory leaks. The ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`emitter.setMaxListeners()`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " method allows the limit to be\nmodified for this specific ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`EventEmitter`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " instance. The value can be set to\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`Infinity`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " (or ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`0`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ") to indicate an unlimited number of listeners.\n\nReturns a reference to the ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`EventEmitter`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ", so that calls can be chained.",
-                target: null,
-              },
-            ],
-            blockTags: [
-              {
-                tag: "@since",
-                content: [
-                  {
-                    kind: "text",
-                    text: "v0.3.5",
-                    target: null,
-                  },
-                ],
-              },
-            ],
-          },
+          description:
+            "By default `EventEmitter`s will print a warning if more than `10` listeners are\nadded for a particular event. This is a useful default that helps finding\nmemory leaks. The `emitter.setMaxListeners()` method allows the limit to be\nmodified for this specific `EventEmitter` instance. The value can be set to\n`Infinity` (or `0`) to indicate an unlimited number of listeners.\n\nReturns a reference to the `EventEmitter`, so that calls can be chained.",
           typeParameters: [],
           parameters: [
             {
-              id: 166,
               name: "n",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "intrinsic",
-                text: "number",
-                name: "number",
-                target: null,
-                children: [],
-              },
+              type: "number",
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
           ],
-          returnType: {
-            kind: "intrinsic",
-            text: "this",
-            name: "this",
-            target: null,
-            children: [],
-          },
-          sources: [
-            {
-              fileName:
-                "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
-              line: 436,
-              character: 16,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: "EventEmitter.setMaxListeners",
-            overwrites: null,
-            implementationOf: null,
+          returns: "this",
+          returnsDescription: "",
+          source: {
+            fileName:
+              "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/events.d.ts",
+            line: 436,
+            character: 16,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
   ],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -4710,7 +2011,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

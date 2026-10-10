@@ -1,12 +1,15 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 285,
   name: "FindCursor",
   slug: "FindCursor",
-  route: "classes/FindCursor",
   kind: "Class",
   kindId: 128,
+  route: "classes/FindCursor",
+  description:
+    "A lazy, batched cursor over the results of a find.\n\nNothing is sent until the first read. Documents arrive in batches, and the\ncursor releases its server-side state when it is exhausted or closed.\n`toArray()` and `for await` close the cursor for you, even when the loop\nexits early or throws.",
+  type: null,
   flags: {
     static: false,
     readonly: false,
@@ -15,79 +18,23 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "A lazy, batched cursor over the results of a find.\n\nNothing is sent until the first read. Documents arrive in batches, and the\ncursor releases its server-side state when it is exhausted or closed.\n",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`toArray()`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: " and ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`for await`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: " close the cursor for you, even when the loop\nexits early or throws.",
-        target: null,
-      },
-    ],
-    blockTags: [],
+  source: {
+    fileName: "packages/driver/dist/cursor.d.ts",
+    line: 27,
+    character: 21,
+    url: null,
   },
-  type: null,
   hierarchy: {
     extends: [],
     extendedBy: [],
   },
-  sources: [
-    {
-      fileName: "packages/driver/dist/cursor.d.ts",
-      line: 27,
-      character: 21,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
-  },
   typeParameters: [
     {
-      id: 286,
       name: "TDocument",
-      type: {
-        kind: "intrinsic",
-        text: "object",
-        name: "object",
-        target: null,
-        children: [],
-      },
-      default: {
-        kind: "reference",
-        text: "Document",
-        name: "Document",
-        target: {
-          id: 26,
-          name: "Document",
-          route: "interfaces/Document",
-        },
-        children: [],
-      },
-      comment: null,
+      type: "object",
+      default: "Document",
+      description: "",
     },
   ],
   signatures: [],
@@ -98,6 +45,8 @@ const api = {
       anchor: "constructor",
       kind: "Constructor",
       kindId: 512,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -106,223 +55,72 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/cursor.d.ts",
-          line: 36,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/driver/dist/cursor.d.ts",
+        line: 36,
+        character: 4,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 288,
           name: "FindCursor",
-          comment: null,
+          description: "",
           typeParameters: [
             {
-              id: 289,
               name: "TDocument",
-              type: {
-                kind: "intrinsic",
-                text: "object",
-                name: "object",
-                target: null,
-                children: [],
-              },
-              default: {
-                kind: "reference",
-                text: "Document",
-                name: "Document",
-                target: {
-                  id: 26,
-                  name: "Document",
-                  route: "interfaces/Document",
-                },
-                children: [],
-              },
-              comment: null,
+              type: "object",
+              default: "Document",
             },
           ],
           parameters: [
             {
-              id: 290,
               name: "execute",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: false,
-                const: false,
-              },
-              type: {
-                kind: "reference",
-                text: "CursorExecutor",
-                name: "CursorExecutor",
-                target: {
-                  id: 316,
-                  name: "CursorExecutor",
-                  route: "types/CursorExecutor",
-                },
-                children: [],
-              },
+              type: "CursorExecutor",
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
             {
-              id: 291,
               name: "collection",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: false,
-                const: false,
-              },
-              type: {
-                kind: "intrinsic",
-                text: "string",
-                name: "string",
-                target: null,
-                children: [],
-              },
+              type: "string",
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
             {
-              id: 292,
               name: "filter",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: false,
-                const: false,
-              },
-              type: {
-                kind: "reference",
-                text: "Document",
-                name: "Document",
-                target: {
-                  id: 26,
-                  name: "Document",
-                  route: "interfaces/Document",
-                },
-                children: [],
-              },
+              type: "Document",
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
             {
-              id: 293,
               name: "batchSize",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: false,
-                const: false,
-              },
-              type: {
-                kind: "union",
-                text: "number | undefined",
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: "number | undefined",
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
             {
-              id: 294,
               name: "query",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: true,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: false,
-                const: false,
-              },
-              type: {
-                kind: "reference",
-                text: "FindQueryOptions",
-                name: "FindQueryOptions",
-                target: {
-                  id: 321,
-                  name: "FindQueryOptions",
-                  route: "interfaces/FindQueryOptions",
-                },
-                children: [],
-              },
+              type: "FindQueryOptions",
+              optional: true,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
           ],
-          returnType: {
-            kind: "reference",
-            text: "FindCursor<TDocument>",
-            name: "FindCursor",
-            target: {
-              id: 285,
-              name: "FindCursor",
-              route: "classes/FindCursor",
-            },
-            children: [
-              {
-                kind: "reference",
-                text: "TDocument",
-                name: "TDocument",
-                target: {
-                  id: 286,
-                  name: "TDocument",
-                  route: "other/TDocument",
-                },
-                children: [],
-              },
-            ],
-          },
-          sources: [
-            {
-              fileName: "packages/driver/dist/cursor.d.ts",
-              line: 36,
-              character: 4,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: null,
-            overwrites: null,
-            implementationOf: null,
+          returns: "FindCursor<TDocument>",
+          returnsDescription: "",
+          source: {
+            fileName: "packages/driver/dist/cursor.d.ts",
+            line: 36,
+            character: 4,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 314,
@@ -330,6 +128,8 @@ const api = {
       anchor: "-async-iterator-",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -338,102 +138,31 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/cursor.d.ts",
-          line: 66,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: "AsyncIterable.[asyncIterator]",
+      source: {
+        fileName: "packages/driver/dist/cursor.d.ts",
+        line: 66,
+        character: 4,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 315,
           name: "[asyncIterator]",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Iterates the remaining documents, closing the cursor when the loop ends.",
-                target: null,
-              },
-            ],
-            blockTags: [],
-          },
+          description:
+            "Iterates the remaining documents, closing the cursor when the loop ends.",
           typeParameters: [],
           parameters: [],
-          returnType: {
-            kind: "reference",
-            text: "AsyncGenerator<WithId<TDocument>, void, undefined>",
-            name: "AsyncGenerator",
-            target: null,
-            children: [
-              {
-                kind: "reference",
-                text: "WithId<TDocument>",
-                name: "WithId",
-                target: {
-                  id: 276,
-                  name: "WithId",
-                  route: "types/WithId",
-                },
-                children: [
-                  {
-                    kind: "reference",
-                    text: "TDocument",
-                    name: "TDocument",
-                    target: {
-                      id: 286,
-                      name: "TDocument",
-                      route: "other/TDocument",
-                    },
-                    children: [],
-                  },
-                ],
-              },
-              {
-                kind: "intrinsic",
-                text: "void",
-                name: "void",
-                target: null,
-                children: [],
-              },
-              {
-                kind: "intrinsic",
-                text: "undefined",
-                name: "undefined",
-                target: null,
-                children: [],
-              },
-            ],
-          },
-          sources: [
-            {
-              fileName: "packages/driver/dist/cursor.d.ts",
-              line: 66,
-              character: 4,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: null,
-            overwrites: null,
-            implementationOf: "AsyncIterable.[asyncIterator]",
+          returns: "AsyncGenerator<WithId<TDocument>, void, undefined>",
+          returnsDescription: "",
+          source: {
+            fileName: "packages/driver/dist/cursor.d.ts",
+            line: 66,
+            character: 4,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 311,
@@ -441,6 +170,8 @@ const api = {
       anchor: "close",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -449,72 +180,31 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/cursor.d.ts",
-          line: 62,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/driver/dist/cursor.d.ts",
+        line: 62,
+        character: 4,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 312,
           name: "close",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Closes the cursor and releases it on the server. Closing twice does\nnothing.",
-                target: null,
-              },
-            ],
-            blockTags: [],
-          },
+          description:
+            "Closes the cursor and releases it on the server. Closing twice does\nnothing.",
           typeParameters: [],
           parameters: [],
-          returnType: {
-            kind: "reference",
-            text: "Promise<void>",
-            name: "Promise",
-            target: null,
-            children: [
-              {
-                kind: "intrinsic",
-                text: "void",
-                name: "void",
-                target: null,
-                children: [],
-              },
-            ],
-          },
-          sources: [
-            {
-              fileName: "packages/driver/dist/cursor.d.ts",
-              line: 62,
-              character: 4,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: null,
-            overwrites: null,
-            implementationOf: null,
+          returns: "Promise<void>",
+          returnsDescription: "",
+          source: {
+            fileName: "packages/driver/dist/cursor.d.ts",
+            line: 62,
+            character: 4,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 303,
@@ -522,6 +212,8 @@ const api = {
       anchor: "explain",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -530,76 +222,31 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/cursor.d.ts",
-          line: 43,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/driver/dist/cursor.d.ts",
+        line: 43,
+        character: 4,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 304,
           name: "explain",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Asks the server how it would run this query, without running it. The\nsort, skip, limit, and batch size do not change the plan.",
-                target: null,
-              },
-            ],
-            blockTags: [],
-          },
+          description:
+            "Asks the server how it would run this query, without running it. The\nsort, skip, limit, and batch size do not change the plan.",
           typeParameters: [],
           parameters: [],
-          returnType: {
-            kind: "reference",
-            text: "Promise<ExplainResult>",
-            name: "Promise",
-            target: null,
-            children: [
-              {
-                kind: "reference",
-                text: "ExplainResult",
-                name: "ExplainResult",
-                target: {
-                  id: 664,
-                  name: "ExplainResult",
-                  route: "interfaces/ExplainResult",
-                },
-                children: [],
-              },
-            ],
-          },
-          sources: [
-            {
-              fileName: "packages/driver/dist/cursor.d.ts",
-              line: 43,
-              character: 4,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: null,
-            overwrites: null,
-            implementationOf: null,
+          returns: "Promise<ExplainResult>",
+          returnsDescription: "",
+          source: {
+            fileName: "packages/driver/dist/cursor.d.ts",
+            line: 43,
+            character: 4,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 305,
@@ -607,6 +254,8 @@ const api = {
       anchor: "has-next",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -615,72 +264,31 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/cursor.d.ts",
-          line: 47,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/driver/dist/cursor.d.ts",
+        line: 47,
+        character: 4,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 306,
           name: "hasNext",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Whether another document is available. This may fetch the next batch.",
-                target: null,
-              },
-            ],
-            blockTags: [],
-          },
+          description:
+            "Whether another document is available. This may fetch the next batch.",
           typeParameters: [],
           parameters: [],
-          returnType: {
-            kind: "reference",
-            text: "Promise<boolean>",
-            name: "Promise",
-            target: null,
-            children: [
-              {
-                kind: "intrinsic",
-                text: "boolean",
-                name: "boolean",
-                target: null,
-                children: [],
-              },
-            ],
-          },
-          sources: [
-            {
-              fileName: "packages/driver/dist/cursor.d.ts",
-              line: 47,
-              character: 4,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: null,
-            overwrites: null,
-            implementationOf: null,
+          returns: "Promise<boolean>",
+          returnsDescription: "",
+          source: {
+            fileName: "packages/driver/dist/cursor.d.ts",
+            line: 47,
+            character: 4,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 307,
@@ -688,6 +296,8 @@ const api = {
       anchor: "next",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -696,82 +306,31 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/cursor.d.ts",
-          line: 52,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/driver/dist/cursor.d.ts",
+        line: 52,
+        character: 4,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 308,
           name: "next",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Returns the next document, or ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`null`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " when the results are exhausted or\nthe cursor is closed.",
-                target: null,
-              },
-            ],
-            blockTags: [],
-          },
+          description:
+            "Returns the next document, or `null` when the results are exhausted or\nthe cursor is closed.",
           typeParameters: [],
           parameters: [],
-          returnType: {
-            kind: "reference",
-            text: "Promise<WithId<TDocument> | null>",
-            name: "Promise",
-            target: null,
-            children: [
-              {
-                kind: "union",
-                text: "WithId<TDocument> | null",
-                name: null,
-                target: null,
-                children: [],
-              },
-            ],
-          },
-          sources: [
-            {
-              fileName: "packages/driver/dist/cursor.d.ts",
-              line: 52,
-              character: 4,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: null,
-            overwrites: null,
-            implementationOf: null,
+          returns: "Promise<WithId<TDocument> | null>",
+          returnsDescription: "",
+          source: {
+            fileName: "packages/driver/dist/cursor.d.ts",
+            line: 52,
+            character: 4,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 309,
@@ -779,6 +338,8 @@ const api = {
       anchor: "to-array",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -787,76 +348,35 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/cursor.d.ts",
-          line: 57,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/driver/dist/cursor.d.ts",
+        line: 57,
+        character: 4,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 310,
           name: "toArray",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Reads all remaining documents into an array and closes the cursor. Large\nresult sets are held in memory; iterate instead when they may be large.",
-                target: null,
-              },
-            ],
-            blockTags: [],
-          },
+          description:
+            "Reads all remaining documents into an array and closes the cursor. Large\nresult sets are held in memory; iterate instead when they may be large.",
           typeParameters: [],
           parameters: [],
-          returnType: {
-            kind: "reference",
-            text: "Promise<WithId<TDocument>[]>",
-            name: "Promise",
-            target: null,
-            children: [
-              {
-                kind: "array",
-                text: "WithId<TDocument>[]",
-                name: null,
-                target: null,
-                children: [],
-              },
-            ],
-          },
-          sources: [
-            {
-              fileName: "packages/driver/dist/cursor.d.ts",
-              line: 57,
-              character: 4,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: null,
-            overwrites: null,
-            implementationOf: null,
+          returns: "Promise<WithId<TDocument>[]>",
+          returnsDescription: "",
+          source: {
+            fileName: "packages/driver/dist/cursor.d.ts",
+            line: 57,
+            character: 4,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
   ],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -1352,7 +872,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

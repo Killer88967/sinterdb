@@ -1,12 +1,15 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 281,
   name: "ParsedSinterConnectionString",
   slug: "ParsedSinterConnectionString",
-  route: "interfaces/ParsedSinterConnectionString",
   kind: "Interface",
   kindId: 256,
+  route: "interfaces/ParsedSinterConnectionString",
+  description:
+    "A parsed `sinterdb://` connection string, available as SinterClient.target.",
+  type: null,
   flags: {
     static: false,
     readonly: false,
@@ -15,55 +18,16 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "A parsed ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`sinterdb://`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: " connection string, available as ",
-        target: null,
-      },
-      {
-        kind: "inline-tag",
-        text: "SinterClient.target",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ".",
-        target: null,
-      },
-    ],
-    blockTags: [],
+  source: {
+    fileName: "packages/driver/dist/connection-string.d.ts",
+    line: 7,
+    character: 17,
+    url: null,
   },
-  type: null,
   hierarchy: {
     extends: [],
     extendedBy: [],
-  },
-  sources: [
-    {
-      fileName: "packages/driver/dist/connection-string.d.ts",
-      line: 7,
-      character: 17,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
   },
   typeParameters: [],
   signatures: [],
@@ -74,6 +38,8 @@ const api = {
       anchor: "database",
       kind: "Property",
       kindId: 1024,
+      description: "The database named in the path, if any.",
+      type: "string",
       flags: {
         static: false,
         readonly: true,
@@ -82,42 +48,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The database named in the path, if any.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/connection-string.d.ts",
+        line: 15,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "string",
-        name: "string",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/connection-string.d.ts",
-          line: 15,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 282,
@@ -125,6 +63,8 @@ const api = {
       anchor: "host",
       kind: "Property",
       kindId: 1024,
+      description: "The server host.",
+      type: "string",
       flags: {
         static: false,
         readonly: true,
@@ -133,42 +73,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The server host.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/connection-string.d.ts",
+        line: 9,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "string",
-        name: "string",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/connection-string.d.ts",
-          line: 9,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 283,
@@ -176,6 +88,9 @@ const api = {
       anchor: "port",
       kind: "Property",
       kindId: 1024,
+      description:
+        "The server port; DEFAULT_SINTERDB_PORT when the string has none.",
+      type: "number",
       flags: {
         static: false,
         readonly: true,
@@ -184,56 +99,18 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The server port; ",
-            target: null,
-          },
-          {
-            kind: "inline-tag",
-            text: "DEFAULT_SINTERDB_PORT",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: " when the string has none.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/connection-string.d.ts",
+        line: 13,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "number",
-        name: "number",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/connection-string.d.ts",
-          line: 13,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
   ],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -729,7 +606,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

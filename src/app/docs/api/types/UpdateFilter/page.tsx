@@ -1,12 +1,15 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 731,
   name: "UpdateFilter",
   slug: "UpdateFilter",
-  route: "types/UpdateFilter",
   kind: "TypeAlias",
   kindId: 2097152,
+  route: "types/UpdateFilter",
+  description:
+    "An update document built from operators: `$set`, `$unset`, `$inc`, `$min`,\n`$max`, `$push`, `$addToSet` and `$pull`. Each operator accepts only paths\nof a matching type.",
+  type: null,
   flags: {
     static: false,
     readonly: false,
@@ -15,129 +18,23 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "An update document built from operators: ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`$set`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ", ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`$unset`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ", ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`$inc`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ", ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`$min`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ",\n",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`$max`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ", ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`$push`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ", ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`$addToSet`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: " and ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`$pull`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ". Each operator accepts only paths\nof a matching type.",
-        target: null,
-      },
-    ],
-    blockTags: [],
+  source: {
+    fileName: "packages/driver/dist/update.d.ts",
+    line: 38,
+    character: 12,
+    url: null,
   },
-  type: null,
   hierarchy: {
     extends: [],
     extendedBy: [],
   },
-  sources: [
-    {
-      fileName: "packages/driver/dist/update.d.ts",
-      line: 38,
-      character: 12,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
-  },
   typeParameters: [
     {
-      id: 741,
       name: "TDocument",
-      type: {
-        kind: "intrinsic",
-        text: "object",
-        name: "object",
-        target: null,
-        children: [],
-      },
+      type: "object",
       default: null,
-      comment: null,
+      description: "",
     },
   ],
   signatures: [],
@@ -148,6 +45,9 @@ const api = {
       anchor: "-add-to-set",
       kind: "Property",
       kindId: 1024,
+      description:
+        "Appends a value to an array unless an equal element is already present. A missing field becomes a new array.",
+      type: "{ readonly [Path in ArrayPaths<TDocument>]?: ElementOf<NonNullable<FilterPathValue<TDocument, Path>>> }",
       flags: {
         static: false,
         readonly: true,
@@ -156,42 +56,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Appends a value to an array unless an equal element is already present. A missing field becomes a new array.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/update.d.ts",
+        line: 64,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "mapped",
-        text: "{ readonly [Path in ArrayPaths<TDocument>]?: ElementOf<NonNullable<FilterPathValue<TDocument, Path>>> }",
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/update.d.ts",
-          line: 64,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 735,
@@ -199,6 +71,9 @@ const api = {
       anchor: "-inc",
       kind: "Property",
       kindId: 1024,
+      description:
+        "Adds a number to numeric fields. A missing field is set to the number.",
+      type: "{ readonly [Path in NumericPaths<TDocument>]?: NonNullable<FilterPathValue<TDocument, Path>> }",
       flags: {
         static: false,
         readonly: true,
@@ -207,42 +82,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Adds a number to numeric fields. A missing field is set to the number.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/update.d.ts",
+        line: 48,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "mapped",
-        text: "{ readonly [Path in NumericPaths<TDocument>]?: NonNullable<FilterPathValue<TDocument, Path>> }",
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/update.d.ts",
-          line: 48,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 737,
@@ -250,6 +97,9 @@ const api = {
       anchor: "-max",
       kind: "Property",
       kindId: 1024,
+      description:
+        "Raises a field to the given value when the value is larger. A missing field is set to the value.",
+      type: "{ readonly [Path in ComparablePaths<TDocument>]?: NonNullable<FilterPathValue<TDocument, Path>> }",
       flags: {
         static: false,
         readonly: true,
@@ -258,42 +108,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Raises a field to the given value when the value is larger. A missing field is set to the value.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/update.d.ts",
+        line: 56,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "mapped",
-        text: "{ readonly [Path in ComparablePaths<TDocument>]?: NonNullable<FilterPathValue<TDocument, Path>> }",
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/update.d.ts",
-          line: 56,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 736,
@@ -301,6 +123,9 @@ const api = {
       anchor: "-min",
       kind: "Property",
       kindId: 1024,
+      description:
+        "Lowers a field to the given value when the value is smaller. A missing field is set to the value.",
+      type: "{ readonly [Path in ComparablePaths<TDocument>]?: NonNullable<FilterPathValue<TDocument, Path>> }",
       flags: {
         static: false,
         readonly: true,
@@ -309,42 +134,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Lowers a field to the given value when the value is smaller. A missing field is set to the value.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/update.d.ts",
+        line: 52,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "mapped",
-        text: "{ readonly [Path in ComparablePaths<TDocument>]?: NonNullable<FilterPathValue<TDocument, Path>> }",
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/update.d.ts",
-          line: 52,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 740,
@@ -352,6 +149,8 @@ const api = {
       anchor: "-pull",
       kind: "Property",
       kindId: 1024,
+      description: "Removes every matching element from an array.",
+      type: "{ readonly [Path in ArrayPaths<TDocument>]?: ElementOf<NonNullable<FilterPathValue<TDocument, Path>>> }",
       flags: {
         static: false,
         readonly: true,
@@ -360,42 +159,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Removes every matching element from an array.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/update.d.ts",
+        line: 68,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "mapped",
-        text: "{ readonly [Path in ArrayPaths<TDocument>]?: ElementOf<NonNullable<FilterPathValue<TDocument, Path>>> }",
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/update.d.ts",
-          line: 68,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 738,
@@ -403,6 +174,9 @@ const api = {
       anchor: "-push",
       kind: "Property",
       kindId: 1024,
+      description:
+        "Appends a value to an array, creating the array when the field is missing.",
+      type: "{ readonly [Path in ArrayPaths<TDocument>]?: ElementOf<NonNullable<FilterPathValue<TDocument, Path>>> }",
       flags: {
         static: false,
         readonly: true,
@@ -411,42 +185,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Appends a value to an array, creating the array when the field is missing.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/update.d.ts",
+        line: 60,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "mapped",
-        text: "{ readonly [Path in ArrayPaths<TDocument>]?: ElementOf<NonNullable<FilterPathValue<TDocument, Path>>> }",
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/update.d.ts",
-          line: 60,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 733,
@@ -454,6 +200,8 @@ const api = {
       anchor: "-set",
       kind: "Property",
       kindId: 1024,
+      description: "Sets fields to values, creating them when missing.",
+      type: "{ readonly [Path in UpdatePaths<TDocument>]?: FilterPathValue<TDocument, Path> }",
       flags: {
         static: false,
         readonly: true,
@@ -462,42 +210,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Sets fields to values, creating them when missing.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/update.d.ts",
+        line: 40,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "mapped",
-        text: "{ readonly [Path in UpdatePaths<TDocument>]?: FilterPathValue<TDocument, Path> }",
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/update.d.ts",
-          line: 40,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 734,
@@ -505,6 +225,8 @@ const api = {
       anchor: "-unset",
       kind: "Property",
       kindId: 1024,
+      description: "Removes fields.",
+      type: "{ readonly [Path in UpdatePaths<TDocument>]?: true | 1 }",
       flags: {
         static: false,
         readonly: true,
@@ -513,46 +235,18 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Removes fields.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/update.d.ts",
+        line: 44,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "mapped",
-        text: "{ readonly [Path in UpdatePaths<TDocument>]?: true | 1 }",
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/update.d.ts",
-          line: 44,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
   ],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -1048,7 +742,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

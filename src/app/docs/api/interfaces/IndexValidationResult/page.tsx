@@ -1,12 +1,14 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 695,
   name: "IndexValidationResult",
   slug: "IndexValidationResult",
-  route: "interfaces/IndexValidationResult",
   kind: "Interface",
   kindId: 256,
+  route: "interfaces/IndexValidationResult",
+  description: "The result of SinterCollection.validateIndexes.",
+  type: null,
   flags: {
     static: false,
     readonly: false,
@@ -15,45 +17,16 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "The result of ",
-        target: null,
-      },
-      {
-        kind: "inline-tag",
-        text: "SinterCollection.validateIndexes",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ".",
-        target: null,
-      },
-    ],
-    blockTags: [],
+  source: {
+    fileName: "packages/driver/dist/indexes.d.ts",
+    line: 95,
+    character: 17,
+    url: null,
   },
-  type: null,
   hierarchy: {
     extends: [],
     extendedBy: [],
-  },
-  sources: [
-    {
-      fileName: "packages/driver/dist/indexes.d.ts",
-      line: 95,
-      character: 17,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
   },
   typeParameters: [],
   signatures: [],
@@ -64,6 +37,8 @@ const api = {
       anchor: "documents",
       kind: "Property",
       kindId: 1024,
+      description: "How many documents were checked.",
+      type: "number",
       flags: {
         static: false,
         readonly: true,
@@ -72,42 +47,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "How many documents were checked.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/indexes.d.ts",
+        line: 101,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "number",
-        name: "number",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/indexes.d.ts",
-          line: 101,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 697,
@@ -115,6 +62,8 @@ const api = {
       anchor: "indexes",
       kind: "Property",
       kindId: 1024,
+      description: "How many indexes were checked.",
+      type: "number",
       flags: {
         static: false,
         readonly: true,
@@ -123,42 +72,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "How many indexes were checked.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/indexes.d.ts",
+        line: 99,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "number",
-        name: "number",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/indexes.d.ts",
-          line: 99,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 699,
@@ -166,6 +87,8 @@ const api = {
       anchor: "issues",
       kind: "Property",
       kindId: 1024,
+      description: "Every difference found; empty when `valid` is `true`.",
+      type: "readonly IndexIssue[]",
       flags: {
         static: false,
         readonly: true,
@@ -174,62 +97,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Every difference found; empty when ",
-            target: null,
-          },
-          {
-            kind: "code",
-            text: "`valid`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: " is ",
-            target: null,
-          },
-          {
-            kind: "code",
-            text: "`true`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: ".",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/indexes.d.ts",
+        line: 103,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "typeOperator",
-        text: "readonly IndexIssue[]",
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/indexes.d.ts",
-          line: 103,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 696,
@@ -237,6 +112,8 @@ const api = {
       anchor: "valid",
       kind: "Property",
       kindId: 1024,
+      description: "Whether every index matches the documents.",
+      type: "boolean",
       flags: {
         static: false,
         readonly: true,
@@ -245,46 +122,18 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Whether every index matches the documents.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/indexes.d.ts",
+        line: 97,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "boolean",
-        name: "boolean",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/indexes.d.ts",
-          line: 97,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
   ],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -780,7 +629,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

@@ -1,12 +1,15 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 657,
   name: "Sort",
   slug: "Sort",
-  route: "types/Sort",
   kind: "TypeAlias",
   kindId: 2097152,
+  route: "types/Sort",
+  description:
+    "A sort order: `[path, direction]` pairs, where earlier pairs take priority.",
+  type: 'readonly (readonly [path: FilterPaths<TDocument> | "_id", direction: SortDirection])[]',
   flags: {
     static: false,
     readonly: false,
@@ -15,71 +18,29 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "A sort order: ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`[path, direction]`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: " pairs, where earlier pairs take priority.",
-        target: null,
-      },
-    ],
-    blockTags: [],
-  },
-  type: {
-    kind: "typeOperator",
-    text: 'readonly (readonly [path: FilterPaths<TDocument> | "_id", direction: SortDirection])[]',
-    name: null,
-    target: null,
-    children: [],
+  source: {
+    fileName: "packages/driver/dist/filter.d.ts",
+    line: 83,
+    character: 12,
+    url: null,
   },
   hierarchy: {
     extends: [],
     extendedBy: [],
   },
-  sources: [
-    {
-      fileName: "packages/driver/dist/filter.d.ts",
-      line: 83,
-      character: 12,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
-  },
   typeParameters: [
     {
-      id: 658,
       name: "TDocument",
-      type: {
-        kind: "intrinsic",
-        text: "object",
-        name: "object",
-        target: null,
-        children: [],
-      },
+      type: "object",
       default: null,
-      comment: null,
+      description: "",
     },
   ],
   signatures: [],
   children: [],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -575,7 +536,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

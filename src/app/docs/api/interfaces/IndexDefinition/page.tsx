@@ -1,12 +1,14 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 678,
   name: "IndexDefinition",
   slug: "IndexDefinition",
-  route: "interfaces/IndexDefinition",
   kind: "Interface",
   kindId: 256,
+  route: "interfaces/IndexDefinition",
+  description: "How to build an index, passed to SinterCollection.createIndex.",
+  type: null,
   flags: {
     static: false,
     readonly: false,
@@ -15,69 +17,23 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "How to build an index, passed to ",
-        target: null,
-      },
-      {
-        kind: "inline-tag",
-        text: "SinterCollection.createIndex",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ".",
-        target: null,
-      },
-    ],
-    blockTags: [],
+  source: {
+    fileName: "packages/driver/dist/indexes.d.ts",
+    line: 9,
+    character: 17,
+    url: null,
   },
-  type: null,
   hierarchy: {
     extends: [],
     extendedBy: [],
   },
-  sources: [
-    {
-      fileName: "packages/driver/dist/indexes.d.ts",
-      line: 9,
-      character: 17,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
-  },
   typeParameters: [
     {
-      id: 679,
       name: "TDocument",
-      type: {
-        kind: "intrinsic",
-        text: "object",
-        name: "object",
-        target: null,
-        children: [],
-      },
-      default: {
-        kind: "reference",
-        text: "Document",
-        name: "Document",
-        target: {
-          id: 26,
-          name: "Document",
-          route: "interfaces/Document",
-        },
-        children: [],
-      },
-      comment: null,
+      type: "object",
+      default: "Document",
+      description: "",
     },
   ],
   signatures: [],
@@ -88,6 +44,9 @@ const api = {
       anchor: "direction",
       kind: "Property",
       kindId: 1024,
+      description:
+        "Defaults to 1. Both directions serve the same lookups today.",
+      type: "1 | -1",
       flags: {
         static: false,
         readonly: true,
@@ -96,42 +55,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Defaults to 1. Both directions serve the same lookups today.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/indexes.d.ts",
+        line: 13,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "union",
-        text: "1 | -1",
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/indexes.d.ts",
-          line: 13,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 680,
@@ -139,6 +70,9 @@ const api = {
       anchor: "field",
       kind: "Property",
       kindId: 1024,
+      description:
+        "The field to index. Dotted paths reach into nested documents.",
+      type: "Exclude<TDocument extends object ? { [Key in string]: Key | (NonNullable<TDocument[Key]> extends AtomicValue | readonly unknown[] ? never : NonNullable<TDocument[Key]> extends object ? `${Key}.${NonNullable<(...)[(...)]> extends object ? { [Key in (...)]: (...) }[(...) & (...)] : never}` : never) }[keyof TDocument & string] : never>",
       flags: {
         static: false,
         readonly: true,
@@ -147,50 +81,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The field to index. Dotted paths reach into nested documents.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/indexes.d.ts",
+        line: 11,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "reference",
-        text: "Exclude<TDocument extends object ? { [Key in string]: Key | (NonNullable<TDocument[Key]> extends AtomicValue | readonly unknown[] ? never : NonNullable<TDocument[Key]> extends object ? `${Key}.${NonNullable<(...)[(...)]> extends object ? { [Key in (...)]: (...) }[(...) & (...)] : never}` : never) }[keyof TDocument & string] : never>",
-        name: "Exclude",
-        target: null,
-        children: [
-          {
-            kind: "conditional",
-            text: "TDocument extends object ? { [Key in string]: Key | (NonNullable<TDocument[Key]> extends AtomicValue | readonly unknown[] ? never : NonNullable<TDocument[Key]> extends object ? `${Key}.${NonNullable<(...)[(...)]> extends object ? { [Key in (...)]: (...) }[(...) & (...)] : never}` : never) }[keyof TDocument & string] : never",
-            name: null,
-            target: null,
-            children: [],
-          },
-        ],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/indexes.d.ts",
-          line: 11,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 684,
@@ -198,6 +96,8 @@ const api = {
       anchor: "name",
       kind: "Property",
       kindId: 1024,
+      description: "Defaults to the field and direction, such as `email_1`.",
+      type: "string",
       flags: {
         static: false,
         readonly: true,
@@ -206,52 +106,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Defaults to the field and direction, such as ",
-            target: null,
-          },
-          {
-            kind: "code",
-            text: "`email_1`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: ".",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/indexes.d.ts",
+        line: 19,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "string",
-        name: "string",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/indexes.d.ts",
-          line: 19,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 683,
@@ -259,6 +121,9 @@ const api = {
       anchor: "sparse",
       kind: "Property",
       kindId: 1024,
+      description:
+        "Documents without the field are left out, so they never conflict.",
+      type: "boolean",
       flags: {
         static: false,
         readonly: true,
@@ -267,42 +132,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Documents without the field are left out, so they never conflict.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/indexes.d.ts",
+        line: 17,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "boolean",
-        name: "boolean",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/indexes.d.ts",
-          line: 17,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 682,
@@ -310,6 +147,9 @@ const api = {
       anchor: "unique",
       kind: "Property",
       kindId: 1024,
+      description:
+        "At most one document may hold a given value, or lack the field.",
+      type: "boolean",
       flags: {
         static: false,
         readonly: true,
@@ -318,46 +158,18 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "At most one document may hold a given value, or lack the field.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/indexes.d.ts",
+        line: 15,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "boolean",
-        name: "boolean",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/indexes.d.ts",
-          line: 15,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
   ],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -853,7 +665,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

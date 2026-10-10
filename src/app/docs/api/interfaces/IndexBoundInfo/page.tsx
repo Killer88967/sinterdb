@@ -1,12 +1,14 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 675,
   name: "IndexBoundInfo",
   slug: "IndexBoundInfo",
-  route: "interfaces/IndexBoundInfo",
   kind: "Interface",
   kindId: 256,
+  route: "interfaces/IndexBoundInfo",
+  description: "One end of an index range in an ExplainResult.",
+  type: null,
   flags: {
     static: false,
     readonly: false,
@@ -15,45 +17,16 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "One end of an index range in an ",
-        target: null,
-      },
-      {
-        kind: "inline-tag",
-        text: "ExplainResult",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ".",
-        target: null,
-      },
-    ],
-    blockTags: [],
+  source: {
+    fileName: "packages/driver/dist/indexes.d.ts",
+    line: 50,
+    character: 17,
+    url: null,
   },
-  type: null,
   hierarchy: {
     extends: [],
     extendedBy: [],
-  },
-  sources: [
-    {
-      fileName: "packages/driver/dist/indexes.d.ts",
-      line: 50,
-      character: 17,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
   },
   typeParameters: [],
   signatures: [],
@@ -64,6 +37,8 @@ const api = {
       anchor: "inclusive",
       kind: "Property",
       kindId: 1024,
+      description: "Whether documents equal to the bound are included.",
+      type: "boolean",
       flags: {
         static: false,
         readonly: true,
@@ -72,42 +47,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Whether documents equal to the bound are included.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/indexes.d.ts",
+        line: 54,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "boolean",
-        name: "boolean",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/indexes.d.ts",
-          line: 54,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 676,
@@ -115,6 +62,8 @@ const api = {
       anchor: "value",
       kind: "Property",
       kindId: 1024,
+      description: "The bound value.",
+      type: "DocumentValue",
       flags: {
         static: false,
         readonly: true,
@@ -123,46 +72,18 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The bound value.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/indexes.d.ts",
+        line: 52,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "reference",
-        text: "DocumentValue",
-        name: "DocumentValue",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/indexes.d.ts",
-          line: 52,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
   ],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -658,7 +579,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

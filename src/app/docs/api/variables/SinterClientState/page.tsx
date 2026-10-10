@@ -1,12 +1,15 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 172,
   name: "SinterClientState",
   slug: "SinterClientState",
-  route: "variables/SinterClientState",
   kind: "Variable",
   kindId: 32,
+  route: "variables/SinterClientState",
+  description:
+    "The lifecycle states of a SinterClient.\n\nA client moves from `new` to `connecting` to `connected`, and finally to\n`closing` and `closed`. A failed connection attempt returns it to `new`, so\n`connect()` can be called again. A closed client cannot be reused.",
+  type: '{ Closed: "closed"; Closing: "closing"; Connected: "connected"; Connecting: "connecting"; New: "new" }',
   flags: {
     static: false,
     readonly: false,
@@ -15,394 +18,22 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: true,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "The lifecycle states of a ",
-        target: null,
-      },
-      {
-        kind: "inline-tag",
-        text: "SinterClient",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ".\n\nA client moves from ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`new`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: " to ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`connecting`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: " to ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`connected`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ", and finally to\n",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`closing`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: " and ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`closed`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ". A failed connection attempt returns it to ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`new`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ", so\n",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`connect()`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: " can be called again. A closed client cannot be reused.",
-        target: null,
-      },
-    ],
-    blockTags: [],
-  },
-  type: {
-    kind: "reflection",
-    text: '{ Closed: "closed"; Closing: "closing"; Connected: "connected"; Connecting: "connecting"; New: "new" }',
-    name: null,
-    target: null,
-    children: [],
+  source: {
+    fileName: "packages/driver/dist/client.d.ts",
+    line: 93,
+    character: 21,
+    url: null,
   },
   hierarchy: {
     extends: [],
     extendedBy: [],
   },
-  sources: [
-    {
-      fileName: "packages/driver/dist/client.d.ts",
-      line: 93,
-      character: 21,
-      url: null,
-    },
-    {
-      fileName: "packages/driver/dist/client.d.ts",
-      line: 106,
-      character: 12,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
-  },
   typeParameters: [],
   signatures: [],
   children: [],
-  typeDeclaration: [
-    {
-      id: 178,
-      name: "Closed",
-      anchor: "closed",
-      kind: "Property",
-      kindId: 1024,
-      flags: {
-        static: false,
-        readonly: true,
-        optional: false,
-        abstract: false,
-        protected: false,
-        private: false,
-        external: false,
-        const: false,
-      },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Closed for good; the client cannot be reused.",
-            target: null,
-          },
-        ],
-        blockTags: [],
-      },
-      type: {
-        kind: "literal",
-        text: '"closed"',
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 103,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
-      signatures: [],
-      typeDeclaration: [],
-    },
-    {
-      id: 177,
-      name: "Closing",
-      anchor: "closing",
-      kind: "Property",
-      kindId: 1024,
-      flags: {
-        static: false,
-        readonly: true,
-        optional: false,
-        abstract: false,
-        protected: false,
-        private: false,
-        external: false,
-        const: false,
-      },
-      comment: {
-        summary: [
-          {
-            kind: "code",
-            text: "`close()`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: " is in progress.",
-            target: null,
-          },
-        ],
-        blockTags: [],
-      },
-      type: {
-        kind: "literal",
-        text: '"closing"',
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 101,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
-      signatures: [],
-      typeDeclaration: [],
-    },
-    {
-      id: 176,
-      name: "Connected",
-      anchor: "connected",
-      kind: "Property",
-      kindId: 1024,
-      flags: {
-        static: false,
-        readonly: true,
-        optional: false,
-        abstract: false,
-        protected: false,
-        private: false,
-        external: false,
-        const: false,
-      },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Connected and ready for commands.",
-            target: null,
-          },
-        ],
-        blockTags: [],
-      },
-      type: {
-        kind: "literal",
-        text: '"connected"',
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 99,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
-      signatures: [],
-      typeDeclaration: [],
-    },
-    {
-      id: 175,
-      name: "Connecting",
-      anchor: "connecting",
-      kind: "Property",
-      kindId: 1024,
-      flags: {
-        static: false,
-        readonly: true,
-        optional: false,
-        abstract: false,
-        protected: false,
-        private: false,
-        external: false,
-        const: false,
-      },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "A connection attempt is in progress.",
-            target: null,
-          },
-        ],
-        blockTags: [],
-      },
-      type: {
-        kind: "literal",
-        text: '"connecting"',
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 97,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
-      signatures: [],
-      typeDeclaration: [],
-    },
-    {
-      id: 174,
-      name: "New",
-      anchor: "new",
-      kind: "Property",
-      kindId: 1024,
-      flags: {
-        static: false,
-        readonly: true,
-        optional: false,
-        abstract: false,
-        protected: false,
-        private: false,
-        external: false,
-        const: false,
-      },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Created, not yet connected. Also the state after a failed connection attempt.",
-            target: null,
-          },
-        ],
-        blockTags: [],
-      },
-      type: {
-        kind: "literal",
-        text: '"new"',
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 95,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
-      signatures: [],
-      typeDeclaration: [],
-    },
-  ],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -898,7 +529,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

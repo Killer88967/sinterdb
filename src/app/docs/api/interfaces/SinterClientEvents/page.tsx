@@ -1,12 +1,15 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 180,
   name: "SinterClientEvents",
   slug: "SinterClientEvents",
-  route: "interfaces/SinterClientEvents",
   kind: "Interface",
   kindId: 256,
+  route: "interfaces/SinterClientEvents",
+  description:
+    "The events a SinterClient emits.\n\nAn `error` event is emitted only while at least one `error` listener is\nattached.",
+  type: null,
   flags: {
     static: false,
     readonly: false,
@@ -15,65 +18,16 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "The events a ",
-        target: null,
-      },
-      {
-        kind: "inline-tag",
-        text: "SinterClient",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: " emits.\n\nAn ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`error`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: " event is emitted only while at least one ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`error`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: " listener is\nattached.",
-        target: null,
-      },
-    ],
-    blockTags: [],
+  source: {
+    fileName: "packages/driver/dist/client.d.ts",
+    line: 70,
+    character: 17,
+    url: null,
   },
-  type: null,
   hierarchy: {
     extends: [],
     extendedBy: [],
-  },
-  sources: [
-    {
-      fileName: "packages/driver/dist/client.d.ts",
-      line: 70,
-      character: 17,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
   },
   typeParameters: [],
   signatures: [],
@@ -84,6 +38,8 @@ const api = {
       anchor: "closed",
       kind: "Property",
       kindId: 1024,
+      description: "Emitted after the client has closed.",
+      type: "[client: SinterClient]",
       flags: {
         static: false,
         readonly: false,
@@ -92,42 +48,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Emitted after the client has closed.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 79,
+        character: 4,
+        url: null,
       },
-      type: {
-        kind: "tuple",
-        text: "[client: SinterClient]",
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 79,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 182,
@@ -135,6 +63,9 @@ const api = {
       anchor: "connected",
       kind: "Property",
       kindId: 1024,
+      description:
+        "Emitted once the handshake has succeeded and the client is ready for\ncommands.",
+      type: "[client: SinterClient]",
       flags: {
         static: false,
         readonly: false,
@@ -143,42 +74,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Emitted once the handshake has succeeded and the client is ready for\ncommands.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 77,
+        character: 4,
+        url: null,
       },
-      type: {
-        kind: "tuple",
-        text: "[client: SinterClient]",
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 77,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 181,
@@ -186,6 +89,8 @@ const api = {
       anchor: "connecting",
       kind: "Property",
       kindId: 1024,
+      description: "Emitted when `connect()` starts a connection attempt.",
+      type: "[client: SinterClient]",
       flags: {
         static: false,
         readonly: false,
@@ -194,52 +99,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Emitted when ",
-            target: null,
-          },
-          {
-            kind: "code",
-            text: "`connect()`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: " starts a connection attempt.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 72,
+        character: 4,
+        url: null,
       },
-      type: {
-        kind: "tuple",
-        text: "[client: SinterClient]",
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 72,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 184,
@@ -247,6 +114,9 @@ const api = {
       anchor: "error",
       kind: "Property",
       kindId: 1024,
+      description:
+        "Emitted when the connection fails after it was established, such as a\nsocket error or an idle timeout.",
+      type: "[error: Error]",
       flags: {
         static: false,
         readonly: false,
@@ -255,46 +125,18 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Emitted when the connection fails after it was established, such as a\nsocket error or an idle timeout.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 84,
+        character: 4,
+        url: null,
       },
-      type: {
-        kind: "tuple",
-        text: "[error: Error]",
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 84,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
   ],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -790,7 +632,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

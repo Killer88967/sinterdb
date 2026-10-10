@@ -1,12 +1,15 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 641,
   name: "FilterOperators",
   slug: "FilterOperators",
-  route: "types/FilterOperators",
   kind: "TypeAlias",
   kindId: 2097152,
+  route: "types/FilterOperators",
+  description:
+    "The operators that can be applied to a single field: `$eq`, `$ne`, `$in`,\n`$nin`, `$exists`, `$not`, plus the range operators for comparable values.",
+  type: "{ $eq?: TValue; $exists?: boolean; $in?: readonly (TValue | ElementOf<TValue>)[]; $ne?: TValue; $nin?: readonly (TValue | ElementOf<TValue>)[]; $not?: FilterOperators<TValue> } & ComparisonOperators<TValue>",
   flags: {
     static: false,
     readonly: false,
@@ -15,115 +18,29 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "The operators that can be applied to a single field: ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`$eq`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ", ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`$ne`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ", ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`$in`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ",\n",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`$nin`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ", ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`$exists`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ", ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`$not`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ", plus the range operators for comparable values.",
-        target: null,
-      },
-    ],
-    blockTags: [],
-  },
-  type: {
-    kind: "intersection",
-    text: "{ $eq?: TValue; $exists?: boolean; $in?: readonly (TValue | ElementOf<TValue>)[]; $ne?: TValue; $nin?: readonly (TValue | ElementOf<TValue>)[]; $not?: FilterOperators<TValue> } & ComparisonOperators<TValue>",
-    name: null,
-    target: null,
-    children: [],
+  source: {
+    fileName: "packages/driver/dist/filter.d.ts",
+    line: 34,
+    character: 12,
+    url: null,
   },
   hierarchy: {
     extends: [],
     extendedBy: [],
   },
-  sources: [
-    {
-      fileName: "packages/driver/dist/filter.d.ts",
-      line: 34,
-      character: 12,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
-  },
   typeParameters: [
     {
-      id: 649,
       name: "TValue",
       type: null,
       default: null,
-      comment: null,
+      description: "",
     },
   ],
   signatures: [],
   children: [],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -619,7 +536,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

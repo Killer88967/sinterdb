@@ -1,12 +1,14 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 189,
   name: "SinterPingResult",
   slug: "SinterPingResult",
-  route: "interfaces/SinterPingResult",
   kind: "Interface",
   kindId: 256,
+  route: "interfaces/SinterPingResult",
+  description: "The result of SinterClient.ping.",
+  type: null,
   flags: {
     static: false,
     readonly: false,
@@ -15,45 +17,16 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "The result of ",
-        target: null,
-      },
-      {
-        kind: "inline-tag",
-        text: "SinterClient.ping",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ".",
-        target: null,
-      },
-    ],
-    blockTags: [],
+  source: {
+    fileName: "packages/driver/dist/client.d.ts",
+    line: 52,
+    character: 17,
+    url: null,
   },
-  type: null,
   hierarchy: {
     extends: [],
     extendedBy: [],
-  },
-  sources: [
-    {
-      fileName: "packages/driver/dist/client.d.ts",
-      line: 52,
-      character: 17,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
   },
   typeParameters: [],
   signatures: [],
@@ -64,6 +37,8 @@ const api = {
       anchor: "ok",
       kind: "Property",
       kindId: 1024,
+      description: "Always `true`; a failed ping throws instead.",
+      type: "true",
       flags: {
         static: false,
         readonly: true,
@@ -72,52 +47,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Always ",
-            target: null,
-          },
-          {
-            kind: "code",
-            text: "`true`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: "; a failed ping throws instead.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 54,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "literal",
-        text: "true",
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 54,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 192,
@@ -125,6 +62,8 @@ const api = {
       anchor: "received-at",
       kind: "Property",
       kindId: 1024,
+      description: "When the server received the ping, by the server's clock.",
+      type: "Date",
       flags: {
         static: false,
         readonly: true,
@@ -133,42 +72,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "When the server received the ping, by the server's clock.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 58,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "reference",
-        text: "Date",
-        name: "Date",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 58,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 193,
@@ -176,6 +87,9 @@ const api = {
       anchor: "round-trip-time-ms",
       kind: "Property",
       kindId: 1024,
+      description:
+        "The measured round trip, in milliseconds, with sub-millisecond precision.",
+      type: "number",
       flags: {
         static: false,
         readonly: true,
@@ -184,42 +98,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The measured round trip, in milliseconds, with sub-millisecond precision.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 62,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "number",
-        name: "number",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 62,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 191,
@@ -227,6 +113,8 @@ const api = {
       anchor: "sent-at",
       kind: "Property",
       kindId: 1024,
+      description: "When the client sent the ping.",
+      type: "Date",
       flags: {
         static: false,
         readonly: true,
@@ -235,46 +123,18 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "When the client sent the ping.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 56,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "reference",
-        text: "Date",
-        name: "Date",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 56,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
   ],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -770,7 +630,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

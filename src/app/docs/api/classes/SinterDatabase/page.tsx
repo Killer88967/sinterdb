@@ -1,12 +1,15 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 325,
   name: "SinterDatabase",
   slug: "SinterDatabase",
-  route: "classes/SinterDatabase",
   kind: "Class",
   kindId: 128,
+  route: "classes/SinterDatabase",
+  description:
+    "A handle to a database on a server.\n\nGet one from SinterClient.db.",
+  type: null,
   flags: {
     static: false,
     readonly: false,
@@ -15,45 +18,16 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "A handle to a database on a server.\n\nGet one from ",
-        target: null,
-      },
-      {
-        kind: "inline-tag",
-        text: "SinterClient.db",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ".",
-        target: null,
-      },
-    ],
-    blockTags: [],
+  source: {
+    fileName: "packages/driver/dist/database.d.ts",
+    line: 9,
+    character: 21,
+    url: null,
   },
-  type: null,
   hierarchy: {
     extends: [],
     extendedBy: [],
-  },
-  sources: [
-    {
-      fileName: "packages/driver/dist/database.d.ts",
-      line: 9,
-      character: 21,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
   },
   typeParameters: [],
   signatures: [],
@@ -64,6 +38,8 @@ const api = {
       anchor: "constructor",
       kind: "Constructor",
       kindId: 512,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -72,119 +48,45 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/database.d.ts",
-          line: 14,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/driver/dist/database.d.ts",
+        line: 14,
+        character: 4,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 327,
           name: "SinterDatabase",
-          comment: null,
+          description: "",
           typeParameters: [],
           parameters: [
             {
-              id: 328,
               name: "client",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: false,
-                const: false,
-              },
-              type: {
-                kind: "reference",
-                text: "SinterClient",
-                name: "SinterClient",
-                target: {
-                  id: 32,
-                  name: "SinterClient",
-                  route: "classes/SinterClient",
-                },
-                children: [],
-              },
+              type: "SinterClient",
+              optional: false,
               defaultValue: null,
-              comment: {
-                summary: [
-                  {
-                    kind: "text",
-                    text: "The client this database belongs to.",
-                    target: null,
-                  },
-                ],
-                blockTags: [],
-              },
+              description: "The client this database belongs to.",
             },
             {
-              id: 329,
               name: "name",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: false,
-                const: false,
-              },
-              type: {
-                kind: "intrinsic",
-                text: "string",
-                name: "string",
-                target: null,
-                children: [],
-              },
+              type: "string",
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
           ],
-          returnType: {
-            kind: "reference",
-            text: "SinterDatabase",
-            name: "SinterDatabase",
-            target: {
-              id: 325,
-              name: "SinterDatabase",
-              route: "classes/SinterDatabase",
-            },
-            children: [],
-          },
-          sources: [
-            {
-              fileName: "packages/driver/dist/database.d.ts",
-              line: 14,
-              character: 4,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: null,
-            overwrites: null,
-            implementationOf: null,
+          returns: "SinterDatabase",
+          returnsDescription: "",
+          source: {
+            fileName: "packages/driver/dist/database.d.ts",
+            line: 14,
+            character: 4,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 330,
@@ -192,6 +94,8 @@ const api = {
       anchor: "client",
       kind: "Property",
       kindId: 1024,
+      description: "The client this database belongs to.",
+      type: "SinterClient",
       flags: {
         static: false,
         readonly: true,
@@ -200,46 +104,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The client this database belongs to.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/database.d.ts",
+        line: 11,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "reference",
-        text: "SinterClient",
-        name: "SinterClient",
-        target: {
-          id: 32,
-          name: "SinterClient",
-          route: "classes/SinterClient",
-        },
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/database.d.ts",
-          line: 11,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 331,
@@ -247,6 +119,8 @@ const api = {
       anchor: "name",
       kind: "Property",
       kindId: 1024,
+      description: "The database name.",
+      type: "string",
       flags: {
         static: false,
         readonly: true,
@@ -255,42 +129,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The database name.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/database.d.ts",
+        line: 13,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "string",
-        name: "string",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/database.d.ts",
-          line: 13,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 332,
@@ -298,6 +144,8 @@ const api = {
       anchor: "collection",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -306,146 +154,45 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/database.d.ts",
-          line: 25,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/driver/dist/database.d.ts",
+        line: 25,
+        character: 4,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 333,
           name: "collection",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Returns a handle to a collection. No request is sent; the collection is\ncreated by the first write.",
-                target: null,
-              },
-            ],
-            blockTags: [],
-          },
+          description:
+            "Returns a handle to a collection. No request is sent; the collection is\ncreated by the first write.",
           typeParameters: [
             {
-              id: 334,
               name: "TDocument",
-              type: {
-                kind: "intrinsic",
-                text: "object",
-                name: "object",
-                target: null,
-                children: [],
-              },
-              default: {
-                kind: "reference",
-                text: "Document",
-                name: "Document",
-                target: {
-                  id: 26,
-                  name: "Document",
-                  route: "interfaces/Document",
-                },
-                children: [],
-              },
-              comment: {
-                summary: [
-                  {
-                    kind: "text",
-                    text: "The shape of the documents, used for\n  type-checking.",
-                    target: null,
-                  },
-                ],
-                blockTags: [],
-              },
+              type: "object",
+              default: "Document",
             },
           ],
           parameters: [
             {
-              id: 335,
               name: "name",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: false,
-                const: false,
-              },
-              type: {
-                kind: "intrinsic",
-                text: "string",
-                name: "string",
-                target: null,
-                children: [],
-              },
+              type: "string",
+              optional: false,
               defaultValue: null,
-              comment: {
-                summary: [
-                  {
-                    kind: "text",
-                    text: "The collection name.",
-                    target: null,
-                  },
-                ],
-                blockTags: [],
-              },
+              description: "The collection name.",
             },
           ],
-          returnType: {
-            kind: "reference",
-            text: "SinterCollection<TDocument>",
-            name: "SinterCollection",
-            target: {
-              id: 199,
-              name: "SinterCollection",
-              route: "classes/SinterCollection",
-            },
-            children: [
-              {
-                kind: "reference",
-                text: "TDocument",
-                name: "TDocument",
-                target: {
-                  id: 334,
-                  name: "TDocument",
-                  route: "other/TDocument",
-                },
-                children: [],
-              },
-            ],
-          },
-          sources: [
-            {
-              fileName: "packages/driver/dist/database.d.ts",
-              line: 25,
-              character: 4,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: null,
-            overwrites: null,
-            implementationOf: null,
+          returns: "SinterCollection<TDocument>",
+          returnsDescription: "",
+          source: {
+            fileName: "packages/driver/dist/database.d.ts",
+            line: 25,
+            character: 4,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 336,
@@ -453,6 +200,8 @@ const api = {
       anchor: "list-collections",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -461,76 +210,34 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/database.d.ts",
-          line: 27,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/driver/dist/database.d.ts",
+        line: 27,
+        character: 4,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 337,
           name: "listCollections",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Lists the names of the collections in this database.",
-                target: null,
-              },
-            ],
-            blockTags: [],
-          },
+          description: "Lists the names of the collections in this database.",
           typeParameters: [],
           parameters: [],
-          returnType: {
-            kind: "reference",
-            text: "Promise<string[]>",
-            name: "Promise",
-            target: null,
-            children: [
-              {
-                kind: "array",
-                text: "string[]",
-                name: null,
-                target: null,
-                children: [],
-              },
-            ],
-          },
-          sources: [
-            {
-              fileName: "packages/driver/dist/database.d.ts",
-              line: 27,
-              character: 4,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: null,
-            overwrites: null,
-            implementationOf: null,
+          returns: "Promise<string[]>",
+          returnsDescription: "",
+          source: {
+            fileName: "packages/driver/dist/database.d.ts",
+            line: 27,
+            character: 4,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
   ],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -1026,7 +733,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

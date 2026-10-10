@@ -1,12 +1,14 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 728,
   name: "PathsMatching",
   slug: "PathsMatching",
-  route: "types/PathsMatching",
   kind: "TypeAlias",
   kindId: 2097152,
+  route: "types/PathsMatching",
+  description: "The updatable paths whose value type is assignable to `TKind`.",
+  type: "{ [Path in UpdatePaths<TDocument>]: [NonNullable<FilterPathValue<TDocument, Path>>] extends [TKind] ? Path : never }[UpdatePaths<TDocument>]",
   flags: {
     static: false,
     readonly: false,
@@ -15,78 +17,35 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "The updatable paths whose value type is assignable to ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`TKind`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ".",
-        target: null,
-      },
-    ],
-    blockTags: [],
-  },
-  type: {
-    kind: "indexedAccess",
-    text: "{ [Path in UpdatePaths<TDocument>]: [NonNullable<FilterPathValue<TDocument, Path>>] extends [TKind] ? Path : never }[UpdatePaths<TDocument>]",
-    name: null,
-    target: null,
-    children: [],
+  source: {
+    fileName: "packages/driver/dist/update.d.ts",
+    line: 9,
+    character: 12,
+    url: null,
   },
   hierarchy: {
     extends: [],
     extendedBy: [],
   },
-  sources: [
-    {
-      fileName: "packages/driver/dist/update.d.ts",
-      line: 9,
-      character: 12,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
-  },
   typeParameters: [
     {
-      id: 729,
       name: "TDocument",
-      type: {
-        kind: "intrinsic",
-        text: "object",
-        name: "object",
-        target: null,
-        children: [],
-      },
+      type: "object",
       default: null,
-      comment: null,
+      description: "",
     },
     {
-      id: 730,
       name: "TKind",
       type: null,
       default: null,
-      comment: null,
+      description: "",
     },
   ],
   signatures: [],
   children: [],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -582,7 +541,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

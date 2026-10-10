@@ -1,12 +1,15 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 726,
   name: "NumericPaths",
   slug: "NumericPaths",
-  route: "types/NumericPaths",
   kind: "TypeAlias",
   kindId: 2097152,
+  route: "types/NumericPaths",
+  description:
+    "Updatable paths that hold a number or bigint, the targets of `$inc`.",
+  type: "PathsMatching<TDocument, number | bigint>",
   flags: {
     static: false,
     readonly: false,
@@ -15,94 +18,29 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "Updatable paths that hold a number or bigint, the targets of ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`$inc`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ".",
-        target: null,
-      },
-    ],
-    blockTags: [],
-  },
-  type: {
-    kind: "reference",
-    text: "PathsMatching<TDocument, number | bigint>",
-    name: "PathsMatching",
-    target: {
-      id: 728,
-      name: "PathsMatching",
-      route: "types/PathsMatching",
-    },
-    children: [
-      {
-        kind: "reference",
-        text: "TDocument",
-        name: "TDocument",
-        target: {
-          id: 727,
-          name: "TDocument",
-          route: "other/TDocument",
-        },
-        children: [],
-      },
-      {
-        kind: "union",
-        text: "number | bigint",
-        name: null,
-        target: null,
-        children: [],
-      },
-    ],
+  source: {
+    fileName: "packages/driver/dist/update.d.ts",
+    line: 15,
+    character: 12,
+    url: null,
   },
   hierarchy: {
     extends: [],
     extendedBy: [],
   },
-  sources: [
-    {
-      fileName: "packages/driver/dist/update.d.ts",
-      line: 15,
-      character: 12,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
-  },
   typeParameters: [
     {
-      id: 727,
       name: "TDocument",
-      type: {
-        kind: "intrinsic",
-        text: "object",
-        name: "object",
-        target: null,
-        children: [],
-      },
+      type: "object",
       default: null,
-      comment: null,
+      description: "",
     },
   ],
   signatures: [],
   children: [],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -598,7 +536,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

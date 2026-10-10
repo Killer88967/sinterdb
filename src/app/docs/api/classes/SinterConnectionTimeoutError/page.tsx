@@ -1,12 +1,14 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 438,
   name: "SinterConnectionTimeoutError",
   slug: "SinterConnectionTimeoutError",
-  route: "classes/SinterConnectionTimeoutError",
   kind: "Class",
   kindId: 128,
+  route: "classes/SinterConnectionTimeoutError",
+  description: "Connecting took longer than `connectTimeoutMS`.",
+  type: null,
   flags: {
     static: false,
     readonly: false,
@@ -15,45 +17,16 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "Connecting took longer than ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`connectTimeoutMS`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ".",
-        target: null,
-      },
-    ],
-    blockTags: [],
+  source: {
+    fileName: "packages/driver/dist/errors.d.ts",
+    line: 92,
+    character: 21,
+    url: null,
   },
-  type: null,
   hierarchy: {
     extends: ["SinterConnectionError"],
     extendedBy: [],
-  },
-  sources: [
-    {
-      fileName: "packages/driver/dist/errors.d.ts",
-      line: 92,
-      character: 21,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
   },
   typeParameters: [],
   signatures: [],
@@ -64,6 +37,8 @@ const api = {
       anchor: "constructor",
       kind: "Constructor",
       kindId: 512,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -72,106 +47,45 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/errors.d.ts",
-          line: 89,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: "constructor",
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/driver/dist/errors.d.ts",
+        line: 89,
+        character: 4,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 449,
           name: "SinterConnectionTimeoutError",
-          comment: null,
+          description: "",
           typeParameters: [],
           parameters: [
             {
-              id: 450,
               name: "message",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: false,
-                const: false,
-              },
-              type: {
-                kind: "intrinsic",
-                text: "string",
-                name: "string",
-                target: null,
-                children: [],
-              },
+              type: "string",
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
             {
-              id: 451,
               name: "options",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: true,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: false,
-                const: false,
-              },
-              type: {
-                kind: "reference",
-                text: "ErrorOptions",
-                name: "ErrorOptions",
-                target: null,
-                children: [],
-              },
+              type: "ErrorOptions",
+              optional: true,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
           ],
-          returnType: {
-            kind: "reference",
-            text: "SinterConnectionTimeoutError",
-            name: "SinterConnectionTimeoutError",
-            target: {
-              id: 438,
-              name: "SinterConnectionTimeoutError",
-              route: "classes/SinterConnectionTimeoutError",
-            },
-            children: [],
-          },
-          sources: [
-            {
-              fileName: "packages/driver/dist/errors.d.ts",
-              line: 89,
-              character: 4,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: "SinterConnectionError",
-            overwrites: null,
-            implementationOf: null,
+          returns: "SinterConnectionTimeoutError",
+          returnsDescription: "",
+          source: {
+            fileName: "packages/driver/dist/errors.d.ts",
+            line: 89,
+            character: 4,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 456,
@@ -179,6 +93,8 @@ const api = {
       anchor: "cause",
       kind: "Property",
       kindId: 1024,
+      description: "",
+      type: "unknown",
       flags: {
         static: false,
         readonly: false,
@@ -187,34 +103,15 @@ const api = {
         protected: false,
         private: false,
         external: true,
-        const: false,
       },
-      comment: null,
-      type: {
-        kind: "intrinsic",
-        text: "unknown",
-        name: "unknown",
-        target: null,
-        children: [],
+      source: {
+        fileName:
+          "node_modules/.pnpm/typescript@6.0.3/node_modules/typescript/lib/lib.es2022.error.d.ts",
+        line: 24,
+        character: 4,
+        url: null,
       },
-      defaultValue: null,
-      sources: [
-        {
-          fileName:
-            "node_modules/.pnpm/typescript@6.0.3/node_modules/typescript/lib/lib.es2022.error.d.ts",
-          line: 24,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: "cause",
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 452,
@@ -222,6 +119,8 @@ const api = {
       anchor: "code",
       kind: "Property",
       kindId: 1024,
+      description: "Always `CONNECTION_TIMEOUT`.",
+      type: '"CONNECTION_TIMEOUT"',
       flags: {
         static: false,
         readonly: true,
@@ -230,52 +129,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Always ",
-            target: null,
-          },
-          {
-            kind: "code",
-            text: "`CONNECTION_TIMEOUT`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: ".",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/errors.d.ts",
+        line: 94,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "literal",
-        text: '"CONNECTION_TIMEOUT"',
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/errors.d.ts",
-          line: 94,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: "code",
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 454,
@@ -283,6 +144,8 @@ const api = {
       anchor: "message",
       kind: "Property",
       kindId: 1024,
+      description: "",
+      type: "string",
       flags: {
         static: false,
         readonly: false,
@@ -291,34 +154,15 @@ const api = {
         protected: false,
         private: false,
         external: true,
-        const: false,
       },
-      comment: null,
-      type: {
-        kind: "intrinsic",
-        text: "string",
-        name: "string",
-        target: null,
-        children: [],
+      source: {
+        fileName:
+          "node_modules/.pnpm/typescript@6.0.3/node_modules/typescript/lib/lib.es5.d.ts",
+        line: 1075,
+        character: 4,
+        url: null,
       },
-      defaultValue: null,
-      sources: [
-        {
-          fileName:
-            "node_modules/.pnpm/typescript@6.0.3/node_modules/typescript/lib/lib.es5.d.ts",
-          line: 1075,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: "message",
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 453,
@@ -326,6 +170,8 @@ const api = {
       anchor: "name",
       kind: "Property",
       kindId: 1024,
+      description: "",
+      type: "string",
       flags: {
         static: false,
         readonly: false,
@@ -334,34 +180,15 @@ const api = {
         protected: false,
         private: false,
         external: true,
-        const: false,
       },
-      comment: null,
-      type: {
-        kind: "intrinsic",
-        text: "string",
-        name: "string",
-        target: null,
-        children: [],
+      source: {
+        fileName:
+          "node_modules/.pnpm/typescript@6.0.3/node_modules/typescript/lib/lib.es5.d.ts",
+        line: 1074,
+        character: 4,
+        url: null,
       },
-      defaultValue: null,
-      sources: [
-        {
-          fileName:
-            "node_modules/.pnpm/typescript@6.0.3/node_modules/typescript/lib/lib.es5.d.ts",
-          line: 1074,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: "name",
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 455,
@@ -369,6 +196,8 @@ const api = {
       anchor: "stack",
       kind: "Property",
       kindId: 1024,
+      description: "",
+      type: "string",
       flags: {
         static: false,
         readonly: false,
@@ -377,34 +206,15 @@ const api = {
         protected: false,
         private: false,
         external: true,
-        const: false,
       },
-      comment: null,
-      type: {
-        kind: "intrinsic",
-        text: "string",
-        name: "string",
-        target: null,
-        children: [],
+      source: {
+        fileName:
+          "node_modules/.pnpm/typescript@6.0.3/node_modules/typescript/lib/lib.es5.d.ts",
+        line: 1076,
+        character: 4,
+        url: null,
       },
-      defaultValue: null,
-      sources: [
-        {
-          fileName:
-            "node_modules/.pnpm/typescript@6.0.3/node_modules/typescript/lib/lib.es5.d.ts",
-          line: 1076,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: "stack",
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 447,
@@ -412,6 +222,9 @@ const api = {
       anchor: "stack-trace-limit",
       kind: "Property",
       kindId: 1024,
+      description:
+        "The `Error.stackTraceLimit` property specifies the number of stack frames\ncollected by a stack trace (whether generated by `new Error().stack` or\n`Error.captureStackTrace(obj)`).\n\nThe default value is `10` but may be set to any valid JavaScript number. Changes\nwill affect any stack trace captured _after_ the value has been changed.\n\nIf set to a non-number value, or set to a negative number, stack traces will\nnot capture any frames.",
+      type: "number",
       flags: {
         static: true,
         readonly: false,
@@ -420,83 +233,15 @@ const api = {
         protected: false,
         private: false,
         external: true,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The ",
-            target: null,
-          },
-          {
-            kind: "code",
-            text: "`Error.stackTraceLimit`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: " property specifies the number of stack frames\ncollected by a stack trace (whether generated by ",
-            target: null,
-          },
-          {
-            kind: "code",
-            text: "`new Error().stack`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: " or\n",
-            target: null,
-          },
-          {
-            kind: "code",
-            text: "`Error.captureStackTrace(obj)`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: ").\n\nThe default value is ",
-            target: null,
-          },
-          {
-            kind: "code",
-            text: "`10`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: " but may be set to any valid JavaScript number. Changes\nwill affect any stack trace captured _after_ the value has been changed.\n\nIf set to a non-number value, or set to a negative number, stack traces will\nnot capture any frames.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName:
+          "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/globals.d.ts",
+        line: 67,
+        character: 4,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "number",
-        name: "number",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName:
-            "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/globals.d.ts",
-          line: 67,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: "stackTraceLimit",
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 439,
@@ -504,6 +249,8 @@ const api = {
       anchor: "capture-stack-trace",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: true,
         readonly: false,
@@ -512,208 +259,48 @@ const api = {
         protected: false,
         private: false,
         external: true,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName:
-            "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/globals.d.ts",
-          line: 51,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: "captureStackTrace",
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName:
+          "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/globals.d.ts",
+        line: 51,
+        character: 4,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 440,
           name: "captureStackTrace",
-          comment: {
-            summary: [
-              {
-                kind: "text",
-                text: "Creates a ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`.stack`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " property on ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`targetObject`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ", which when accessed returns\na string representing the location in the code at which\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`Error.captureStackTrace()`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " was called.\n\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "```js\nconst myObject = {};\nError.captureStackTrace(myObject);\nmyObject.stack;  // Similar to `new Error().stack`\n```",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: "\n\nThe first line of the trace will be prefixed with\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`${myObject.name}: ${myObject.message}`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ".\n\nThe optional ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`constructorOpt`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " argument accepts a function. If given, all frames\nabove ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`constructorOpt`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ", including ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`constructorOpt`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: ", will be omitted from the\ngenerated stack trace.\n\nThe ",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "`constructorOpt`",
-                target: null,
-              },
-              {
-                kind: "text",
-                text: " argument is useful for hiding implementation\ndetails of error generation from the user. For instance:\n\n",
-                target: null,
-              },
-              {
-                kind: "code",
-                text: "```js\nfunction a() {\n  b();\n}\n\nfunction b() {\n  c();\n}\n\nfunction c() {\n  // Create an error without stack trace to avoid calculating the stack trace twice.\n  const { stackTraceLimit } = Error;\n  Error.stackTraceLimit = 0;\n  const error = new Error();\n  Error.stackTraceLimit = stackTraceLimit;\n\n  // Capture the stack trace above function b\n  Error.captureStackTrace(error, b); // Neither function c, nor b is included in the stack trace\n  throw error;\n}\n\na();\n```",
-                target: null,
-              },
-            ],
-            blockTags: [],
-          },
+          description:
+            "Creates a `.stack` property on `targetObject`, which when accessed returns\na string representing the location in the code at which\n`Error.captureStackTrace()` was called.\n\n```js\nconst myObject = {};\nError.captureStackTrace(myObject);\nmyObject.stack;  // Similar to `new Error().stack`\n```\n\nThe first line of the trace will be prefixed with\n`${myObject.name}: ${myObject.message}`.\n\nThe optional `constructorOpt` argument accepts a function. If given, all frames\nabove `constructorOpt`, including `constructorOpt`, will be omitted from the\ngenerated stack trace.\n\nThe `constructorOpt` argument is useful for hiding implementation\ndetails of error generation from the user. For instance:\n\n```js\nfunction a() {\n  b();\n}\n\nfunction b() {\n  c();\n}\n\nfunction c() {\n  // Create an error without stack trace to avoid calculating the stack trace twice.\n  const { stackTraceLimit } = Error;\n  Error.stackTraceLimit = 0;\n  const error = new Error();\n  Error.stackTraceLimit = stackTraceLimit;\n\n  // Capture the stack trace above function b\n  Error.captureStackTrace(error, b); // Neither function c, nor b is included in the stack trace\n  throw error;\n}\n\na();\n```",
           typeParameters: [],
           parameters: [
             {
-              id: 441,
               name: "targetObject",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "intrinsic",
-                text: "object",
-                name: "object",
-                target: null,
-                children: [],
-              },
+              type: "object",
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
             {
-              id: 442,
               name: "constructorOpt",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: true,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "reference",
-                text: "Function",
-                name: "Function",
-                target: null,
-                children: [],
-              },
+              type: "Function",
+              optional: true,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
           ],
-          returnType: {
-            kind: "intrinsic",
-            text: "void",
-            name: "void",
-            target: null,
-            children: [],
-          },
-          sources: [
-            {
-              fileName:
-                "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/globals.d.ts",
-              line: 51,
-              character: 4,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: "captureStackTrace",
-            overwrites: null,
-            implementationOf: null,
+          returns: "void",
+          returnsDescription: "",
+          source: {
+            fileName:
+              "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/globals.d.ts",
+            line: 51,
+            character: 4,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 443,
@@ -721,6 +308,8 @@ const api = {
       anchor: "prepare-stack-trace",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: true,
         readonly: false,
@@ -729,122 +318,51 @@ const api = {
         protected: false,
         private: false,
         external: true,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName:
-            "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/globals.d.ts",
-          line: 55,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: "prepareStackTrace",
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName:
+          "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/globals.d.ts",
+        line: 55,
+        character: 4,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 444,
           name: "prepareStackTrace",
-          comment: {
-            summary: [],
-            blockTags: [
-              {
-                tag: "@see",
-                content: [
-                  {
-                    kind: "text",
-                    text: "https://v8.dev/docs/stack-trace-api#customizing-stack-traces",
-                    target: null,
-                  },
-                ],
-              },
-            ],
-          },
+          description: "",
           typeParameters: [],
           parameters: [
             {
-              id: 445,
               name: "err",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "reference",
-                text: "Error",
-                name: "Error",
-                target: null,
-                children: [],
-              },
+              type: "Error",
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
             {
-              id: 446,
               name: "stackTraces",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: true,
-                const: false,
-              },
-              type: {
-                kind: "array",
-                text: "CallSite[]",
-                name: null,
-                target: null,
-                children: [],
-              },
+              type: "CallSite[]",
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
           ],
-          returnType: {
-            kind: "intrinsic",
-            text: "any",
-            name: "any",
-            target: null,
-            children: [],
-          },
-          sources: [
-            {
-              fileName:
-                "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/globals.d.ts",
-              line: 55,
-              character: 4,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: "prepareStackTrace",
-            overwrites: null,
-            implementationOf: null,
+          returns: "any",
+          returnsDescription: "",
+          source: {
+            fileName:
+              "node_modules/.pnpm/@types+node@26.6.5/node_modules/@types/node/globals.d.ts",
+            line: 55,
+            character: 4,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
   ],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -1340,7 +858,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

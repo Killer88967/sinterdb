@@ -1,12 +1,14 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 26,
   name: "Document",
   slug: "Document",
-  route: "interfaces/Document",
   kind: "Interface",
   kindId: 256,
+  route: "interfaces/Document",
+  description: "",
+  type: null,
   flags: {
     static: false,
     readonly: false,
@@ -15,32 +17,22 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: null,
-  type: null,
+  source: {
+    fileName: "packages/protocol/dist/document.d.ts",
+    line: 2,
+    character: 17,
+    url: null,
+  },
   hierarchy: {
     extends: [],
     extendedBy: [],
   },
-  sources: [
-    {
-      fileName: "packages/protocol/dist/document.d.ts",
-      line: 2,
-      character: 17,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
-  },
   typeParameters: [],
   signatures: [],
   children: [],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -536,7 +528,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

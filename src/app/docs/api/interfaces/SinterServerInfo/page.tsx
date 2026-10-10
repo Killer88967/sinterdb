@@ -1,12 +1,15 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 194,
   name: "SinterServerInfo",
   slug: "SinterServerInfo",
-  route: "interfaces/SinterServerInfo",
   kind: "Interface",
   kindId: 256,
+  route: "interfaces/SinterServerInfo",
+  description:
+    "What the server reported during the protocol handshake. Available from\nSinterClient.serverInfo once the client is connected.",
+  type: null,
   flags: {
     static: false,
     readonly: false,
@@ -15,45 +18,16 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "What the server reported during the protocol handshake. Available from\n",
-        target: null,
-      },
-      {
-        kind: "inline-tag",
-        text: "SinterClient.serverInfo",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: " once the client is connected.",
-        target: null,
-      },
-    ],
-    blockTags: [],
+  source: {
+    fileName: "packages/driver/dist/client.d.ts",
+    line: 41,
+    character: 17,
+    url: null,
   },
-  type: null,
   hierarchy: {
     extends: [],
     extendedBy: [],
-  },
-  sources: [
-    {
-      fileName: "packages/driver/dist/client.d.ts",
-      line: 41,
-      character: 17,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
   },
   typeParameters: [],
   signatures: [],
@@ -64,6 +38,8 @@ const api = {
       anchor: "capabilities",
       kind: "Property",
       kindId: 1024,
+      description: "The protocol capabilities the server advertised.",
+      type: "readonly string[]",
       flags: {
         static: false,
         readonly: true,
@@ -72,42 +48,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The protocol capabilities the server advertised.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 49,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "typeOperator",
-        text: "readonly string[]",
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 49,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 196,
@@ -115,6 +63,8 @@ const api = {
       anchor: "product",
       kind: "Property",
       kindId: 1024,
+      description: "The server's product name.",
+      type: "string",
       flags: {
         static: false,
         readonly: true,
@@ -123,42 +73,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The server's product name.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 45,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "string",
-        name: "string",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 45,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 197,
@@ -166,6 +88,8 @@ const api = {
       anchor: "product-version",
       kind: "Property",
       kindId: 1024,
+      description: "The server's version.",
+      type: "string",
       flags: {
         static: false,
         readonly: true,
@@ -174,42 +98,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The server's version.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 47,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "string",
-        name: "string",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 47,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 195,
@@ -217,6 +113,8 @@ const api = {
       anchor: "protocol-version",
       kind: "Property",
       kindId: 1024,
+      description: "The wire protocol version both sides agreed on.",
+      type: "number",
       flags: {
         static: false,
         readonly: true,
@@ -225,46 +123,18 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The wire protocol version both sides agreed on.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 43,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "number",
-        name: "number",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 43,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
   ],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -760,7 +630,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

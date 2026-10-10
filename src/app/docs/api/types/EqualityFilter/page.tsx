@@ -1,12 +1,14 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 257,
   name: "EqualityFilter",
   slug: "EqualityFilter",
-  route: "types/EqualityFilter",
   kind: "TypeAlias",
   kindId: 2097152,
+  route: "types/EqualityFilter",
+  description: "A shorthand filter that matches fields by equality only.",
+  type: "{ readonly [Key in keyof TDocument]?: TDocument[Key] }",
   flags: {
     static: false,
     readonly: false,
@@ -15,61 +17,29 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "A shorthand filter that matches fields by equality only.",
-        target: null,
-      },
-    ],
-    blockTags: [],
-  },
-  type: {
-    kind: "mapped",
-    text: "{ readonly [Key in keyof TDocument]?: TDocument[Key] }",
-    name: null,
-    target: null,
-    children: [],
+  source: {
+    fileName: "packages/driver/dist/collection.d.ts",
+    line: 21,
+    character: 12,
+    url: null,
   },
   hierarchy: {
     extends: [],
     extendedBy: [],
   },
-  sources: [
-    {
-      fileName: "packages/driver/dist/collection.d.ts",
-      line: 21,
-      character: 12,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
-  },
   typeParameters: [
     {
-      id: 258,
       name: "TDocument",
-      type: {
-        kind: "intrinsic",
-        text: "object",
-        name: "object",
-        target: null,
-        children: [],
-      },
+      type: "object",
       default: null,
-      comment: null,
+      description: "",
     },
   ],
   signatures: [],
   children: [],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -565,7 +535,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

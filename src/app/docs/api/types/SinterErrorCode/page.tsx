@@ -1,12 +1,14 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 510,
   name: "SinterErrorCode",
   slug: "SinterErrorCode",
-  route: "types/SinterErrorCode",
   kind: "TypeAlias",
   kindId: 2097152,
+  route: "types/SinterErrorCode",
+  description: "A value of SinterErrorCode.",
+  type: "typeof SinterErrorCode[keyof typeof SinterErrorCode]",
   flags: {
     static: false,
     readonly: false,
@@ -15,63 +17,22 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "A value of ",
-        target: null,
-      },
-      {
-        kind: "inline-tag",
-        text: "SinterErrorCode",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ".",
-        target: null,
-      },
-    ],
-    blockTags: [],
-  },
-  type: {
-    kind: "indexedAccess",
-    text: "typeof SinterErrorCode[keyof typeof SinterErrorCode]",
-    name: null,
-    target: null,
-    children: [],
+  source: {
+    fileName: "packages/driver/dist/errors.d.ts",
+    line: 6,
+    character: 21,
+    url: null,
   },
   hierarchy: {
     extends: [],
     extendedBy: [],
   },
-  sources: [
-    {
-      fileName: "packages/driver/dist/errors.d.ts",
-      line: 6,
-      character: 21,
-      url: null,
-    },
-    {
-      fileName: "packages/driver/dist/errors.d.ts",
-      line: 33,
-      character: 12,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
-  },
   typeParameters: [],
   signatures: [],
   children: [],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -567,7 +528,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

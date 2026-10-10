@@ -1,12 +1,15 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 625,
   name: "ComparisonOperators",
   slug: "ComparisonOperators",
-  route: "types/ComparisonOperators",
   kind: "TypeAlias",
   kindId: 2097152,
+  route: "types/ComparisonOperators",
+  description:
+    "The range operators `$gt`, `$gte`, `$lt` and `$lte`. They are available\nonly when the value type includes a comparable type.",
+  type: "[Extract<TValue, ComparableValue>] extends [never] ? unknown : { $gt?: Extract<TValue, ComparableValue>; $gte?: Extract<TValue, ComparableValue>; $lt?: Extract<TValue, ComparableValue>; $lte?: Extract<TValue, ComparableValue> }",
   flags: {
     static: false,
     readonly: false,
@@ -15,95 +18,29 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "The range operators ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`$gt`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ", ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`$gte`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ", ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`$lt`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: " and ",
-        target: null,
-      },
-      {
-        kind: "code",
-        text: "`$lte`",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ". They are available\nonly when the value type includes a comparable type.",
-        target: null,
-      },
-    ],
-    blockTags: [],
-  },
-  type: {
-    kind: "conditional",
-    text: "[Extract<TValue, ComparableValue>] extends [never] ? unknown : { $gt?: Extract<TValue, ComparableValue>; $gte?: Extract<TValue, ComparableValue>; $lt?: Extract<TValue, ComparableValue>; $lte?: Extract<TValue, ComparableValue> }",
-    name: null,
-    target: null,
-    children: [],
+  source: {
+    fileName: "packages/driver/dist/filter.d.ts",
+    line: 18,
+    character: 12,
+    url: null,
   },
   hierarchy: {
     extends: [],
     extendedBy: [],
   },
-  sources: [
-    {
-      fileName: "packages/driver/dist/filter.d.ts",
-      line: 18,
-      character: 12,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
-  },
   typeParameters: [
     {
-      id: 631,
       name: "TValue",
       type: null,
       default: null,
-      comment: null,
+      description: "",
     },
   ],
   signatures: [],
   children: [],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -599,7 +536,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

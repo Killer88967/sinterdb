@@ -1,12 +1,14 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 1,
   name: "CustomId",
   slug: "CustomId",
-  route: "classes/CustomId",
   kind: "Class",
   kindId: 128,
+  route: "classes/CustomId",
+  description: "",
+  type: null,
   flags: {
     static: false,
     readonly: false,
@@ -15,26 +17,16 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: null,
-  type: null,
+  source: {
+    fileName: "packages/protocol/dist/custom-id.d.ts",
+    line: 3,
+    character: 21,
+    url: null,
+  },
   hierarchy: {
     extends: [],
     extendedBy: [],
-  },
-  sources: [
-    {
-      fileName: "packages/protocol/dist/custom-id.d.ts",
-      line: 3,
-      character: 21,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
   },
   typeParameters: [],
   signatures: [],
@@ -45,6 +37,8 @@ const api = {
       anchor: "timestamp",
       kind: "Accessor",
       kindId: 262144,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -53,27 +47,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/protocol/dist/custom-id.d.ts",
-          line: 9,
-          character: 8,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/protocol/dist/custom-id.d.ts",
+        line: 9,
+        character: 8,
+        url: null,
       },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 15,
@@ -81,6 +62,8 @@ const api = {
       anchor: "equals",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -89,83 +72,38 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/protocol/dist/custom-id.d.ts",
-          line: 10,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/protocol/dist/custom-id.d.ts",
+        line: 10,
+        character: 4,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 16,
           name: "equals",
-          comment: null,
+          description: "",
           typeParameters: [],
           parameters: [
             {
-              id: 17,
               name: "other",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: false,
-                const: false,
-              },
-              type: {
-                kind: "reference",
-                text: "CustomId",
-                name: "CustomId",
-                target: {
-                  id: 1,
-                  name: "CustomId",
-                  route: "classes/CustomId",
-                },
-                children: [],
-              },
+              type: "CustomId",
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
           ],
-          returnType: {
-            kind: "intrinsic",
-            text: "boolean",
-            name: "boolean",
-            target: null,
-            children: [],
-          },
-          sources: [
-            {
-              fileName: "packages/protocol/dist/custom-id.d.ts",
-              line: 10,
-              character: 4,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: null,
-            overwrites: null,
-            implementationOf: null,
+          returns: "boolean",
+          returnsDescription: "",
+          source: {
+            fileName: "packages/protocol/dist/custom-id.d.ts",
+            line: 10,
+            character: 4,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 18,
@@ -173,6 +111,8 @@ const api = {
       anchor: "to-bytes",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -181,55 +121,30 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/protocol/dist/custom-id.d.ts",
-          line: 11,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/protocol/dist/custom-id.d.ts",
+        line: 11,
+        character: 4,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 19,
           name: "toBytes",
-          comment: null,
+          description: "",
           typeParameters: [],
           parameters: [],
-          returnType: {
-            kind: "reference",
-            text: "Uint8Array",
-            name: "Uint8Array",
-            target: null,
-            children: [],
-          },
-          sources: [
-            {
-              fileName: "packages/protocol/dist/custom-id.d.ts",
-              line: 11,
-              character: 4,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: null,
-            overwrites: null,
-            implementationOf: null,
+          returns: "Uint8Array",
+          returnsDescription: "",
+          source: {
+            fileName: "packages/protocol/dist/custom-id.d.ts",
+            line: 11,
+            character: 4,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 20,
@@ -237,6 +152,8 @@ const api = {
       anchor: "to-hex-string",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -245,55 +162,30 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/protocol/dist/custom-id.d.ts",
-          line: 12,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/protocol/dist/custom-id.d.ts",
+        line: 12,
+        character: 4,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 21,
           name: "toHexString",
-          comment: null,
+          description: "",
           typeParameters: [],
           parameters: [],
-          returnType: {
-            kind: "intrinsic",
-            text: "string",
-            name: "string",
-            target: null,
-            children: [],
-          },
-          sources: [
-            {
-              fileName: "packages/protocol/dist/custom-id.d.ts",
-              line: 12,
-              character: 4,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: null,
-            overwrites: null,
-            implementationOf: null,
+          returns: "string",
+          returnsDescription: "",
+          source: {
+            fileName: "packages/protocol/dist/custom-id.d.ts",
+            line: 12,
+            character: 4,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 24,
@@ -301,6 +193,8 @@ const api = {
       anchor: "to-json",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -309,55 +203,30 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/protocol/dist/custom-id.d.ts",
-          line: 14,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/protocol/dist/custom-id.d.ts",
+        line: 14,
+        character: 4,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 25,
           name: "toJSON",
-          comment: null,
+          description: "",
           typeParameters: [],
           parameters: [],
-          returnType: {
-            kind: "intrinsic",
-            text: "string",
-            name: "string",
-            target: null,
-            children: [],
-          },
-          sources: [
-            {
-              fileName: "packages/protocol/dist/custom-id.d.ts",
-              line: 14,
-              character: 4,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: null,
-            overwrites: null,
-            implementationOf: null,
+          returns: "string",
+          returnsDescription: "",
+          source: {
+            fileName: "packages/protocol/dist/custom-id.d.ts",
+            line: 14,
+            character: 4,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 22,
@@ -365,6 +234,8 @@ const api = {
       anchor: "to-string",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: false,
         readonly: false,
@@ -373,55 +244,30 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/protocol/dist/custom-id.d.ts",
-          line: 13,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/protocol/dist/custom-id.d.ts",
+        line: 13,
+        character: 4,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 23,
           name: "toString",
-          comment: null,
+          description: "",
           typeParameters: [],
           parameters: [],
-          returnType: {
-            kind: "intrinsic",
-            text: "string",
-            name: "string",
-            target: null,
-            children: [],
-          },
-          sources: [
-            {
-              fileName: "packages/protocol/dist/custom-id.d.ts",
-              line: 13,
-              character: 4,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: null,
-            overwrites: null,
-            implementationOf: null,
+          returns: "string",
+          returnsDescription: "",
+          source: {
+            fileName: "packages/protocol/dist/custom-id.d.ts",
+            line: 13,
+            character: 4,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 4,
@@ -429,6 +275,8 @@ const api = {
       anchor: "from-bytes",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: true,
         readonly: false,
@@ -437,83 +285,38 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/protocol/dist/custom-id.d.ts",
-          line: 7,
-          character: 11,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/protocol/dist/custom-id.d.ts",
+        line: 7,
+        character: 11,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 5,
           name: "fromBytes",
-          comment: null,
+          description: "",
           typeParameters: [],
           parameters: [
             {
-              id: 6,
               name: "value",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: false,
-                const: false,
-              },
-              type: {
-                kind: "reference",
-                text: "Uint8Array",
-                name: "Uint8Array",
-                target: null,
-                children: [],
-              },
+              type: "Uint8Array",
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
           ],
-          returnType: {
-            kind: "reference",
-            text: "CustomId",
-            name: "CustomId",
-            target: {
-              id: 1,
-              name: "CustomId",
-              route: "classes/CustomId",
-            },
-            children: [],
-          },
-          sources: [
-            {
-              fileName: "packages/protocol/dist/custom-id.d.ts",
-              line: 7,
-              character: 11,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: null,
-            overwrites: null,
-            implementationOf: null,
+          returns: "CustomId",
+          returnsDescription: "",
+          source: {
+            fileName: "packages/protocol/dist/custom-id.d.ts",
+            line: 7,
+            character: 11,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 7,
@@ -521,6 +324,8 @@ const api = {
       anchor: "from-hex-string",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: true,
         readonly: false,
@@ -529,83 +334,38 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/protocol/dist/custom-id.d.ts",
-          line: 8,
-          character: 11,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/protocol/dist/custom-id.d.ts",
+        line: 8,
+        character: 11,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 8,
           name: "fromHexString",
-          comment: null,
+          description: "",
           typeParameters: [],
           parameters: [
             {
-              id: 9,
               name: "value",
-              flags: {
-                static: false,
-                readonly: false,
-                optional: false,
-                abstract: false,
-                protected: false,
-                private: false,
-                external: false,
-                const: false,
-              },
-              type: {
-                kind: "intrinsic",
-                text: "string",
-                name: "string",
-                target: null,
-                children: [],
-              },
+              type: "string",
+              optional: false,
               defaultValue: null,
-              comment: null,
+              description: "",
             },
           ],
-          returnType: {
-            kind: "reference",
-            text: "CustomId",
-            name: "CustomId",
-            target: {
-              id: 1,
-              name: "CustomId",
-              route: "classes/CustomId",
-            },
-            children: [],
-          },
-          sources: [
-            {
-              fileName: "packages/protocol/dist/custom-id.d.ts",
-              line: 8,
-              character: 11,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: null,
-            overwrites: null,
-            implementationOf: null,
+          returns: "CustomId",
+          returnsDescription: "",
+          source: {
+            fileName: "packages/protocol/dist/custom-id.d.ts",
+            line: 8,
+            character: 11,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
     {
       id: 2,
@@ -613,6 +373,8 @@ const api = {
       anchor: "generate",
       kind: "Method",
       kindId: 2048,
+      description: "",
+      type: null,
       flags: {
         static: true,
         readonly: false,
@@ -621,63 +383,34 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: null,
-      type: null,
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/protocol/dist/custom-id.d.ts",
-          line: 6,
-          character: 11,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
+      source: {
+        fileName: "packages/protocol/dist/custom-id.d.ts",
+        line: 6,
+        character: 11,
+        url: null,
       },
-      typeParameters: [],
       signatures: [
         {
           id: 3,
           name: "generate",
-          comment: null,
+          description: "",
           typeParameters: [],
           parameters: [],
-          returnType: {
-            kind: "reference",
-            text: "CustomId",
-            name: "CustomId",
-            target: {
-              id: 1,
-              name: "CustomId",
-              route: "classes/CustomId",
-            },
-            children: [],
-          },
-          sources: [
-            {
-              fileName: "packages/protocol/dist/custom-id.d.ts",
-              line: 6,
-              character: 11,
-              url: null,
-            },
-          ],
-          relationships: {
-            inheritedFrom: null,
-            overwrites: null,
-            implementationOf: null,
+          returns: "CustomId",
+          returnsDescription: "",
+          source: {
+            fileName: "packages/protocol/dist/custom-id.d.ts",
+            line: 6,
+            character: 11,
+            url: null,
           },
         },
       ],
-      typeDeclaration: [],
     },
   ],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -1173,7 +906,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

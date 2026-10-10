@@ -1,12 +1,14 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 269,
   name: "InsertOneResult",
   slug: "InsertOneResult",
-  route: "interfaces/InsertOneResult",
   kind: "Interface",
   kindId: 256,
+  route: "interfaces/InsertOneResult",
+  description: "The result of SinterCollection.insertOne.",
+  type: null,
   flags: {
     static: false,
     readonly: false,
@@ -15,45 +17,16 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "The result of ",
-        target: null,
-      },
-      {
-        kind: "inline-tag",
-        text: "SinterCollection.insertOne",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ".",
-        target: null,
-      },
-    ],
-    blockTags: [],
+  source: {
+    fileName: "packages/driver/dist/collection.d.ts",
+    line: 41,
+    character: 17,
+    url: null,
   },
-  type: null,
   hierarchy: {
     extends: [],
     extendedBy: [],
-  },
-  sources: [
-    {
-      fileName: "packages/driver/dist/collection.d.ts",
-      line: 41,
-      character: 17,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
   },
   typeParameters: [],
   signatures: [],
@@ -64,6 +37,8 @@ const api = {
       anchor: "acknowledged",
       kind: "Property",
       kindId: 1024,
+      description: "Always `true`; a failed insert throws instead.",
+      type: "true",
       flags: {
         static: false,
         readonly: true,
@@ -72,52 +47,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Always ",
-            target: null,
-          },
-          {
-            kind: "code",
-            text: "`true`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: "; a failed insert throws instead.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/collection.d.ts",
+        line: 43,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "literal",
-        text: "true",
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/collection.d.ts",
-          line: 43,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 271,
@@ -125,6 +62,9 @@ const api = {
       anchor: "inserted-id",
       kind: "Property",
       kindId: 1024,
+      description:
+        "The `_id` of the inserted document, whether supplied or generated.",
+      type: "CustomId",
       flags: {
         static: false,
         readonly: true,
@@ -133,60 +73,18 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The ",
-            target: null,
-          },
-          {
-            kind: "code",
-            text: "`_id`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: " of the inserted document, whether supplied or generated.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/collection.d.ts",
+        line: 45,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "reference",
-        text: "CustomId",
-        name: "CustomId",
-        target: {
-          id: 1,
-          name: "CustomId",
-          route: "classes/CustomId",
-        },
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/collection.d.ts",
-          line: 45,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
   ],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -682,7 +580,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

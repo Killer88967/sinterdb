@@ -1,12 +1,14 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 265,
   name: "InsertManyResult",
   slug: "InsertManyResult",
-  route: "interfaces/InsertManyResult",
   kind: "Interface",
   kindId: 256,
+  route: "interfaces/InsertManyResult",
+  description: "The result of SinterCollection.insertMany.",
+  type: null,
   flags: {
     static: false,
     readonly: false,
@@ -15,45 +17,16 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "The result of ",
-        target: null,
-      },
-      {
-        kind: "inline-tag",
-        text: "SinterCollection.insertMany",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ".",
-        target: null,
-      },
-    ],
-    blockTags: [],
+  source: {
+    fileName: "packages/driver/dist/collection.d.ts",
+    line: 48,
+    character: 17,
+    url: null,
   },
-  type: null,
   hierarchy: {
     extends: [],
     extendedBy: [],
-  },
-  sources: [
-    {
-      fileName: "packages/driver/dist/collection.d.ts",
-      line: 48,
-      character: 17,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
   },
   typeParameters: [],
   signatures: [],
@@ -64,6 +37,8 @@ const api = {
       anchor: "acknowledged",
       kind: "Property",
       kindId: 1024,
+      description: "Always `true`; a failed insert throws instead.",
+      type: "true",
       flags: {
         static: false,
         readonly: true,
@@ -72,52 +47,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Always ",
-            target: null,
-          },
-          {
-            kind: "code",
-            text: "`true`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: "; a failed insert throws instead.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/collection.d.ts",
+        line: 50,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "literal",
-        text: "true",
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/collection.d.ts",
-          line: 50,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 267,
@@ -125,6 +62,8 @@ const api = {
       anchor: "inserted-count",
       kind: "Property",
       kindId: 1024,
+      description: "How many documents were inserted.",
+      type: "number",
       flags: {
         static: false,
         readonly: true,
@@ -133,42 +72,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "How many documents were inserted.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/collection.d.ts",
+        line: 52,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "number",
-        name: "number",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/collection.d.ts",
-          line: 52,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 268,
@@ -176,6 +87,8 @@ const api = {
       anchor: "inserted-ids",
       kind: "Property",
       kindId: 1024,
+      description: "The `_id` of every inserted document, in input order.",
+      type: "readonly CustomId[]",
       flags: {
         static: false,
         readonly: true,
@@ -184,56 +97,18 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The ",
-            target: null,
-          },
-          {
-            kind: "code",
-            text: "`_id`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: " of every inserted document, in input order.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/collection.d.ts",
+        line: 54,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "typeOperator",
-        text: "readonly CustomId[]",
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/collection.d.ts",
-          line: 54,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
   ],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -729,7 +604,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

@@ -1,12 +1,15 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 664,
   name: "ExplainResult",
   slug: "ExplainResult",
-  route: "interfaces/ExplainResult",
   kind: "Interface",
   kindId: 256,
+  route: "interfaces/ExplainResult",
+  description:
+    "The query plan the server reports for a find. The shape is experimental and\nmay change in any release; see docs/compatibility.md.",
+  type: null,
   flags: {
     static: false,
     readonly: false,
@@ -15,35 +18,16 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "The query plan the server reports for a find. The shape is experimental and\nmay change in any release; see docs/compatibility.md.",
-        target: null,
-      },
-    ],
-    blockTags: [],
+  source: {
+    fileName: "packages/driver/dist/indexes.d.ts",
+    line: 62,
+    character: 17,
+    url: null,
   },
-  type: null,
   hierarchy: {
     extends: [],
     extendedBy: [],
-  },
-  sources: [
-    {
-      fileName: "packages/driver/dist/indexes.d.ts",
-      line: 62,
-      character: 17,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
   },
   typeParameters: [],
   signatures: [],
@@ -54,6 +38,9 @@ const api = {
       anchor: "access",
       kind: "Property",
       kindId: 1024,
+      description:
+        "How the index is read: by equality, by a list of values, or by a range.",
+      type: '"equality" | "in" | "range"',
       flags: {
         static: false,
         readonly: true,
@@ -62,42 +49,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "How the index is read: by equality, by a list of values, or by a range.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/indexes.d.ts",
+        line: 75,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "union",
-        text: '"equality" | "in" | "range"',
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/indexes.d.ts",
-          line: 75,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 672,
@@ -105,6 +64,8 @@ const api = {
       anchor: "documents",
       kind: "Property",
       kindId: 1024,
+      description: "How many documents the collection holds.",
+      type: "number",
       flags: {
         static: false,
         readonly: true,
@@ -113,42 +74,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "How many documents the collection holds.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/indexes.d.ts",
+        line: 83,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "number",
-        name: "number",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/indexes.d.ts",
-          line: 83,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 671,
@@ -156,6 +89,8 @@ const api = {
       anchor: "estimated-candidates",
       kind: "Property",
       kindId: 1024,
+      description: "How many documents the server expects to examine.",
+      type: "number",
       flags: {
         static: false,
         readonly: true,
@@ -164,42 +99,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "How many documents the server expects to examine.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/indexes.d.ts",
+        line: 81,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "number",
-        name: "number",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/indexes.d.ts",
-          line: 81,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 667,
@@ -207,6 +114,8 @@ const api = {
       anchor: "field",
       kind: "Property",
       kindId: 1024,
+      description: "The field the index covers, for `IXSCAN`.",
+      type: "string",
       flags: {
         static: false,
         readonly: true,
@@ -215,52 +124,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The field the index covers, for ",
-            target: null,
-          },
-          {
-            kind: "code",
-            text: "`IXSCAN`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: ".",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/indexes.d.ts",
+        line: 71,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "string",
-        name: "string",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/indexes.d.ts",
-          line: 71,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 666,
@@ -268,6 +139,8 @@ const api = {
       anchor: "index",
       kind: "Property",
       kindId: 1024,
+      description: "The index used, for `IXSCAN`.",
+      type: "string",
       flags: {
         static: false,
         readonly: true,
@@ -276,52 +149,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The index used, for ",
-            target: null,
-          },
-          {
-            kind: "code",
-            text: "`IXSCAN`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: ".",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/indexes.d.ts",
+        line: 69,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "string",
-        name: "string",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/indexes.d.ts",
-          line: 69,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 669,
@@ -329,6 +164,8 @@ const api = {
       anchor: "lower",
       kind: "Property",
       kindId: 1024,
+      description: "The lower end of a range scan.",
+      type: "IndexBoundInfo",
       flags: {
         static: false,
         readonly: true,
@@ -337,46 +174,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The lower end of a range scan.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/indexes.d.ts",
+        line: 77,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "reference",
-        text: "IndexBoundInfo",
-        name: "IndexBoundInfo",
-        target: {
-          id: 675,
-          name: "IndexBoundInfo",
-          route: "interfaces/IndexBoundInfo",
-        },
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/indexes.d.ts",
-          line: 77,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 665,
@@ -384,6 +189,9 @@ const api = {
       anchor: "stage",
       kind: "Property",
       kindId: 1024,
+      description:
+        "The strategy: `COLLSCAN` reads every document, `IDLOOKUP` reads by `_id`,\nand `IXSCAN` scans an index.",
+      type: '"COLLSCAN" | "IDLOOKUP" | "IXSCAN"',
       flags: {
         static: false,
         readonly: true,
@@ -392,82 +200,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The strategy: ",
-            target: null,
-          },
-          {
-            kind: "code",
-            text: "`COLLSCAN`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: " reads every document, ",
-            target: null,
-          },
-          {
-            kind: "code",
-            text: "`IDLOOKUP`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: " reads by ",
-            target: null,
-          },
-          {
-            kind: "code",
-            text: "`_id`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: ",\nand ",
-            target: null,
-          },
-          {
-            kind: "code",
-            text: "`IXSCAN`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: " scans an index.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/indexes.d.ts",
+        line: 67,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "union",
-        text: '"COLLSCAN" | "IDLOOKUP" | "IXSCAN"',
-        name: null,
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/indexes.d.ts",
-          line: 67,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 670,
@@ -475,6 +215,8 @@ const api = {
       anchor: "upper",
       kind: "Property",
       kindId: 1024,
+      description: "The upper end of a range scan.",
+      type: "IndexBoundInfo",
       flags: {
         static: false,
         readonly: true,
@@ -483,50 +225,18 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The upper end of a range scan.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/indexes.d.ts",
+        line: 79,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "reference",
-        text: "IndexBoundInfo",
-        name: "IndexBoundInfo",
-        target: {
-          id: 675,
-          name: "IndexBoundInfo",
-          route: "interfaces/IndexBoundInfo",
-        },
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/indexes.d.ts",
-          line: 79,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
   ],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -1022,7 +732,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

@@ -1,12 +1,14 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 617,
   name: "SinterServerErrorOptions",
   slug: "SinterServerErrorOptions",
-  route: "interfaces/SinterServerErrorOptions",
   kind: "Interface",
   kindId: 256,
+  route: "interfaces/SinterServerErrorOptions",
+  description: "Details a server error response can carry.",
+  type: null,
   flags: {
     static: false,
     readonly: false,
@@ -15,35 +17,16 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "Details a server error response can carry.",
-        target: null,
-      },
-    ],
-    blockTags: [],
+  source: {
+    fileName: "packages/driver/dist/errors.d.ts",
+    line: 35,
+    character: 17,
+    url: null,
   },
-  type: null,
   hierarchy: {
     extends: ["ErrorOptions"],
     extendedBy: [],
-  },
-  sources: [
-    {
-      fileName: "packages/driver/dist/errors.d.ts",
-      line: 35,
-      character: 17,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
   },
   typeParameters: [],
   signatures: [],
@@ -54,6 +37,8 @@ const api = {
       anchor: "cause",
       kind: "Property",
       kindId: 1024,
+      description: "",
+      type: "unknown",
       flags: {
         static: false,
         readonly: false,
@@ -62,34 +47,15 @@ const api = {
         protected: false,
         private: false,
         external: true,
-        const: false,
       },
-      comment: null,
-      type: {
-        kind: "intrinsic",
-        text: "unknown",
-        name: "unknown",
-        target: null,
-        children: [],
+      source: {
+        fileName:
+          "node_modules/.pnpm/typescript@6.0.3/node_modules/typescript/lib/lib.es2022.error.d.ts",
+        line: 20,
+        character: 4,
+        url: null,
       },
-      defaultValue: null,
-      sources: [
-        {
-          fileName:
-            "node_modules/.pnpm/typescript@6.0.3/node_modules/typescript/lib/lib.es2022.error.d.ts",
-          line: 20,
-          character: 4,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: "ErrorOptions.cause",
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 621,
@@ -97,6 +63,8 @@ const api = {
       anchor: "details",
       kind: "Property",
       kindId: 1024,
+      description: "Extra structured information from the server.",
+      type: "Document",
       flags: {
         static: false,
         readonly: true,
@@ -105,46 +73,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Extra structured information from the server.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/errors.d.ts",
+        line: 43,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "reference",
-        text: "Document",
-        name: "Document",
-        target: {
-          id: 26,
-          name: "Document",
-          route: "interfaces/Document",
-        },
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/errors.d.ts",
-          line: 43,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 620,
@@ -152,6 +88,9 @@ const api = {
       anchor: "retryable",
       kind: "Property",
       kindId: 1024,
+      description:
+        "Whether the server says the same request may succeed if retried.",
+      type: "boolean",
       flags: {
         static: false,
         readonly: true,
@@ -160,42 +99,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "Whether the server says the same request may succeed if retried.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/errors.d.ts",
+        line: 41,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "boolean",
-        name: "boolean",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/errors.d.ts",
-          line: 41,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 619,
@@ -203,6 +114,8 @@ const api = {
       anchor: "server-error-name",
       kind: "Property",
       kindId: 1024,
+      description: "The server's name for the error, such as `DuplicateKey`.",
+      type: "string",
       flags: {
         static: false,
         readonly: true,
@@ -211,52 +124,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The server's name for the error, such as ",
-            target: null,
-          },
-          {
-            kind: "code",
-            text: "`DuplicateKey`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: ".",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/errors.d.ts",
+        line: 39,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "string",
-        name: "string",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/errors.d.ts",
-          line: 39,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 618,
@@ -264,6 +139,8 @@ const api = {
       anchor: "wire-code",
       kind: "Property",
       kindId: 1024,
+      description: "The numeric error code from the wire protocol.",
+      type: "number",
       flags: {
         static: false,
         readonly: true,
@@ -272,46 +149,18 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "The numeric error code from the wire protocol.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/errors.d.ts",
+        line: 37,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "number",
-        name: "number",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/errors.d.ts",
-          line: 37,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
   ],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -807,7 +656,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

@@ -1,12 +1,14 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 179,
   name: "SinterClientState",
   slug: "SinterClientState",
-  route: "types/SinterClientState",
   kind: "TypeAlias",
   kindId: 2097152,
+  route: "types/SinterClientState",
+  description: "A value of SinterClientState.",
+  type: "typeof SinterClientState[keyof typeof SinterClientState]",
   flags: {
     static: false,
     readonly: false,
@@ -15,63 +17,22 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "A value of ",
-        target: null,
-      },
-      {
-        kind: "inline-tag",
-        text: "SinterClientState",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ".",
-        target: null,
-      },
-    ],
-    blockTags: [],
-  },
-  type: {
-    kind: "indexedAccess",
-    text: "typeof SinterClientState[keyof typeof SinterClientState]",
-    name: null,
-    target: null,
-    children: [],
+  source: {
+    fileName: "packages/driver/dist/client.d.ts",
+    line: 93,
+    character: 21,
+    url: null,
   },
   hierarchy: {
     extends: [],
     extendedBy: [],
   },
-  sources: [
-    {
-      fileName: "packages/driver/dist/client.d.ts",
-      line: 93,
-      character: 21,
-      url: null,
-    },
-    {
-      fileName: "packages/driver/dist/client.d.ts",
-      line: 106,
-      character: 12,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
-  },
   typeParameters: [],
   signatures: [],
   children: [],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -567,7 +528,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

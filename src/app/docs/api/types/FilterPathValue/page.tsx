@@ -1,12 +1,14 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 653,
   name: "FilterPathValue",
   slug: "FilterPathValue",
-  route: "types/FilterPathValue",
   kind: "TypeAlias",
   kindId: 2097152,
+  route: "types/FilterPathValue",
+  description: "The type of the value at a dotted field path.",
+  type: "TPath extends keyof TDocument ? TDocument[TPath] : TPath extends `${infer THead}.${infer TRest}` ? THead extends keyof TDocument ? FilterPathValue<NonNullable<TDocument[THead]>, TRest> : never : never",
   flags: {
     static: false,
     readonly: false,
@@ -15,68 +17,35 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "The type of the value at a dotted field path.",
-        target: null,
-      },
-    ],
-    blockTags: [],
-  },
-  type: {
-    kind: "conditional",
-    text: "TPath extends keyof TDocument ? TDocument[TPath] : TPath extends `${infer THead}.${infer TRest}` ? THead extends keyof TDocument ? FilterPathValue<NonNullable<TDocument[THead]>, TRest> : never : never",
-    name: null,
-    target: null,
-    children: [],
+  source: {
+    fileName: "packages/driver/dist/filter.d.ts",
+    line: 61,
+    character: 12,
+    url: null,
   },
   hierarchy: {
     extends: [],
     extendedBy: [],
   },
-  sources: [
-    {
-      fileName: "packages/driver/dist/filter.d.ts",
-      line: 61,
-      character: 12,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
-  },
   typeParameters: [
     {
-      id: 654,
       name: "TDocument",
       type: null,
       default: null,
-      comment: null,
+      description: "",
     },
     {
-      id: 655,
       name: "TPath",
-      type: {
-        kind: "intrinsic",
-        text: "string",
-        name: "string",
-        target: null,
-        children: [],
-      },
+      type: "string",
       default: null,
-      comment: null,
+      description: "",
     },
   ],
   signatures: [],
   children: [],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -572,7 +541,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}

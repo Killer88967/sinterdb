@@ -1,12 +1,15 @@
-import { ApiReflectionPage } from "../../_components/api-shell";
+import { ApiReferencePage } from "../../_components/api-reference-page";
 
 const api = {
   id: 185,
   name: "SinterClientOptions",
   slug: "SinterClientOptions",
-  route: "interfaces/SinterClientOptions",
   kind: "Interface",
   kindId: 256,
+  route: "interfaces/SinterClientOptions",
+  description:
+    "Options for SinterClient. Every timeout is a whole number of\nmilliseconds no greater than 2,147,483,647. An invalid value throws a\nSinterClientOptionsError.",
+  type: null,
   flags: {
     static: false,
     readonly: false,
@@ -15,55 +18,16 @@ const api = {
     protected: false,
     private: false,
     external: false,
-    const: false,
   },
-  comment: {
-    summary: [
-      {
-        kind: "text",
-        text: "Options for ",
-        target: null,
-      },
-      {
-        kind: "inline-tag",
-        text: "SinterClient",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ". Every timeout is a whole number of\nmilliseconds no greater than 2,147,483,647. An invalid value throws a\n",
-        target: null,
-      },
-      {
-        kind: "inline-tag",
-        text: "SinterClientOptionsError",
-        target: null,
-      },
-      {
-        kind: "text",
-        text: ".",
-        target: null,
-      },
-    ],
-    blockTags: [],
+  source: {
+    fileName: "packages/driver/dist/client.d.ts",
+    line: 18,
+    character: 17,
+    url: null,
   },
-  type: null,
   hierarchy: {
     extends: [],
     extendedBy: [],
-  },
-  sources: [
-    {
-      fileName: "packages/driver/dist/client.d.ts",
-      line: 18,
-      character: 17,
-      url: null,
-    },
-  ],
-  relationships: {
-    inheritedFrom: null,
-    overwrites: null,
-    implementationOf: null,
   },
   typeParameters: [],
   signatures: [],
@@ -74,6 +38,9 @@ const api = {
       anchor: "connect-timeout-ms",
       kind: "Property",
       kindId: 1024,
+      description:
+        "How long `connect()` may take, including the protocol handshake, before\nit fails with a SinterConnectionTimeoutError. Must be at least 1.\nDefaults to 10,000.",
+      type: "number",
       flags: {
         static: false,
         readonly: true,
@@ -82,62 +49,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "How long ",
-            target: null,
-          },
-          {
-            kind: "code",
-            text: "`connect()`",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: " may take, including the protocol handshake, before\nit fails with a ",
-            target: null,
-          },
-          {
-            kind: "inline-tag",
-            text: "SinterConnectionTimeoutError",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: ". Must be at least 1.\nDefaults to 10,000.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 24,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "number",
-        name: "number",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 24,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 187,
@@ -145,6 +64,9 @@ const api = {
       anchor: "request-timeout-ms",
       kind: "Property",
       kindId: 1024,
+      description:
+        "How long a single request may wait for its response before it fails with\na SinterRequestTimeoutError. Must be at least 1. Defaults to\n10,000.",
+      type: "number",
       flags: {
         static: false,
         readonly: true,
@@ -153,52 +75,14 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "How long a single request may wait for its response before it fails with\na ",
-            target: null,
-          },
-          {
-            kind: "inline-tag",
-            text: "SinterRequestTimeoutError",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: ". Must be at least 1. Defaults to\n10,000.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 30,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "number",
-        name: "number",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 30,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
     {
       id: 188,
@@ -206,6 +90,9 @@ const api = {
       anchor: "socket-timeout-ms",
       kind: "Property",
       kindId: 1024,
+      description:
+        "How long the connection may be inactive before the socket is closed with\na SinterSocketTimeoutError. 0, the default, disables the timeout.",
+      type: "number",
       flags: {
         static: false,
         readonly: true,
@@ -214,56 +101,18 @@ const api = {
         protected: false,
         private: false,
         external: false,
-        const: false,
       },
-      comment: {
-        summary: [
-          {
-            kind: "text",
-            text: "How long the connection may be inactive before the socket is closed with\na ",
-            target: null,
-          },
-          {
-            kind: "inline-tag",
-            text: "SinterSocketTimeoutError",
-            target: null,
-          },
-          {
-            kind: "text",
-            text: ". 0, the default, disables the timeout.",
-            target: null,
-          },
-        ],
-        blockTags: [],
+      source: {
+        fileName: "packages/driver/dist/client.d.ts",
+        line: 35,
+        character: 13,
+        url: null,
       },
-      type: {
-        kind: "intrinsic",
-        text: "number",
-        name: "number",
-        target: null,
-        children: [],
-      },
-      defaultValue: null,
-      sources: [
-        {
-          fileName: "packages/driver/dist/client.d.ts",
-          line: 35,
-          character: 13,
-          url: null,
-        },
-      ],
-      relationships: {
-        inheritedFrom: null,
-        overwrites: null,
-        implementationOf: null,
-      },
-      typeParameters: [],
       signatures: [],
-      typeDeclaration: [],
     },
   ],
-  typeDeclaration: [],
 } as const;
+
 const navigation = [
   {
     id: 1,
@@ -759,7 +608,7 @@ const navigation = [
 
 export default function Page() {
   return (
-    <ApiReflectionPage
+    <ApiReferencePage
       projectName="SinterDB driver API"
       api={api}
       navigation={navigation}
