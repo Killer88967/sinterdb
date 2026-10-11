@@ -18,6 +18,7 @@ export const StorageErrorCode = {
   IndexNotFound: "INDEX_NOT_FOUND",
   IndexConflict: "INDEX_CONFLICT",
   UnsupportedFormat: "UNSUPPORTED_FORMAT",
+  InvalidBackup: "INVALID_BACKUP",
 } as const;
 
 export type StorageErrorCode =

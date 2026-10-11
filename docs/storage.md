@@ -194,9 +194,9 @@ if you may want to go back.
 ## Backups
 
 Stop the server cleanly with `SIGTERM` or `SIGINT`, which writes a final
-checkpoint, then copy the whole data directory. Restore by putting the
-directory back while the server is stopped. Do not copy a directory while a
-server is writing to it.
+checkpoint, then use `sinterd backup` to make a checked copy and
+`sinterd restore` to bring it back. See [backup.md](./backup.md). Do not copy a
+directory while a server is writing to it.
 
 ## When a disk write fails
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { BACKUP_HELP_TEXT, BackupUsageError } from "./backup-command.js";
 import { CliUsageError, HELP_TEXT } from "./cli.js";
 import { logError } from "./logger.js";
 import { main } from "./main.js";
@@ -10,6 +11,8 @@ try {
   if (error instanceof CliUsageError) {
     process.stderr.write(`${error.message}\n\n${HELP_TEXT}`);
     process.exitCode = 2;
+  } else if (error instanceof BackupUsageError) {
+    process.stderr.write(`${error.message}\n\n${BACKUP_HELP_TEXT}`);
   } else {
     logError("server.start_failed", "SinterDB server failed to start.", error);
     process.exitCode = 1;

@@ -30,6 +30,14 @@ export {
   STORAGE_FORMAT_VERSION,
   StorageEngine,
 } from "./engine/index.js";
+export {
+  BACKUP_FORMAT,
+  BACKUP_FORMAT_VERSION,
+  BACKUP_MANIFEST_FILE,
+  createBackup,
+  restoreBackup,
+  verifyBackup,
+} from "./backup/index.js";
 
 export type {
   CollectionJournal,
@@ -66,3 +74,10 @@ export type {
   SkippedCheckpoint,
   StorageEngineOptions,
 } from "./engine/index.js";
+export type {
+  BackupOptions,
+  BackupResult,
+  BackupSummary,
+  RestoreOptions,
+  RestoreResult,
+} from "./backup/index.js";

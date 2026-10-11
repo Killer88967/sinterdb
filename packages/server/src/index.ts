@@ -1,4 +1,11 @@
-export { DEFAULT_CHECKPOINT_THRESHOLD_BYTES } from "@sinterdb-internal/storage";
+export {
+  BACKUP_FORMAT,
+  BACKUP_FORMAT_VERSION,
+  DEFAULT_CHECKPOINT_THRESHOLD_BYTES,
+  createBackup,
+  restoreBackup,
+  verifyBackup,
+} from "@sinterdb-internal/storage";
 export {
   DEFAULT_CHECKPOINT_KEEP,
   DEFAULT_WRITE_CONCERN,
@@ -35,6 +42,13 @@ export {
 } from "./cursor-manager.js";
 export { GroupCommitter } from "./group-commit.js";
 
+export type {
+  BackupOptions,
+  BackupResult,
+  BackupSummary,
+  RestoreOptions,
+  RestoreResult,
+} from "@sinterdb-internal/storage";
 export type {
   ServerConfig,
   ServerConfigInput,

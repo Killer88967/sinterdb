@@ -4,6 +4,7 @@ export const HELP_TEXT = `SinterDB Server
 
 Usage:
   sinterd [options]
+  sinterd backup | restore | verify-backup (see sinterd backup --help)
 
 Options:
   --host <host>       Address to listen on

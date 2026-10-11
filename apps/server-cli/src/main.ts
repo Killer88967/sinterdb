@@ -5,11 +5,23 @@ import {
 } from "@sinterdb-internal/server";
 
 import { HELP_TEXT, parseCliArguments, type CliCommand } from "./cli.js";
+import {
+  isBackupCommandName,
+  parseBackupArguments,
+  runBackupCommand,
+} from "./backup-command.js";
 import { logError, logInfo, logWarning } from "./logger.js";
 
 export async function main(
   arguments_: readonly string[] = process.argv.slice(2),
 ): Promise<void> {
+  const [first, ...rest] = arguments_;
+
+  if (isBackupCommandName(first)) {
+    runBackupCommand(parseBackupArguments(first, rest));
+    return;
+  }
+
   const command = parseCliArguments(arguments_);
 
   switch (command.kind) {
