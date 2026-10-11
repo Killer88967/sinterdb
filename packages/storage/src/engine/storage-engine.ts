@@ -36,6 +36,7 @@ import {
   type CheckpointStage,
   type ReadCheckpoint,
 } from "./checkpoint.js";
+import { translateIo } from "../io-error.js";
 import { writeFileAtomic } from "./files.js";
 import { acquireDirectoryLock, type DirectoryLock } from "./lock.js";
 import {
@@ -459,12 +460,24 @@ export class StorageEngine {
 
     const directory = join(this.root, "checkpoints");
     const stage = this.settings.onCheckpointStage;
-    const file = writeCheckpoint(directory, lsn, collections, stage);
+    let file: string;
+
+    try {
+      file = writeCheckpoint(directory, lsn, collections, stage);
+    } catch (error: unknown) {
+      throw translateIo("write a snapshot", directory, error);
+    }
+
     const snapshots = listCheckpoints(directory);
     let removedSnapshots = 0;
 
     for (const old of snapshots.slice(this.settings.checkpointRetention)) {
-      unlinkSync(old.path);
+      try {
+        unlinkSync(old.path);
+      } catch (error: unknown) {
+        throw translateIo("remove an old snapshot", old.path, error);
+      }
+
       removedSnapshots += 1;
     }
 

@@ -419,8 +419,10 @@ Notes:
   `$pull`, and `$addToSet`. Any other update document returns `InvalidUpdate`.
   A change to `_id` returns `ImmutableId`.
 - When a server with durable storage cannot record a write, it returns
-  `InternalError` (9000). The outcome of that write is unknown until the server
-  restarts and recovers.
+  `InternalError` (9000). If the disk is full or the server may not write to its
+  data directory, `details.storageErrorCode` is `DISK_FULL` or
+  `PERMISSION_DENIED` and the write was not applied. For any other failure the
+  outcome of that write is unknown until the server restarts and recovers.
 - `createIndex` takes an `index` document with `field` and the optional
   `direction` (`1` or `-1`), `unique`, `sparse`, and `name`. Unknown options
   return `InvalidRequest`. An invalid definition returns `InvalidIndex`, a

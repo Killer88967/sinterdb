@@ -200,10 +200,29 @@ directory while a server is writing to it.
 
 ## When a disk write fails
 
-If the server cannot write to the log, the client receives an `InternalError`
-and the message says the outcome is unknown. The write may or may not have
-reached the disk. The server refuses further writes until it is restarted,
-which recovers the true state from disk.
+What the client sees depends on why the write failed.
+
+| Cause                                          | Client receives                                   | What happened to the write                                | Server state                                                            |
+| ---------------------------------------------- | ------------------------------------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------- |
+| The disk or quota is full (`ENOSPC`, `EDQUOT`) | `InternalError`, storage code `DISK_FULL`         | Not applied. The log is cut back to its last whole record | Keeps running. Reads work, and writes succeed again once space is freed |
+| The operating system refuses access            | `InternalError`, storage code `PERMISSION_DENIED` | Not applied                                               | The log refuses further writes until the server restarts                |
+| Any other failure, or a failed flush to disk   | `InternalError`, "the outcome is unknown"         | May or may not have reached the disk                      | The log refuses further writes until the server restarts and recovers   |
+
+A failed flush (`fsync`) is never treated as a full disk, even if the operating
+system reports it that way. After one, the server cannot know which writes
+reached stable storage, so it stops and recovers the true state from disk on
+the next start.
+
+Other files fail the same way. A checkpoint that cannot be written is reported
+as `DISK_FULL` or `PERMISSION_DENIED`, leaves no partial snapshot behind, and is
+tried again at the next trigger; the log is not truncated and no data is lost. A
+log segment that cannot be created because the disk is full leaves the current
+segment in use, so the write fails and a later one can succeed.
+
+With the `memory` write concern, writes the server has already acknowledged can
+wait in memory for up to about 100 ms. If the disk is full then, they stay
+queued and are written when space returns. A write that is refused instead of
+queued is not applied.
 
 ## Limits
 

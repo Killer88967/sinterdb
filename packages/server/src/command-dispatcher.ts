@@ -883,6 +883,20 @@ function translateStorageError(error: unknown): CommandExecutionError {
   }
 
   if (
+    error.code === StorageErrorCode.DiskFull ||
+    error.code === StorageErrorCode.PermissionDenied
+  ) {
+    return new CommandExecutionError(
+      WireErrorCode.InternalError,
+      "InternalError",
+      error.code === StorageErrorCode.DiskFull
+        ? "The server's disk is full, so the operation was not applied. Free space on the server and try again."
+        : "The server is allowed to write to its data directory, so the operation was not applied.",
+      { details: { storageErrorCode: error.code } },
+    );
+  }
+
+  if (
     error.code === StorageErrorCode.Io ||
     error.code === StorageErrorCode.Closed ||
     error.code === StorageErrorCode.Corruption ||

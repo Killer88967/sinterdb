@@ -17,6 +17,7 @@ import {
   StorageError,
   StorageErrorCode,
 } from "../errors.js";
+import { translateIo, ioError, isDiskFull } from "../io-error.js";
 import {
   SEGMENT_HEADER_SIZE,
   decodeSegmentHeader,
@@ -222,7 +223,20 @@ export class WriteAheadLog {
       this.nextLsn = lsn + 1n;
 
       if (this.pendingBytes >= MEMORY_FLUSH_BYTES) {
-        this.flush();
+        try {
+          this.flush();
+        } catch (error: unknown) {
+          if (!this.broken) {
+            // The disk is full but the log is still unusable. The caller will
+            // not apply this operation, so it must not stay queued either.
+            this.pending.pop();
+            this.pendingBytes -= record.byteLength;
+            this.position -= record.byteLength;
+            this.nextLsn = lsn;
+          }
+
+          throw error;
+        }
       }
 
       return lsn;
@@ -230,18 +244,22 @@ export class WriteAheadLog {
 
     try {
       writeFully(this.fd as number, record, this.position);
+    } catch (error: unknown) {
+      throw this.abandonWrite("append to the log", error, this.position);
+    }
 
-      if (this.mode === "flushed") {
-        if (this.groupCommit) {
-          this.unsynced = true;
-        } else {
+    if (this.mode === "flushed") {
+      if (this.groupCommit) {
+        this.unsynced = true;
+      } else {
+        try {
           fsyncSync(this.fd as number);
+        } catch (error: unknown) {
+          this.broken = true;
+
+          throw ioError("flush", this.activePath(), error, false);
         }
       }
-    } catch (error: unknown) {
-      this.broken = true;
-
-      throw ioError("append to the log", this.activePath(), error);
     }
 
     this.position += record.byteLength;
@@ -272,12 +290,10 @@ export class WriteAheadLog {
     try {
       writeFully(this.fd as number, bytes, this.position - this.pendingBytes);
     } catch (error: unknown) {
-      this.broken = true;
-
-      throw ioError(
+      throw this.abandonWrite(
         "write pending records to the log",
-        this.activePath(),
         error,
+        this.position - this.pendingBytes,
       );
     }
 
@@ -301,7 +317,7 @@ export class WriteAheadLog {
     } catch (error: unknown) {
       this.broken = true;
 
-      throw ioError("flush the log", this.activePath(), error);
+      throw ioError("flush the log", this.activePath(), error, false);
     }
 
     this.unsynced = false;
@@ -316,7 +332,7 @@ export class WriteAheadLog {
     } catch (error: unknown) {
       this.broken = true;
 
-      throw ioError("flush the log", this.activePath(), error);
+      throw ioError("flush the log", this.activePath(), error, false);
     }
   }
 
@@ -450,32 +466,59 @@ export class WriteAheadLog {
 
     this.flush();
 
-    try {
-      if (durable) {
+    if (durable) {
+      try {
         fsyncSync(this.fd as number);
         this.unsynced = false;
+      } catch (error: unknown) {
+        this.broken = true;
+
+        throw ioError("rotate the log", this.activePath(), error, false);
       }
-
-      closeSync(this.fd as number);
-    } catch (error: unknown) {
-      this.broken = true;
-
-      throw ioError("rotate the log", this.activePath(), error);
     }
 
-    this.fd = undefined;
+    // Create the next segment before letting go of the current one. If that
+    // fails, for example on a full disk, the current segment stays active and
+    // a later write can try again.
+    const created = createSegment(this.directory, this.nextLsn, durable);
+    const previous = this.fd as number;
+
+    this.segments.push(created.info);
+    this.fd = created.fd;
+    this.position = SEGMENT_HEADER_SIZE;
 
     try {
-      const created = createSegment(this.directory, this.nextLsn, durable);
-
-      this.segments.push(created.info);
-      this.fd = created.fd;
-      this.position = SEGMENT_HEADER_SIZE;
+      closeSync(previous);
     } catch (error: unknown) {
       this.broken = true;
 
-      throw error;
+      throw ioError("rotate the log", this.activePath(), error, false);
     }
+  }
+
+  /**
+   * Handles a failed write. When the disk is full the partly written bytes are
+   * cut off so the log ends at its last whole record and stays usable once
+   * space is freed. Any other failure, or a failed cut, breaks the log.
+   */
+  private abandonWrite(
+    action: string,
+    error: unknown,
+    goodEnd: number,
+  ): StorageError {
+    if (isDiskFull(error)) {
+      try {
+        ftruncateSync(this.fd as number, goodEnd);
+
+        return ioError(action, this.activePath(), error);
+      } catch {
+        // Fall through: the tail could not be cleaned up.
+      }
+    }
+
+    this.broken = true;
+
+    return ioError(action, this.activePath(), error);
   }
 
   private activePath(): string {
@@ -609,8 +652,10 @@ function createSegment(
 ): { info: SegmentInfo; fd: number } {
   const path = join(directory, `${firstLsn.toString().padStart(20, "0")}.wal`);
 
+  let fd: number | undefined;
+
   try {
-    const fd = openSync(path, "wx");
+    fd = openSync(path, "wx");
 
     writeFully(fd, encodeSegmentHeader(firstLsn), 0);
 
@@ -621,7 +666,16 @@ function createSegment(
 
     return { info: { path, firstLsn }, fd };
   } catch (error: unknown) {
-    throw ioError("create a log segment", path, error);
+    if (fd !== undefined) {
+      try {
+        closeSync(fd);
+        unlinkSync(path);
+      } catch {
+        // The leftover file is an empty segment that recovery tolerates.
+      }
+    }
+
+    throw translateIo("create a log segment", path, error);
   }
 }
 
@@ -649,7 +703,7 @@ export function syncDirectory(directory: string): void {
     const code = (error as NodeJS.ErrnoException).code;
 
     if (code !== "EISDIR" && code !== "EPERM" && code !== "EINVAL") {
-      throw ioError("flush a directory", directory, error);
+      throw ioError("flush a directory", directory, error, false);
     }
   } finally {
     if (fd !== undefined) {
@@ -677,13 +731,5 @@ function corruption(
       lsn === undefined ? "" : ` (log sequence number ${lsn})`
     }: ${reason} Records after this point cannot be trusted. Restore the data directory from a backup, or move the damaged segment aside only if you accept losing the writes it contains.`,
     lsn === undefined ? { file, offset } : { file, offset, lsn },
-  );
-}
-
-function ioError(action: string, path: string, cause: unknown): StorageError {
-  return new StorageError(
-    StorageErrorCode.Io,
-    `Could not ${action} at ${path}: ${(cause as Error).message}`,
-    { cause },
   );
 }

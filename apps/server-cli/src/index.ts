@@ -13,6 +13,7 @@ try {
     process.exitCode = 2;
   } else if (error instanceof BackupUsageError) {
     process.stderr.write(`${error.message}\n\n${BACKUP_HELP_TEXT}`);
+    process.exitCode = 2;
   } else {
     logError("server.start_failed", "SinterDB server failed to start.", error);
     process.exitCode = 1;

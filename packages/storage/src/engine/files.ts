@@ -7,6 +7,7 @@ import {
   writeSync,
 } from "node:fs";
 
+import { translateIo } from "../io-error.js";
 import { syncDirectory } from "../wal/index.js";
 
 export function writeFileAtomic(
@@ -15,8 +16,22 @@ export function writeFileAtomic(
   contents: string,
 ): void {
   const temporary = `${path}.tmp`;
+
+  try {
+    writeTemporary(temporary, contents);
+    renameSync(temporary, path);
+  } catch (error: unknown) {
+    removeQuietly(temporary);
+
+    throw translateIo("write a file", path, error);
+  }
+
+  syncDirectory(directory);
+}
+
+function writeTemporary(path: string, contents: string): void {
   const bytes = Buffer.from(contents, "utf8");
-  const fd = openSync(temporary, "w");
+  const fd = openSync(path, "w");
 
   try {
     let written = 0;
@@ -26,19 +41,15 @@ export function writeFileAtomic(
     }
 
     fsyncSync(fd);
-  } catch (error: unknown) {
+  } finally {
     closeSync(fd);
-    unlinkSync(temporary);
-
-    throw error;
   }
+}
 
-  closeSync(fd);
+function removeQuietly(path: string): void {
   try {
-    renameSync(temporary, path);
-  } catch (error: unknown) {
-    unlinkSync(temporary);
-    throw error;
+    unlinkSync(path);
+  } catch {
+    // A leftover temporary file is removed the next time the directory opens.
   }
-  syncDirectory(directory);
 }
