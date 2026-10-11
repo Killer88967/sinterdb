@@ -891,7 +891,7 @@ function translateStorageError(error: unknown): CommandExecutionError {
       "InternalError",
       error.code === StorageErrorCode.DiskFull
         ? "The server's disk is full, so the operation was not applied. Free space on the server and try again."
-        : "The server is allowed to write to its data directory, so the operation was not applied.",
+        : "The server is not allowed to write to its data directory, so the operation was not applied.",
       { details: { storageErrorCode: error.code } },
     );
   }
