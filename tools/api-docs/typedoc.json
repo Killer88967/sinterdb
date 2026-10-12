@@ -1,5 +1,5 @@
 {
-  "$schema": "./react-output/schema.json",
+  "$schema": "https://sinterdb.vercel.app/typedoc/react-output/schema.json",
   "name": "SinterDB driver API",
   "entryPoints": ["../../packages/driver/dist/index.d.ts"],
   "tsconfig": "./tsconfig.json",
@@ -12,14 +12,6 @@
     {
       "name": "react",
       "path": "../../docs/api/react"
-    },
-    {
-      "name": "html",
-      "path": "../../docs/examples/static"
-    },
-    {
-      "name": "react",
-      "path": "../../docs/examples/react"
     }
   ],
   "reactOutput": {
