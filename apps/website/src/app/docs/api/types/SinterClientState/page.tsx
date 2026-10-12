@@ -41,12 +41,12 @@ const page = {
     {
       path: "packages/driver/src/client.ts",
       line: 125,
-      url: "https://github.com/SinterDB/sinterdb/blob/5fba92e03c736a2383c997b699469c460c425f64/packages/driver/src/client.ts#L125",
+      url: "https://github.com/SinterDB/sinterdb/blob/80314cb4c15da9097c83945abcc0b12a6bc24a28/packages/driver/src/client.ts#L125",
     },
     {
       path: "packages/driver/src/client.ts",
       line: 139,
-      url: "https://github.com/SinterDB/sinterdb/blob/5fba92e03c736a2383c997b699469c460c425f64/packages/driver/src/client.ts#L139",
+      url: "https://github.com/SinterDB/sinterdb/blob/80314cb4c15da9097c83945abcc0b12a6bc24a28/packages/driver/src/client.ts#L139",
     },
   ],
 } satisfies ApiPage;
