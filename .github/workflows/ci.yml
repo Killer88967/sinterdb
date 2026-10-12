@@ -56,6 +56,9 @@ jobs:
       - name: Generate API reference
         run: pnpm docs:api
 
+      - name: Format
+        run: pnpm format
+
       - name: Upload API reference
         if: matrix.node-version == '24.x'
         uses: actions/upload-artifact@v7
