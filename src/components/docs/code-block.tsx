@@ -14,10 +14,12 @@ export async function CodeBlock({
   code,
   lang = "text",
   title,
+  copy = true,
 }: {
   readonly code: string;
   readonly lang?: string;
   readonly title?: string;
+  readonly copy?: boolean;
 }) {
   const language = lang in bundledLanguages ? lang : "text";
   const html = await codeToHtml(code, { lang: language, theme: THEME });
@@ -30,7 +32,7 @@ export async function CodeBlock({
         </figcaption>
       )}
 
-      <CopyButton text={code} />
+      {copy && <CopyButton text={code} />}
 
       <div
         className="overflow-x-auto p-5 font-mono text-sm leading-6 [&_pre]:bg-transparent! [&_pre]:outline-none"

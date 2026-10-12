@@ -12,13 +12,16 @@ export default function remarkCodeMeta() {
 
 function visit(node) {
   if (node.type === "code" && node.meta) {
-    const title = parseTitle(node.meta.trim());
+    const meta = node.meta.trim();
+    const noCopy = /(^|\s)nocopy(?=\s|$)/u.test(meta);
+    const title = parseTitle(meta.replace(/(^|\s)nocopy(?=\s|$)/u, " ").trim());
 
-    if (title) {
+    if (title || noCopy) {
       node.data ??= {};
       node.data.hProperties = {
         ...node.data.hProperties,
-        "data-title": title,
+        ...(title && { "data-title": title }),
+        ...(noCopy && { "data-nocopy": "" }),
       };
     }
   }

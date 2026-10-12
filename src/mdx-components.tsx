@@ -10,6 +10,7 @@ type CodeElement = ReactElement<{
   readonly className?: string;
   readonly children?: string;
   readonly "data-title"?: string;
+  readonly "data-nocopy"?: string;
 }>;
 
 const components: MDXComponents = {
@@ -23,6 +24,7 @@ const components: MDXComponents = {
       className,
       children: code,
       "data-title": title,
+      "data-nocopy": noCopy,
     } = (children as CodeElement).props;
 
     return (
@@ -30,6 +32,7 @@ const components: MDXComponents = {
         code={String(code ?? "").replace(/\n$/u, "")}
         lang={className?.replace(/^language-/u, "")}
         title={title}
+        copy={noCopy === undefined}
       />
     );
   },
