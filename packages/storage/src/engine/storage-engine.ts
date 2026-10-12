@@ -310,6 +310,11 @@ export class StorageEngine {
           targetVersion: STORAGE_FORMAT_VERSION,
           migrations: MIGRATIONS,
         },
+        ...(options.onMigration === undefined
+          ? {}
+          : {
+              onMigration: options.onMigration,
+            }),
       });
 
       const log = WriteAheadLog.open({
