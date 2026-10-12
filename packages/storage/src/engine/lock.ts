@@ -11,6 +11,7 @@ import {
 import { hostname } from "node:os";
 
 import { StorageError, StorageErrorCode } from "../errors.js";
+import { ioError } from "../io-error.js";
 
 interface LockInfo {
   readonly pid: number;
@@ -52,8 +53,12 @@ export function acquireDirectoryLock(
   };
 
   for (let attempt = 0; attempt < 3; attempt += 1) {
+    let created = false;
+
     try {
       const fd = openSync(path, "wx");
+
+      created = true;
 
       try {
         writeSync(fd, JSON.stringify(info));
@@ -66,12 +71,17 @@ export function acquireDirectoryLock(
 
       return { release: () => releaseLock(path, info.nonce) };
     } catch (error: unknown) {
+      if (created) {
+        // A lock file with no readable owner would block the next start.
+        try {
+          unlinkSync(path);
+        } catch {
+          // Nothing more can be done; the file counts as stale after a while.
+        }
+      }
+
       if ((error as NodeJS.ErrnoException).code !== "EEXIST") {
-        throw new StorageError(
-          StorageErrorCode.Io,
-          `Could not create the lock file ${path}: ${(error as Error).message}`,
-          { cause: error },
-        );
+        throw ioError("create the lock file", path, error);
       }
     }
 

@@ -57,7 +57,7 @@ const page = {
     {
       path: "packages/driver/src/update.ts",
       line: 47,
-      url: "https://github.com/SinterDB/sinterdb/blob/80314cb4c15da9097c83945abcc0b12a6bc24a28/packages/driver/src/update.ts#L47",
+      url: "https://github.com/SinterDB/sinterdb/blob/35f3c8babf0f6282fecdec3c8a6d014245c3426c/packages/driver/src/update.ts#L47",
     },
   ],
 } satisfies ApiPage;

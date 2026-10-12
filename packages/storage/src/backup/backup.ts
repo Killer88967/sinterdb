@@ -449,11 +449,13 @@ function copyFile(from: string, to: string): { size: number; sha256: string } {
 
   const hash = createHash("sha256");
   const input = openSync(from, "r");
-  const output = openSync(to, "w");
+  let output: number | undefined;
   const buffer = Buffer.allocUnsafe(CHUNK_BYTES);
   let size = 0;
 
   try {
+    output = openSync(to, "w");
+
     for (;;) {
       const read = readSync(input, buffer, 0, CHUNK_BYTES, null);
 
@@ -475,7 +477,10 @@ function copyFile(from: string, to: string): { size: number; sha256: string } {
     fsyncSync(output);
   } finally {
     closeSync(input);
-    closeSync(output);
+
+    if (output !== undefined) {
+      closeSync(output);
+    }
   }
 
   return { size, sha256: hash.digest("hex") };

@@ -27,6 +27,7 @@ export {
   DEFAULT_CHECKPOINT_RETENTION,
   DEFAULT_CHECKPOINT_THRESHOLD_BYTES,
   STORAGE_FORMAT,
+  MIGRATIONS,
   STORAGE_FORMAT_VERSION,
   StorageEngine,
 } from "./engine/index.js";
@@ -70,6 +71,10 @@ export type {
 export type {
   CheckpointResult,
   CheckpointStage,
+  Migration,
+  MigrationContext,
+  MigrationEvent,
+  MigrationPlan,
   RecoveryReport,
   SkippedCheckpoint,
   StorageEngineOptions,

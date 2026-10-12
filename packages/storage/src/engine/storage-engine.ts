@@ -41,6 +41,12 @@ import { translateIo } from "../io-error.js";
 import { writeFileAtomic } from "./files.js";
 import { acquireDirectoryLock, type DirectoryLock } from "./lock.js";
 import {
+  MIGRATIONS,
+  planMigrations,
+  type MigrationEvent,
+  type MigrationPlan,
+} from "./migrations.js";
+import {
   RecordType,
   decodeOperations,
   encodeOperations,
@@ -114,6 +120,16 @@ export interface StorageEngineOptions {
    */
   readonly reclaimLock?: boolean;
   /**
+   * Called before each step that upgrades an older data directory to the
+   * current storage format, so a server can say what it is doing.
+   */
+  readonly onMigration?: (event: MigrationEvent) => void;
+  /**
+   * The format version to write and the steps that lead to it. Defaults to the
+   * current version and its steps. Intended for tests and tools.
+   */
+  readonly migrationPlan?: MigrationPlan;
+  /**
    * Called as a checkpoint passes each stage. Intended for tests and
    * diagnostics; throwing from it aborts the checkpoint at that point.
    */
@@ -171,6 +187,12 @@ interface Manifest {
   readonly createdAt: string;
   readonly upgradedFrom?: number;
   readonly upgradedAt?: string;
+  /**
+   * Set while an upgrade that rewrites files is under way. The version above
+   * is already the new one, so older servers refuse the directory; if a crash
+   * leaves this behind, the next start runs the whole upgrade again.
+   */
+  readonly migratingFrom?: number;
 }
 
 interface ActiveCheckpoint {
@@ -184,6 +206,11 @@ interface BegunCheckpoint {
   readonly collections: CheckpointCollection[];
   readonly documents: number;
   readonly bytes: number;
+}
+
+interface ManifestPlan {
+  readonly plan: MigrationPlan;
+  readonly onMigration?: (event: MigrationEvent) => void;
 }
 
 const SUBDIRECTORIES = ["wal", "segments", "indexes", "checkpoints"] as const;
@@ -278,7 +305,12 @@ export class StorageEngine {
         mkdirSync(join(root, name), { recursive: true });
       }
 
-      prepareManifest(root);
+      prepareManifest(root, {
+        plan: options.migrationPlan ?? {
+          targetVersion: STORAGE_FORMAT_VERSION,
+          migrations: MIGRATIONS,
+        },
+      });
 
       const log = WriteAheadLog.open({
         directory: join(root, "wal"),
@@ -1013,8 +1045,12 @@ function toOperation(
     : { kind: "delete", database, collection, id };
 }
 
-function prepareManifest(root: string): void {
+function prepareManifest(
+  root: string,
+  { plan, onMigration }: ManifestPlan,
+): void {
   const path = join(root, "manifest.json");
+  const target = plan.targetVersion;
   // A crash while replacing this manifest can leave the temporary copy behind.
   // The real manifest is untouched at that point, so the copy is just debris.
   rmSync(`${path}.tmp`, { force: true });
@@ -1029,7 +1065,7 @@ function prepareManifest(root: string): void {
 
     const manifest: Manifest = {
       format: STORAGE_FORMAT,
-      formatVersion: STORAGE_FORMAT_VERSION,
+      formatVersion: target,
       createdAt: new Date().toISOString(),
     };
 
@@ -1070,29 +1106,82 @@ function prepareManifest(root: string): void {
     );
   }
 
-  if (manifest.formatVersion < STORAGE_FORMAT_VERSION) {
-    // Glider servers cannot read what this version writes, so mark the
-    // directory before anything is written to it.
-    const upgraded: Manifest = {
-      format: STORAGE_FORMAT,
-      formatVersion: STORAGE_FORMAT_VERSION,
-      createdAt:
-        typeof manifest.createdAt === "string"
-          ? manifest.createdAt
-          : new Date().toISOString(),
-      upgradedFrom: manifest.formatVersion,
-      upgradedAt: new Date().toISOString(),
-    };
-
-    writeFileAtomic(root, path, `${JSON.stringify(upgraded, null, 2)}\n`);
-  }
-
-  if (manifest.formatVersion > STORAGE_FORMAT_VERSION) {
+  if (manifest.formatVersion > target) {
     throw new StorageError(
       StorageErrorCode.UnsupportedFormat,
-      `The data directory uses storage format version ${manifest.formatVersion}, but this version of SinterDB only supports up to version ${STORAGE_FORMAT_VERSION}. Upgrade SinterDB to open it.`,
+      `The data directory uses storage format version ${manifest.formatVersion}, but this version of SinterDB only supports up to version ${target}. Upgrade SinterDB to open it.`,
     );
   }
+
+  const interrupted = readInterruptedUpgrade(manifest, path, target);
+  const from = interrupted ?? manifest.formatVersion;
+
+  if (from === target && interrupted === undefined) {
+    return;
+  }
+
+  const steps = planMigrations(from, plan);
+  const rewrites = steps.some((step) => step.run !== undefined);
+  const createdAt =
+    typeof manifest.createdAt === "string"
+      ? manifest.createdAt
+      : new Date().toISOString();
+
+  if (rewrites && interrupted === undefined) {
+    // Older servers cannot read what the new version writes, and they must not
+    // open a directory whose files are half rewritten. Mark it first.
+    const marked: Manifest = {
+      format: STORAGE_FORMAT,
+      formatVersion: target,
+      createdAt,
+      migratingFrom: from,
+    };
+
+    writeFileAtomic(root, path, `${JSON.stringify(marked, null, 2)}\n`);
+  }
+
+  for (const step of steps) {
+    onMigration?.({
+      from: step.from,
+      to: step.to,
+      description: step.description,
+    });
+    step.run?.({ directory: root });
+  }
+
+  const upgraded: Manifest = {
+    format: STORAGE_FORMAT,
+    formatVersion: target,
+    createdAt,
+    upgradedFrom: from,
+    upgradedAt: new Date().toISOString(),
+  };
+
+  writeFileAtomic(root, path, `${JSON.stringify(upgraded, null, 2)}\n`);
+}
+
+/** The version an unfinished upgrade started from, if there is one. */
+function readInterruptedUpgrade(
+  manifest: Partial<Manifest>,
+  path: string,
+  target: number,
+): number | undefined {
+  if (manifest.migratingFrom === undefined) {
+    return undefined;
+  }
+
+  if (
+    !Number.isInteger(manifest.migratingFrom) ||
+    manifest.migratingFrom < 1 ||
+    manifest.migratingFrom >= target
+  ) {
+    throw new StorageCorruptionError(
+      `The manifest ${path} records an upgrade from an invalid version.`,
+      { file: path, offset: 0 },
+    );
+  }
+
+  return manifest.migratingFrom;
 }
 
 function hasLogData(root: string): boolean {

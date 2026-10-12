@@ -202,6 +202,31 @@ The upgrade is one way. A 0.0.8 server refuses a version 2 directory with an
 "Upgrade" error instead of ignoring the indexes. Make a backup before upgrading
 if you may want to go back.
 
+### How upgrades work
+
+Every format change is a numbered step from one version to the next. Opening an
+older directory runs the steps from its version up to the current one, in
+order, before the log is read, and then records `upgradedFrom` and `upgradedAt`
+in `manifest.json`. A build that has no step for some version refuses to open
+the directory and names the missing step; it changes nothing.
+
+A step that only adds something old files can be read without, like version 2,
+rewrites nothing, and the manifest is simply updated. A step that rewrites
+files works like this:
+
+1. The manifest is first rewritten with the new version and a `migratingFrom`
+   field. Older servers now refuse the directory, so none of them can open
+   files that are half rewritten.
+2. The steps run. Each one is written to be safe to run again.
+3. The manifest is rewritten without `migratingFrom`.
+
+If the process stops between steps 1 and 3, `migratingFrom` is still in the
+manifest. The next start runs the steps again from that version, which finishes
+the upgrade. A newer build with more steps carries on from there too.
+
+Make a backup with `sinterd backup` before the first start after an upgrade
+that rewrites files. See [backup.md](./backup.md).
+
 ## Backups
 
 Stop the server cleanly with `SIGTERM` or `SIGINT`, which writes a final
@@ -234,6 +259,33 @@ With the `memory` write concern, writes the server has already acknowledged can
 wait in memory for up to about 100 ms. If the disk is full then, they stay
 queued and are written when space returns. A write that is refused instead of
 queued is not applied.
+
+## Failure testing
+
+The recovery and backup code is tested by breaking it on purpose:
+
+- **Killing the process.** A child process writes and is stopped with `SIGKILL`
+  at different moments, including in the middle of a checkpoint. Every write it
+  acknowledged must still be there after the restart.
+- **Failing every file system call in turn.** A fixed set of operations (inserts,
+  updates, indexes, snapshots, pruning, log rotation) is run once per file
+  system call it makes, and a different call fails each time with a disk error
+  or a full disk. After each failure the directory must reopen, keep every
+  operation that succeeded, hold either all or none of the one that failed, and
+  have consistent indexes. A step that reports a full disk must leave no trace.
+  The same is done for starting the engine, `backup` and `restore`; these must
+  leave either a complete result or nothing, and no lock behind.
+- **Cutting the log short at every byte.** Recovery must produce a state the
+  database really had, never go backwards as more of the log survives, and never
+  produce anything else.
+- **Flipping every byte.** In the log, a flipped byte is either reported as
+  damage or looks like an unfinished last write; in the newest snapshot it makes
+  recovery fall back to the older one with nothing lost; in the manifest it is
+  an error or harmless.
+
+These tests model failed system calls and damaged files. They do not model a
+power cut that loses data the operating system had accepted but not yet written
+to disk, so they cannot show that a missing `fsync` loses data.
 
 ## Limits
 

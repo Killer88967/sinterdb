@@ -23,7 +23,7 @@
     "lint": "pnpm lint:root && pnpm lint:website",
     "lint:root": "eslint .",
     "lint:website": "pnpm --filter sinterdb-website lint",
-    "test": "pnpm build && pnpm --recursive test",
+    "test": "pnpm build:nw && pnpm --recursive test",
     "test:watch": "pnpm --recursive --parallel test:watch",
     "test:docker": "vitest packages/driver/src/docker.integration.test.ts",
     "format": "prettier --write .",
