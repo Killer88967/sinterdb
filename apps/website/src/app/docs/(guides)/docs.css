@@ -1,0 +1,194 @@
+/*
+ * Markdown styles for the guides. Selectors sit inside :where() so any
+ * Tailwind class on a component still wins, and they skip anything inside a
+ * code block or callout, which style themselves.
+ */
+
+@layer components {
+  :where(.docs-prose) {
+    --docs-strong: var(--color-white);
+    --docs-text: var(--color-zinc-400);
+    --docs-muted: var(--color-zinc-500);
+    --docs-accent: var(--color-orange-400);
+    --docs-code: var(--color-orange-300);
+    --docs-border: rgb(255 255 255 / 0.07);
+
+    color: var(--docs-text);
+    font-size: 0.875rem;
+    line-height: 1.75rem;
+  }
+
+  /* Headings */
+
+  :where(.docs-prose) :where(h1) {
+    margin: 1rem 0 0;
+    color: var(--docs-strong);
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+  }
+
+  @media (min-width: 640px) {
+    :where(.docs-prose) :where(h1) {
+      font-size: 3rem;
+      line-height: 1;
+    }
+  }
+
+  /* The paragraph right after the title is the page lead. */
+  :where(.docs-prose) :where(h1 + p) {
+    max-width: 42rem;
+    margin: 1.25rem 0 3rem;
+    font-size: 1rem;
+    line-height: 2rem;
+  }
+
+  :where(.docs-prose) :where(h2) {
+    margin: 3rem 0 0;
+    color: var(--docs-strong);
+    font-size: 1.5rem;
+    line-height: 2rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+  }
+
+  :where(.docs-prose) :where(h3) {
+    margin: 2rem 0 0;
+    color: var(--docs-strong);
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  :where(.docs-prose) :where(h2, h3) {
+    scroll-margin-top: 5rem;
+  }
+
+  :where(.docs-prose) :where(h2 + *, h3 + *) {
+    margin-top: 0.75rem;
+  }
+
+  /* Text */
+
+  :where(.docs-prose)
+    :where(p, ul, ol, table):not(:where(.docs-code, .docs-callout) *) {
+    margin-block: 1rem;
+  }
+
+  :where(.docs-prose) :where(.docs-callout p) {
+    margin: 0;
+  }
+
+  :where(.docs-prose) :where(.docs-callout p + p) {
+    margin-top: 0.75rem;
+  }
+
+  :where(.docs-prose) :where(strong) {
+    color: var(--docs-strong);
+    font-weight: 600;
+  }
+
+  :where(.docs-prose)
+    :where(a):not(:where(.docs-api-link, [class*="rounded"])) {
+    color: var(--docs-accent);
+    text-decoration: underline;
+    text-decoration-color: rgb(251 146 60 / 0.35);
+    text-underline-offset: 3px;
+    transition: color 150ms;
+  }
+
+  :where(.docs-prose)
+    :where(a):not(:where(.docs-api-link, [class*="rounded"])):hover {
+    color: var(--color-orange-300);
+  }
+
+  :where(.docs-prose) :where(ul, ol) {
+    padding-left: 1.25rem;
+  }
+
+  :where(.docs-prose) :where(ul) {
+    list-style: disc;
+  }
+
+  :where(.docs-prose) :where(ol) {
+    list-style: decimal;
+  }
+
+  :where(.docs-prose) :where(li) {
+    margin-block: 0.25rem;
+    padding-left: 0.25rem;
+  }
+
+  :where(.docs-prose) :where(li)::marker {
+    color: var(--color-zinc-600);
+  }
+
+  :where(.docs-prose) :where(hr) {
+    margin: 3.5rem 0 2.5rem;
+    border: 0;
+    border-top: 1px solid var(--docs-border);
+  }
+
+  /* Inline code and API links */
+
+  :where(.docs-prose) :where(:not(pre) > code) {
+    color: var(--docs-code);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+  }
+
+  :where(.docs-prose) :where(.docs-api-link) {
+    border-radius: 0.25rem;
+    text-decoration: underline dotted rgb(253 186 116 / 0.4);
+    text-underline-offset: 3px;
+    transition: background-color 150ms;
+  }
+
+  :where(.docs-prose) :where(.docs-api-link:hover) {
+    background: rgb(249 115 22 / 0.08);
+  }
+
+  /* Tables */
+
+  :where(.docs-prose) :where(table) {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+    font-size: 0.8125rem;
+    line-height: 1.5rem;
+  }
+
+  :where(.docs-prose) :where(th) {
+    padding: 0.5rem 1rem 0.5rem 0;
+    border-bottom: 1px solid rgb(255 255 255 / 0.12);
+    color: var(--docs-strong);
+    font-weight: 600;
+    text-align: left;
+  }
+
+  :where(.docs-prose) :where(td) {
+    padding: 0.625rem 1rem 0.625rem 0;
+    border-bottom: 1px solid var(--docs-border);
+    vertical-align: top;
+  }
+
+  :where(.docs-prose) :where(td:first-child) {
+    white-space: nowrap;
+  }
+
+  /* Blockquotes render as neutral notes. */
+
+  :where(.docs-prose) :where(blockquote) {
+    margin: 1.5rem 0;
+    padding: 1rem 1.25rem;
+    border: 1px solid rgb(255 255 255 / 0.08);
+    border-radius: 0.75rem;
+    background: rgb(255 255 255 / 0.02);
+    color: var(--docs-muted);
+  }
+
+  :where(.docs-prose) :where(blockquote > p) {
+    margin: 0;
+  }
+}

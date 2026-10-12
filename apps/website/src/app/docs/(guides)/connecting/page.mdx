@@ -1,0 +1,125 @@
+export const metadata = {
+  title: "Connecting",
+  description:
+    "Create a SinterDB client, connect to a server, and select a database and collection.",
+};
+
+# Connecting
+
+Create a SinterDB client, connect to a server, and select a database and collection.
+
+## Create a client
+
+Import <Api name="SinterClient" /> from the official `sinterdb` package.
+
+```ts app.ts
+import { SinterClient } from "sinterdb";
+
+const client = new SinterClient("sinterdb://localhost/my-app");
+
+await client.connect();
+```
+
+## Connection strings
+
+SinterDB connection strings use the `sinterdb://` scheme.
+
+```text nocopy
+sinterdb://localhost/my-app
+
+sinterdb://127.0.0.1:4721/my-app
+```
+
+The portion after the final slash is the database name. If the connection string includes a database, you can access it with <Api name="SinterClient.db">client.db()</Api>.
+
+## Access a collection
+
+Collections can be typed with your own TypeScript interface.
+
+```ts app.ts
+interface User {
+  name: string;
+  active: boolean;
+}
+
+const users = client.db().collection<User>("users");
+```
+
+The document type is used by filters, updates, sorts, and other driver APIs to provide compile-time type checking. See <Api name="SinterCollection" /> for everything a collection can do.
+
+## Always close the client
+
+Close the connection when your application is finished using it. A `try/finally` block is a simple way to guarantee cleanup.
+
+```ts app.ts
+import { SinterClient } from "sinterdb";
+
+const client = new SinterClient("sinterdb://localhost/my-app");
+
+await client.connect();
+
+try {
+  const users = client.db().collection("users");
+
+  // Use the database...
+} finally {
+  await client.close();
+}
+```
+
+## Client options
+
+You can configure connection, request, and idle socket timeouts when creating the client.
+
+```ts
+const client = new SinterClient("sinterdb://localhost/my-app", {
+  connectTimeoutMS: 10_000,
+  requestTimeoutMS: 10_000,
+  socketTimeoutMS: 0,
+});
+```
+
+| Option             | Description                                                       |
+| ------------------ | ----------------------------------------------------------------- |
+| `connectTimeoutMS` | Maximum time allowed for connecting and completing the handshake. |
+| `requestTimeoutMS` | Maximum time to wait for an individual server response.           |
+| `socketTimeoutMS`  | Idle socket timeout. A value of `0` disables it.                  |
+
+All options are listed in [SinterClientOptions](api:SinterClientOptions).
+
+<Callout title="Database creation">
+  You do not need to create databases or collections beforehand. They are
+  created when you first write documents to them.
+</Callout>
+
+## Complete example
+
+```ts app.ts
+import { SinterClient } from "sinterdb";
+
+interface User {
+  name: string;
+  active: boolean;
+}
+
+const client = new SinterClient("sinterdb://localhost/my-app");
+
+await client.connect();
+
+try {
+  const users = client.db().collection<User>("users");
+
+  await users.insertOne({
+    name: "Kage",
+    active: true,
+  });
+
+  const user = await users.findOne({
+    name: "Kage",
+  });
+
+  console.log(user);
+} finally {
+  await client.close();
+}
+```

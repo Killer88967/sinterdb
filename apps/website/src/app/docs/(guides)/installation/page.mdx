@@ -1,0 +1,58 @@
+export const metadata = {
+  title: "Installation",
+  description:
+    "Install the SinterDB server and Node.js driver, then start a local database server for development.",
+};
+
+# Installation
+
+Install the SinterDB server and Node.js driver, then start a local database server for development.
+
+## Requirements
+
+SinterDB currently requires Node.js 24 or newer.
+
+<Callout>
+  SinterDB `0.1.0` is currently a developer preview published under the `next`
+  npm tag.
+</Callout>
+
+## Install the server
+
+The SinterDB server CLI is distributed as `@sinterdb/cli`. It provides the `sinterd` command.
+
+```bash npm
+npm install --global @sinterdb/cli@next
+```
+
+```bash pnpm
+pnpm add --global @sinterdb/cli@next
+```
+
+## Start the server
+
+Start SinterDB with a local data directory:
+
+```bash terminal
+sinterd --data-dir ./sinterdb-data
+```
+
+Using `--data-dir` enables durable storage so your data survives server restarts. Without it, the server runs entirely in memory.
+
+## Install the Node.js driver
+
+In your application project, install the official SinterDB driver:
+
+```bash npm
+npm install sinterdb@next
+```
+
+```bash pnpm
+pnpm add sinterdb@next
+```
+
+<Callout title="Default server address" tone="neutral">
+  SinterDB listens on `127.0.0.1:4721` by default. Authentication and TLS are
+  not available yet, so avoid exposing a development server to an untrusted
+  network.
+</Callout>
