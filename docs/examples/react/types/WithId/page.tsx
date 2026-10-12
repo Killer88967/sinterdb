@@ -162,7 +162,7 @@ const page = {
             {
               "path": "packages/driver/src/collection.ts",
               "line": 40,
-              "url": "https://github.com/SinterDB/sinterdb/blob/98b477fd32275190f30ae1f23f5d31c518f858ae/packages/driver/src/collection.ts#L40"
+              "url": "https://github.com/SinterDB/sinterdb/blob/db8949eb5cc67bb672a49a4c09d2bf15bc647a4e/packages/driver/src/collection.ts#L40"
             }
           ]
         }
@@ -186,7 +186,7 @@ const page = {
     {
       "path": "packages/driver/src/collection.ts",
       "line": 38,
-      "url": "https://github.com/SinterDB/sinterdb/blob/98b477fd32275190f30ae1f23f5d31c518f858ae/packages/driver/src/collection.ts#L38"
+      "url": "https://github.com/SinterDB/sinterdb/blob/db8949eb5cc67bb672a49a4c09d2bf15bc647a4e/packages/driver/src/collection.ts#L38"
     }
   ]
 } satisfies ApiPage;

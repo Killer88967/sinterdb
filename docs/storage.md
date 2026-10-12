@@ -104,9 +104,20 @@ checkpoint, and then removes log segments it no longer needs.
   file, flushed, renamed over the old one, and the directory flushed. A crash in
   the middle leaves the old manifest intact. A leftover `manifest.json.tmp` is
   deleted on the next start.
-- Checkpoints run on the main thread and block the server while they are
-  written. Large datasets pause briefly at each checkpoint.
-- Checkpoints only start between writes, never in the middle of one.
+- Automatic checkpoints run in the background. The server copies the list of
+  documents at the moment the checkpoint starts, then writes the snapshot about
+  1 MiB at a time and lets other requests run in between, so a large data set
+  does not stop reads and writes while it is saved. Writes made meanwhile go to
+  the log and are not in that snapshot, so recovery replays them. The log is
+  truncated only after the snapshot is complete.
+- The copy of the document list costs a little memory while a checkpoint runs,
+  roughly one pointer per document. Documents themselves are not copied.
+- A checkpoint that is still running when the server stops is cancelled and its
+  unfinished file removed. The final checkpoint on a clean shutdown is written in
+  one go, with the server already refusing new work.
+- Only one checkpoint runs at a time. If the next one is due while one is
+  running, it waits until that one finishes.
+- A checkpoint only starts between writes, never in the middle of one.
 - A failed automatic checkpoint never fails a write. The server tries again
   after another threshold's worth of log.
 

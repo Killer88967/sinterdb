@@ -227,7 +227,7 @@ export class WriteAheadLog {
           this.flush();
         } catch (error: unknown) {
           if (!this.broken) {
-            // The disk is full but the log is still unusable. The caller will
+            // The disk is full but the log is still usable. The caller will
             // not apply this operation, so it must not stay queued either.
             this.pending.pop();
             this.pendingBytes -= record.byteLength;
@@ -257,7 +257,7 @@ export class WriteAheadLog {
         } catch (error: unknown) {
           this.broken = true;
 
-          throw ioError("flush", this.activePath(), error, false);
+          throw ioError("flush the log", this.activePath(), error, false);
         }
       }
     }

@@ -32,6 +32,7 @@ import {
   readCheckpoint,
   removeTemporaryCheckpoints,
   writeCheckpoint,
+  writeCheckpointSteps,
   type CheckpointCollection,
   type CheckpointStage,
   type ReadCheckpoint,
@@ -97,6 +98,15 @@ export interface StorageEngineOptions {
    */
   readonly checkpointOnClose?: boolean;
   /**
+   * Write automatic checkpoints in the background. The snapshot is written in
+   * steps between other work, so a large data set does not stop reads and
+   * writes while it is saved. It needs a point-in-time copy of the document
+   * list while it runs. Calling `checkpoint()` or closing the engine cancels a
+   * running background checkpoint and checkpoints in one go instead. Defaults
+   * to false.
+   */
+  readonly backgroundCheckpoints?: boolean;
+  /**
    * Take over a lock file left by a process on another host. Only set this
    * when no other server can be using the directory at the same time, for
    * example because a container platform started this server in place of one
@@ -151,6 +161,7 @@ interface Settings {
   readonly checkpointThresholdBytes: number;
   readonly checkpointRetention: number;
   readonly checkpointOnClose: boolean;
+  readonly backgroundCheckpoints: boolean;
   readonly onCheckpointStage: (stage: CheckpointStage) => void;
 }
 
@@ -160,6 +171,19 @@ interface Manifest {
   readonly createdAt: string;
   readonly upgradedFrom?: number;
   readonly upgradedAt?: string;
+}
+
+interface ActiveCheckpoint {
+  promise: Promise<CheckpointResult | undefined>;
+  /** Stops the checkpoint now and removes its unfinished file. */
+  abort(): void;
+}
+
+interface BegunCheckpoint {
+  readonly lsn: bigint;
+  readonly collections: CheckpointCollection[];
+  readonly documents: number;
+  readonly bytes: number;
 }
 
 const SUBDIRECTORIES = ["wal", "segments", "indexes", "checkpoints"] as const;
@@ -176,6 +200,7 @@ export class StorageEngine {
   private bytesSinceCheckpoint = 0;
   private nextCheckpointAt: number;
   private checkpointFailure: unknown;
+  private activeCheckpoint: ActiveCheckpoint | undefined;
   private report: RecoveryReport = {
     checkpointLsn: 0n,
     checkpointFile: undefined,
@@ -238,6 +263,7 @@ export class StorageEngine {
       checkpointThresholdBytes: threshold,
       checkpointRetention: retention,
       checkpointOnClose: options.checkpointOnClose ?? true,
+      backgroundCheckpoints: options.backgroundCheckpoints ?? false,
       onCheckpointStage: options.onCheckpointStage ?? (() => undefined),
     };
 
@@ -387,6 +413,8 @@ export class StorageEngine {
 
     let failure: unknown;
 
+    this.activeCheckpoint?.abort();
+
     if (
       this.settings.checkpointOnClose &&
       this.lastCheckpoint < this.log.lastLsn
@@ -433,7 +461,114 @@ export class StorageEngine {
    */
   public checkpoint(): CheckpointResult | undefined {
     this.assertOpen();
+    this.activeCheckpoint?.abort();
 
+    const begun = this.beginCheckpoint(false);
+
+    if (begun === undefined) {
+      return undefined;
+    }
+
+    const directory = join(this.root, "checkpoints");
+    let file: string;
+
+    try {
+      file = writeCheckpoint(
+        directory,
+        begun.lsn,
+        begun.collections,
+        this.settings.onCheckpointStage,
+      );
+    } catch (error: unknown) {
+      throw translateIo("write a snapshot", directory, error);
+    }
+
+    return this.finishCheckpoint(begun, file);
+  }
+
+  /** True while a background checkpoint is being written. */
+  public get isCheckpointing(): boolean {
+    return this.activeCheckpoint !== undefined;
+  }
+
+  /**
+   * Like `checkpoint`, but writes the snapshot in steps and lets reads and
+   * writes run in between, so a large data set does not block the engine. The
+   * snapshot holds the state at the moment this was called; later writes stay
+   * in the log. If a background checkpoint is already running this returns
+   * its result instead of starting another. Closing the engine or calling
+   * `checkpoint` cancels it, and the promise then resolves to undefined.
+   */
+  public checkpointAsync(): Promise<CheckpointResult | undefined> {
+    this.assertOpen();
+
+    if (this.activeCheckpoint !== undefined) {
+      return this.activeCheckpoint.promise;
+    }
+
+    const begun = this.beginCheckpoint(true);
+
+    if (begun === undefined) {
+      return Promise.resolve(undefined);
+    }
+
+    const directory = join(this.root, "checkpoints");
+    const steps = writeCheckpointSteps(
+      directory,
+      begun.lsn,
+      begun.collections,
+      this.settings.onCheckpointStage,
+    );
+    let aborted = false;
+    const active: ActiveCheckpoint = {
+      promise: Promise.resolve(undefined),
+      abort: () => {
+        aborted = true;
+        steps.return("");
+      },
+    };
+
+    this.activeCheckpoint = active;
+
+    const run = async (): Promise<CheckpointResult | undefined> => {
+      try {
+        for (;;) {
+          let step: IteratorResult<void, string>;
+
+          try {
+            step = steps.next();
+          } catch (error: unknown) {
+            throw translateIo("write a snapshot", directory, error);
+          }
+
+          if (step.done === true) {
+            return this.finishCheckpoint(begun, step.value);
+          }
+
+          await new Promise<void>((resolve) => setImmediate(resolve));
+
+          if (aborted) {
+            return undefined;
+          }
+        }
+      } finally {
+        if (this.activeCheckpoint === active) {
+          this.activeCheckpoint = undefined;
+        }
+      }
+    };
+
+    active.promise = run();
+
+    return active.promise;
+  }
+
+  /**
+   * Flushes the log and notes what the snapshot must contain. The documents of
+   * a background checkpoint are copied into an array, because the maps change
+   * while it runs; stored documents are never modified in place.
+   */
+  private beginCheckpoint(copy: boolean): BegunCheckpoint | undefined {
     const lsn = this.log.lastLsn;
 
     if (lsn === 0n || lsn === this.lastCheckpoint) {
@@ -447,10 +582,12 @@ export class StorageEngine {
 
     for (const [database, byName] of this.databases) {
       for (const [collection, store] of byName) {
+        const entries = copy ? Array.from(store.entries()) : store.entries();
+
         collections.push({
           database,
           collection,
-          documents: store.entries(),
+          documents: entries,
           documentCount: store.documentCount,
           indexes: store.indexSpec(),
         });
@@ -458,16 +595,19 @@ export class StorageEngine {
       }
     }
 
-    const directory = join(this.root, "checkpoints");
-    const stage = this.settings.onCheckpointStage;
-    let file: string;
+    return { lsn, collections, documents, bytes: this.bytesSinceCheckpoint };
+  }
 
-    try {
-      file = writeCheckpoint(directory, lsn, collections, stage);
-    } catch (error: unknown) {
-      throw translateIo("write a snapshot", directory, error);
+  private finishCheckpoint(
+    begun: BegunCheckpoint,
+    file: string,
+  ): CheckpointResult | undefined {
+    if (this.closed) {
+      return undefined;
     }
 
+    const directory = join(this.root, "checkpoints");
+    const stage = this.settings.onCheckpointStage;
     const snapshots = listCheckpoints(directory);
     let removedSnapshots = 0;
 
@@ -489,16 +629,19 @@ export class StorageEngine {
 
     stage("log-truncated");
 
-    this.lastCheckpoint = lsn;
-    this.bytesSinceCheckpoint = 0;
+    this.lastCheckpoint = begun.lsn;
+    this.bytesSinceCheckpoint = Math.max(
+      0,
+      this.bytesSinceCheckpoint - begun.bytes,
+    );
     this.nextCheckpointAt = this.settings.checkpointThresholdBytes;
     this.checkpointFailure = undefined;
 
     return {
-      lsn,
+      lsn: begun.lsn,
       file,
-      collections: collections.length,
-      documents,
+      collections: begun.collections.length,
+      documents: begun.documents,
       removedSnapshots,
       removedSegments,
     };
@@ -547,12 +690,18 @@ export class StorageEngine {
 
   private startCheckpointTimer(intervalMs: number): void {
     this.checkpointTimer = setInterval(() => {
-      if (this.closed) {
+      if (this.closed || this.activeCheckpoint !== undefined) {
         return;
       }
 
       try {
-        this.checkpoint();
+        if (this.settings.backgroundCheckpoints) {
+          this.checkpointAsync().catch((error: unknown) => {
+            this.checkpointFailure = error;
+          });
+        } else {
+          this.checkpoint();
+        }
       } catch (error: unknown) {
         this.checkpointFailure = error;
       }
@@ -599,16 +748,31 @@ export class StorageEngine {
    * because only then does memory match every record in the log.
    */
   private runDueCheckpoint(): void {
-    if (this.bytesSinceCheckpoint < this.nextCheckpointAt) {
+    if (
+      this.bytesSinceCheckpoint < this.nextCheckpointAt ||
+      this.activeCheckpoint !== undefined
+    ) {
       return;
     }
 
-    try {
-      this.checkpoint();
-    } catch (error: unknown) {
+    this.runAutomaticCheckpoint();
+  }
+
+  private runAutomaticCheckpoint(): void {
+    const failed = (error: unknown): void => {
       this.checkpointFailure = error;
       this.nextCheckpointAt =
         this.bytesSinceCheckpoint + this.settings.checkpointThresholdBytes;
+    };
+
+    try {
+      if (this.settings.backgroundCheckpoints) {
+        this.checkpointAsync().catch(failed);
+      } else {
+        this.checkpoint();
+      }
+    } catch (error: unknown) {
+      failed(error);
     }
   }
 
