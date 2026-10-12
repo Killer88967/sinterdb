@@ -101,14 +101,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build website
+        run: pnpm --filter sinterdb-website build
+
       - name: Lint website
         run: pnpm --filter sinterdb-website lint
 
       - name: Type-check website
         run: pnpm --filter sinterdb-website typecheck
-
-      - name: Build website
-        run: pnpm --filter sinterdb-website build
 
   docker:
     name: Docker image
