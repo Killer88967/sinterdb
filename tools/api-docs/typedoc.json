@@ -12,6 +12,10 @@
     {
       "name": "react",
       "path": "../../docs/api/react"
+    },
+    {
+      "name": "react",
+      "path": "../../apps/website/src/app/docs/api"
     }
   ],
   "reactOutput": {

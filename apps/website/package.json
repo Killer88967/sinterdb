@@ -2,12 +2,16 @@
   "name": "sinterdb-website",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "format": "prettier -w ."
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "clean": "rimraf .next out"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",
@@ -29,8 +33,8 @@
     "eslint": "^9",
     "eslint-config-next": "16.4.0",
     "prettier": "^3.9.10",
+    "rimraf": "^6.1.3",
     "tailwindcss": "^4",
     "typescript": "^5"
-  },
-  "packageManager": "pnpm@12.11.2"
+  }
 }

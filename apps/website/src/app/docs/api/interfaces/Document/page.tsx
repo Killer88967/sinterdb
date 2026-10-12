@@ -48,7 +48,7 @@ const page = {
             {
               path: "packages/protocol/src/document.ts",
               line: 4,
-              url: "https://github.com/SinterDB/sinterdb/blob/db75cdc6c184c452d02fe43d7b0db61311608064/packages/protocol/src/document.ts#L4",
+              url: "https://github.com/SinterDB/sinterdb/blob/5fba92e03c736a2383c997b699469c460c425f64/packages/protocol/src/document.ts#L4",
             },
           ],
         },
@@ -72,7 +72,7 @@ const page = {
     {
       path: "packages/protocol/src/document.ts",
       line: 3,
-      url: "https://github.com/SinterDB/sinterdb/blob/db75cdc6c184c452d02fe43d7b0db61311608064/packages/protocol/src/document.ts#L3",
+      url: "https://github.com/SinterDB/sinterdb/blob/5fba92e03c736a2383c997b699469c460c425f64/packages/protocol/src/document.ts#L3",
     },
   ],
 } satisfies ApiPage;
