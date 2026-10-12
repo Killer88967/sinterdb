@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - v0.2.0_development
   pull_request:
     branches:
       - main
+      - v0.2.0_development
 
 permissions:
   contents: read
@@ -45,8 +47,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build
-        run: pnpm build
+      - name: Build packages
+        run: pnpm --filter '!sinterdb-website' -r build
 
       - name: Check public API reports
         run: pnpm api:check
@@ -62,20 +64,48 @@ jobs:
           path: docs/api
           retention-days: 14
 
-      - name: Format
-        run: pnpm format
-
       - name: Check formatting
         run: pnpm format:check
 
-      - name: Lint
-        run: pnpm lint
+      - name: Lint packages
+        run: pnpm lint:root
 
-      - name: Type-check
-        run: pnpm typecheck
+      - name: Type-check packages
+        run: pnpm --filter '!sinterdb-website' -r typecheck
 
-      - name: Test
-        run: pnpm test
+      - name: Test packages
+        run: pnpm --filter '!sinterdb-website' -r test
+
+  website:
+    name: Website
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint website
+        run: pnpm --filter sinterdb-website lint
+
+      - name: Type-check website
+        run: pnpm --filter sinterdb-website typecheck
+
+      - name: Build website
+        run: pnpm --filter sinterdb-website build
 
   docker:
     name: Docker image
@@ -83,15 +113,15 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v6
+        uses: pnpm/action-setup@v4
         with:
           run_install: false
 
       - name: Set up Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v4
         with:
           node-version: 24.x
           cache: pnpm
@@ -100,7 +130,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build packages
-        run: pnpm build
+        run: pnpm --filter '!sinterdb-website' -r build
 
       - name: Build the server image
         run: docker build --tag sinterdb-local .
@@ -108,7 +138,7 @@ jobs:
       - name: Check the Compose file
         run: docker compose --file examples/docker/compose.yaml config --quiet
 
-      - name: Write, stop, restart and read back
+      - name: Test persistence
         working-directory: packages/driver
         env:
           SINTERDB_DOCKER_IMAGE: sinterdb-local
