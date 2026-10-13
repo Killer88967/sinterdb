@@ -39,6 +39,11 @@ export {
   restoreBackup,
   verifyBackup,
 } from "./backup/index.js";
+export {
+  QUARANTINE_DIRECTORY,
+  inspectDataDirectory,
+  repairDataDirectory,
+} from "./inspect/index.js";
 
 export type {
   CollectionJournal,
@@ -86,3 +91,19 @@ export type {
   RestoreOptions,
   RestoreResult,
 } from "./backup/index.js";
+export type {
+  InspectionReport,
+  LogDamage,
+  LogReport,
+  ManifestReport,
+  ManifestStatus,
+  RecoveryVerdict,
+  RepairAction,
+  RepairActionKind,
+  RepairOption,
+  RepairOptions,
+  RepairResult,
+  SegmentReport,
+  SegmentStatus,
+  SnapshotReport,
+} from "./inspect/index.js";

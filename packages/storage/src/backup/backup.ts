@@ -430,7 +430,9 @@ function listFiles(root: string, options: ListOptions = {}): string[] {
 
       if (
         options.includeAll !== true &&
-        (path === "LOCK" || entry.name.endsWith(".tmp"))
+        (path === "LOCK" ||
+          entry.name.endsWith(".tmp") ||
+          path.startsWith("quarantine/"))
       ) {
         continue;
       }

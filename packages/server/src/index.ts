@@ -3,6 +3,8 @@ export {
   BACKUP_FORMAT_VERSION,
   DEFAULT_CHECKPOINT_THRESHOLD_BYTES,
   createBackup,
+  inspectDataDirectory,
+  repairDataDirectory,
   restoreBackup,
   verifyBackup,
 } from "@sinterdb-internal/storage";
@@ -43,11 +45,9 @@ export {
 export { GroupCommitter } from "./group-commit.js";
 
 export type {
-  BackupOptions,
-  BackupResult,
-  BackupSummary,
-  RestoreOptions,
-  RestoreResult,
+  InspectionReport,
+  RepairOptions,
+  RepairResult,
 } from "@sinterdb-internal/storage";
 export type {
   ServerConfig,

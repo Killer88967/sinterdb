@@ -11,13 +11,23 @@ import {
 import { hostname } from "node:os";
 
 import { StorageError, StorageErrorCode } from "../errors.js";
-import { ioError } from "../io-error.js";
+import { errnoOf, ioError } from "../io-error.js";
 
 interface LockInfo {
   readonly pid: number;
   readonly hostname: string;
   readonly startedAt: string;
   readonly nonce: string;
+}
+
+export interface LockDescription {
+  /**
+   * `running`: a process on this host holds it. `stale`: the process is gone.
+   * `foreign`: written on another host, so it cannot be checked. `unreadable`:
+   * the file exists but has no usable owner.
+   */
+  readonly state: "running" | "stale" | "foreign" | "unreadable";
+  readonly holder?: Omit<LockInfo, "nonce">;
 }
 
 export interface DirectoryLock {
@@ -108,6 +118,40 @@ export function acquireDirectoryLock(
   }
 
   throw locked(path, "it kept changing while it was being acquired");
+}
+
+/** Says who holds the lock file at `path`, or undefined if there is none. */
+export function describeLock(path: string): LockDescription | undefined {
+  try {
+    statSync(path);
+  } catch (error: unknown) {
+    if (errnoOf(error) === "ENOENT") {
+      return undefined;
+    }
+
+    throw ioError("read the lock file", path, error);
+  }
+
+  const holder = readLock(path);
+
+  if (holder === undefined) {
+    return { state: "unreadable" };
+  }
+
+  const shown = {
+    pid: holder.pid,
+    hostname: holder.hostname,
+    startedAt: holder.startedAt,
+  };
+
+  if (holder.hostname !== hostname()) {
+    return { state: "foreign", holder: shown };
+  }
+
+  return {
+    state: isStale(holder, path, {}) ? "stale" : "running",
+    holder: shown,
+  };
 }
 
 function readLock(path: string): LockInfo | undefined {

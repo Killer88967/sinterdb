@@ -24,6 +24,10 @@ issue.
 - **Backups need the server stopped.** `sinterd backup` works on a closed data
   directory. Use a volume snapshot to back up a running server. See
   [backup.md](./backup.md).
+- **Repair works on whole files and log records.** `sinterd repair` can cut a
+  damaged log, set aside segments a snapshot already covers and rebuild a
+  missing manifest, but it cannot recover records that were lost or repair
+  single documents. Keep backups. See [repair.md](./repair.md).
 - **Linux is the tested platform.** Continuous integration runs on Linux with
   Node.js 24 and 26. macOS and Windows may work but are not tested, and the
   durability guarantees of the `flushed` write concern depend on the operating system and disk.

@@ -160,6 +160,11 @@ files at random.
 | `Upgrade` or `newer version`           | The data was written by a newer SinterDB                             | Run the newer version                                                                 |
 | `cannot be rebuilt`                    | A recorded index cannot be built from the recovered documents        | Restore from a backup                                                                 |
 
+Run `sinterd inspect --data-dir <path>` to see exactly what is damaged without
+changing anything, and `sinterd repair` to see what can be fixed. Restoring a
+backup is still the better answer when you have one. See
+[repair.md](./repair.md).
+
 ## The data directory lock
 
 Only one server may use a data directory. `LOCK` records the process id and
@@ -233,6 +238,15 @@ Stop the server cleanly with `SIGTERM` or `SIGINT`, which writes a final
 checkpoint, then use `sinterd backup` to make a checked copy and
 `sinterd restore` to bring it back. See [backup.md](./backup.md). Do not copy a
 directory while a server is writing to it.
+
+## Inspecting and repairing
+
+`sinterd inspect` reports the state of a data directory without changing it:
+the manifest, the lock, every snapshot and every log segment, and whether the
+server could open it. `sinterd repair` plans, and with `--apply` carries out,
+the changes that make a damaged directory open again. It moves files to a
+`quarantine` directory instead of deleting them, and steps that can discard log
+records need `--allow-data-loss`. See [repair.md](./repair.md).
 
 ## When a disk write fails
 

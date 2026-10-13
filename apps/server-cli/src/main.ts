@@ -10,6 +10,11 @@ import {
   parseBackupArguments,
   runBackupCommand,
 } from "./backup-command.js";
+import {
+  isMaintenanceCommandName,
+  parseMaintenanceArguments,
+  runMaintenanceCommand,
+} from "./maintenance-command.js";
 import { logError, logInfo, logWarning } from "./logger.js";
 
 export async function main(
@@ -19,6 +24,11 @@ export async function main(
 
   if (isBackupCommandName(first)) {
     runBackupCommand(parseBackupArguments(first, rest));
+    return;
+  }
+
+  if (isMaintenanceCommandName(first)) {
+    runMaintenanceCommand(parseMaintenanceArguments(first, rest));
     return;
   }
 
