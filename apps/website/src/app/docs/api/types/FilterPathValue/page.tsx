@@ -1,0 +1,116 @@
+import type { Metadata } from "next";
+
+import { ApiReflectionPage } from "../../_components/pages";
+import type { ApiPage } from "../../_generated/model";
+
+const page = {
+  id: 653,
+  name: "FilterPathValue",
+  kind: "type-alias",
+  label: "Type Alias",
+  href: "/docs/api/types/FilterPathValue",
+  description: "The type of the value at a dotted field path.",
+  badges: [],
+  declaration: [
+    ["type ", "kw"],
+    ["FilterPathValue", "name"],
+    ["<", "pn"],
+    ["TDocument", "tp"],
+    [", ", "pn"],
+    ["TPath", "tp"],
+    [" extends ", "kw"],
+    ["string", "prim"],
+    ["> = ", "pn"],
+    ["TPath", "tp"],
+    [" extends keyof ", "kw"],
+    ["TDocument", "tp"],
+    ["\n  "],
+    ["? ", "pn"],
+    ["TDocument", "tp"],
+    ["[", "pn"],
+    ["TPath", "tp"],
+    ["]", "pn"],
+    ["\n  "],
+    [": ", "pn"],
+    ["TPath", "tp"],
+    [" extends ", "kw"],
+    ["`", "lit"],
+    ["${", "pn"],
+    ["infer ", "kw"],
+    ["THead", "tp"],
+    ["}", "pn"],
+    [".", "lit"],
+    ["${", "pn"],
+    ["infer ", "kw"],
+    ["TRest", "tp"],
+    ["}", "pn"],
+    ["`", "lit"],
+    ["\n    "],
+    ["? ", "pn"],
+    ["THead", "tp"],
+    [" extends keyof ", "kw"],
+    ["TDocument", "tp"],
+    ["\n      "],
+    ["? ", "pn"],
+    ["FilterPathValue", "ref", "/docs/api/types/FilterPathValue"],
+    ["<", "pn"],
+    ["NonNullable", "ref"],
+    ["<", "pn"],
+    ["TDocument", "tp"],
+    ["[", "pn"],
+    ["THead", "tp"],
+    ["]>, ", "pn"],
+    ["TRest", "tp"],
+    [">", "pn"],
+    ["\n      "],
+    [": ", "pn"],
+    ["never", "prim"],
+    ["\n    "],
+    [": ", "pn"],
+    ["never", "prim"],
+  ],
+  comment: {
+    summary: "<p>The type of the value at a dotted field path.</p>",
+    short: "The type of the value at a dotted field path.",
+    deprecated: null,
+    modifiers: [],
+    blocks: [],
+  },
+  typeParameters: [
+    {
+      name: "TDocument",
+      code: [["TDocument", "tp"]],
+      comment: null,
+    },
+    {
+      name: "TPath",
+      code: [
+        ["TPath", "tp"],
+        [" extends ", "kw"],
+        ["string", "prim"],
+      ],
+      comment: null,
+    },
+  ],
+  hierarchy: null,
+  signatureSection: null,
+  signatures: [],
+  sections: [],
+  toc: [],
+  sources: [
+    {
+      path: "packages/driver/src/filter.ts",
+      line: 88,
+      url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/filter.ts#L88",
+    },
+  ],
+} satisfies ApiPage;
+
+export const metadata: Metadata = {
+  title: page.name,
+  description: page.description || undefined,
+};
+
+export default function Page() {
+  return <ApiReflectionPage page={page} />;
+}

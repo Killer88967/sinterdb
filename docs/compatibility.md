@@ -99,6 +99,24 @@ breaking change.
 
 Each breaking change lands here in the release that makes it.
 
+### 0.2.0
+
+- **Write concerns replace durability modes.** `--write-concern <level>` and
+  `SINTERDB_WRITE_CONCERN` take `flushed` (the old `fsync`, still the default),
+  `journaled` (the old `buffered`) or `memory`. `--durability` and
+  `SINTERDB_DURABILITY` keep working with the old names, but they are
+  deprecated and setting both an old and a new option is an error. The
+  `server.started` log line reports `writeConcern` instead of `durability`.
+  Data files are unchanged.
+- **Log lines look different on a terminal.** When standard output and
+  standard error are both terminals, the server prints readable, colored log
+  entries instead of JSON. Anything that reads the log from a file, a pipe or
+  `docker logs` without a terminal still gets one JSON object per line.
+- **Storage format version 2 is unchanged.** A 0.1.0 data directory opens as it
+  is. New files appear next to the old ones only when you use the new
+  commands: a `quarantine` folder after `sinterd repair`, and `backup.json`
+  inside a backup.
+
 ### 0.1.0
 
 - **The CLI package is `@sinterdb/cli`.** Earlier GitHub release tarballs named

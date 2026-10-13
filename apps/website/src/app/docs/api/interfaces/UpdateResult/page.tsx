@@ -1,0 +1,212 @@
+import type { Metadata } from "next";
+
+import { ApiReflectionPage } from "../../_components/pages";
+import type { ApiPage } from "../../_generated/model";
+
+const page = {
+  id: 746,
+  name: "UpdateResult",
+  kind: "interface",
+  label: "Interface",
+  href: "/docs/api/interfaces/UpdateResult",
+  description: "The result of an update or replace.",
+  badges: [],
+  declaration: [
+    ["interface ", "kw"],
+    ["UpdateResult", "name"],
+  ],
+  comment: {
+    summary: "<p>The result of an update or replace.</p>",
+    short: "The result of an update or replace.",
+    deprecated: null,
+    modifiers: [],
+    blocks: [],
+  },
+  typeParameters: [],
+  hierarchy: null,
+  signatureSection: null,
+  signatures: [],
+  sections: [
+    {
+      id: "properties",
+      title: "Properties",
+      members: [
+        {
+          id: 747,
+          name: "acknowledged",
+          anchor: "acknowledged",
+          kind: "property",
+          label: "Property",
+          badges: [],
+          code: [
+            ["readonly ", "kw"],
+            ["acknowledged", "name"],
+            [": ", "pn"],
+            ["true", "lit"],
+          ],
+          comment: {
+            summary:
+              "<p>Always <code>true</code>; a failed update throws instead.</p>",
+            short: "Always <code>true</code>; a failed update throws instead.",
+            deprecated: null,
+            modifiers: [],
+            blocks: [],
+          },
+          signatures: [],
+          members: [],
+          relations: [],
+          sources: [
+            {
+              path: "packages/driver/src/update.ts",
+              line: 118,
+              url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/update.ts#L118",
+            },
+          ],
+        },
+        {
+          id: 748,
+          name: "matchedCount",
+          anchor: "matched-count",
+          kind: "property",
+          label: "Property",
+          badges: [],
+          code: [
+            ["readonly ", "kw"],
+            ["matchedCount", "name"],
+            [": ", "pn"],
+            ["number", "prim"],
+          ],
+          comment: {
+            summary: "<p>How many documents matched the filter.</p>",
+            short: "How many documents matched the filter.",
+            deprecated: null,
+            modifiers: [],
+            blocks: [],
+          },
+          signatures: [],
+          members: [],
+          relations: [],
+          sources: [
+            {
+              path: "packages/driver/src/update.ts",
+              line: 120,
+              url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/update.ts#L120",
+            },
+          ],
+        },
+        {
+          id: 749,
+          name: "modifiedCount",
+          anchor: "modified-count",
+          kind: "property",
+          label: "Property",
+          badges: [],
+          code: [
+            ["readonly ", "kw"],
+            ["modifiedCount", "name"],
+            [": ", "pn"],
+            ["number", "prim"],
+          ],
+          comment: {
+            summary:
+              "<p>How many documents actually changed. A document whose stored bytes are\nidentical after the update is not counted.</p>",
+            short:
+              "How many documents actually changed. A document whose stored bytes are identical after the update is not counted.",
+            deprecated: null,
+            modifiers: [],
+            blocks: [],
+          },
+          signatures: [],
+          members: [],
+          relations: [],
+          sources: [
+            {
+              path: "packages/driver/src/update.ts",
+              line: 125,
+              url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/update.ts#L125",
+            },
+          ],
+        },
+        {
+          id: 750,
+          name: "upsertedId",
+          anchor: "upserted-id",
+          kind: "property",
+          label: "Property",
+          badges: [],
+          code: [
+            ["readonly ", "kw"],
+            ["upsertedId", "name"],
+            [": ", "pn"],
+            ["CustomId", "ref", "/docs/api/classes/CustomId"],
+            [" | ", "pn"],
+            ["null", "lit"],
+          ],
+          comment: {
+            summary:
+              "<p>The <code>_id</code> of the inserted document when an upsert inserted one, otherwise\n<code>null</code>. In that case <code>matchedCount</code> is 0.</p>",
+            short:
+              "The <code>_id</code> of the inserted document when an upsert inserted one, otherwise <code>null</code>. In that case <code>matchedCount</code> is 0.",
+            deprecated: null,
+            modifiers: [],
+            blocks: [],
+          },
+          signatures: [],
+          members: [],
+          relations: [],
+          sources: [
+            {
+              path: "packages/driver/src/update.ts",
+              line: 130,
+              url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/update.ts#L130",
+            },
+          ],
+        },
+      ],
+    },
+  ],
+  toc: [
+    {
+      id: "properties",
+      title: "Properties",
+      items: [
+        {
+          anchor: "acknowledged",
+          name: "acknowledged",
+          kind: "property",
+        },
+        {
+          anchor: "matched-count",
+          name: "matchedCount",
+          kind: "property",
+        },
+        {
+          anchor: "modified-count",
+          name: "modifiedCount",
+          kind: "property",
+        },
+        {
+          anchor: "upserted-id",
+          name: "upsertedId",
+          kind: "property",
+        },
+      ],
+    },
+  ],
+  sources: [
+    {
+      path: "packages/driver/src/update.ts",
+      line: 116,
+      url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/update.ts#L116",
+    },
+  ],
+} satisfies ApiPage;
+
+export const metadata: Metadata = {
+  title: page.name,
+  description: page.description || undefined,
+};
+
+export default function Page() {
+  return <ApiReflectionPage page={page} />;
+}

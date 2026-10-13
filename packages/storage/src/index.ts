@@ -24,11 +24,26 @@ export {
   syncDirectory,
 } from "./wal/index.js";
 export {
+  DEFAULT_CHECKPOINT_RETENTION,
   DEFAULT_CHECKPOINT_THRESHOLD_BYTES,
   STORAGE_FORMAT,
+  MIGRATIONS,
   STORAGE_FORMAT_VERSION,
   StorageEngine,
 } from "./engine/index.js";
+export {
+  BACKUP_FORMAT,
+  BACKUP_FORMAT_VERSION,
+  BACKUP_MANIFEST_FILE,
+  createBackup,
+  restoreBackup,
+  verifyBackup,
+} from "./backup/index.js";
+export {
+  QUARANTINE_DIRECTORY,
+  inspectDataDirectory,
+  repairDataDirectory,
+} from "./inspect/index.js";
 
 export type {
   CollectionJournal,
@@ -54,14 +69,41 @@ export type {
   IndexSpec,
 } from "./indexing/index.js";
 export type {
-  DurabilityMode,
+  WriteConcern,
   WalRecord,
   WriteAheadLogOptions,
 } from "./wal/index.js";
 export type {
   CheckpointResult,
   CheckpointStage,
+  Migration,
+  MigrationContext,
+  MigrationEvent,
+  MigrationPlan,
   RecoveryReport,
   SkippedCheckpoint,
   StorageEngineOptions,
 } from "./engine/index.js";
+export type {
+  BackupOptions,
+  BackupResult,
+  BackupSummary,
+  RestoreOptions,
+  RestoreResult,
+} from "./backup/index.js";
+export type {
+  InspectionReport,
+  LogDamage,
+  LogReport,
+  ManifestReport,
+  ManifestStatus,
+  RecoveryVerdict,
+  RepairAction,
+  RepairActionKind,
+  RepairOption,
+  RepairOptions,
+  RepairResult,
+  SegmentReport,
+  SegmentStatus,
+  SnapshotReport,
+} from "./inspect/index.js";

@@ -4,7 +4,7 @@ The repository includes a [`Dockerfile`](../Dockerfile) for the server and a
 [Compose example](../examples/docker/compose.yaml). Use them to run `sinterd`
 without installing Node.js packages on your machine.
 
-> SinterDB `0.1.0` is a developer preview, and there is no published image yet.
+> SinterDB `0.2.0` is a developer preview, and there is no published image yet.
 > You build the image yourself from a clone of this repository, as shown below.
 
 > **Authentication and TLS are not implemented yet.** Anyone who can reach the
@@ -49,7 +49,9 @@ docker start sinterdb
 docker logs sinterdb
 ```
 
-The logs are the same JSON lines the server prints anywhere else. After a
+The logs are JSON lines, one per event, unless the container has a terminal
+(`docker run -t`), in which case they are the readable form. Leave out `-t`
+to keep them as JSON. After a
 restart the `server.started` line reports `"storage":"disk"` and how many
 records were replayed.
 
@@ -78,8 +80,8 @@ to publish on another host port.
 
 Each of these comes from an environment variable listed in the
 [configuration reference](./configuration.md), so you can change them with
-`--env`, for example `--env SINTERDB_DURABILITY=buffered`, or pass flags after
-the image name, for example `sinterdb-local --durability buffered`. Flags win
+`--env`, for example `--env SINTERDB_WRITE_CONCERN=journaled`, or pass flags after
+the image name, for example `sinterdb-local --write-concern journaled`. Flags win
 over environment variables.
 
 If you change the port, publish the new port as well. The image's health check

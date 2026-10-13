@@ -39,21 +39,45 @@ Do not edit these files by hand.
 If step 2 fails, the change is not applied to memory and the client receives an
 error. Every record carries checksums and a sequence number.
 
-## Durability modes
+## Write concerns
 
-Choose a mode with `--durability <mode>` or `SINTERDB_DURABILITY`.
+Choose a level with `--write-concern <level>` or `SINTERDB_WRITE_CONCERN`.
 
-| Mode              | A write is acknowledged when...                | Survives a server crash | Survives power loss or an operating-system crash |
-| ----------------- | ---------------------------------------------- | ----------------------- | ------------------------------------------------ |
-| `fsync` (default) | the log has been flushed to stable storage     | Yes                     | Yes, if the storage hardware honors flushes      |
-| `buffered`        | the log write has reached the operating system | Yes                     | No. Recent writes can be lost                    |
+| Level               | A write is acknowledged when...                                 | Survives a server crash          | Survives power loss or an operating-system crash |
+| ------------------- | --------------------------------------------------------------- | -------------------------------- | ------------------------------------------------ |
+| `flushed` (default) | the log has been flushed to stable storage                      | Yes                              | Yes, if the storage hardware honors flushes      |
+| `journaled`         | the log write has reached the operating system                  | Yes                              | No. Recent writes can be lost                    |
+| `memory`            | it is applied in memory; the log is written within about 100 ms | No. The last ~100 ms can be lost | No. Recent writes can be lost                    |
 
-`buffered` is faster. Use `fsync` for data you cannot afford to lose.
+`journaled` and `memory` are faster. Use `flushed` for data you cannot afford to
+lose. With `memory`, records wait in the server until 64 KiB are pending, 100
+milliseconds pass, a checkpoint starts or the server stops cleanly, whichever
+comes first. The log is never reordered: after a crash you recover a prefix of
+the writes, not a mixture.
+
+The older `--durability` flag and `SINTERDB_DURABILITY` still work. `fsync` means
+`flushed` and `buffered` means `journaled`.
+
+### Group commit
+
+With `flushed`, the server does not flush once per write. Writes that arrive in
+the same turn of the event loop, from one connection or many, share one flush.
+The server holds every reply until that flush is done, so a write you were told
+succeeded is always on stable storage. Nothing to configure: it is on for
+`flushed` and does not exist for the other levels.
+
+Two things follow from it. A single client doing one write at a time sees no
+change. Many clients, or one client with many requests in flight, get more
+writes per second, because the flush is the slow part.
+
+A reply to a read is also held while writes are waiting for a flush, so nobody is
+ever shown data that a crash could still take away. If the flush fails, the server
+closes the connections whose replies were waiting instead of reporting success.
 
 > [!NOTE]
 > The automated crash tests terminate the server with `SIGKILL` and verify
 > that recovery is exact. They cannot simulate losing power, so protection
-> against power loss in `fsync` mode rests on the engine flushing at the right
+> against power loss in `flushed` mode rests on the engine flushing at the right
 > moments: after each log append, when creating a log segment, and when
 > publishing a snapshot or removing files.
 
@@ -68,13 +92,32 @@ checkpoint, and then removes log segments it no longer needs.
   almost nothing to replay.
 - A snapshot is written to a temporary file, flushed, and atomically renamed, so
   a crash never leaves a half-written snapshot in place.
-- The two newest snapshots are kept, together with the log since the older one.
-  If the newest snapshot is ever damaged, recovery falls back to the older
-  snapshot plus the log and loses nothing. This also means the first checkpoint
-  frees no log space, and disk use can reach two to three times the data size.
-- Checkpoints run on the main thread and block the server while they are
-  written. Large datasets pause briefly at each checkpoint.
-- Checkpoints only start between writes, never in the middle of one.
+- A checkpoint is also taken every `--checkpoint-interval` seconds when that is
+  set, but only if something was written since the last one.
+- The two newest snapshots are kept by default, together with the log since the
+  older one. `--checkpoint-keep <n>` keeps more, up to 100. If the newest
+  snapshot is ever damaged, recovery falls back to the next one plus the log and
+  loses nothing. This also means the first checkpoint frees no log space, and
+  disk use can reach two to three times the data size, more with a larger
+  `--checkpoint-keep`.
+- `manifest.json` is replaced the same way as a snapshot: written to a temporary
+  file, flushed, renamed over the old one, and the directory flushed. A crash in
+  the middle leaves the old manifest intact. A leftover `manifest.json.tmp` is
+  deleted on the next start.
+- Automatic checkpoints run in the background. The server copies the list of
+  documents at the moment the checkpoint starts, then writes the snapshot about
+  1 MiB at a time and lets other requests run in between, so a large data set
+  does not stop reads and writes while it is saved. Writes made meanwhile go to
+  the log and are not in that snapshot, so recovery replays them. The log is
+  truncated only after the snapshot is complete.
+- The copy of the document list costs a little memory while a checkpoint runs,
+  roughly one pointer per document. Documents themselves are not copied.
+- A checkpoint that is still running when the server stops is cancelled and its
+  unfinished file removed. The final checkpoint on a clean shutdown is written in
+  one go, with the server already refusing new work.
+- Only one checkpoint runs at a time. If the next one is due while one is
+  running, it waits until that one finishes.
+- A checkpoint only starts between writes, never in the middle of one.
 - A failed automatic checkpoint never fails a write. The server tries again
   after another threshold's worth of log.
 
@@ -116,6 +159,11 @@ files at random.
 | `no manifest.json` or `not valid JSON` | The manifest is missing or damaged                                   | Restore `manifest.json` from a backup                                                 |
 | `Upgrade` or `newer version`           | The data was written by a newer SinterDB                             | Run the newer version                                                                 |
 | `cannot be rebuilt`                    | A recorded index cannot be built from the recovered documents        | Restore from a backup                                                                 |
+
+Run `sinterd inspect --data-dir <path>` to see exactly what is damaged without
+changing anything, and `sinterd repair` to see what can be fixed. Restoring a
+backup is still the better answer when you have one. See
+[repair.md](./repair.md).
 
 ## The data directory lock
 
@@ -159,19 +207,99 @@ The upgrade is one way. A 0.0.8 server refuses a version 2 directory with an
 "Upgrade" error instead of ignoring the indexes. Make a backup before upgrading
 if you may want to go back.
 
+### How upgrades work
+
+Every format change is a numbered step from one version to the next. Opening an
+older directory runs the steps from its version up to the current one, in
+order, before the log is read, and then records `upgradedFrom` and `upgradedAt`
+in `manifest.json`. A build that has no step for some version refuses to open
+the directory and names the missing step; it changes nothing.
+
+A step that only adds something old files can be read without, like version 2,
+rewrites nothing, and the manifest is simply updated. A step that rewrites
+files works like this:
+
+1. The manifest is first rewritten with the new version and a `migratingFrom`
+   field. Older servers now refuse the directory, so none of them can open
+   files that are half rewritten.
+2. The steps run. Each one is written to be safe to run again.
+3. The manifest is rewritten without `migratingFrom`.
+
+If the process stops between steps 1 and 3, `migratingFrom` is still in the
+manifest. The next start runs the steps again from that version, which finishes
+the upgrade. A newer build with more steps carries on from there too.
+
+Make a backup with `sinterd backup` before the first start after an upgrade
+that rewrites files. See [backup.md](./backup.md).
+
 ## Backups
 
 Stop the server cleanly with `SIGTERM` or `SIGINT`, which writes a final
-checkpoint, then copy the whole data directory. Restore by putting the
-directory back while the server is stopped. Do not copy a directory while a
-server is writing to it.
+checkpoint, then use `sinterd backup` to make a checked copy and
+`sinterd restore` to bring it back. See [backup.md](./backup.md). Do not copy a
+directory while a server is writing to it.
+
+## Inspecting and repairing
+
+`sinterd inspect` reports the state of a data directory without changing it:
+the manifest, the lock, every snapshot and every log segment, and whether the
+server could open it. `sinterd repair` plans, and with `--apply` carries out,
+the changes that make a damaged directory open again. It moves files to a
+`quarantine` directory instead of deleting them, and steps that can discard log
+records need `--allow-data-loss`. See [repair.md](./repair.md).
 
 ## When a disk write fails
 
-If the server cannot write to the log, the client receives an `InternalError`
-and the message says the outcome is unknown. The write may or may not have
-reached the disk. The server refuses further writes until it is restarted,
-which recovers the true state from disk.
+What the client sees depends on why the write failed.
+
+| Cause                                          | Client receives                                   | What happened to the write                                | Server state                                                            |
+| ---------------------------------------------- | ------------------------------------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------- |
+| The disk or quota is full (`ENOSPC`, `EDQUOT`) | `InternalError`, storage code `DISK_FULL`         | Not applied. The log is cut back to its last whole record | Keeps running. Reads work, and writes succeed again once space is freed |
+| The operating system refuses access            | `InternalError`, storage code `PERMISSION_DENIED` | Not applied                                               | The log refuses further writes until the server restarts                |
+| Any other failure, or a failed flush to disk   | `InternalError`, "the outcome is unknown"         | May or may not have reached the disk                      | The log refuses further writes until the server restarts and recovers   |
+
+A failed flush (`fsync`) is never treated as a full disk, even if the operating
+system reports it that way. After one, the server cannot know which writes
+reached stable storage, so it stops and recovers the true state from disk on
+the next start.
+
+Other files fail the same way. A checkpoint that cannot be written is reported
+as `DISK_FULL` or `PERMISSION_DENIED`, leaves no partial snapshot behind, and is
+tried again at the next trigger; the log is not truncated and no data is lost. A
+log segment that cannot be created because the disk is full leaves the current
+segment in use, so the write fails and a later one can succeed.
+
+With the `memory` write concern, writes the server has already acknowledged can
+wait in memory for up to about 100 ms. If the disk is full then, they stay
+queued and are written when space returns. A write that is refused instead of
+queued is not applied.
+
+## Failure testing
+
+The recovery and backup code is tested by breaking it on purpose:
+
+- **Killing the process.** A child process writes and is stopped with `SIGKILL`
+  at different moments, including in the middle of a checkpoint. Every write it
+  acknowledged must still be there after the restart.
+- **Failing every file system call in turn.** A fixed set of operations (inserts,
+  updates, indexes, snapshots, pruning, log rotation) is run once per file
+  system call it makes, and a different call fails each time with a disk error
+  or a full disk. After each failure the directory must reopen, keep every
+  operation that succeeded, hold either all or none of the one that failed, and
+  have consistent indexes. A step that reports a full disk must leave no trace.
+  The same is done for starting the engine, `backup` and `restore`; these must
+  leave either a complete result or nothing, and no lock behind.
+- **Cutting the log short at every byte.** Recovery must produce a state the
+  database really had, never go backwards as more of the log survives, and never
+  produce anything else.
+- **Flipping every byte.** In the log, a flipped byte is either reported as
+  damage or looks like an unfinished last write; in the newest snapshot it makes
+  recovery fall back to the older one with nothing lost; in the manifest it is
+  an error or harmless.
+
+These tests model failed system calls and damaged files. They do not model a
+power cut that loses data the operating system had accepted but not yet written
+to disk, so they cannot show that a missing `fsync` loses data.
 
 ## Limits
 

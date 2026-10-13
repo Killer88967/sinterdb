@@ -1,8 +1,9 @@
-import type { DurabilityMode } from "@sinterdb-internal/storage";
+import type { WriteConcern } from "@sinterdb-internal/storage";
 
 export const DEFAULT_SERVER_HOST = "127.0.0.1";
 export const DEFAULT_SERVER_PORT = 4721;
-export const DEFAULT_DURABILITY: DurabilityMode = "fsync";
+export const DEFAULT_WRITE_CONCERN: WriteConcern = "flushed";
+export const DEFAULT_CHECKPOINT_KEEP = 2;
 
 export interface ServerConfig {
   host: string;
@@ -12,12 +13,16 @@ export interface ServerConfig {
    * data in memory and loses it on shutdown.
    */
   dataDirectory?: string;
-  durability: DurabilityMode;
+  writeConcern: WriteConcern;
   /**
    * Bytes of log written between automatic checkpoints. The storage engine's
    * default applies when it is not set.
    */
   checkpointThresholdBytes?: number;
+  /** Seconds between time-based checkpoints. Off when it is not set. */
+  checkpointIntervalSeconds?: number;
+  /** Snapshots to keep after checkpoint, at least 2. */
+  checkpointKeep: number;
   /**
    * Take over a data directory lock left by a process on another host or
    * container. Off by default.
@@ -29,8 +34,16 @@ export interface ServerConfigInput {
   host?: string;
   port?: number | string;
   dataDirectory?: string;
+  writeConcern?: string;
+  /**
+   * Deprecated name for `writeConcern` that accepts `fsync` and `buffered`.
+   *
+   * @deprecated use `writeConcern`.
+   */
   durability?: string;
   checkpointThresholdBytes?: number | string;
+  checkpointIntervalSeconds?: number | string;
+  checkpointKeep?: number | string;
   reclaimLock?: boolean | string;
 }
 
@@ -42,8 +55,11 @@ export const SERVER_ENVIRONMENT_VARIABLES = [
   "SINTERDB_HOST",
   "SINTERDB_PORT",
   "SINTERDB_DATA_DIR",
+  "SINTERDB_WRITE_CONCERN",
   "SINTERDB_DURABILITY",
   "SINTERDB_CHECKPOINT_BYTES",
+  "SINTERDB_CHECKPOINT_INTERVAL",
+  "SINTERDB_CHECKPOINT_KEEP",
   "SINTERDB_RECLAIM_LOCK",
 ] as const;
 
@@ -55,8 +71,11 @@ export type ServerConfigurationOption =
   | "host"
   | "port"
   | "dataDirectory"
+  | "writeConcern"
   | "durability"
   | "checkpointThresholdBytes"
+  | "checkpointIntervalSeconds"
+  | "checkpointKeep"
   | "reclaimLock";
 
 export class ServerConfigurationError extends Error {
@@ -79,12 +98,12 @@ export function resolveServerConfig(
   const dataDirectory = resolveDataDirectory(
     input.dataDirectory ?? environment.SINTERDB_DATA_DIR,
   );
-  const requestDurability = input.durability ?? environment.SINTERDB_DURABILITY;
+  const writeConcern = resolveWriteConcern(input, environment);
 
-  if (requestDurability !== undefined && dataDirectory === undefined) {
+  if (writeConcern.requested && dataDirectory === undefined) {
     throw new ServerConfigurationError(
-      "durability",
-      "A durability mode only applies when a data directory is configured.",
+      "writeConcern",
+      "A write concern only applies when a data directory is configured.",
     );
   }
 
@@ -96,6 +115,28 @@ export function resolveServerConfig(
     throw new ServerConfigurationError(
       "checkpointThresholdBytes",
       "A checkpoint threshold only applies when a data directory is configured.",
+    );
+  }
+
+  const checkpointIntervalSeconds = resolveCheckpointInterval(
+    input.checkpointIntervalSeconds ?? environment.SINTERDB_CHECKPOINT_INTERVAL,
+  );
+
+  if (checkpointIntervalSeconds !== undefined && dataDirectory === undefined) {
+    throw new ServerConfigurationError(
+      "checkpointIntervalSeconds",
+      "A checkpoint interval only applies when a data directory is configured.",
+    );
+  }
+
+  const requestKeep =
+    input.checkpointKeep ?? environment.SINTERDB_CHECKPOINT_KEEP;
+  const checkpointKeep = resolveCheckpointKeep(requestKeep);
+
+  if (requestKeep !== undefined && dataDirectory === undefined) {
+    throw new ServerConfigurationError(
+      "checkpointKeep",
+      "The number of snapshots to keep only applies when a data directory is configured.",
     );
   }
 
@@ -114,10 +155,14 @@ export function resolveServerConfig(
     host,
     port,
     ...(dataDirectory === undefined ? {} : { dataDirectory }),
-    durability: resolveDurability(requestDurability),
+    writeConcern: writeConcern.value,
     ...(checkpointThresholdBytes === undefined
       ? {}
       : { checkpointThresholdBytes }),
+    ...(checkpointIntervalSeconds === undefined
+      ? {}
+      : { checkpointIntervalSeconds }),
+    checkpointKeep,
     reclaimLock,
   };
 }
@@ -171,21 +216,52 @@ function resolveDataDirectory(value: string | undefined): string | undefined {
   return directory;
 }
 
-function resolveDurability(value: string | undefined): DurabilityMode {
-  if (value === undefined) {
-    return DEFAULT_DURABILITY;
-  }
+const DEPRECATED_DURABILITY_NAMES: Readonly<Record<string, WriteConcern>> = {
+  buffered: "journaled",
+  fsync: "flushed",
+};
 
-  const mode = value.trim();
+function resolveWriteConcern(
+  input: ServerConfigInput,
+  environment: ServerEnvironment,
+): { value: WriteConcern; requested: boolean } {
+  const preferred = input.writeConcern ?? environment.SINTERDB_WRITE_CONCERN;
+  const deprecated = input.durability ?? environment.SINTERDB_DURABILITY;
 
-  if (mode !== "buffered" && mode !== "fsync") {
+  if (preferred !== undefined && deprecated !== undefined) {
     throw new ServerConfigurationError(
-      "durability",
-      `Server durability must be "buffered" or "fsync"; received ${JSON.stringify(value)}.`,
+      "writeConcern",
+      "Set the write concern or the deprecated durability mode, not both.",
     );
   }
 
-  return mode;
+  if (preferred !== undefined) {
+    const mode = preferred.trim();
+
+    if (mode !== "memory" && mode !== "journaled" && mode !== "flushed") {
+      throw new ServerConfigurationError(
+        "writeConcern",
+        `Server write concern must be "memory", "journaled" or "flushed"; received ${JSON.stringify(preferred)}.`,
+      );
+    }
+
+    return { value: mode, requested: true };
+  }
+
+  if (deprecated !== undefined) {
+    const mapped = DEPRECATED_DURABILITY_NAMES[deprecated.trim()];
+
+    if (mapped === undefined) {
+      throw new ServerConfigurationError(
+        "durability",
+        `Server durability must be "buffered" or "fsync"; received ${JSON.stringify(deprecated)}. Use a write concern instead.`,
+      );
+    }
+
+    return { value: mapped, requested: true };
+  }
+
+  return { value: DEFAULT_WRITE_CONCERN, requested: false };
 }
 
 function resolveCheckpointThreshold(
@@ -210,6 +286,50 @@ function resolveCheckpointThreshold(
   }
 
   return bytes;
+}
+
+function resolveCheckpointInterval(
+  value: number | string | undefined,
+): number | undefined {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  const seconds = toNumber(value);
+
+  if (!Number.isSafeInteger(seconds) || seconds < 1 || seconds > 2_000_000) {
+    throw new ServerConfigurationError(
+      "checkpointIntervalSeconds",
+      `Checkpoint interval must be a whole number of seconds from 1 to 2000000; received: ${JSON.stringify(value)}.`,
+    );
+  }
+
+  return seconds;
+}
+
+function resolveCheckpointKeep(value: number | string | undefined): number {
+  if (value === undefined) {
+    return DEFAULT_CHECKPOINT_KEEP;
+  }
+
+  const keep = toNumber(value);
+
+  if (!Number.isSafeInteger(keep) || keep < 2 || keep > 100) {
+    throw new ServerConfigurationError(
+      "checkpointKeep",
+      `The number of snapshots to keep must be a whole number from 2 to 100; received ${JSON.stringify(value)}.`,
+    );
+  }
+
+  return keep;
+}
+
+function toNumber(value: number | string): number {
+  return typeof value === "number"
+    ? value
+    : value.trim().length === 0
+      ? Number.NaN
+      : Number(value);
 }
 
 function resolveReclaimLock(value: boolean | string | undefined): boolean {

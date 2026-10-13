@@ -1,7 +1,27 @@
+import { createStyle, padEnd, type Style } from "./style.js";
+
 export type LogLevel = "info" | "warn" | "error";
+
+export type LogFormat = "json" | "pretty";
 
 export interface LogDetails {
   readonly [key: string]: unknown;
+}
+
+export interface LogEntry {
+  readonly timestamp: string;
+  readonly level: LogLevel;
+  readonly event: string;
+  readonly message: string;
+  readonly details?: LogDetails;
+}
+
+/**
+ * Log lines are `pretty` when both output streams are terminals and `json`
+ * otherwise, so files, pipes and container logs keep one JSON object per line.
+ */
+export function activeLogFormat(): LogFormat {
+  return process.stdout.isTTY && process.stderr.isTTY ? "pretty" : "json";
 }
 
 export function logInfo(
@@ -44,7 +64,6 @@ export function logWarning(
   );
 }
 
-// IDEA: Format the raw json string.
 function writeLog(
   level: LogLevel,
   event: string,
@@ -52,15 +71,132 @@ function writeLog(
   details: LogDetails | undefined,
   stream: NodeJS.WriteStream,
 ): void {
+  const entry: LogEntry = {
+    timestamp: new Date().toISOString(),
+    level,
+    event,
+    message,
+    ...(details === undefined ? {} : { details }),
+  };
+
   stream.write(
-    `${JSON.stringify({
-      timestamp: new Date().toISOString(),
-      level,
-      event,
-      message,
-      ...(details === undefined ? {} : { details }),
-    })}\n`,
+    activeLogFormat() === "pretty"
+      ? `${formatPrettyLog(entry, createStyle(stream))}\n`
+      : `${formatJsonLog(entry)}\n`,
   );
+}
+
+export function formatJsonLog(entry: LogEntry): string {
+  return JSON.stringify({
+    timestamp: entry.timestamp,
+    level: entry.level,
+    event: entry.event,
+    message: entry.message,
+    ...(entry.details === undefined ? {} : { details: entry.details }),
+  });
+}
+
+const BADGES: Record<LogLevel, string> = {
+  info: "INFO ",
+  warn: "WARN ",
+  error: "ERROR",
+};
+
+/**
+ * One event as a few readable lines: time, level, event name and message on
+ * the first, then the details as aligned `name  value` lines.
+ */
+export function formatPrettyLog(entry: LogEntry, style: Style): string {
+  const badge = BADGES[entry.level];
+  const paint =
+    entry.level === "error"
+      ? (text: string) => style.bold(style.red(text))
+      : entry.level === "warn"
+        ? (text: string) => style.bold(style.yellow(text))
+        : (text: string) => style.cyan(text);
+  const time = style.dim(clock(entry.timestamp));
+  const first = `${time}  ${paint(badge)}  ${style.bold(entry.event)}  ${entry.message}`;
+  const indent = " ".repeat(8 + 2 + badge.length + 2);
+  const details = entry.details;
+
+  if (details === undefined) {
+    return first;
+  }
+
+  const lines = [first];
+  const keys = Object.keys(details).filter(
+    (key) =>
+      details[key] !== undefined &&
+      key !== "error" &&
+      !(Array.isArray(details[key]) && details[key].length === 0),
+  );
+  const width = Math.max(0, ...keys.map((key) => key.length));
+
+  for (const key of keys) {
+    lines.push(
+      `${indent}${style.dim(padEnd(key, width))}  ${formatValue(details[key])}`,
+    );
+  }
+
+  const error = details["error"];
+
+  if (error !== undefined) {
+    lines.push(...formatError(error, indent, style));
+  }
+
+  return lines.join("\n");
+}
+
+function formatError(error: unknown, indent: string, style: Style): string[] {
+  if (error === null || typeof error !== "object") {
+    return [`${indent}${style.red(String(error))}`];
+  }
+
+  const record = error as {
+    name?: unknown;
+    message?: unknown;
+    stack?: unknown;
+  };
+  const name = typeof record.name === "string" ? record.name : "Error";
+  const message = typeof record.message === "string" ? record.message : "";
+  const lines = [`${indent}${style.red(`${name}: ${message}`)}`];
+
+  if (typeof record.stack === "string") {
+    const frames = record.stack
+      .split("\n")
+      .filter((line) => line.trimStart().startsWith("at "));
+
+    for (const frame of frames) {
+      lines.push(`${indent}${style.dim(frame.trim())}`);
+    }
+  }
+
+  return lines;
+}
+
+function formatValue(value: unknown): string {
+  if (typeof value === "string") {
+    return value;
+  }
+
+  if (
+    typeof value === "number" ||
+    typeof value === "boolean" ||
+    typeof value === "bigint"
+  ) {
+    return String(value);
+  }
+
+  return JSON.stringify(value, (_key, item: unknown) =>
+    typeof item === "bigint" ? item.toString() : item,
+  );
+}
+
+function clock(timestamp: string): string {
+  const date = new Date(timestamp);
+  const two = (value: number): string => String(value).padStart(2, "0");
+
+  return `${two(date.getHours())}:${two(date.getMinutes())}:${two(date.getSeconds())}`;
 }
 
 function serializationError(error: unknown): LogDetails {

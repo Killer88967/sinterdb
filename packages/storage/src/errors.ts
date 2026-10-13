@@ -11,6 +11,8 @@ export const StorageErrorCode = {
   DuplicateId: "DUPLICATE_ID",
   Corruption: "CORRUPTION",
   Io: "IO_ERROR",
+  DiskFull: "DISK_FULL",
+  PermissionDenied: "PERMISSION_DENIED",
   Closed: "CLOSED",
   Locked: "LOCKED",
   DuplicateKey: "DUPLICATE_KEY",
@@ -18,6 +20,7 @@ export const StorageErrorCode = {
   IndexNotFound: "INDEX_NOT_FOUND",
   IndexConflict: "INDEX_CONFLICT",
   UnsupportedFormat: "UNSUPPORTED_FORMAT",
+  InvalidBackup: "INVALID_BACKUP",
 } as const;
 
 export type StorageErrorCode =

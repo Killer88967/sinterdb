@@ -6,7 +6,7 @@ data still there. It takes about five minutes.
 
 You need **Node.js 24 or later**.
 
-> SinterDB `0.1.0` is a developer preview. It is published under the `next`
+> SinterDB `0.2.0` is a developer preview. It is published under the `next`
 > tag on npm, so the install commands below end in `@next`. Once a version is
 > promoted to `latest` you can drop the tag.
 

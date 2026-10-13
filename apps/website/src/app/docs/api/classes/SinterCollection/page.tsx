@@ -1,0 +1,1601 @@
+import type { Metadata } from "next";
+
+import { ApiReflectionPage } from "../../_components/pages";
+import type { ApiPage } from "../../_generated/model";
+
+const page = {
+  id: 199,
+  name: "SinterCollection",
+  kind: "class",
+  label: "Class",
+  href: "/docs/api/classes/SinterCollection",
+  description: "A collection of documents, typed by TDocument.",
+  badges: [],
+  declaration: [
+    ["class ", "kw"],
+    ["SinterCollection", "name"],
+    ["<", "pn"],
+    ["TDocument", "tp"],
+    [" extends ", "kw"],
+    ["object", "prim"],
+    [" = ", "pn"],
+    ["Document", "ref", "/docs/api/interfaces/Document"],
+    [">", "pn"],
+  ],
+  comment: {
+    summary:
+      '<p>A collection of documents, typed by <code>TDocument</code>.</p>\n<p>Get one from <a href="/docs/api/classes/SinterDatabase#collection">SinterDatabase.collection</a>. The type parameter makes\nfilters, updates and results type-checked against your document shape; it\nis not enforced by the server.</p>',
+    short: "A collection of documents, typed by <code>TDocument</code>.",
+    deprecated: null,
+    modifiers: [],
+    blocks: [],
+  },
+  typeParameters: [
+    {
+      name: "TDocument",
+      code: [
+        ["TDocument", "tp"],
+        [" extends ", "kw"],
+        ["object", "prim"],
+        [" = ", "pn"],
+        ["Document", "ref", "/docs/api/interfaces/Document"],
+      ],
+      comment: null,
+    },
+  ],
+  hierarchy: null,
+  signatureSection: null,
+  signatures: [],
+  sections: [
+    {
+      id: "constructors",
+      title: "Constructors",
+      members: [
+        {
+          id: 201,
+          name: "constructor",
+          anchor: "constructor",
+          kind: "constructor",
+          label: "Constructor",
+          badges: [],
+          code: null,
+          comment: null,
+          signatures: [
+            {
+              id: 202,
+              code: [
+                ["new ", "kw"],
+                ["SinterCollection", "name"],
+                ["<", "pn"],
+                ["TDocument", "tp"],
+                [" extends ", "kw"],
+                ["object", "prim"],
+                [" = ", "pn"],
+                ["Document", "ref", "/docs/api/interfaces/Document"],
+                [">(", "pn"],
+                ["\n  "],
+                ["database", "param"],
+                [": ", "pn"],
+                ["SinterDatabase", "ref", "/docs/api/classes/SinterDatabase"],
+                [",", "pn"],
+                ["\n  "],
+                ["name", "param"],
+                [": ", "pn"],
+                ["string", "prim"],
+                [",", "pn"],
+                ["\n"],
+                [")", "pn"],
+              ],
+              comment: null,
+              typeParameters: [
+                {
+                  name: "TDocument",
+                  code: [
+                    ["TDocument", "tp"],
+                    [" extends ", "kw"],
+                    ["object", "prim"],
+                    [" = ", "pn"],
+                    ["Document", "ref", "/docs/api/interfaces/Document"],
+                  ],
+                  comment: null,
+                },
+              ],
+              parameters: [
+                {
+                  name: "database",
+                  code: [
+                    ["database", "param"],
+                    [": ", "pn"],
+                    [
+                      "SinterDatabase",
+                      "ref",
+                      "/docs/api/classes/SinterDatabase",
+                    ],
+                  ],
+                  comment: {
+                    summary: "<p>The database this collection belongs to.</p>",
+                    short: "The database this collection belongs to.",
+                    deprecated: null,
+                    modifiers: [],
+                    blocks: [],
+                  },
+                  members: [],
+                },
+                {
+                  name: "name",
+                  code: [
+                    ["name", "param"],
+                    [": ", "pn"],
+                    ["string", "prim"],
+                  ],
+                  comment: null,
+                  members: [],
+                },
+              ],
+              returns: null,
+              sources: [
+                {
+                  path: "packages/driver/src/collection.ts",
+                  line: 97,
+                  url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L97",
+                },
+              ],
+            },
+          ],
+          members: [],
+          relations: [],
+          sources: [
+            {
+              path: "packages/driver/src/collection.ts",
+              line: 97,
+              url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L97",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: "properties",
+      title: "Properties",
+      members: [
+        {
+          id: 206,
+          name: "database",
+          anchor: "database",
+          kind: "property",
+          label: "Property",
+          badges: [],
+          code: [
+            ["readonly ", "kw"],
+            ["database", "name"],
+            [": ", "pn"],
+            ["SinterDatabase", "ref", "/docs/api/classes/SinterDatabase"],
+          ],
+          comment: {
+            summary: "<p>The database this collection belongs to.</p>",
+            short: "The database this collection belongs to.",
+            deprecated: null,
+            modifiers: [],
+            blocks: [],
+          },
+          signatures: [],
+          members: [],
+          relations: [],
+          sources: [
+            {
+              path: "packages/driver/src/collection.ts",
+              line: 99,
+              url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L99",
+            },
+          ],
+        },
+        {
+          id: 208,
+          name: "name",
+          anchor: "name",
+          kind: "property",
+          label: "Property",
+          badges: [],
+          code: [
+            ["readonly ", "kw"],
+            ["name", "name"],
+            [": ", "pn"],
+            ["string", "prim"],
+          ],
+          comment: {
+            summary: "<p>The collection name.</p>",
+            short: "The collection name.",
+            deprecated: null,
+            modifiers: [],
+            blocks: [],
+          },
+          signatures: [],
+          members: [],
+          relations: [],
+          sources: [
+            {
+              path: "packages/driver/src/collection.ts",
+              line: 95,
+              url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L95",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: "accessors",
+      title: "Accessors",
+      members: [
+        {
+          id: 209,
+          name: "namespace",
+          anchor: "namespace",
+          kind: "accessor",
+          label: "Accessor",
+          badges: [],
+          code: null,
+          comment: null,
+          signatures: [
+            {
+              id: 210,
+              code: [
+                ["get ", "kw"],
+                ["namespace", "name"],
+                ["(): ", "pn"],
+                ["string", "prim"],
+              ],
+              comment: {
+                summary:
+                  "<p>The database and collection names joined with a dot, such as <code>app.users</code>.</p>",
+                short:
+                  "The database and collection names joined with a dot, such as <code>app.users</code>.",
+                deprecated: null,
+                modifiers: [],
+                blocks: [],
+              },
+              typeParameters: [],
+              parameters: [],
+              returns: {
+                code: [["string", "prim"]],
+                html: null,
+              },
+              sources: [
+                {
+                  path: "packages/driver/src/collection.ts",
+                  line: 109,
+                  url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L109",
+                },
+              ],
+            },
+          ],
+          members: [],
+          relations: [],
+          sources: [
+            {
+              path: "packages/driver/src/collection.ts",
+              line: 109,
+              url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L109",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: "methods",
+      title: "Methods",
+      members: [
+        {
+          id: 241,
+          name: "createIndex",
+          anchor: "create-index",
+          kind: "method",
+          label: "Method",
+          badges: [],
+          code: null,
+          comment: null,
+          signatures: [
+            {
+              id: 242,
+              code: [
+                ["createIndex", "name"],
+                ["(", "pn"],
+                ["definition", "param"],
+                [": ", "pn"],
+                [
+                  "IndexDefinition",
+                  "ref",
+                  "/docs/api/interfaces/IndexDefinition",
+                ],
+                ["<", "pn"],
+                ["TDocument", "tp"],
+                [">): ", "pn"],
+                ["Promise", "ref"],
+                ["<", "pn"],
+                [
+                  "CreateIndexResult",
+                  "ref",
+                  "/docs/api/interfaces/CreateIndexResult",
+                ],
+                [">", "pn"],
+              ],
+              comment: {
+                summary:
+                  "<p>Creates an index, or confirms that an identical one exists. The collection\nis created if it does not exist. A unique index fails with a\n<code>DuplicateKey</code> server error when existing documents already violate it.</p>",
+                short:
+                  "Creates an index, or confirms that an identical one exists. The collection is created if it does not exist. A unique index fails with a <code>DuplicateKey</code> server error when existing documents already violate it.",
+                deprecated: null,
+                modifiers: [],
+                blocks: [],
+              },
+              typeParameters: [],
+              parameters: [
+                {
+                  name: "definition",
+                  code: [
+                    ["definition", "param"],
+                    [": ", "pn"],
+                    [
+                      "IndexDefinition",
+                      "ref",
+                      "/docs/api/interfaces/IndexDefinition",
+                    ],
+                    ["<", "pn"],
+                    ["TDocument", "tp"],
+                    [">", "pn"],
+                  ],
+                  comment: null,
+                  members: [],
+                },
+              ],
+              returns: {
+                code: [
+                  ["Promise", "ref"],
+                  ["<", "pn"],
+                  [
+                    "CreateIndexResult",
+                    "ref",
+                    "/docs/api/interfaces/CreateIndexResult",
+                  ],
+                  [">", "pn"],
+                ],
+                html: null,
+              },
+              sources: [
+                {
+                  path: "packages/driver/src/collection.ts",
+                  line: 264,
+                  url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L264",
+                },
+              ],
+            },
+          ],
+          members: [],
+          relations: [],
+          sources: [
+            {
+              path: "packages/driver/src/collection.ts",
+              line: 264,
+              url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L264",
+            },
+          ],
+        },
+        {
+          id: 223,
+          name: "deleteMany",
+          anchor: "delete-many",
+          kind: "method",
+          label: "Method",
+          badges: [],
+          code: null,
+          comment: null,
+          signatures: [
+            {
+              id: 224,
+              code: [
+                ["deleteMany", "name"],
+                ["(", "pn"],
+                ["filter", "param"],
+                [": ", "pn"],
+                ["Filter", "ref", "/docs/api/types/Filter"],
+                ["<", "pn"],
+                ["TDocument", "tp"],
+                [">): ", "pn"],
+                ["Promise", "ref"],
+                ["<", "pn"],
+                ["DeleteResult", "ref", "/docs/api/interfaces/DeleteResult"],
+                [">", "pn"],
+              ],
+              comment: {
+                summary:
+                  "<p>Deletes every document that matches the filter.</p>",
+                short: "Deletes every document that matches the filter.",
+                deprecated: null,
+                modifiers: [],
+                blocks: [],
+              },
+              typeParameters: [],
+              parameters: [
+                {
+                  name: "filter",
+                  code: [
+                    ["filter", "param"],
+                    [": ", "pn"],
+                    ["Filter", "ref", "/docs/api/types/Filter"],
+                    ["<", "pn"],
+                    ["TDocument", "tp"],
+                    [">", "pn"],
+                  ],
+                  comment: null,
+                  members: [],
+                },
+              ],
+              returns: {
+                code: [
+                  ["Promise", "ref"],
+                  ["<", "pn"],
+                  ["DeleteResult", "ref", "/docs/api/interfaces/DeleteResult"],
+                  [">", "pn"],
+                ],
+                html: null,
+              },
+              sources: [
+                {
+                  path: "packages/driver/src/collection.ts",
+                  line: 195,
+                  url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L195",
+                },
+              ],
+            },
+          ],
+          members: [],
+          relations: [],
+          sources: [
+            {
+              path: "packages/driver/src/collection.ts",
+              line: 195,
+              url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L195",
+            },
+          ],
+        },
+        {
+          id: 220,
+          name: "deleteOne",
+          anchor: "delete-one",
+          kind: "method",
+          label: "Method",
+          badges: [],
+          code: null,
+          comment: null,
+          signatures: [
+            {
+              id: 221,
+              code: [
+                ["deleteOne", "name"],
+                ["(", "pn"],
+                ["filter", "param"],
+                [": ", "pn"],
+                ["Filter", "ref", "/docs/api/types/Filter"],
+                ["<", "pn"],
+                ["TDocument", "tp"],
+                [">): ", "pn"],
+                ["Promise", "ref"],
+                ["<", "pn"],
+                ["DeleteResult", "ref", "/docs/api/interfaces/DeleteResult"],
+                [">", "pn"],
+              ],
+              comment: {
+                summary:
+                  "<p>Deletes the first document that matches the filter.</p>",
+                short: "Deletes the first document that matches the filter.",
+                deprecated: null,
+                modifiers: [],
+                blocks: [],
+              },
+              typeParameters: [],
+              parameters: [
+                {
+                  name: "filter",
+                  code: [
+                    ["filter", "param"],
+                    [": ", "pn"],
+                    ["Filter", "ref", "/docs/api/types/Filter"],
+                    ["<", "pn"],
+                    ["TDocument", "tp"],
+                    [">", "pn"],
+                  ],
+                  comment: null,
+                  members: [],
+                },
+              ],
+              returns: {
+                code: [
+                  ["Promise", "ref"],
+                  ["<", "pn"],
+                  ["DeleteResult", "ref", "/docs/api/interfaces/DeleteResult"],
+                  [">", "pn"],
+                ],
+                html: null,
+              },
+              sources: [
+                {
+                  path: "packages/driver/src/collection.ts",
+                  line: 190,
+                  url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L190",
+                },
+              ],
+            },
+          ],
+          members: [],
+          relations: [],
+          sources: [
+            {
+              path: "packages/driver/src/collection.ts",
+              line: 190,
+              url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L190",
+            },
+          ],
+        },
+        {
+          id: 244,
+          name: "dropIndex",
+          anchor: "drop-index",
+          kind: "method",
+          label: "Method",
+          badges: [],
+          code: null,
+          comment: null,
+          signatures: [
+            {
+              id: 245,
+              code: [
+                ["dropIndex", "name"],
+                ["(", "pn"],
+                ["name", "param"],
+                [": ", "pn"],
+                ["string", "prim"],
+                ["): ", "pn"],
+                ["Promise", "ref"],
+                ["<", "pn"],
+                ["void", "prim"],
+                [">", "pn"],
+              ],
+              comment: {
+                summary:
+                  "<p>Drops an index by name. The <code>_id</code> index cannot be dropped.</p>",
+                short:
+                  "Drops an index by name. The <code>_id</code> index cannot be dropped.",
+                deprecated: null,
+                modifiers: [],
+                blocks: [],
+              },
+              typeParameters: [],
+              parameters: [
+                {
+                  name: "name",
+                  code: [
+                    ["name", "param"],
+                    [": ", "pn"],
+                    ["string", "prim"],
+                  ],
+                  comment: null,
+                  members: [],
+                },
+              ],
+              returns: {
+                code: [
+                  ["Promise", "ref"],
+                  ["<", "pn"],
+                  ["void", "prim"],
+                  [">", "pn"],
+                ],
+                html: null,
+              },
+              sources: [
+                {
+                  path: "packages/driver/src/collection.ts",
+                  line: 280,
+                  url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L280",
+                },
+              ],
+            },
+          ],
+          members: [],
+          relations: [],
+          sources: [
+            {
+              path: "packages/driver/src/collection.ts",
+              line: 280,
+              url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L280",
+            },
+          ],
+        },
+        {
+          id: 251,
+          name: "find",
+          anchor: "find",
+          kind: "method",
+          label: "Method",
+          badges: [],
+          code: null,
+          comment: null,
+          signatures: [
+            {
+              id: 252,
+              code: [
+                ["find", "name"],
+                ["(", "pn"],
+                ["\n  "],
+                ["filter", "param"],
+                ["?: ", "pn"],
+                ["Filter", "ref", "/docs/api/types/Filter"],
+                ["<", "pn"],
+                ["TDocument", "tp"],
+                [">,", "pn"],
+                ["\n  "],
+                ["options", "param"],
+                ["?: ", "pn"],
+                ["FindOptions", "ref", "/docs/api/interfaces/FindOptions"],
+                ["<", "pn"],
+                ["TDocument", "tp"],
+                [">,", "pn"],
+                ["\n"],
+                ["): ", "pn"],
+                ["FindCursor", "ref", "/docs/api/classes/FindCursor"],
+                ["<", "pn"],
+                ["TDocument", "tp"],
+                [">", "pn"],
+              ],
+              comment: {
+                summary:
+                  "<p>Starts a query and returns a cursor. No request is sent until the cursor\nis read.</p>\n<p>The cursor can be read with <code>next()</code>, collected with <code>toArray()</code>, or\niterated with <code>for await</code>. Always finish or <code>close()</code> it so the server\ncan release it.</p>",
+                short:
+                  "Starts a query and returns a cursor. No request is sent until the cursor is read.",
+                deprecated: null,
+                modifiers: [],
+                blocks: [],
+              },
+              typeParameters: [],
+              parameters: [
+                {
+                  name: "filter",
+                  code: [
+                    ["filter", "param"],
+                    ["?: ", "pn"],
+                    ["Filter", "ref", "/docs/api/types/Filter"],
+                    ["<", "pn"],
+                    ["TDocument", "tp"],
+                    [">", "pn"],
+                  ],
+                  comment: null,
+                  members: [],
+                },
+                {
+                  name: "options",
+                  code: [
+                    ["options", "param"],
+                    ["?: ", "pn"],
+                    ["FindOptions", "ref", "/docs/api/interfaces/FindOptions"],
+                    ["<", "pn"],
+                    ["TDocument", "tp"],
+                    [">", "pn"],
+                  ],
+                  comment: null,
+                  members: [],
+                },
+              ],
+              returns: {
+                code: [
+                  ["FindCursor", "ref", "/docs/api/classes/FindCursor"],
+                  ["<", "pn"],
+                  ["TDocument", "tp"],
+                  [">", "pn"],
+                ],
+                html: null,
+              },
+              sources: [
+                {
+                  path: "packages/driver/src/collection.ts",
+                  line: 317,
+                  url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L317",
+                },
+              ],
+            },
+          ],
+          members: [],
+          relations: [],
+          sources: [
+            {
+              path: "packages/driver/src/collection.ts",
+              line: 317,
+              url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L317",
+            },
+          ],
+        },
+        {
+          id: 217,
+          name: "findOne",
+          anchor: "find-one",
+          kind: "method",
+          label: "Method",
+          badges: [],
+          code: null,
+          comment: null,
+          signatures: [
+            {
+              id: 218,
+              code: [
+                ["findOne", "name"],
+                ["(", "pn"],
+                ["filter", "param"],
+                ["?: ", "pn"],
+                ["Filter", "ref", "/docs/api/types/Filter"],
+                ["<", "pn"],
+                ["TDocument", "tp"],
+                [">): ", "pn"],
+                ["Promise", "ref"],
+                ["<", "pn"],
+                ["WithId", "ref", "/docs/api/types/WithId"],
+                ["<", "pn"],
+                ["TDocument", "tp"],
+                ["> | ", "pn"],
+                ["null", "lit"],
+                [">", "pn"],
+              ],
+              comment: {
+                summary:
+                  "<p>Finds the first document that matches the filter, or <code>null</code>. Without a\nfilter, it returns the first document in the collection.</p>",
+                short:
+                  "Finds the first document that matches the filter, or <code>null</code>. Without a filter, it returns the first document in the collection.",
+                deprecated: null,
+                modifiers: [],
+                blocks: [],
+              },
+              typeParameters: [],
+              parameters: [
+                {
+                  name: "filter",
+                  code: [
+                    ["filter", "param"],
+                    ["?: ", "pn"],
+                    ["Filter", "ref", "/docs/api/types/Filter"],
+                    ["<", "pn"],
+                    ["TDocument", "tp"],
+                    [">", "pn"],
+                  ],
+                  comment: null,
+                  members: [],
+                },
+              ],
+              returns: {
+                code: [
+                  ["Promise", "ref"],
+                  ["<", "pn"],
+                  ["WithId", "ref", "/docs/api/types/WithId"],
+                  ["<", "pn"],
+                  ["TDocument", "tp"],
+                  ["> | ", "pn"],
+                  ["null", "lit"],
+                  [">", "pn"],
+                ],
+                html: null,
+              },
+              sources: [
+                {
+                  path: "packages/driver/src/collection.ts",
+                  line: 174,
+                  url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L174",
+                },
+              ],
+            },
+          ],
+          members: [],
+          relations: [],
+          sources: [
+            {
+              path: "packages/driver/src/collection.ts",
+              line: 174,
+              url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L174",
+            },
+          ],
+        },
+        {
+          id: 247,
+          name: "indexes",
+          anchor: "indexes",
+          kind: "method",
+          label: "Method",
+          badges: [],
+          code: null,
+          comment: null,
+          signatures: [
+            {
+              id: 248,
+              code: [
+                ["indexes", "name"],
+                ["(): ", "pn"],
+                ["Promise", "ref"],
+                ["<", "pn"],
+                ["IndexInfo", "ref", "/docs/api/interfaces/IndexInfo"],
+                ["[]>", "pn"],
+              ],
+              comment: {
+                summary:
+                  "<p>The <code>_id</code> index first, then the others in creation order.</p>",
+                short:
+                  "The <code>_id</code> index first, then the others in creation order.",
+                deprecated: null,
+                modifiers: [],
+                blocks: [],
+              },
+              typeParameters: [],
+              parameters: [],
+              returns: {
+                code: [
+                  ["Promise", "ref"],
+                  ["<", "pn"],
+                  ["IndexInfo", "ref", "/docs/api/interfaces/IndexInfo"],
+                  ["[]>", "pn"],
+                ],
+                html: null,
+              },
+              sources: [
+                {
+                  path: "packages/driver/src/collection.ts",
+                  line: 288,
+                  url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L288",
+                },
+              ],
+            },
+          ],
+          members: [],
+          relations: [],
+          sources: [
+            {
+              path: "packages/driver/src/collection.ts",
+              line: 288,
+              url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L288",
+            },
+          ],
+        },
+        {
+          id: 214,
+          name: "insertMany",
+          anchor: "insert-many",
+          kind: "method",
+          label: "Method",
+          badges: [],
+          code: null,
+          comment: null,
+          signatures: [
+            {
+              id: 215,
+              code: [
+                ["insertMany", "name"],
+                ["(", "pn"],
+                ["\n  "],
+                ["documents", "param"],
+                [": ", "pn"],
+                ["readonly ", "kw"],
+                ["OptionalId", "ref", "/docs/api/types/OptionalId"],
+                ["<", "pn"],
+                ["TDocument", "tp"],
+                [">[],", "pn"],
+                ["\n"],
+                ["): ", "pn"],
+                ["Promise", "ref"],
+                ["<", "pn"],
+                [
+                  "InsertManyResult",
+                  "ref",
+                  "/docs/api/interfaces/InsertManyResult",
+                ],
+                [">", "pn"],
+              ],
+              comment: {
+                summary:
+                  '<p>Inserts several documents in order.</p>\n<p>An empty array is rejected. If one document fails, the documents before\nit stay inserted, and the thrown <a href="/docs/api/classes/SinterInsertManyError">SinterInsertManyError</a> reports\n<code>failedIndex</code> and the <code>insertedIds</code> that were committed.</p>',
+                short: "Inserts several documents in order.",
+                deprecated: null,
+                modifiers: [],
+                blocks: [],
+              },
+              typeParameters: [],
+              parameters: [
+                {
+                  name: "documents",
+                  code: [
+                    ["documents", "param"],
+                    [": ", "pn"],
+                    ["readonly ", "kw"],
+                    ["OptionalId", "ref", "/docs/api/types/OptionalId"],
+                    ["<", "pn"],
+                    ["TDocument", "tp"],
+                    [">[]", "pn"],
+                  ],
+                  comment: null,
+                  members: [],
+                },
+              ],
+              returns: {
+                code: [
+                  ["Promise", "ref"],
+                  ["<", "pn"],
+                  [
+                    "InsertManyResult",
+                    "ref",
+                    "/docs/api/interfaces/InsertManyResult",
+                  ],
+                  [">", "pn"],
+                ],
+                html: "<p>The number of documents inserted and their <code>_id</code> values.</p>",
+              },
+              sources: [
+                {
+                  path: "packages/driver/src/collection.ts",
+                  line: 147,
+                  url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L147",
+                },
+              ],
+            },
+          ],
+          members: [],
+          relations: [],
+          sources: [
+            {
+              path: "packages/driver/src/collection.ts",
+              line: 147,
+              url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L147",
+            },
+          ],
+        },
+        {
+          id: 211,
+          name: "insertOne",
+          anchor: "insert-one",
+          kind: "method",
+          label: "Method",
+          badges: [],
+          code: null,
+          comment: null,
+          signatures: [
+            {
+              id: 212,
+              code: [
+                ["insertOne", "name"],
+                ["(", "pn"],
+                ["document", "param"],
+                [": ", "pn"],
+                ["OptionalId", "ref", "/docs/api/types/OptionalId"],
+                ["<", "pn"],
+                ["TDocument", "tp"],
+                [">): ", "pn"],
+                ["Promise", "ref"],
+                ["<", "pn"],
+                [
+                  "InsertOneResult",
+                  "ref",
+                  "/docs/api/interfaces/InsertOneResult",
+                ],
+                [">", "pn"],
+              ],
+              comment: {
+                summary:
+                  "<p>Inserts one document.</p>\n<p>The collection is created if it does not exist. A missing <code>_id</code> is\ngenerated.</p>",
+                short: "Inserts one document.",
+                deprecated: null,
+                modifiers: [],
+                blocks: [
+                  {
+                    tag: "throws",
+                    title: "Throws",
+                    html: '<p><a href="/docs/api/classes/SinterServerError">SinterServerError</a> with a <code>DuplicateKey</code> name when <code>_id</code>\nor a unique index value already exists.</p>',
+                  },
+                ],
+              },
+              typeParameters: [],
+              parameters: [
+                {
+                  name: "document",
+                  code: [
+                    ["document", "param"],
+                    [": ", "pn"],
+                    ["OptionalId", "ref", "/docs/api/types/OptionalId"],
+                    ["<", "pn"],
+                    ["TDocument", "tp"],
+                    [">", "pn"],
+                  ],
+                  comment: null,
+                  members: [],
+                },
+              ],
+              returns: {
+                code: [
+                  ["Promise", "ref"],
+                  ["<", "pn"],
+                  [
+                    "InsertOneResult",
+                    "ref",
+                    "/docs/api/interfaces/InsertOneResult",
+                  ],
+                  [">", "pn"],
+                ],
+                html: "<p>The <code>_id</code> of the inserted document.</p>",
+              },
+              sources: [
+                {
+                  path: "packages/driver/src/collection.ts",
+                  line: 123,
+                  url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L123",
+                },
+              ],
+            },
+          ],
+          members: [],
+          relations: [],
+          sources: [
+            {
+              path: "packages/driver/src/collection.ts",
+              line: 123,
+              url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L123",
+            },
+          ],
+        },
+        {
+          id: 226,
+          name: "replaceOne",
+          anchor: "replace-one",
+          kind: "method",
+          label: "Method",
+          badges: [],
+          code: null,
+          comment: null,
+          signatures: [
+            {
+              id: 227,
+              code: [
+                ["replaceOne", "name"],
+                ["(", "pn"],
+                ["\n  "],
+                ["filter", "param"],
+                [": ", "pn"],
+                ["Filter", "ref", "/docs/api/types/Filter"],
+                ["<", "pn"],
+                ["TDocument", "tp"],
+                [">,", "pn"],
+                ["\n  "],
+                ["replacement", "param"],
+                [": ", "pn"],
+                ["OptionalId", "ref", "/docs/api/types/OptionalId"],
+                ["<", "pn"],
+                ["TDocument", "tp"],
+                [">,", "pn"],
+                ["\n  "],
+                ["options", "param"],
+                ["?: ", "pn"],
+                ["UpdateOptions", "ref", "/docs/api/interfaces/UpdateOptions"],
+                [",", "pn"],
+                ["\n"],
+                ["): ", "pn"],
+                ["Promise", "ref"],
+                ["<", "pn"],
+                ["UpdateResult", "ref", "/docs/api/interfaces/UpdateResult"],
+                [">", "pn"],
+              ],
+              comment: {
+                summary:
+                  "<p>Replaces the first matching document with <code>replacement</code>.</p>\n<p>The document keeps its <code>_id</code>. Giving the replacement a different <code>_id</code>\nfails with an <code>ImmutableId</code> server error. With <code>upsert</code>, a replacement is\ninserted when nothing matches.</p>",
+                short:
+                  "Replaces the first matching document with <code>replacement</code>.",
+                deprecated: null,
+                modifiers: [],
+                blocks: [],
+              },
+              typeParameters: [],
+              parameters: [
+                {
+                  name: "filter",
+                  code: [
+                    ["filter", "param"],
+                    [": ", "pn"],
+                    ["Filter", "ref", "/docs/api/types/Filter"],
+                    ["<", "pn"],
+                    ["TDocument", "tp"],
+                    [">", "pn"],
+                  ],
+                  comment: null,
+                  members: [],
+                },
+                {
+                  name: "replacement",
+                  code: [
+                    ["replacement", "param"],
+                    [": ", "pn"],
+                    ["OptionalId", "ref", "/docs/api/types/OptionalId"],
+                    ["<", "pn"],
+                    ["TDocument", "tp"],
+                    [">", "pn"],
+                  ],
+                  comment: null,
+                  members: [],
+                },
+                {
+                  name: "options",
+                  code: [
+                    ["options", "param"],
+                    ["?: ", "pn"],
+                    [
+                      "UpdateOptions",
+                      "ref",
+                      "/docs/api/interfaces/UpdateOptions",
+                    ],
+                  ],
+                  comment: null,
+                  members: [],
+                },
+              ],
+              returns: {
+                code: [
+                  ["Promise", "ref"],
+                  ["<", "pn"],
+                  ["UpdateResult", "ref", "/docs/api/interfaces/UpdateResult"],
+                  [">", "pn"],
+                ],
+                html: null,
+              },
+              sources: [
+                {
+                  path: "packages/driver/src/collection.ts",
+                  line: 206,
+                  url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L206",
+                },
+              ],
+            },
+          ],
+          members: [],
+          relations: [],
+          sources: [
+            {
+              path: "packages/driver/src/collection.ts",
+              line: 206,
+              url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L206",
+            },
+          ],
+        },
+        {
+          id: 236,
+          name: "updateMany",
+          anchor: "update-many",
+          kind: "method",
+          label: "Method",
+          badges: [],
+          code: null,
+          comment: null,
+          signatures: [
+            {
+              id: 237,
+              code: [
+                ["updateMany", "name"],
+                ["(", "pn"],
+                ["\n  "],
+                ["filter", "param"],
+                [": ", "pn"],
+                ["Filter", "ref", "/docs/api/types/Filter"],
+                ["<", "pn"],
+                ["TDocument", "tp"],
+                [">,", "pn"],
+                ["\n  "],
+                ["update", "param"],
+                [": ", "pn"],
+                ["UpdateFilter", "ref", "/docs/api/types/UpdateFilter"],
+                ["<", "pn"],
+                ["TDocument", "tp"],
+                [">,", "pn"],
+                ["\n  "],
+                ["options", "param"],
+                ["?: ", "pn"],
+                ["UpdateOptions", "ref", "/docs/api/interfaces/UpdateOptions"],
+                [",", "pn"],
+                ["\n"],
+                ["): ", "pn"],
+                ["Promise", "ref"],
+                ["<", "pn"],
+                ["UpdateResult", "ref", "/docs/api/interfaces/UpdateResult"],
+                [">", "pn"],
+              ],
+              comment: {
+                summary:
+                  "<p>Applies an update to every matching document.</p>\n<p>With <code>upsert</code>, a document seeded from the equality terms of the filter is\ninserted, updated, and reported in <code>upsertedId</code> when nothing matches.</p>",
+                short: "Applies an update to every matching document.",
+                deprecated: null,
+                modifiers: [],
+                blocks: [],
+              },
+              typeParameters: [],
+              parameters: [
+                {
+                  name: "filter",
+                  code: [
+                    ["filter", "param"],
+                    [": ", "pn"],
+                    ["Filter", "ref", "/docs/api/types/Filter"],
+                    ["<", "pn"],
+                    ["TDocument", "tp"],
+                    [">", "pn"],
+                  ],
+                  comment: null,
+                  members: [],
+                },
+                {
+                  name: "update",
+                  code: [
+                    ["update", "param"],
+                    [": ", "pn"],
+                    ["UpdateFilter", "ref", "/docs/api/types/UpdateFilter"],
+                    ["<", "pn"],
+                    ["TDocument", "tp"],
+                    [">", "pn"],
+                  ],
+                  comment: null,
+                  members: [],
+                },
+                {
+                  name: "options",
+                  code: [
+                    ["options", "param"],
+                    ["?: ", "pn"],
+                    [
+                      "UpdateOptions",
+                      "ref",
+                      "/docs/api/interfaces/UpdateOptions",
+                    ],
+                  ],
+                  comment: null,
+                  members: [],
+                },
+              ],
+              returns: {
+                code: [
+                  ["Promise", "ref"],
+                  ["<", "pn"],
+                  ["UpdateResult", "ref", "/docs/api/interfaces/UpdateResult"],
+                  [">", "pn"],
+                ],
+                html: "<p><code>modifiedCount</code> counts only documents whose stored bytes\nactually changed.</p>",
+              },
+              sources: [
+                {
+                  path: "packages/driver/src/collection.ts",
+                  line: 251,
+                  url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L251",
+                },
+              ],
+            },
+          ],
+          members: [],
+          relations: [],
+          sources: [
+            {
+              path: "packages/driver/src/collection.ts",
+              line: 251,
+              url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L251",
+            },
+          ],
+        },
+        {
+          id: 231,
+          name: "updateOne",
+          anchor: "update-one",
+          kind: "method",
+          label: "Method",
+          badges: [],
+          code: null,
+          comment: null,
+          signatures: [
+            {
+              id: 232,
+              code: [
+                ["updateOne", "name"],
+                ["(", "pn"],
+                ["\n  "],
+                ["filter", "param"],
+                [": ", "pn"],
+                ["Filter", "ref", "/docs/api/types/Filter"],
+                ["<", "pn"],
+                ["TDocument", "tp"],
+                [">,", "pn"],
+                ["\n  "],
+                ["update", "param"],
+                [": ", "pn"],
+                ["UpdateFilter", "ref", "/docs/api/types/UpdateFilter"],
+                ["<", "pn"],
+                ["TDocument", "tp"],
+                [">,", "pn"],
+                ["\n  "],
+                ["options", "param"],
+                ["?: ", "pn"],
+                ["UpdateOptions", "ref", "/docs/api/interfaces/UpdateOptions"],
+                [",", "pn"],
+                ["\n"],
+                ["): ", "pn"],
+                ["Promise", "ref"],
+                ["<", "pn"],
+                ["UpdateResult", "ref", "/docs/api/interfaces/UpdateResult"],
+                [">", "pn"],
+              ],
+              comment: {
+                summary:
+                  "<p>Applies an update to the first matching document.</p>\n<p>With <code>upsert</code>, a document seeded from the equality terms of the filter is\ninserted, updated, and reported in <code>upsertedId</code> when nothing matches.</p>",
+                short: "Applies an update to the first matching document.",
+                deprecated: null,
+                modifiers: [],
+                blocks: [],
+              },
+              typeParameters: [],
+              parameters: [
+                {
+                  name: "filter",
+                  code: [
+                    ["filter", "param"],
+                    [": ", "pn"],
+                    ["Filter", "ref", "/docs/api/types/Filter"],
+                    ["<", "pn"],
+                    ["TDocument", "tp"],
+                    [">", "pn"],
+                  ],
+                  comment: null,
+                  members: [],
+                },
+                {
+                  name: "update",
+                  code: [
+                    ["update", "param"],
+                    [": ", "pn"],
+                    ["UpdateFilter", "ref", "/docs/api/types/UpdateFilter"],
+                    ["<", "pn"],
+                    ["TDocument", "tp"],
+                    [">", "pn"],
+                  ],
+                  comment: null,
+                  members: [],
+                },
+                {
+                  name: "options",
+                  code: [
+                    ["options", "param"],
+                    ["?: ", "pn"],
+                    [
+                      "UpdateOptions",
+                      "ref",
+                      "/docs/api/interfaces/UpdateOptions",
+                    ],
+                  ],
+                  comment: null,
+                  members: [],
+                },
+              ],
+              returns: {
+                code: [
+                  ["Promise", "ref"],
+                  ["<", "pn"],
+                  ["UpdateResult", "ref", "/docs/api/interfaces/UpdateResult"],
+                  [">", "pn"],
+                ],
+                html: "<p><code>modifiedCount</code> counts only documents whose stored bytes\nactually changed.</p>",
+              },
+              sources: [
+                {
+                  path: "packages/driver/src/collection.ts",
+                  line: 234,
+                  url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L234",
+                },
+              ],
+            },
+          ],
+          members: [],
+          relations: [],
+          sources: [
+            {
+              path: "packages/driver/src/collection.ts",
+              line: 234,
+              url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L234",
+            },
+          ],
+        },
+        {
+          id: 249,
+          name: "validateIndexes",
+          anchor: "validate-indexes",
+          kind: "method",
+          label: "Method",
+          badges: [],
+          code: null,
+          comment: null,
+          signatures: [
+            {
+              id: 250,
+              code: [
+                ["validateIndexes", "name"],
+                ["(): ", "pn"],
+                ["Promise", "ref"],
+                ["<", "pn"],
+                [
+                  "IndexValidationResult",
+                  "ref",
+                  "/docs/api/interfaces/IndexValidationResult",
+                ],
+                [">", "pn"],
+              ],
+              comment: {
+                summary:
+                  "<p>Asks the server to rebuild every index and report any difference.</p>",
+                short:
+                  "Asks the server to rebuild every index and report any difference.",
+                deprecated: null,
+                modifiers: [],
+                blocks: [],
+              },
+              typeParameters: [],
+              parameters: [],
+              returns: {
+                code: [
+                  ["Promise", "ref"],
+                  ["<", "pn"],
+                  [
+                    "IndexValidationResult",
+                    "ref",
+                    "/docs/api/interfaces/IndexValidationResult",
+                  ],
+                  [">", "pn"],
+                ],
+                html: null,
+              },
+              sources: [
+                {
+                  path: "packages/driver/src/collection.ts",
+                  line: 299,
+                  url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L299",
+                },
+              ],
+            },
+          ],
+          members: [],
+          relations: [],
+          sources: [
+            {
+              path: "packages/driver/src/collection.ts",
+              line: 299,
+              url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L299",
+            },
+          ],
+        },
+      ],
+    },
+  ],
+  toc: [
+    {
+      id: "constructors",
+      title: "Constructors",
+      items: [
+        {
+          anchor: "constructor",
+          name: "constructor",
+          kind: "constructor",
+        },
+      ],
+    },
+    {
+      id: "properties",
+      title: "Properties",
+      items: [
+        {
+          anchor: "database",
+          name: "database",
+          kind: "property",
+        },
+        {
+          anchor: "name",
+          name: "name",
+          kind: "property",
+        },
+      ],
+    },
+    {
+      id: "accessors",
+      title: "Accessors",
+      items: [
+        {
+          anchor: "namespace",
+          name: "namespace",
+          kind: "accessor",
+        },
+      ],
+    },
+    {
+      id: "methods",
+      title: "Methods",
+      items: [
+        {
+          anchor: "create-index",
+          name: "createIndex",
+          kind: "method",
+        },
+        {
+          anchor: "delete-many",
+          name: "deleteMany",
+          kind: "method",
+        },
+        {
+          anchor: "delete-one",
+          name: "deleteOne",
+          kind: "method",
+        },
+        {
+          anchor: "drop-index",
+          name: "dropIndex",
+          kind: "method",
+        },
+        {
+          anchor: "find",
+          name: "find",
+          kind: "method",
+        },
+        {
+          anchor: "find-one",
+          name: "findOne",
+          kind: "method",
+        },
+        {
+          anchor: "indexes",
+          name: "indexes",
+          kind: "method",
+        },
+        {
+          anchor: "insert-many",
+          name: "insertMany",
+          kind: "method",
+        },
+        {
+          anchor: "insert-one",
+          name: "insertOne",
+          kind: "method",
+        },
+        {
+          anchor: "replace-one",
+          name: "replaceOne",
+          kind: "method",
+        },
+        {
+          anchor: "update-many",
+          name: "updateMany",
+          kind: "method",
+        },
+        {
+          anchor: "update-one",
+          name: "updateOne",
+          kind: "method",
+        },
+        {
+          anchor: "validate-indexes",
+          name: "validateIndexes",
+          kind: "method",
+        },
+      ],
+    },
+  ],
+  sources: [
+    {
+      path: "packages/driver/src/collection.ts",
+      line: 90,
+      url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L90",
+    },
+  ],
+} satisfies ApiPage;
+
+export const metadata: Metadata = {
+  title: page.name,
+  description: page.description || undefined,
+};
+
+export default function Page() {
+  return <ApiReflectionPage page={page} />;
+}

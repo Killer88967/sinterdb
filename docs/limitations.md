@@ -1,6 +1,6 @@
 # Known limitations
 
-SinterDB `0.1.0` is a developer preview. This page lists what it does not do
+SinterDB `0.2.0` is a developer preview. This page lists what it does not do
 yet, the hard limits it enforces, and the rough edges you may meet. Tests check
 the numbers and the "not supported" lists against the code, so this page stays
 true as the code changes. If something here surprises you, please open an
@@ -21,11 +21,16 @@ issue.
   sharding, and no failover. If the server is down, your data is unavailable.
 - **One server per data directory.** A second server on the same directory
   refuses to start.
-- **Backups are manual.** Stop the server cleanly and copy the data directory.
-  See [storage.md](./storage.md#backups).
+- **Backups need the server stopped.** `sinterd backup` works on a closed data
+  directory. Use a volume snapshot to back up a running server. See
+  [backup.md](./backup.md).
+- **Repair works on whole files and log records.** `sinterd repair` can cut a
+  damaged log, set aside segments a snapshot already covers and rebuild a
+  missing manifest, but it cannot recover records that were lost or repair
+  single documents. Keep backups. See [repair.md](./repair.md).
 - **Linux is the tested platform.** Continuous integration runs on Linux with
   Node.js 24 and 26. macOS and Windows may work but are not tested, and the
-  durability guarantees of `fsync` depend on the operating system and disk.
+  durability guarantees of the `flushed` write concern depend on the operating system and disk.
 - **Node.js 24 or later** is required, for the server and the driver.
 - There is no published Docker image yet. Build it from the repository; see
   [docker.md](./docker.md).

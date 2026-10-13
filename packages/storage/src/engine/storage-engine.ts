@@ -3,6 +3,7 @@ import {
   mkdirSync,
   readFileSync,
   readdirSync,
+  rmSync,
   unlinkSync,
 } from "node:fs";
 import { join } from "node:path";
@@ -22,7 +23,7 @@ import {
 import {
   RECORD_HEADER_SIZE,
   WriteAheadLog,
-  type DurabilityMode,
+  type WriteConcern,
   type WalRecord,
 } from "../wal/index.js";
 import {
@@ -31,12 +32,20 @@ import {
   readCheckpoint,
   removeTemporaryCheckpoints,
   writeCheckpoint,
+  writeCheckpointSteps,
   type CheckpointCollection,
   type CheckpointStage,
   type ReadCheckpoint,
 } from "./checkpoint.js";
+import { translateIo } from "../io-error.js";
 import { writeFileAtomic } from "./files.js";
 import { acquireDirectoryLock, type DirectoryLock } from "./lock.js";
+import {
+  MIGRATIONS,
+  planMigrations,
+  type MigrationEvent,
+  type MigrationPlan,
+} from "./migrations.js";
 import {
   RecordType,
   decodeOperations,
@@ -50,12 +59,29 @@ export const STORAGE_FORMAT = "sinterdb-data";
  * directories are upgraded in place when they are opened.
  */
 export const STORAGE_FORMAT_VERSION = 2;
-
 export const DEFAULT_CHECKPOINT_THRESHOLD_BYTES = 64 * 1024 * 1024;
+export const DEFAULT_MEMORY_FLUSH_INTERVAL_MS = 100;
+/**
+ * Snapshots kept after a checkpoint. Keeping two means a damaged newest
+ * snapshot never loses data, so this is also the smallest allowed value.
+ */
+export const DEFAULT_CHECKPOINT_RETENTION = 2;
 
 export interface StorageEngineOptions {
   readonly directory: string;
-  readonly durability?: DurabilityMode;
+  /** How a write is acknowledged. Defaults to `flushed`. */
+  readonly writeConcern?: WriteConcern;
+  /**
+   * With the `flushed` write concern, a write is not flushed to stable storage
+   * until `commit` is called, so many writes can share one flush. Callers must
+   * not acknowledge a write before `commit` returns. Defaults to false.
+   */
+  readonly groupCommit?: boolean;
+  /**
+   * With the `memory` write concern, pending log records are written to the
+   * operating system at least this often. Defaults to 100 milliseconds.
+   */
+  readonly memoryFlushIntervalMs?: number;
   readonly segmentSizeBytes?: number;
   /**
    * A checkpoint is taken automatically once this many bytes of log have been
@@ -63,10 +89,29 @@ export interface StorageEngineOptions {
    */
   readonly checkpointThresholdBytes?: number;
   /**
+   * Also take a checkpoint at least this often, in milliseconds, while writes
+   * have happened since the last one. Off by default.
+   */
+  readonly checkpointIntervalMs?: number;
+  /**
+   * How many snapshots to keep, at least 2. The log since the oldest kept
+   * snapshot is kept too. Defaults to 2.
+   */
+  readonly checkpointRetention?: number;
+  /**
    * Take a final checkpoint when the engine is closed so the next start has
    * little or nothing to replay. Defaults to true.
    */
   readonly checkpointOnClose?: boolean;
+  /**
+   * Write automatic checkpoints in the background. The snapshot is written in
+   * steps between other work, so a large data set does not stop reads and
+   * writes while it is saved. It needs a point-in-time copy of the document
+   * list while it runs. Calling `checkpoint()` or closing the engine cancels a
+   * running background checkpoint and checkpoints in one go instead. Defaults
+   * to false.
+   */
+  readonly backgroundCheckpoints?: boolean;
   /**
    * Take over a lock file left by a process on another host. Only set this
    * when no other server can be using the directory at the same time, for
@@ -74,6 +119,16 @@ export interface StorageEngineOptions {
    * that stopped. A lock left by a process on this host is always checked.
    */
   readonly reclaimLock?: boolean;
+  /**
+   * Called before each step that upgrades an older data directory to the
+   * current storage format, so a server can say what it is doing.
+   */
+  readonly onMigration?: (event: MigrationEvent) => void;
+  /**
+   * The format version to write and the steps that lead to it. Defaults to the
+   * current version and its steps. Intended for tests and tools.
+   */
+  readonly migrationPlan?: MigrationPlan;
   /**
    * Called as a checkpoint passes each stage. Intended for tests and
    * diagnostics; throwing from it aborts the checkpoint at that point.
@@ -120,7 +175,9 @@ interface RecoveredState {
 
 interface Settings {
   readonly checkpointThresholdBytes: number;
+  readonly checkpointRetention: number;
   readonly checkpointOnClose: boolean;
+  readonly backgroundCheckpoints: boolean;
   readonly onCheckpointStage: (stage: CheckpointStage) => void;
 }
 
@@ -130,6 +187,30 @@ interface Manifest {
   readonly createdAt: string;
   readonly upgradedFrom?: number;
   readonly upgradedAt?: string;
+  /**
+   * Set while an upgrade that rewrites files is under way. The version above
+   * is already the new one, so older servers refuse the directory; if a crash
+   * leaves this behind, the next start runs the whole upgrade again.
+   */
+  readonly migratingFrom?: number;
+}
+
+interface ActiveCheckpoint {
+  promise: Promise<CheckpointResult | undefined>;
+  /** Stops the checkpoint now and removes its unfinished file. */
+  abort(): void;
+}
+
+interface BegunCheckpoint {
+  readonly lsn: bigint;
+  readonly collections: CheckpointCollection[];
+  readonly documents: number;
+  readonly bytes: number;
+}
+
+interface ManifestPlan {
+  readonly plan: MigrationPlan;
+  readonly onMigration?: (event: MigrationEvent) => void;
 }
 
 const SUBDIRECTORIES = ["wal", "segments", "indexes", "checkpoints"] as const;
@@ -140,10 +221,13 @@ export class StorageEngine {
     Map<string, InMemoryCollection>
   >();
   private closed = false;
+  private flushTimer: ReturnType<typeof setInterval> | undefined;
+  private checkpointTimer: ReturnType<typeof setInterval> | undefined;
   private lastCheckpoint = 0n;
   private bytesSinceCheckpoint = 0;
   private nextCheckpointAt: number;
   private checkpointFailure: unknown;
+  private activeCheckpoint: ActiveCheckpoint | undefined;
   private report: RecoveryReport = {
     checkpointLsn: 0n,
     checkpointFile: undefined,
@@ -173,9 +257,40 @@ export class StorageEngine {
       );
     }
 
+    const flushInterval =
+      options.memoryFlushIntervalMs ?? DEFAULT_MEMORY_FLUSH_INTERVAL_MS;
+
+    if (!Number.isSafeInteger(flushInterval) || flushInterval < 1) {
+      throw new TypeError(
+        "The memory flush interval must be a positive safe integer.",
+      );
+    }
+
+    const retention =
+      options.checkpointRetention ?? DEFAULT_CHECKPOINT_RETENTION;
+
+    if (!Number.isSafeInteger(retention) || retention < 2) {
+      throw new TypeError(
+        "The checkpoint retention must be an integer of at least 2.",
+      );
+    }
+
+    const interval = options.checkpointIntervalMs;
+
+    if (
+      interval !== undefined &&
+      (!Number.isSafeInteger(interval) || interval < 1)
+    ) {
+      throw new TypeError(
+        "The checkpoint interval must be a positive safe integer.",
+      );
+    }
+
     const settings: Settings = {
       checkpointThresholdBytes: threshold,
+      checkpointRetention: retention,
       checkpointOnClose: options.checkpointOnClose ?? true,
+      backgroundCheckpoints: options.backgroundCheckpoints ?? false,
       onCheckpointStage: options.onCheckpointStage ?? (() => undefined),
     };
 
@@ -190,13 +305,26 @@ export class StorageEngine {
         mkdirSync(join(root, name), { recursive: true });
       }
 
-      prepareManifest(root);
+      prepareManifest(root, {
+        plan: options.migrationPlan ?? {
+          targetVersion: STORAGE_FORMAT_VERSION,
+          migrations: MIGRATIONS,
+        },
+        ...(options.onMigration === undefined
+          ? {}
+          : {
+              onMigration: options.onMigration,
+            }),
+      });
 
       const log = WriteAheadLog.open({
         directory: join(root, "wal"),
-        ...(options.durability === undefined
+        ...(options.writeConcern === undefined
           ? {}
-          : { durability: options.durability }),
+          : { writeConcern: options.writeConcern }),
+        ...(options.groupCommit === undefined
+          ? {}
+          : { groupCommit: options.groupCommit }),
         ...(options.segmentSizeBytes === undefined
           ? {}
           : { segmentSizeBytes: options.segmentSizeBytes }),
@@ -206,6 +334,14 @@ export class StorageEngine {
         const engine = new StorageEngine(root, log, lock, settings);
 
         engine.recover();
+
+        if (log.writeConcern === "memory") {
+          engine.startFlushTimer(flushInterval);
+        }
+
+        if (interval !== undefined) {
+          engine.startCheckpointTimer(interval);
+        }
 
         return engine;
       } catch (error: unknown) {
@@ -224,8 +360,13 @@ export class StorageEngine {
     return this.root;
   }
 
-  public get durability(): DurabilityMode {
-    return this.log.durability;
+  public get writeConcern(): WriteConcern {
+    return this.log.writeConcern;
+  }
+
+  /** True while some writes are applied but not yet flushed by `commit`. */
+  public get hasUncommittedWrites(): boolean {
+    return !this.closed && this.log.hasUncommittedWrites;
   }
 
   public get lastLsn(): bigint {
@@ -244,6 +385,15 @@ export class StorageEngine {
   /** The error from the most recent automatic checkpoint that failed. */
   public get lastCheckpointError(): unknown {
     return this.checkpointFailure;
+  }
+
+  /** Flushes all write since the last commit. See `groupCommit`. */
+  public commit(): void {
+    if (this.closed) {
+      return;
+    }
+
+    this.log.commit();
   }
 
   public listDatabases(): string[] {
@@ -300,6 +450,8 @@ export class StorageEngine {
 
     let failure: unknown;
 
+    this.activeCheckpoint?.abort();
+
     if (
       this.settings.checkpointOnClose &&
       this.lastCheckpoint < this.log.lastLsn
@@ -312,6 +464,16 @@ export class StorageEngine {
     }
 
     this.closed = true;
+
+    if (this.flushTimer !== undefined) {
+      clearInterval(this.flushTimer);
+      this.flushTimer = undefined;
+    }
+
+    if (this.checkpointTimer !== undefined) {
+      clearInterval(this.checkpointTimer);
+      this.checkpointTimer = undefined;
+    }
 
     try {
       this.log.close();
@@ -336,7 +498,114 @@ export class StorageEngine {
    */
   public checkpoint(): CheckpointResult | undefined {
     this.assertOpen();
+    this.activeCheckpoint?.abort();
 
+    const begun = this.beginCheckpoint(false);
+
+    if (begun === undefined) {
+      return undefined;
+    }
+
+    const directory = join(this.root, "checkpoints");
+    let file: string;
+
+    try {
+      file = writeCheckpoint(
+        directory,
+        begun.lsn,
+        begun.collections,
+        this.settings.onCheckpointStage,
+      );
+    } catch (error: unknown) {
+      throw translateIo("write a snapshot", directory, error);
+    }
+
+    return this.finishCheckpoint(begun, file);
+  }
+
+  /** True while a background checkpoint is being written. */
+  public get isCheckpointing(): boolean {
+    return this.activeCheckpoint !== undefined;
+  }
+
+  /**
+   * Like `checkpoint`, but writes the snapshot in steps and lets reads and
+   * writes run in between, so a large data set does not block the engine. The
+   * snapshot holds the state at the moment this was called; later writes stay
+   * in the log. If a background checkpoint is already running this returns
+   * its result instead of starting another. Closing the engine or calling
+   * `checkpoint` cancels it, and the promise then resolves to undefined.
+   */
+  public checkpointAsync(): Promise<CheckpointResult | undefined> {
+    this.assertOpen();
+
+    if (this.activeCheckpoint !== undefined) {
+      return this.activeCheckpoint.promise;
+    }
+
+    const begun = this.beginCheckpoint(true);
+
+    if (begun === undefined) {
+      return Promise.resolve(undefined);
+    }
+
+    const directory = join(this.root, "checkpoints");
+    const steps = writeCheckpointSteps(
+      directory,
+      begun.lsn,
+      begun.collections,
+      this.settings.onCheckpointStage,
+    );
+    let aborted = false;
+    const active: ActiveCheckpoint = {
+      promise: Promise.resolve(undefined),
+      abort: () => {
+        aborted = true;
+        steps.return("");
+      },
+    };
+
+    this.activeCheckpoint = active;
+
+    const run = async (): Promise<CheckpointResult | undefined> => {
+      try {
+        for (;;) {
+          let step: IteratorResult<void, string>;
+
+          try {
+            step = steps.next();
+          } catch (error: unknown) {
+            throw translateIo("write a snapshot", directory, error);
+          }
+
+          if (step.done === true) {
+            return this.finishCheckpoint(begun, step.value);
+          }
+
+          await new Promise<void>((resolve) => setImmediate(resolve));
+
+          if (aborted) {
+            return undefined;
+          }
+        }
+      } finally {
+        if (this.activeCheckpoint === active) {
+          this.activeCheckpoint = undefined;
+        }
+      }
+    };
+
+    active.promise = run();
+
+    return active.promise;
+  }
+
+  /**
+   * Flushes the log and notes what the snapshot must contain. The documents of
+   * a background checkpoint are copied into an array, because the maps change
+   * while it runs; stored documents are never modified in place.
+   */
+  private beginCheckpoint(copy: boolean): BegunCheckpoint | undefined {
     const lsn = this.log.lastLsn;
 
     if (lsn === 0n || lsn === this.lastCheckpoint) {
@@ -350,10 +619,12 @@ export class StorageEngine {
 
     for (const [database, byName] of this.databases) {
       for (const [collection, store] of byName) {
+        const entries = copy ? Array.from(store.entries()) : store.entries();
+
         collections.push({
           database,
           collection,
-          documents: store.entries(),
+          documents: entries,
           documentCount: store.documentCount,
           indexes: store.indexSpec(),
         });
@@ -361,35 +632,53 @@ export class StorageEngine {
       }
     }
 
+    return { lsn, collections, documents, bytes: this.bytesSinceCheckpoint };
+  }
+
+  private finishCheckpoint(
+    begun: BegunCheckpoint,
+    file: string,
+  ): CheckpointResult | undefined {
+    if (this.closed) {
+      return undefined;
+    }
+
     const directory = join(this.root, "checkpoints");
     const stage = this.settings.onCheckpointStage;
-    const file = writeCheckpoint(directory, lsn, collections, stage);
     const snapshots = listCheckpoints(directory);
     let removedSnapshots = 0;
 
-    for (const old of snapshots.slice(2)) {
-      unlinkSync(old.path);
+    for (const old of snapshots.slice(this.settings.checkpointRetention)) {
+      try {
+        unlinkSync(old.path);
+      } catch (error: unknown) {
+        throw translateIo("remove an old snapshot", old.path, error);
+      }
+
       removedSnapshots += 1;
     }
 
     stage("snapshots-pruned");
 
-    const previous = snapshots[1];
+    const oldestKept = snapshots[this.settings.checkpointRetention - 1];
     const removedSegments =
-      previous === undefined ? 0 : this.log.truncateThrough(previous.lsn);
+      oldestKept === undefined ? 0 : this.log.truncateThrough(oldestKept.lsn);
 
     stage("log-truncated");
 
-    this.lastCheckpoint = lsn;
-    this.bytesSinceCheckpoint = 0;
+    this.lastCheckpoint = begun.lsn;
+    this.bytesSinceCheckpoint = Math.max(
+      0,
+      this.bytesSinceCheckpoint - begun.bytes,
+    );
     this.nextCheckpointAt = this.settings.checkpointThresholdBytes;
     this.checkpointFailure = undefined;
 
     return {
-      lsn,
+      lsn: begun.lsn,
       file,
-      collections: collections.length,
-      documents,
+      collections: begun.collections.length,
+      documents: begun.documents,
       removedSnapshots,
       removedSegments,
     };
@@ -422,6 +711,40 @@ export class StorageEngine {
     collections.set(collection, created);
 
     return created;
+  }
+
+  private startFlushTimer(intervalMs: number): void {
+    this.flushTimer = setInterval(() => {
+      try {
+        this.log.flush();
+      } catch {
+        // The log marks itself failed, so the next write reports the error.
+      }
+    }, intervalMs);
+
+    this.flushTimer.unref();
+  }
+
+  private startCheckpointTimer(intervalMs: number): void {
+    this.checkpointTimer = setInterval(() => {
+      if (this.closed || this.activeCheckpoint !== undefined) {
+        return;
+      }
+
+      try {
+        if (this.settings.backgroundCheckpoints) {
+          this.checkpointAsync().catch((error: unknown) => {
+            this.checkpointFailure = error;
+          });
+        } else {
+          this.checkpoint();
+        }
+      } catch (error: unknown) {
+        this.checkpointFailure = error;
+      }
+    }, intervalMs);
+
+    this.checkpointTimer.unref();
   }
 
   private assertOpen(): void {
@@ -462,16 +785,31 @@ export class StorageEngine {
    * because only then does memory match every record in the log.
    */
   private runDueCheckpoint(): void {
-    if (this.bytesSinceCheckpoint < this.nextCheckpointAt) {
+    if (
+      this.bytesSinceCheckpoint < this.nextCheckpointAt ||
+      this.activeCheckpoint !== undefined
+    ) {
       return;
     }
 
-    try {
-      this.checkpoint();
-    } catch (error: unknown) {
+    this.runAutomaticCheckpoint();
+  }
+
+  private runAutomaticCheckpoint(): void {
+    const failed = (error: unknown): void => {
       this.checkpointFailure = error;
       this.nextCheckpointAt =
         this.bytesSinceCheckpoint + this.settings.checkpointThresholdBytes;
+    };
+
+    try {
+      if (this.settings.backgroundCheckpoints) {
+        this.checkpointAsync().catch(failed);
+      } else {
+        this.checkpoint();
+      }
+    } catch (error: unknown) {
+      failed(error);
     }
   }
 
@@ -712,8 +1050,15 @@ function toOperation(
     : { kind: "delete", database, collection, id };
 }
 
-function prepareManifest(root: string): void {
+function prepareManifest(
+  root: string,
+  { plan, onMigration }: ManifestPlan,
+): void {
   const path = join(root, "manifest.json");
+  const target = plan.targetVersion;
+  // A crash while replacing this manifest can leave the temporary copy behind.
+  // The real manifest is untouched at that point, so the copy is just debris.
+  rmSync(`${path}.tmp`, { force: true });
 
   if (!existsSync(path)) {
     if (hasLogData(root)) {
@@ -725,7 +1070,7 @@ function prepareManifest(root: string): void {
 
     const manifest: Manifest = {
       format: STORAGE_FORMAT,
-      formatVersion: STORAGE_FORMAT_VERSION,
+      formatVersion: target,
       createdAt: new Date().toISOString(),
     };
 
@@ -766,29 +1111,82 @@ function prepareManifest(root: string): void {
     );
   }
 
-  if (manifest.formatVersion < STORAGE_FORMAT_VERSION) {
-    // Glider servers cannot read what this version writes, so mark the
-    // directory before anything is written to it.
-    const upgraded: Manifest = {
-      format: STORAGE_FORMAT,
-      formatVersion: STORAGE_FORMAT_VERSION,
-      createdAt:
-        typeof manifest.createdAt === "string"
-          ? manifest.createdAt
-          : new Date().toISOString(),
-      upgradedFrom: manifest.formatVersion,
-      upgradedAt: new Date().toISOString(),
-    };
-
-    writeFileAtomic(root, path, `${JSON.stringify(upgraded, null, 2)}\n`);
-  }
-
-  if (manifest.formatVersion > STORAGE_FORMAT_VERSION) {
+  if (manifest.formatVersion > target) {
     throw new StorageError(
       StorageErrorCode.UnsupportedFormat,
-      `The data directory uses storage format version ${manifest.formatVersion}, but this version of SinterDB only supports up to version ${STORAGE_FORMAT_VERSION}. Upgrade SinterDB to open it.`,
+      `The data directory uses storage format version ${manifest.formatVersion}, but this version of SinterDB only supports up to version ${target}. Upgrade SinterDB to open it.`,
     );
   }
+
+  const interrupted = readInterruptedUpgrade(manifest, path, target);
+  const from = interrupted ?? manifest.formatVersion;
+
+  if (from === target && interrupted === undefined) {
+    return;
+  }
+
+  const steps = planMigrations(from, plan);
+  const rewrites = steps.some((step) => step.run !== undefined);
+  const createdAt =
+    typeof manifest.createdAt === "string"
+      ? manifest.createdAt
+      : new Date().toISOString();
+
+  if (rewrites && interrupted === undefined) {
+    // Older servers cannot read what the new version writes, and they must not
+    // open a directory whose files are half rewritten. Mark it first.
+    const marked: Manifest = {
+      format: STORAGE_FORMAT,
+      formatVersion: target,
+      createdAt,
+      migratingFrom: from,
+    };
+
+    writeFileAtomic(root, path, `${JSON.stringify(marked, null, 2)}\n`);
+  }
+
+  for (const step of steps) {
+    onMigration?.({
+      from: step.from,
+      to: step.to,
+      description: step.description,
+    });
+    step.run?.({ directory: root });
+  }
+
+  const upgraded: Manifest = {
+    format: STORAGE_FORMAT,
+    formatVersion: target,
+    createdAt,
+    upgradedFrom: from,
+    upgradedAt: new Date().toISOString(),
+  };
+
+  writeFileAtomic(root, path, `${JSON.stringify(upgraded, null, 2)}\n`);
+}
+
+/** The version an unfinished upgrade started from, if there is one. */
+function readInterruptedUpgrade(
+  manifest: Partial<Manifest>,
+  path: string,
+  target: number,
+): number | undefined {
+  if (manifest.migratingFrom === undefined) {
+    return undefined;
+  }
+
+  if (
+    !Number.isInteger(manifest.migratingFrom) ||
+    manifest.migratingFrom < 1 ||
+    manifest.migratingFrom >= target
+  ) {
+    throw new StorageCorruptionError(
+      `The manifest ${path} records an upgrade from an invalid version.`,
+      { file: path, offset: 0 },
+    );
+  }
+
+  return manifest.migratingFrom;
 }
 
 function hasLogData(root: string): boolean {

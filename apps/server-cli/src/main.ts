@@ -5,16 +5,39 @@ import {
 } from "@sinterdb-internal/server";
 
 import { HELP_TEXT, parseCliArguments, type CliCommand } from "./cli.js";
+import {
+  isBackupCommandName,
+  parseBackupArguments,
+  runBackupCommand,
+} from "./backup-command.js";
+import {
+  isMaintenanceCommandName,
+  parseMaintenanceArguments,
+  runMaintenanceCommand,
+} from "./maintenance-command.js";
 import { logError, logInfo, logWarning } from "./logger.js";
+import { createStyle, styleHelp } from "./style.js";
 
 export async function main(
   arguments_: readonly string[] = process.argv.slice(2),
 ): Promise<void> {
+  const [first, ...rest] = arguments_;
+
+  if (isBackupCommandName(first)) {
+    runBackupCommand(parseBackupArguments(first, rest));
+    return;
+  }
+
+  if (isMaintenanceCommandName(first)) {
+    runMaintenanceCommand(parseMaintenanceArguments(first, rest));
+    return;
+  }
+
   const command = parseCliArguments(arguments_);
 
   switch (command.kind) {
     case "help":
-      process.stdout.write(HELP_TEXT);
+      process.stdout.write(styleHelp(HELP_TEXT, createStyle(process.stdout)));
       return;
 
     case "version":
@@ -35,12 +58,21 @@ async function startServer(
     ...(command.dataDir === undefined
       ? {}
       : { dataDirectory: command.dataDir }),
+    ...(command.writeConcern === undefined
+      ? {}
+      : { writeConcern: command.writeConcern }),
     ...(command.durability === undefined
       ? {}
       : { durability: command.durability }),
     ...(command.checkpointBytes === undefined
       ? {}
       : { checkpointThresholdBytes: command.checkpointBytes }),
+    ...(command.checkpointInterval === undefined
+      ? {}
+      : { checkpointIntervalSeconds: command.checkpointInterval }),
+    ...(command.checkpointKeep === undefined
+      ? {}
+      : { checkpointKeep: command.checkpointKeep }),
     ...(command.reclaimLock === true ? { reclaimLock: true } : {}),
   };
 
@@ -122,7 +154,7 @@ async function startServer(
       : {
           storage: "disk",
           dataDirectory: server.config.dataDirectory,
-          durability: server.config.durability,
+          writeConcern: server.config.writeConcern,
           databases: server.catalog.databaseCount,
           collections: server.catalog.collectionCount,
           checkpointLsn: String(server.recovery?.checkpointLsn ?? 0n),

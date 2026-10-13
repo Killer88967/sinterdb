@@ -113,17 +113,25 @@ export function removeTemporaryCheckpoints(directory: string): number {
   return removed;
 }
 
-export function writeCheckpoint(
+/**
+ * Writes a snapshot in steps. The generator pauses after about 1 MiB has been
+ * written so a caller can let other work run. Closing it early removes the
+ * unfinished temporary file. The collections must not change while it runs:
+ * pass a point-in-time copy of their documents.
+ */
+export function* writeCheckpointSteps(
   directory: string,
   lsn: bigint,
   collections: readonly CheckpointCollection[],
   onStage: (stage: CheckpointStage) => void,
-): string {
+): Generator<void, string, undefined> {
   const file = checkpointFileName(lsn);
   const path = join(directory, file);
   const temporary = join(directory, `${file.slice(0, -5)}${TEMPORARY_SUFFIX}`);
   const fd = openSync(temporary, "w");
   let checksum = 0;
+  let fdOpen = true;
+  let done = false;
   const pending: Uint8Array[] = [];
   let pendingBytes = 0;
 
@@ -143,10 +151,6 @@ export function writeCheckpoint(
   const add = (bytes: Uint8Array): void => {
     pending.push(bytes);
     pendingBytes += bytes.byteLength;
-
-    if (pendingBytes >= FLUSH_THRESHOLD) {
-      flush();
-    }
   };
 
   try {
@@ -183,6 +187,12 @@ export function writeCheckpoint(
         entry.writeUInt32BE(document.byteLength, ID_BYTE_LENGTH);
         add(entry);
         add(document);
+
+        if (pendingBytes >= FLUSH_THRESHOLD) {
+          flush();
+
+          yield;
+        }
       }
     }
 
@@ -194,28 +204,47 @@ export function writeCheckpoint(
     END_MAGIC.copy(footer, 4);
     writeAll(fd, footer);
     fsyncSync(fd);
-  } catch (error: unknown) {
+    fdOpen = false;
     closeSync(fd);
-    unlinkQuietly(temporary);
-
-    throw error;
-  }
-
-  closeSync(fd);
-
-  try {
     onStage("snapshot-written");
     renameSync(temporary, path);
     syncDirectory(directory);
-  } catch (error: unknown) {
-    unlinkQuietly(temporary);
+    done = true;
+  } finally {
+    if (fdOpen) {
+      try {
+        closeSync(fd);
+      } catch {
+        // The file is removed below, so a failed close changes nothing.
+      }
+    }
 
-    throw error;
+    if (!done) {
+      unlinkQuietly(temporary);
+    }
   }
 
   onStage("snapshot-renamed");
 
   return file;
+}
+
+/** Writes a snapshot without pausing. */
+export function writeCheckpoint(
+  directory: string,
+  lsn: bigint,
+  collections: readonly CheckpointCollection[],
+  onStage: (stage: CheckpointStage) => void,
+): string {
+  const steps = writeCheckpointSteps(directory, lsn, collections, onStage);
+
+  for (;;) {
+    const step = steps.next();
+
+    if (step.done === true) {
+      return step.value;
+    }
+  }
 }
 
 export function readCheckpoint(path: string): ReadCheckpoint {

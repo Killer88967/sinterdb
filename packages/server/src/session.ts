@@ -24,6 +24,7 @@ import {
   type CommandDispatcher,
 } from "./command-dispatcher.js";
 import { CursorManager } from "./cursor-manager.js";
+import type { DurabilityBarrier } from "./group-commit.js";
 
 const CURSOR_SWEEP_INTERVAL_MS = 30_000;
 
@@ -39,6 +40,11 @@ export type ServerSessionState =
 
 export interface ServerSessionOptions {
   dispatcher: CommandDispatcher;
+  /**
+   * When set, replies are held while writes are waiting to be flushed and are
+   * sent only after the flush, so an acknowledged write is always durable.
+   */
+  durability?: DurabilityBarrier;
   product?: string;
   productVersion?: string;
   /**
@@ -58,10 +64,14 @@ export class ServerSession {
   private readonly cursors = new CursorManager();
   private readonly sweepTimer: ReturnType<typeof setInterval>;
   private readonly dispatcher: CommandDispatcher;
+  private readonly durability: DurabilityBarrier | undefined;
   private readonly product: string;
   private readonly productVersion: string;
   private readonly onError: (error: Error) => void;
   private readonly onConnectionError: (error: Error) => void;
+  private held: Uint8Array[] = [];
+  private holding = false;
+  private endAfterRelease = false;
   private currentState: ServerSessionState =
     ServerSessionState.AwaitingHandshake;
 
@@ -70,6 +80,7 @@ export class ServerSession {
     options: ServerSessionOptions,
   ) {
     this.dispatcher = options.dispatcher;
+    this.durability = options.durability;
     this.product = options.product ?? SERVER_PRODUCT;
     this.productVersion = options.productVersion ?? SERVER_PRODUCT_VERSION;
     this.onError = options.onError ?? (() => undefined);
@@ -208,6 +219,8 @@ export class ServerSession {
     try {
       value = this.dispatcher.dispatch(command, this.cursors);
     } catch (error: unknown) {
+      this.holdUntilDurable();
+
       if (error instanceof CommandExecutionError) {
         this.sendError(
           requestId,
@@ -223,6 +236,8 @@ export class ServerSession {
       this.failCommand(requestId, error);
       return;
     }
+
+    this.holdUntilDurable();
 
     try {
       this.send(MessageKind.Result, requestId, { value });
@@ -245,6 +260,60 @@ export class ServerSession {
 
       this.failCommand(requestId, error);
     }
+  }
+
+  /**
+   * Starts holding replies when writes are waiting for a flush. Every later
+   * reply on this connection waits too, which keeps replies in order.
+   */
+  private holdUntilDurable(): void {
+    if (this.holding || this.durability?.hasPending !== true) {
+      return;
+    }
+
+    this.holding = true;
+    this.durability.whenDurable((error) => this.release(error));
+  }
+
+  private release(error: unknown): void {
+    this.holding = false;
+
+    const held = this.held;
+    const endAfterRelease = this.endAfterRelease;
+
+    this.held = [];
+    this.endAfterRelease = false;
+
+    if (this.socket.destroyed || this.socket.writableEnded) {
+      return;
+    }
+
+    if (error !== undefined) {
+      // The writes could not be made durable, so none of the held replies may
+      // report success. Dropping the connection is the honest answer.
+      this.onError(
+        error instanceof Error ? error : new Error("The log flush failed."),
+      );
+      this.socket.destroy();
+      return;
+    }
+
+    for (const data of held) {
+      this.socket.write(data);
+    }
+
+    if (endAfterRelease) {
+      this.socket.end();
+    }
+  }
+
+  private write(data: Uint8Array): void {
+    if (this.holding) {
+      this.held.push(data);
+      return;
+    }
+
+    this.socket.write(data);
   }
 
   private failCommand(requestId: number, error: unknown): void {
@@ -335,7 +404,7 @@ export class ServerSession {
     requestId: number,
     payload: Parameters<typeof encodeMessage<K>>[0]["payload"],
   ): void {
-    this.socket.write(
+    this.write(
       encodeMessage({
         kind,
         requestId,
@@ -368,10 +437,17 @@ export class ServerSession {
 
     if (closeConnection) {
       this.currentState = ServerSessionState.Closing;
+
+      if (this.holding) {
+        this.held.push(encoded);
+        this.endAfterRelease = true;
+        return;
+      }
+
       this.socket.end(encoded);
       return;
     }
 
-    this.socket.write(encoded);
+    this.write(encoded);
   }
 }

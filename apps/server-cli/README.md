@@ -7,8 +7,7 @@ Command-line server for SinterDB. The package installs the `sinterd` executable.
 
 ## Installation
 
-The package has not been published to npm yet. The `0.1.0` developer preview
-will be published under the `next` tag:
+The `0.2.0` developer preview is published under the `next` tag:
 
 ```bash
 npm install --global @sinterdb/cli@next
@@ -48,9 +47,18 @@ Options:
   --host <host>       Address to listen on
   -p, --port <port>   TCP port to listen on
   --data-dir <path>   Store data durably in this directory
-  --durability <mode> How writes are acknowledged: fsync (default) or buffered
+  --write-concern <level>
+                      How writes are acknowledged: flushed (default),
+                      journaled or memory
+  --durability <mode> Deprecated: fsync means flushed, buffered means journaled
   --checkpoint-bytes <n>
                       Bytes of log between automatic checkpoints (default 64 MiB)
+  --checkpoint-interval <seconds>
+                      Also checkpoint at least this often when data changed
+  --checkpoint-keep <n>
+                      Snapshots to keep (default 2)
+  --reclaim-lock      Take over a data directory lock left by another host or
+                      container
   -h, --help          Show the help message
   -v, --version       Show the server version
 ```
@@ -68,13 +76,15 @@ Port `0` asks the operating system to select an available temporary port.
 
 ## Environment Variables
 
-| Variable                    | Purpose                          | Default     |
-| --------------------------- | -------------------------------- | ----------- |
-| `SINTERDB_HOST`             | Listening address                | `127.0.0.1` |
-| `SINTERDB_PORT`             | TCP port                         | `4721`      |
-| `SINTERDB_DATA_DIR`         | Data directory                   | none        |
-| `SINTERDB_DURABILITY`       | `fsync` or `buffered`            | `fsync`     |
-| `SINTERDB_CHECKPOINT_BYTES` | Bytes of log between checkpoints | 64 MiB      |
+| Variable                       | Purpose                                | Default     |
+| ------------------------------ | -------------------------------------- | ----------- |
+| `SINTERDB_HOST`                | Listening address                      | `127.0.0.1` |
+| `SINTERDB_PORT`                | TCP port                               | `4721`      |
+| `SINTERDB_DATA_DIR`            | Data directory                         | none        |
+| `SINTERDB_WRITE_CONCERN`       | `flushed`, `journaled`, `memory`       | `flushed`   |
+| `SINTERDB_CHECKPOINT_BYTES`    | Bytes of log between checkpoints       | 64 MiB      |
+| `SINTERDB_CHECKPOINT_INTERVAL` | Seconds between time-based checkpoints | none        |
+| `SINTERDB_CHECKPOINT_KEEP`     | Snapshots to keep                      | `2`         |
 
 Command-line options take precedence over environment variables.
 
@@ -85,15 +95,32 @@ sinterd --data-dir /var/lib/sinterdb
 ```
 
 With a data directory, acknowledged writes survive restarts and crashes. See
-[Durable Storage](../../docs/storage.md) for the durability modes, checkpoints,
+[Durable Storage](../../docs/storage.md) for the write concerns, checkpoints,
 recovery, and backups.
 
-| Mode       | A write is acknowledged when...                 | Survives a power loss |
-| ---------- | ----------------------------------------------- | --------------------- |
-| `fsync`    | it has been flushed to stable storage (default) | Yes                   |
-| `buffered` | it has reached the operating system             | No                    |
+| Level       | A write is acknowledged when...                 | Survives a power loss |
+| ----------- | ----------------------------------------------- | --------------------- |
+| `flushed`   | it has been flushed to stable storage (default) | Yes                   |
+| `journaled` | it has reached the operating system             | No                    |
+| `memory`    | it is applied in memory (logged within ~100 ms) | No                    |
 
-`--durability` and `--checkpoint-bytes` require `--data-dir`.
+`--write-concern` and the checkpoint options require `--data-dir`.
+
+## Backup, Inspection and Repair
+
+These commands work on a data directory the server is not using. They share
+the server's colors on a terminal and are plain text when piped.
+
+```bash
+sinterd backup --data-dir ./data --to ./backups/today
+sinterd verify-backup --from ./backups/today
+sinterd restore --from ./backups/today --data-dir ./restored
+sinterd inspect --data-dir ./data
+sinterd repair --data-dir ./data
+```
+
+See [Backup and restore](../../docs/backup.md) and
+[Inspecting and repairing](../../docs/repair.md).
 
 ## Structured Logging
 
@@ -109,10 +136,10 @@ Lifecycle events are written as newline-delimited JSON:
     "host": "127.0.0.1",
     "port": 4721,
     "family": "IPv4",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "storage": "disk",
     "dataDirectory": "/var/lib/sinterdb",
-    "durability": "fsync",
+    "writeConcern": "flushed",
     "databases": 1,
     "collections": 2,
     "checkpointLsn": "1042",

@@ -14,7 +14,7 @@ import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
 import { CustomId, type Document } from "sinterdb-protocol";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
   StorageCorruptionError,
@@ -114,7 +114,7 @@ describe("data directory layout", () => {
     expect(manifest["formatVersion"]).toBe(STORAGE_FORMAT_VERSION);
     expect(typeof manifest["createdAt"]).toBe("string");
     expect(walFiles()).toHaveLength(1);
-    expect(engine.durability).toBe("fsync");
+    expect(engine.writeConcern).toBe("flushed");
   });
 
   it("removes the lock when closed", () => {
@@ -206,14 +206,14 @@ describe("persistence across restarts", () => {
     ]);
   });
 
-  for (const durability of ["buffered", "fsync"] as const) {
-    it(`restores data in ${durability} mode`, () => {
-      let engine = open({ durability });
+  for (const writeConcern of ["journaled", "flushed"] as const) {
+    it(`restores data in ${writeConcern} mode`, () => {
+      let engine = open({ writeConcern });
 
       engine.openCollection("app", "users").insertOne({ name: "Ada" });
-      engine = reopen(engine, { durability });
+      engine = reopen(engine, { writeConcern });
 
-      expect(engine.durability).toBe(durability);
+      expect(engine.writeConcern).toBe(writeConcern);
       expect(documents(engine, "app", "users")).toHaveLength(1);
     });
   }
@@ -708,5 +708,90 @@ describe("manifest checks", () => {
     engine = reopen(engine);
 
     expect(documents(engine, "app", "users")).toHaveLength(1);
+  });
+});
+
+describe("StorageEngine memory write concern", () => {
+  it("restores data after a clean close", () => {
+    let engine = open({ writeConcern: "memory" });
+
+    engine.openCollection("app", "users");
+    engine = reopen(engine, { writeConcern: "memory" });
+
+    expect(engine.writeConcern).toBe("memory");
+    expect(engine.listCollections("app")).toEqual(["users"]);
+  });
+
+  it("writes pending records on a timer", () => {
+    vi.useFakeTimers();
+
+    try {
+      const engine = open({
+        writeConcern: "memory",
+        memoryFlushIntervalMs: 50,
+        checkpointOnClose: false,
+      });
+
+      engine.openCollection("app", "users");
+
+      const walDirectory = join(directory, "wal");
+      const segment = join(
+        walDirectory,
+        readdirSync(walDirectory)[0] as string,
+      );
+      const before = statSync(segment).size;
+
+      vi.advanceTimersByTime(60);
+
+      expect(statSync(segment).size).toBeGreaterThan(before);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("rejects a flush interval that is not a positive integer", () => {
+    expect(() => open({ memoryFlushIntervalMs: 0 })).toThrow(TypeError);
+  });
+});
+
+describe("StorageEngine group commit", () => {
+  it("reports uncommitted writes until commit is called", () => {
+    const engine = open({ groupCommit: true });
+
+    expect(engine.hasUncommittedWrites).toBe(false);
+
+    engine.openCollection("app", "users");
+
+    expect(engine.hasUncommittedWrites).toBe(true);
+
+    engine.commit();
+
+    expect(engine.hasUncommittedWrites).toBe(false);
+  });
+
+  it("restores committed and uncommitted writes after a clean close", () => {
+    let engine = open({ groupCommit: true });
+
+    engine.openCollection("app", "users");
+    engine = reopen(engine, { groupCommit: true });
+
+    expect(engine.listCollections("app")).toEqual(["users"]);
+  });
+
+  it("is off by default", () => {
+    const engine = open();
+
+    engine.openCollection("app", "users");
+
+    expect(engine.hasUncommittedWrites).toBe(false);
+  });
+
+  it("ignores commit once it is closed", () => {
+    const engine = open({ groupCommit: true });
+
+    engine.close();
+
+    expect(engine.hasUncommittedWrites).toBe(false);
+    expect(() => engine.commit()).not.toThrow();
   });
 });

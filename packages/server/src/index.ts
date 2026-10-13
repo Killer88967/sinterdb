@@ -1,6 +1,16 @@
-export { DEFAULT_CHECKPOINT_THRESHOLD_BYTES } from "@sinterdb-internal/storage";
 export {
-  DEFAULT_DURABILITY,
+  BACKUP_FORMAT,
+  BACKUP_FORMAT_VERSION,
+  DEFAULT_CHECKPOINT_THRESHOLD_BYTES,
+  createBackup,
+  inspectDataDirectory,
+  repairDataDirectory,
+  restoreBackup,
+  verifyBackup,
+} from "@sinterdb-internal/storage";
+export {
+  DEFAULT_CHECKPOINT_KEEP,
+  DEFAULT_WRITE_CONCERN,
   DEFAULT_SERVER_HOST,
   DEFAULT_SERVER_PORT,
   SERVER_ENVIRONMENT_VARIABLES,
@@ -32,7 +42,13 @@ export {
   DEFAULT_CURSOR_BATCH_SIZE,
   DEFAULT_CURSOR_IDLE_TIMEOUT_MS,
 } from "./cursor-manager.js";
+export { GroupCommitter } from "./group-commit.js";
 
+export type {
+  InspectionReport,
+  RepairOptions,
+  RepairResult,
+} from "@sinterdb-internal/storage";
 export type {
   ServerConfig,
   ServerConfigInput,
@@ -53,3 +69,4 @@ export type {
 } from "./catalog.js";
 export type { ServerCommand as ServerCommandValue } from "./command-dispatcher.js";
 export type { CursorBatch, CursorManagerOptions } from "./cursor-manager.js";
+export type { DurabilityBarrier } from "./group-commit.js";

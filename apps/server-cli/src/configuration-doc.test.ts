@@ -2,8 +2,9 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 import {
+  DEFAULT_CHECKPOINT_KEEP,
   DEFAULT_CHECKPOINT_THRESHOLD_BYTES,
-  DEFAULT_DURABILITY,
+  DEFAULT_WRITE_CONCERN,
   DEFAULT_SERVER_HOST,
   DEFAULT_SERVER_PORT,
   SERVER_ENVIRONMENT_VARIABLES,
@@ -60,11 +61,14 @@ describe("docs/configuration.md", () => {
     expect(rowContaining("`-p, --port <port>`")).toContain(
       `\`${DEFAULT_SERVER_PORT}\``,
     );
-    expect(rowContaining("`--durability <mode>`")).toContain(
-      `\`${DEFAULT_DURABILITY}\``,
+    expect(rowContaining("`--write-concern <level>`")).toContain(
+      `\`${DEFAULT_WRITE_CONCERN}\``,
     );
     expect(rowContaining("`--checkpoint-bytes <n>`")).toContain(
       `${mebibytes} MiB`,
+    );
+    expect(rowContaining("`--checkpoint-keep <n>`")).toContain(
+      `\`${DEFAULT_CHECKPOINT_KEEP}\``,
     );
     expect(HELP_TEXT).toContain(`default ${mebibytes} MiB`);
   });

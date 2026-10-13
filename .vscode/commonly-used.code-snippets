@@ -1,0 +1,19 @@
+{
+  "Public Get Definition": {
+    "scope": "typescript",
+    "prefix": "public get",
+    "body": [
+      "/** */",
+      "public get ${1:name}(): ${2:void} {",
+      "  return ${3}",
+      "}",
+    ],
+    "description": "Insert a public get",
+  },
+  "Interface": {
+    "scope": "typescript",
+    "prefix": "interface",
+    "body": "interface ${1:Name} {$2};",
+    "description": "Insert a interface",
+  },
+}

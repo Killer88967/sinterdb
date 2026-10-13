@@ -17,6 +17,7 @@ import {
   StorageError,
   StorageErrorCode,
 } from "../errors.js";
+import { translateIo, ioError, isDiskFull } from "../io-error.js";
 import {
   SEGMENT_HEADER_SIZE,
   decodeSegmentHeader,
@@ -25,18 +26,32 @@ import {
   scanRecord,
 } from "./format.js";
 
-export type DurabilityMode = "buffered" | "fsync";
+export type WriteConcern = "memory" | "journaled" | "flushed";
 
 export const DEFAULT_SEGMENT_SIZE_BYTES = 64 * 1024 * 1024;
+
+/**
+ * With the `memory` write concern, appended records wait in memory until this
+ * many bytes are pending, a flush is requested or the log closes.
+ */
+export const MEMORY_FLUSH_BYTES = 64 * 1024;
 
 export interface WriteAheadLogOptions {
   readonly directory: string;
   /**
-   * `fsync` waits for the operating system to flush each append to stable
-   * storage. `buffered` only waits for the write to reach the operating
-   * system, which survives a process crash but not a power loss.
+   * `flushed` waits for the operating system to flush each append to stable
+   * storage. `journaled` only waits for the write to reach the operating
+   * system, which survives a process crash but not a power loss. `memory`
+   * keeps appends in this process until `flush` or `sync` is called, enough
+   * bytes are pending or the log closes, so a crash can lose them.
    */
-  readonly durability?: DurabilityMode;
+  readonly writeConcern?: WriteConcern;
+  /**
+   * With the `flushed` write concern, append without flushing and let the
+   * caller flush many appends at once with `commit`. Until `commit` returns,
+   * an append is not yet durable.
+   */
+  readonly groupCommit?: boolean;
   readonly segmentSizeBytes?: number;
 }
 
@@ -58,12 +73,16 @@ export class WriteAheadLog {
   private fd: number | undefined;
   private position: number;
   private nextLsn: bigint;
+  private pending: Uint8Array[] = [];
+  private pendingBytes = 0;
+  private unsynced = false;
   private broken = false;
   private closed = false;
 
   private constructor(
     private readonly directory: string,
-    private readonly mode: DurabilityMode,
+    private readonly mode: WriteConcern,
+    private readonly groupCommit: boolean,
     private readonly segmentSizeBytes: number,
     segments: SegmentInfo[],
     fd: number,
@@ -77,12 +96,22 @@ export class WriteAheadLog {
   }
 
   public static open(options: WriteAheadLogOptions): WriteAheadLog {
-    const mode = options.durability ?? "fsync";
+    const mode = options.writeConcern ?? "flushed";
     const segmentSizeBytes =
       options.segmentSizeBytes ?? DEFAULT_SEGMENT_SIZE_BYTES;
 
-    if (mode !== "buffered" && mode !== "fsync") {
-      throw new TypeError('Durability must be "buffered" or "fsync".');
+    if (mode !== "memory" && mode !== "journaled" && mode !== "flushed") {
+      throw new TypeError(
+        'Write concern must be "memory", "journaled" or "flushed".',
+      );
+    }
+
+    const groupCommit = options.groupCommit ?? false;
+
+    if (groupCommit && mode !== "flushed") {
+      throw new TypeError(
+        'Group commit only applies to the "flushed" write concern.',
+      );
     }
 
     if (
@@ -99,7 +128,7 @@ export class WriteAheadLog {
     }
 
     const recovered = recoverSegments(options.directory);
-    const durable = mode === "fsync";
+    const durable = mode === "flushed";
 
     if (recovered.segments.length === 0) {
       const created = createSegment(options.directory, 1n, durable);
@@ -107,6 +136,7 @@ export class WriteAheadLog {
       return new WriteAheadLog(
         options.directory,
         mode,
+        groupCommit,
         segmentSizeBytes,
         [created.info],
         created.fd,
@@ -134,6 +164,7 @@ export class WriteAheadLog {
     return new WriteAheadLog(
       options.directory,
       mode,
+      groupCommit,
       segmentSizeBytes,
       recovered.segments,
       fd,
@@ -142,8 +173,18 @@ export class WriteAheadLog {
     );
   }
 
-  public get durability(): DurabilityMode {
+  public get writeConcern(): WriteConcern {
     return this.mode;
+  }
+
+  /** True when appended records have not been flushed by `commit` yet. */
+  public get hasUncommittedWrites(): boolean {
+    return this.unsynced;
+  }
+
+  /** Bytes appended but not yet written to the operating system. */
+  public get pendingByteCount(): number {
+    return this.pendingBytes;
   }
 
   public get lastLsn(): bigint {
@@ -175,16 +216,50 @@ export class WriteAheadLog {
       this.rotate();
     }
 
+    if (this.mode === "memory") {
+      this.pending.push(record);
+      this.pendingBytes += record.byteLength;
+      this.position += record.byteLength;
+      this.nextLsn = lsn + 1n;
+
+      if (this.pendingBytes >= MEMORY_FLUSH_BYTES) {
+        try {
+          this.flush();
+        } catch (error: unknown) {
+          if (!this.broken) {
+            // The disk is full but the log is still usable. The caller will
+            // not apply this operation, so it must not stay queued either.
+            this.pending.pop();
+            this.pendingBytes -= record.byteLength;
+            this.position -= record.byteLength;
+            this.nextLsn = lsn;
+          }
+
+          throw error;
+        }
+      }
+
+      return lsn;
+    }
+
     try {
       writeFully(this.fd as number, record, this.position);
-
-      if (this.mode === "fsync") {
-        fsyncSync(this.fd as number);
-      }
     } catch (error: unknown) {
-      this.broken = true;
+      throw this.abandonWrite("append to the log", error, this.position);
+    }
 
-      throw ioError("append to the log", this.activePath(), error);
+    if (this.mode === "flushed") {
+      if (this.groupCommit) {
+        this.unsynced = true;
+      } else {
+        try {
+          fsyncSync(this.fd as number);
+        } catch (error: unknown) {
+          this.broken = true;
+
+          throw ioError("flush the log", this.activePath(), error, false);
+        }
+      }
     }
 
     this.position += record.byteLength;
@@ -193,7 +268,48 @@ export class WriteAheadLog {
     return lsn;
   }
 
-  public sync(): void {
+  /**
+   * Writes pending records to the operating system without waiting for stable
+   * storage. It does nothing unless the write concern is `memory`.
+   */
+  public flush(): void {
+    this.assertWritable();
+
+    if (this.pendingBytes === 0) {
+      return;
+    }
+
+    const bytes = new Uint8Array(this.pendingBytes);
+    let offset = 0;
+
+    for (const chunk of this.pending) {
+      bytes.set(chunk, offset);
+      offset += chunk.byteLength;
+    }
+
+    try {
+      writeFully(this.fd as number, bytes, this.position - this.pendingBytes);
+    } catch (error: unknown) {
+      throw this.abandonWrite(
+        "write pending records to the log",
+        error,
+        this.position - this.pendingBytes,
+      );
+    }
+
+    this.pending = [];
+    this.pendingBytes = 0;
+  }
+
+  /**
+   * Flushes every record appended since the last commit to stable storage with
+   * one operation. It does nothing when nothing is waiting.
+   */
+  public commit(): void {
+    if (!this.unsynced || this.closed) {
+      return;
+    }
+
     this.assertWritable();
 
     try {
@@ -201,12 +317,31 @@ export class WriteAheadLog {
     } catch (error: unknown) {
       this.broken = true;
 
-      throw ioError("flush the log", this.activePath(), error);
+      throw ioError("flush the log", this.activePath(), error, false);
+    }
+
+    this.unsynced = false;
+  }
+
+  public sync(): void {
+    this.flush();
+
+    try {
+      fsyncSync(this.fd as number);
+      this.unsynced = false;
+    } catch (error: unknown) {
+      this.broken = true;
+
+      throw ioError("flush the log", this.activePath(), error, false);
     }
   }
 
   public *records(afterLsn = 0n): IterableIterator<WalRecord> {
     this.assertOpen();
+
+    if (!this.broken) {
+      this.flush();
+    }
 
     for (let index = 0; index < this.segments.length; index += 1) {
       const segment = this.segments[index] as SegmentInfo;
@@ -284,7 +419,7 @@ export class WriteAheadLog {
       removed += 1;
     }
 
-    if (removed > 0 && this.mode === "fsync") {
+    if (removed > 0 && this.mode === "flushed") {
       syncDirectory(this.directory);
     }
 
@@ -294,6 +429,17 @@ export class WriteAheadLog {
   public close(): void {
     if (this.closed) {
       return;
+    }
+
+    let pendingError: unknown;
+
+    if (!this.broken) {
+      try {
+        this.flush();
+        this.commit();
+      } catch (error: unknown) {
+        pendingError = error;
+      }
     }
 
     this.closed = true;
@@ -309,36 +455,70 @@ export class WriteAheadLog {
         throw ioError("close the log", this.directory, error);
       }
     }
+
+    if (pendingError !== undefined) {
+      throw pendingError;
+    }
   }
 
   private rotate(): void {
-    const durable = this.mode === "fsync";
+    const durable = this.mode === "flushed";
 
-    try {
-      if (durable) {
+    this.flush();
+
+    if (durable) {
+      try {
         fsyncSync(this.fd as number);
+        this.unsynced = false;
+      } catch (error: unknown) {
+        this.broken = true;
+
+        throw ioError("rotate the log", this.activePath(), error, false);
       }
-
-      closeSync(this.fd as number);
-    } catch (error: unknown) {
-      this.broken = true;
-
-      throw ioError("rotate the log", this.activePath(), error);
     }
 
-    this.fd = undefined;
+    // Create the next segment before letting go of the current one. If that
+    // fails, for example on a full disk, the current segment stays active and
+    // a later write can try again.
+    const created = createSegment(this.directory, this.nextLsn, durable);
+    const previous = this.fd as number;
+
+    this.segments.push(created.info);
+    this.fd = created.fd;
+    this.position = SEGMENT_HEADER_SIZE;
 
     try {
-      const created = createSegment(this.directory, this.nextLsn, durable);
-
-      this.segments.push(created.info);
-      this.fd = created.fd;
-      this.position = SEGMENT_HEADER_SIZE;
+      closeSync(previous);
     } catch (error: unknown) {
       this.broken = true;
 
-      throw error;
+      throw ioError("rotate the log", this.activePath(), error, false);
     }
+  }
+
+  /**
+   * Handles a failed write. When the disk is full the partly written bytes are
+   * cut off so the log ends at its last whole record and stays usable once
+   * space is freed. Any other failure, or a failed cut, breaks the log.
+   */
+  private abandonWrite(
+    action: string,
+    error: unknown,
+    goodEnd: number,
+  ): StorageError {
+    if (isDiskFull(error)) {
+      try {
+        ftruncateSync(this.fd as number, goodEnd);
+
+        return ioError(action, this.activePath(), error);
+      } catch {
+        // Fall through: the tail could not be cleaned up.
+      }
+    }
+
+    this.broken = true;
+
+    return ioError(action, this.activePath(), error);
   }
 
   private activePath(): string {
@@ -472,8 +652,10 @@ function createSegment(
 ): { info: SegmentInfo; fd: number } {
   const path = join(directory, `${firstLsn.toString().padStart(20, "0")}.wal`);
 
+  let fd: number | undefined;
+
   try {
-    const fd = openSync(path, "wx");
+    fd = openSync(path, "wx");
 
     writeFully(fd, encodeSegmentHeader(firstLsn), 0);
 
@@ -484,7 +666,16 @@ function createSegment(
 
     return { info: { path, firstLsn }, fd };
   } catch (error: unknown) {
-    throw ioError("create a log segment", path, error);
+    if (fd !== undefined) {
+      try {
+        closeSync(fd);
+        unlinkSync(path);
+      } catch {
+        // The leftover file is an empty segment that recovery tolerates.
+      }
+    }
+
+    throw translateIo("create a log segment", path, error);
   }
 }
 
@@ -512,7 +703,7 @@ export function syncDirectory(directory: string): void {
     const code = (error as NodeJS.ErrnoException).code;
 
     if (code !== "EISDIR" && code !== "EPERM" && code !== "EINVAL") {
-      throw ioError("flush a directory", directory, error);
+      throw ioError("flush a directory", directory, error, false);
     }
   } finally {
     if (fd !== undefined) {
@@ -540,13 +731,5 @@ function corruption(
       lsn === undefined ? "" : ` (log sequence number ${lsn})`
     }: ${reason} Records after this point cannot be trusted. Restore the data directory from a backup, or move the damaged segment aside only if you accept losing the writes it contains.`,
     lsn === undefined ? { file, offset } : { file, offset, lsn },
-  );
-}
-
-function ioError(action: string, path: string, cause: unknown): StorageError {
-  return new StorageError(
-    StorageErrorCode.Io,
-    `Could not ${action} at ${path}: ${(cause as Error).message}`,
-    { cause },
   );
 }

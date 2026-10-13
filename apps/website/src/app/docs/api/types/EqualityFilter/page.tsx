@@ -1,0 +1,72 @@
+import type { Metadata } from "next";
+
+import { ApiReflectionPage } from "../../_components/pages";
+import type { ApiPage } from "../../_generated/model";
+
+const page = {
+  id: 257,
+  name: "EqualityFilter",
+  kind: "type-alias",
+  label: "Type Alias",
+  href: "/docs/api/types/EqualityFilter",
+  description: "A shorthand filter that matches fields by equality only.",
+  badges: [],
+  declaration: [
+    ["type ", "kw"],
+    ["EqualityFilter", "name"],
+    ["<", "pn"],
+    ["TDocument", "tp"],
+    [" extends ", "kw"],
+    ["object", "prim"],
+    ["> = { ", "pn"],
+    ["readonly ", "kw"],
+    ["[", "pn"],
+    ["Key", "tp"],
+    [" in keyof ", "kw"],
+    ["TDocument", "tp"],
+    ["]?: ", "pn"],
+    ["TDocument", "tp"],
+    ["[", "pn"],
+    ["Key", "tp"],
+    ["] }", "pn"],
+  ],
+  comment: {
+    summary: "<p>A shorthand filter that matches fields by equality only.</p>",
+    short: "A shorthand filter that matches fields by equality only.",
+    deprecated: null,
+    modifiers: [],
+    blocks: [],
+  },
+  typeParameters: [
+    {
+      name: "TDocument",
+      code: [
+        ["TDocument", "tp"],
+        [" extends ", "kw"],
+        ["object", "prim"],
+      ],
+      comment: null,
+    },
+  ],
+  hierarchy: null,
+  signatureSection: null,
+  signatures: [],
+  sections: [],
+  toc: [],
+  sources: [
+    {
+      path: "packages/driver/src/collection.ts",
+      line: 44,
+      url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/collection.ts#L44",
+    },
+  ],
+} satisfies ApiPage;
+
+export const metadata: Metadata = {
+  title: page.name,
+  description: page.description || undefined,
+};
+
+export default function Page() {
+  return <ApiReflectionPage page={page} />;
+}

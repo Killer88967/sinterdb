@@ -57,7 +57,7 @@ export const ServerCommand = {
 export type ServerCommand = (typeof ServerCommand)[keyof typeof ServerCommand];
 
 export const SERVER_PRODUCT = "sinterdb-server";
-export const SERVER_PRODUCT_VERSION = "0.1.0";
+export const SERVER_PRODUCT_VERSION = "0.2.0";
 
 export class CommandExecutionError extends Error {
   public readonly code: WireErrorCodeValue;
@@ -879,6 +879,20 @@ function translateStorageError(error: unknown): CommandExecutionError {
       "ImmutableId",
       error.message,
       { details: { field: "_id", storageErrorCode: error.code } },
+    );
+  }
+
+  if (
+    error.code === StorageErrorCode.DiskFull ||
+    error.code === StorageErrorCode.PermissionDenied
+  ) {
+    return new CommandExecutionError(
+      WireErrorCode.InternalError,
+      "InternalError",
+      error.code === StorageErrorCode.DiskFull
+        ? "The server's disk is full, so the operation was not applied. Free space on the server and try again."
+        : "The server is not allowed to write to its data directory, so the operation was not applied.",
+      { details: { storageErrorCode: error.code } },
     );
   }
 

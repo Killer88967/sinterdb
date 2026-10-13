@@ -164,7 +164,7 @@ describe("killing the real server process", () => {
         const server = await startServer(["--checkpoint-bytes", "3000"]);
 
         expect(server.details["storage"]).toBe("disk");
-        expect(server.details["durability"]).toBe("fsync");
+        expect(server.details["writeConcern"]).toBe("flushed");
         expect(typeof server.details["replayedRecords"]).toBe("number");
 
         const present = await readSequences(server.port);

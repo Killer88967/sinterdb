@@ -52,18 +52,40 @@ describe("parseCliArguments", () => {
     );
   });
 
-  it("parses the data directory and durability options", () => {
+  it("parses the data directory and write concern options", () => {
     expect(
       parseCliArguments([
         "--data-dir",
         "/var/lib/sinterdb",
-        "--durability",
-        "buffered",
+        "--write-concern",
+        "journaled",
       ]),
     ).toEqual({
       kind: "start",
       dataDir: "/var/lib/sinterdb",
+      writeConcern: "journaled",
+    });
+  });
+
+  it("still parses the deprecated durability option", () => {
+    expect(parseCliArguments(["--durability", "buffered"])).toEqual({
+      kind: "start",
       durability: "buffered",
+    });
+  });
+
+  it("parses the checkpoint schedule and retention options", () => {
+    expect(
+      parseCliArguments([
+        "--checkpoint-interval",
+        "30",
+        "--checkpoint-keep",
+        "3",
+      ]),
+    ).toEqual({
+      kind: "start",
+      checkpointInterval: "30",
+      checkpointKeep: "3",
     });
   });
 
@@ -106,6 +128,13 @@ describe("parseCliArguments", () => {
   it("rejects storage options without values", () => {
     expect(() => parseCliArguments(["--data-dir"])).toThrow(CliUsageError);
     expect(() => parseCliArguments(["--durability"])).toThrow(CliUsageError);
+    expect(() => parseCliArguments(["--write-concern"])).toThrow(CliUsageError);
+    expect(() => parseCliArguments(["--checkpoint-interval"])).toThrow(
+      CliUsageError,
+    );
+    expect(() => parseCliArguments(["--checkpoint-keep"])).toThrow(
+      CliUsageError,
+    );
   });
 
   it("documents every option and environment variable", () => {
@@ -113,13 +142,20 @@ describe("parseCliArguments", () => {
       "--host",
       "-p, --port",
       "--data-dir",
+      "--write-concern",
       "--durability",
       "--checkpoint-bytes",
+      "--checkpoint-interval",
+      "--checkpoint-keep",
       "SINTERDB_DATA_DIR",
+      "SINTERDB_WRITE_CONCERN",
       "SINTERDB_DURABILITY",
       "SINTERDB_CHECKPOINT_BYTES",
-      "fsync",
-      "buffered",
+      "SINTERDB_CHECKPOINT_INTERVAL",
+      "SINTERDB_CHECKPOINT_KEEP",
+      "flushed",
+      "journaled",
+      "memory",
     ]) {
       expect(HELP_TEXT).toContain(text);
     }

@@ -46,7 +46,7 @@ const page = {
     {
       "path": "packages/driver/src/connection-string.ts",
       "line": 5,
-      "url": "https://github.com/SinterDB/sinterdb/blob/ecd947da3fe7f4dae22317777a4896e9c5fee115/packages/driver/src/connection-string.ts#L5"
+      "url": "https://github.com/SinterDB/sinterdb/blob/db8949eb5cc67bb672a49a4c09d2bf15bc647a4e/packages/driver/src/connection-string.ts#L5"
     }
   ]
 } satisfies ApiPage;

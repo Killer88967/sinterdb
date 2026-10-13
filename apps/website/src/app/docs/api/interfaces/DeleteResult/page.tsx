@@ -1,0 +1,134 @@
+import type { Metadata } from "next";
+
+import { ApiReflectionPage } from "../../_components/pages";
+import type { ApiPage } from "../../_generated/model";
+
+const page = {
+  id: 723,
+  name: "DeleteResult",
+  kind: "interface",
+  label: "Interface",
+  href: "/docs/api/interfaces/DeleteResult",
+  description: "The result of a delete.",
+  badges: [],
+  declaration: [
+    ["interface ", "kw"],
+    ["DeleteResult", "name"],
+  ],
+  comment: {
+    summary: "<p>The result of a delete.</p>",
+    short: "The result of a delete.",
+    deprecated: null,
+    modifiers: [],
+    blocks: [],
+  },
+  typeParameters: [],
+  hierarchy: null,
+  signatureSection: null,
+  signatures: [],
+  sections: [
+    {
+      id: "properties",
+      title: "Properties",
+      members: [
+        {
+          id: 724,
+          name: "acknowledged",
+          anchor: "acknowledged",
+          kind: "property",
+          label: "Property",
+          badges: [],
+          code: [
+            ["readonly ", "kw"],
+            ["acknowledged", "name"],
+            [": ", "pn"],
+            ["true", "lit"],
+          ],
+          comment: {
+            summary:
+              "<p>Always <code>true</code>; a failed delete throws instead.</p>",
+            short: "Always <code>true</code>; a failed delete throws instead.",
+            deprecated: null,
+            modifiers: [],
+            blocks: [],
+          },
+          signatures: [],
+          members: [],
+          relations: [],
+          sources: [
+            {
+              path: "packages/driver/src/update.ts",
+              line: 136,
+              url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/update.ts#L136",
+            },
+          ],
+        },
+        {
+          id: 725,
+          name: "deletedCount",
+          anchor: "deleted-count",
+          kind: "property",
+          label: "Property",
+          badges: [],
+          code: [
+            ["readonly ", "kw"],
+            ["deletedCount", "name"],
+            [": ", "pn"],
+            ["number", "prim"],
+          ],
+          comment: {
+            summary: "<p>How many documents were deleted.</p>",
+            short: "How many documents were deleted.",
+            deprecated: null,
+            modifiers: [],
+            blocks: [],
+          },
+          signatures: [],
+          members: [],
+          relations: [],
+          sources: [
+            {
+              path: "packages/driver/src/update.ts",
+              line: 138,
+              url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/update.ts#L138",
+            },
+          ],
+        },
+      ],
+    },
+  ],
+  toc: [
+    {
+      id: "properties",
+      title: "Properties",
+      items: [
+        {
+          anchor: "acknowledged",
+          name: "acknowledged",
+          kind: "property",
+        },
+        {
+          anchor: "deleted-count",
+          name: "deletedCount",
+          kind: "property",
+        },
+      ],
+    },
+  ],
+  sources: [
+    {
+      path: "packages/driver/src/update.ts",
+      line: 134,
+      url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/update.ts#L134",
+    },
+  ],
+} satisfies ApiPage;
+
+export const metadata: Metadata = {
+  title: page.name,
+  description: page.description || undefined,
+};
+
+export default function Page() {
+  return <ApiReflectionPage page={page} />;
+}

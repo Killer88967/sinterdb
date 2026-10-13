@@ -1,15 +1,51 @@
+
+# Git and GitHub
 .git
 .github
+
+# Dependencies
 **/node_modules
+**/.pnpm-store
+
+# Build output
 **/dist
+**/build
+**/out
 **/coverage
 **/.temp
+**/.cache
+**/.turbo
+**/.next
+**/.vercel
+**/*.tsbuildinfo
+
+# Website (not required for the server image)
+/apps/website
+
+# Development configuration
+.devcontainer
+.vscode
+.idea
+
+# Documentation output
 docs/api
+docs/examples
+
+# Release artifacts
 /release
-data
-sinterdb-data
 benchmarks/results
 *.tgz
-*.log
+
+# Runtime data
+data
+sinterdb-data
+backups
+
+# Environment files
 .env
 .env.*
+**/.env
+**/.env.*
+
+# Logs
+*.log

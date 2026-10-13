@@ -4,14 +4,25 @@ export const HELP_TEXT = `SinterDB Server
 
 Usage:
   sinterd [options]
+  sinterd backup | restore | verify-backup (see sinterd backup --help)
+  sinterd inspect | repair (see sinterd inspect --help)
 
 Options:
   --host <host>       Address to listen on
   -p, --port <port>   TCP port to listen on
   --data-dir <path>   Store data durably in this directory
-  --durability <mode> How writes are acknowledged: fsync (default) or buffered
+  --write-concern <level>
+                      How writes are acknowledged: flushed (default),
+                      journaled or memory
+  --durability <mode> Deprecated: fsync means flushed, buffered means journaled
   --checkpoint-bytes <n>
                       Bytes of log between automatic checkpoints (default 64 MiB)
+  --checkpoint-interval <seconds>
+                      Also checkpoint at least this often when data changed
+                      (default: only by size)
+  --checkpoint-keep <n>
+                      Snapshots to keep after a checkpoint, at least 2
+                      (default 2)
   --reclaim-lock      Take over a data directory lock left by another host or
                       container. Only use it when no other server can be using
                       the directory
@@ -20,19 +31,29 @@ Options:
 
 Without --data-dir all data is kept in memory and lost on shutdown.
 
-Durability modes (with --data-dir):
-  fsync     A write is acknowledged after it reaches stable storage. It
-            survives a crash or power loss.
-  buffered  A write is acknowledged after it reaches the operating system. It
-            survives a server crash but can be lost on power loss.
+Write concerns (with --data-dir):
+  flushed    A write is acknowledged after it reaches stable storage. It
+             survives a crash or power loss.
+  journaled  A write is acknowledged after it reaches the operating system. It
+             survives a server crash but can be lost on power loss.
+  memory     A write is acknowledged once it is applied in memory and written
+             to the log within about 100 ms. A server crash can lose the most
+             recent writes.
+
+Set NO_COLOR to turn colors off, or FORCE_COLOR to turn them on.
 
 Environment:
   SINTERDB_HOST          Default listening address
   SINTERDB_PORT          Default listening port
   SINTERDB_DATA_DIR      Default data directory
-  SINTERDB_DURABILITY    Default durability mode
+  SINTERDB_WRITE_CONCERN Default write concern
+  SINTERDB_DURABILITY    Deprecated name for SINTERDB_WRITE_CONCERN
   SINTERDB_CHECKPOINT_BYTES
                          Default bytes of log between checkpoints
+  SINTERDB_CHECKPOINT_INTERVAL
+                         Default seconds between time-based checkpoints
+  SINTERDB_CHECKPOINT_KEEP
+                         Default number of snapshots to keep
   SINTERDB_RECLAIM_LOCK  Set to true to take over a lock left by another host
 
 `;
@@ -43,8 +64,11 @@ export type CliCommand =
       host?: string;
       port?: string;
       dataDir?: string;
+      writeConcern?: string;
       durability?: string;
       checkpointBytes?: string;
+      checkpointInterval?: string;
+      checkpointKeep?: string;
       reclaimLock?: boolean;
     }
   | {
@@ -80,6 +104,9 @@ export function parseCliArguments(arguments_: readonly string[]): CliCommand {
         "data-dir": {
           type: "string",
         },
+        "write-concern": {
+          type: "string",
+        },
         durability: {
           type: "string",
         },
@@ -88,6 +115,12 @@ export function parseCliArguments(arguments_: readonly string[]): CliCommand {
         },
         "reclaim-lock": {
           type: "boolean",
+        },
+        "checkpoint-interval": {
+          type: "string",
+        },
+        "checkpoint-keep": {
+          type: "string",
         },
         help: {
           type: "boolean",
@@ -112,8 +145,14 @@ export function parseCliArguments(arguments_: readonly string[]): CliCommand {
   const host = readStringOption(parsed.values, "host");
   const port = readStringOption(parsed.values, "port");
   const dataDir = readStringOption(parsed.values, "data-dir");
+  const writeConcern = readStringOption(parsed.values, "write-concern");
   const durability = readStringOption(parsed.values, "durability");
   const checkpointBytes = readStringOption(parsed.values, "checkpoint-bytes");
+  const checkpointInterval = readStringOption(
+    parsed.values,
+    "checkpoint-interval",
+  );
+  const checkpointKeep = readStringOption(parsed.values, "checkpoint-keep");
   const reclaimLock = readBooleanOption(parsed.values, "reclaim-lock");
 
   if (help && version) {
@@ -137,8 +176,11 @@ export function parseCliArguments(arguments_: readonly string[]): CliCommand {
     ...(host === undefined ? {} : { host }),
     ...(port === undefined ? {} : { port }),
     ...(dataDir === undefined ? {} : { dataDir }),
+    ...(writeConcern === undefined ? {} : { writeConcern }),
     ...(durability === undefined ? {} : { durability }),
     ...(checkpointBytes === undefined ? {} : { checkpointBytes }),
+    ...(checkpointInterval === undefined ? {} : { checkpointInterval }),
+    ...(checkpointKeep === undefined ? {} : { checkpointKeep }),
     ...(reclaimLock ? { reclaimLock } : {}),
   };
 }
