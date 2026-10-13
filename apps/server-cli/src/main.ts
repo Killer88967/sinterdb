@@ -16,6 +16,7 @@ import {
   runMaintenanceCommand,
 } from "./maintenance-command.js";
 import { logError, logInfo, logWarning } from "./logger.js";
+import { createStyle, styleHelp } from "./style.js";
 
 export async function main(
   arguments_: readonly string[] = process.argv.slice(2),
@@ -36,7 +37,7 @@ export async function main(
 
   switch (command.kind) {
     case "help":
-      process.stdout.write(HELP_TEXT);
+      process.stdout.write(styleHelp(HELP_TEXT, createStyle(process.stdout)));
       return;
 
     case "version":

@@ -27,6 +27,7 @@
   "devDependencies": {
     "@sinterdb-internal/server": "workspace:^",
     "esbuild": "catalog:",
+    "picocolors": "catalog:",
     "vitest": "catalog:"
   },
   "publishConfig": {

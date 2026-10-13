@@ -11,6 +11,7 @@ allowBuilds:
 catalog:
   "@types/node": "latest"
   "esbuild": "latest"
+  "picocolors": "latest"
   "typescript": "latest"
   "vitest": "latest"
 

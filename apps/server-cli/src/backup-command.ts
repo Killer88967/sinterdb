@@ -6,6 +6,14 @@ import {
   verifyBackup,
 } from "@sinterdb-internal/server";
 
+import {
+  createStyle,
+  formatBytes,
+  keyValues,
+  styleHelp,
+  type Style,
+} from "./style.js";
+
 export const BACKUP_COMMANDS = ["backup", "restore", "verify-backup"] as const;
 
 export type BackupCommandName = (typeof BACKUP_COMMANDS)[number];
@@ -135,9 +143,13 @@ function readString(value: unknown): string | undefined {
 
 export function runBackupCommand(command: BackupCommand): void {
   if (command.help) {
-    process.stdout.write(BACKUP_HELP_TEXT);
+    process.stdout.write(
+      styleHelp(BACKUP_HELP_TEXT, createStyle(process.stdout)),
+    );
     return;
   }
+
+  const style = createStyle(process.stdout);
 
   try {
     switch (command.name) {
@@ -149,8 +161,10 @@ export function runBackupCommand(command: BackupCommand): void {
         });
 
         process.stdout.write(
-          `Backup written to ${result.directory}\n` +
-            `${result.files} files, ${result.bytes} bytes\n`,
+          formatBackupResult(style, `Backup written to ${result.directory}`, [
+            ["files", String(result.files)],
+            ["size", describeSize(result.bytes)],
+          ]),
         );
         return;
       }
@@ -159,8 +173,11 @@ export function runBackupCommand(command: BackupCommand): void {
         const summary = verifyBackup(required(command.from));
 
         process.stdout.write(
-          `Backup is intact: ${summary.directory}\n` +
-            `${summary.files} files, ${summary.bytes} bytes, created ${summary.createdAt}\n`,
+          formatBackupResult(style, `Backup is intact: ${summary.directory}`, [
+            ["files", String(summary.files)],
+            ["size", describeSize(summary.bytes)],
+            ["created", summary.createdAt],
+          ]),
         );
         return;
       }
@@ -172,19 +189,40 @@ export function runBackupCommand(command: BackupCommand): void {
         });
 
         process.stdout.write(
-          `Restored to ${result.directory}\n` +
-            `${result.files} files, ${result.bytes} bytes\n` +
-            `The restored data recovers at log position ${String(result.recovery.lastLsn)}\n`,
+          formatBackupResult(style, `Restored to ${result.directory}`, [
+            ["files", String(result.files)],
+            ["size", describeSize(result.bytes)],
+            ["log position", String(result.recovery.lastLsn)],
+          ]),
         );
         return;
       }
     }
   } catch (error: unknown) {
+    const failure = createStyle(process.stderr);
+
     process.stderr.write(
-      `${command.name} failed: ${error instanceof Error ? error.message : String(error)}\n`,
+      `${failure.bold(failure.red(`${command.name} failed:`))} ${error instanceof Error ? error.message : String(error)}\n`,
     );
     process.exitCode = 1;
   }
+}
+
+function describeSize(bytes: number): string {
+  return bytes < 1024
+    ? `${bytes} bytes`
+    : `${formatBytes(bytes)} (${bytes} bytes)`;
+}
+
+export function formatBackupResult(
+  style: Style,
+  headline: string,
+  rows: readonly (readonly [string, string])[],
+): string {
+  return `${[
+    `${style.green(style.symbols.ok)} ${style.bold(headline)}`,
+    ...keyValues(style, rows, 2),
+  ].join("\n")}\n`;
 }
 
 function required(value: string | undefined): string {

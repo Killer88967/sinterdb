@@ -118,7 +118,18 @@ reason in the log.
 
 ### Log output
 
-The server writes one JSON object per line: informational events to standard
+When standard output and standard error are both terminals, the server prints
+readable, colored log entries: the time, the level, the event name and the
+message on one line, then the details underneath. Anywhere else, such as a file,
+a pipe or `docker logs` without a terminal, it writes one JSON object per line.
+There is no flag for this: the choice follows where the output goes.
+
+Colors follow the usual conventions. Set `NO_COLOR` to turn them off, or
+`FORCE_COLOR` to turn them on even when output is not a terminal. The
+`inspect`, `repair`, `backup`, `restore` and `verify-backup` commands use the
+same rules.
+
+The JSON form writes informational events to standard
 output, and warnings and errors to standard error. A client that disconnects
 abruptly is logged as a `server.connection_error` warning and does not stop the
 server; an `error` line with a `server.runtime_error` event does. The fields of a line are `timestamp`,

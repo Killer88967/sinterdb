@@ -49,7 +49,9 @@ docker start sinterdb
 docker logs sinterdb
 ```
 
-The logs are the same JSON lines the server prints anywhere else. After a
+The logs are JSON lines, one per event, unless the container has a terminal
+(`docker run -t`), in which case they are the readable form. Leave out `-t`
+to keep them as JSON. After a
 restart the `server.started` line reports `"storage":"disk"` and how many
 records were replayed.
 

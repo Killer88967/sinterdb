@@ -40,6 +40,8 @@ Write concerns (with --data-dir):
              to the log within about 100 ms. A server crash can lose the most
              recent writes.
 
+Set NO_COLOR to turn colors off, or FORCE_COLOR to turn them on.
+
 Environment:
   SINTERDB_HOST          Default listening address
   SINTERDB_PORT          Default listening port

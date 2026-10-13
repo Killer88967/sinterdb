@@ -9,11 +9,16 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   BACKUP_HELP_TEXT,
   BackupUsageError,
+  formatBackupResult,
   isBackupCommandName,
   parseBackupArguments,
   runBackupCommand,
 } from "./backup-command.js";
 import { HELP_TEXT } from "./cli.js";
+import { usePlainOutput } from "./plain-output.js";
+import { COLOR_STYLE, PLAIN_STYLE } from "./style.js";
+
+usePlainOutput();
 
 describe("parseBackupArguments", () => {
   it("parses backup", () => {
@@ -166,6 +171,29 @@ describe("runBackupCommand", () => {
     runBackupCommand(parseBackupArguments("backup", ["--help"]));
 
     expect(out).toBe(BACKUP_HELP_TEXT);
+  });
+});
+
+describe("backup output", () => {
+  it("shows a headline and aligned details", () => {
+    const lines = formatBackupResult(PLAIN_STYLE, "Backup written to b", [
+      ["files", "12"],
+      ["size", "1.0 KiB (1024 bytes)"],
+    ]).split("\n");
+
+    expect(lines).toEqual([
+      "+ Backup written to b",
+      "  files  12",
+      "  size   1.0 KiB (1024 bytes)",
+      "",
+    ]);
+  });
+
+  it("uses a green check and bold headline with colors", () => {
+    const text = formatBackupResult(COLOR_STYLE, "Done", [["a", "1"]]);
+
+    expect(text).toContain(COLOR_STYLE.green("✔"));
+    expect(text).toContain(COLOR_STYLE.bold("Done"));
   });
 });
 

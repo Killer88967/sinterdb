@@ -13,6 +13,8 @@ import { SinterServer } from "@sinterdb-internal/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { HELP_TEXT } from "./cli.js";
+import { usePlainOutput } from "./plain-output.js";
+import { stripAnsi } from "./style.js";
 import {
   MAINTENANCE_HELP_TEXT,
   MaintenanceUsageError,
@@ -20,6 +22,8 @@ import {
   parseMaintenanceArguments,
   runMaintenanceCommand,
 } from "./maintenance-command.js";
+
+usePlainOutput();
 
 let root: string;
 let data: string;
@@ -138,8 +142,8 @@ describe("runMaintenanceCommand", () => {
       parseMaintenanceArguments("inspect", ["--data-dir", data]),
     );
 
-    expect(out).toContain("the server can open this directory");
-    expect(out).toContain("Manifest: ok");
+    expect(out).toContain("The server can open this directory");
+    expect(out).toContain("manifest  ok");
     expect(process.exitCode).toBeUndefined();
   });
 
@@ -167,7 +171,7 @@ describe("runMaintenanceCommand", () => {
     );
 
     expect(out).toContain("CANNOT open");
-    expect(out).toContain("Manifest: unreadable");
+    expect(out).toContain("unreadable");
     expect(process.exitCode).toBe(1);
   });
 
@@ -192,7 +196,7 @@ describe("runMaintenanceCommand", () => {
       ]),
     );
 
-    expect(out).toContain("Steps it would take:");
+    expect(out).toContain("Steps it would take");
     expect(out).toContain("Nothing was changed");
     expect(readFileSync(join(data, "manifest.json"), "utf8")).toBe("{broken");
     expect(process.exitCode).toBe(1);
@@ -209,7 +213,7 @@ describe("runMaintenanceCommand", () => {
       ]),
     );
 
-    expect(out).toContain("[done]");
+    expect(out).toContain("Steps\n");
     expect(out).toContain("moved to");
     expect(out).toContain("The server can now open this directory.");
     expect(process.exitCode).toBeUndefined();
@@ -224,7 +228,7 @@ describe("runMaintenanceCommand", () => {
       parseMaintenanceArguments("repair", ["--data-dir", data, "--apply"]),
     );
 
-    expect(out).toContain("[skipped]");
+    expect(out).toContain("skipped");
     expect(out).toContain("needs --rebuild-manifest");
     expect(out).toContain("still cannot open");
     expect(process.exitCode).toBe(1);
@@ -239,6 +243,80 @@ describe("runMaintenanceCommand", () => {
 
     expect(out).toContain("Nothing to repair");
     expect(process.exitCode).toBeUndefined();
+  });
+});
+
+describe("colors", () => {
+  const escape = String.fromCharCode(27);
+
+  afterEach(() => {
+    delete process.env["FORCE_COLOR"];
+    delete process.env["NO_COLOR"];
+  });
+
+  it("colors the report when asked and not otherwise", async () => {
+    await populate();
+    process.env["FORCE_COLOR"] = "1";
+
+    runMaintenanceCommand(
+      parseMaintenanceArguments("inspect", ["--data-dir", data]),
+    );
+
+    expect(out).toContain(`${escape}[`);
+    expect(out).toContain("✔");
+
+    out = "";
+    delete process.env["FORCE_COLOR"];
+
+    runMaintenanceCommand(
+      parseMaintenanceArguments("inspect", ["--data-dir", data]),
+    );
+
+    expect(out).not.toContain(escape);
+    expect(out).not.toContain("✔");
+  });
+
+  it("keeps the words the same with and without colors", async () => {
+    await populate();
+    writeFileSync(join(data, "manifest.json"), "{broken");
+
+    const run = (): string => {
+      out = "";
+      process.exitCode = undefined;
+      runMaintenanceCommand(
+        parseMaintenanceArguments("repair", ["--data-dir", data]),
+      );
+
+      return out;
+    };
+    const plain = run();
+
+    process.env["FORCE_COLOR"] = "1";
+
+    const colored = run();
+
+    const symbols: Record<string, string> = {
+      "✔": "+",
+      "✖": "x",
+      "▲": "!",
+      "•": "-",
+      "·": "-",
+      "─": "-",
+    };
+    const unstyled = stripAnsi(colored).replace(
+      /[✔✖▲•·─]/g,
+      (symbol) => symbols[symbol] as string,
+    );
+
+    expect(colored).toContain(escape);
+    expect(unstyled).toBe(plain);
+  });
+
+  it("colors the help text", () => {
+    process.env["FORCE_COLOR"] = "1";
+    runMaintenanceCommand(parseMaintenanceArguments("inspect", ["--help"]));
+
+    expect(out).toContain(`${escape}[36m--apply${escape}[39m`);
   });
 });
 
