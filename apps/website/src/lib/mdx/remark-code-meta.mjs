@@ -17,27 +17,6 @@ function visit(node) {
     const noCopy = /(^|\s)nocopy(?=\s|$)/u.test(meta);
     meta = meta.replace(/(^|\s)nocopy(?=\s|$)/u, " ");
 
-    const choice = /(^|\s)choice\[([^\]]*)\](?=\s|$)/u.exec(meta);
-    meta = meta.replace(/(^|\s)choice\[[^\]]*\](?=\s|$)/u, " ");
-
-    const title = parseTitle(meta.trim());
-
-    if (title || noCopy || choice) {
-      node.data ??= {};
-      node.data.hProperties = {
-        ...node.data.hProperties,
-        ...(title && { "data-title": title }),
-        ...(noCopy && { "data-nocopy": "" }),
-        ...(choice && { "data-choices": choice[2] }),
-      };
-    }
-  }
-  if (node.type === "code" && node.meta) {
-    let meta = node.meta.trim();
-
-    const noCopy = /(^|\s)nocopy(?=\s|$)/u.test(meta);
-    meta = meta.replace(/(^|\s)nocopy(?=\s|$)/u, " ");
-
     const choice = extractChoice(meta);
     if (choice) meta = choice.rest;
 
