@@ -328,7 +328,7 @@ describe("a full disk under the storage engine", () => {
   });
 
   it("refuses to open a directory it may not write to", () => {
-    control.fault = { call: "openSync", code: "EACCES", pathEndsWith: "LOCK" };
+    control.fault = { call: "openSync", code: "EACCES", pathEndsWith: ".tmp" };
 
     expect(codeOf(() => StorageEngine.open({ directory }))).toBeDefined();
   });

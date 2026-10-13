@@ -52,7 +52,7 @@ let stageHits = 0;
 
 const engine = StorageEngine.open({
   directory: config.directory,
-  durability: config.durability,
+  writeConcern: config.writeConcern,
   segmentSizeBytes: config.segmentSizeBytes,
   checkpointThresholdBytes: config.checkpointThresholdBytes,
   checkpointOnClose: false,

@@ -2,13 +2,16 @@ import { randomUUID } from "node:crypto";
 import {
   closeSync,
   fsyncSync,
+  linkSync,
   openSync,
+  readdirSync,
   readFileSync,
   statSync,
   unlinkSync,
   writeSync,
 } from "node:fs";
 import { hostname } from "node:os";
+import { basename, dirname, join } from "node:path";
 
 import { StorageError, StorageErrorCode } from "../errors.js";
 import { errnoOf, ioError } from "../io-error.js";
@@ -62,34 +65,15 @@ export function acquireDirectoryLock(
     nonce: randomUUID(),
   };
 
+  sweepPrivateFiles(path);
+
   for (let attempt = 0; attempt < 3; attempt += 1) {
-    let created = false;
-
     try {
-      const fd = openSync(path, "wx");
-
-      created = true;
-
-      try {
-        writeSync(fd, JSON.stringify(info));
-        fsyncSync(fd);
-      } finally {
-        closeSync(fd);
-      }
-
+      publishLock(path, info);
       heldPaths.add(path);
 
       return { release: () => releaseLock(path, info.nonce) };
     } catch (error: unknown) {
-      if (created) {
-        // A lock file with no readable owner would block the next start.
-        try {
-          unlinkSync(path);
-        } catch {
-          // Nothing more can be done; the file counts as stale after a while.
-        }
-      }
-
       if ((error as NodeJS.ErrnoException).code !== "EEXIST") {
         throw ioError("create the lock file", path, error);
       }
@@ -118,6 +102,73 @@ export function acquireDirectoryLock(
   }
 
   throw locked(path, "it kept changing while it was being acquired");
+}
+
+// The owner is written to a private file first and then linked into place, so
+// the lock path never exists without a readable owner, even if this process is
+// killed part way through. link() fails with EEXIST if the lock is taken.
+function publishLock(path: string, info: LockInfo): void {
+  const temporary = `${path}.${info.pid}.${info.nonce}.tmp`;
+  const fd = openSync(temporary, "wx");
+
+  try {
+    try {
+      writeSync(fd, JSON.stringify(info));
+      fsyncSync(fd);
+    } finally {
+      closeSync(fd);
+    }
+
+    linkSync(temporary, path);
+  } finally {
+    try {
+      unlinkSync(temporary);
+    } catch {
+      // A leftover private file is harmless; it is never treated as a lock.
+    }
+  }
+}
+
+// Removes private files left by a killed or failed start. Those of this process
+// cannot be in use, because acquiring is synchronous; those of another process
+// are only removed once that process is gone.
+function sweepPrivateFiles(path: string): void {
+  const prefix = `${basename(path)}.`;
+
+  let names: string[];
+
+  try {
+    names = readdirSync(dirname(path));
+  } catch {
+    return;
+  }
+
+  for (const name of names) {
+    const match = /^(\d+)\.[0-9a-f-]+\.tmp$/.exec(name.slice(prefix.length));
+
+    if (!name.startsWith(prefix) || match === null) {
+      continue;
+    }
+
+    const pid = Number(match[1]);
+    let gone = pid === process.pid;
+
+    if (!gone) {
+      try {
+        process.kill(pid, 0);
+      } catch (error: unknown) {
+        gone = (error as NodeJS.ErrnoException).code === "ESRCH";
+      }
+    }
+
+    if (gone) {
+      try {
+        unlinkSync(join(dirname(path), name));
+      } catch {
+        // Already gone, or not ours to remove; neither blocks the lock.
+      }
+    }
+  }
 }
 
 /** Says who holds the lock file at `path`, or undefined if there is none. */
