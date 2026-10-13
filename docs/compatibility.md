@@ -108,6 +108,14 @@ Each breaking change lands here in the release that makes it.
   deprecated and setting both an old and a new option is an error. The
   `server.started` log line reports `writeConcern` instead of `durability`.
   Data files are unchanged.
+- **Log lines look different on a terminal.** When standard output and
+  standard error are both terminals, the server prints readable, colored log
+  entries instead of JSON. Anything that reads the log from a file, a pipe or
+  `docker logs` without a terminal still gets one JSON object per line.
+- **Storage format version 2 is unchanged.** A 0.1.0 data directory opens as it
+  is. New files appear next to the old ones only when you use the new
+  commands: a `quarantine` folder after `sinterd repair`, and `backup.json`
+  inside a backup.
 
 ### 0.1.0
 

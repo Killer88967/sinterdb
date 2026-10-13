@@ -1,5 +1,22 @@
 # sinterdb-server
 
+## 0.2.0
+
+### Minor Changes
+
+- Storage Reliability.
+
+  - Add the `memory`, `journaled` and `flushed` write concerns with `--write-concern` and `SINTERDB_WRITE_CONCERN`. `--durability` and `SINTERDB_DURABILITY` still work as deprecated names (`fsync` means `flushed`, `buffered` means `journaled`).
+  - Add group commit: writes that arrive together share one flush to stable storage.
+  - Replace `manifest.json` atomically, and add checkpoint scheduling and retention with `--checkpoint-interval` and `--checkpoint-keep`.
+  - Take automatic checkpoints in the background, so a large data set no longer stops reads and writes while it is saved.
+  - Add `sinterd backup`, `sinterd restore` and `sinterd verify-backup`. Backups are checked file by file with SHA-256 checksums.
+  - Add `sinterd inspect` and `sinterd repair`. Inspect reports the state of a data directory without changing it. Repair shows a plan first, moves removed files to a quarantine folder instead of deleting them, and only discards log records when `--allow-data-loss` is given.
+  - Report a full disk as `DISK_FULL` and a refused permission as `PERMISSION_DENIED`, and keep the server usable when a write fails for those reasons. A failed flush is never treated as recoverable.
+  - Add a storage format migration framework. Upgrades that rewrite files are marked in the manifest, so an interrupted upgrade finishes on the next start.
+  - Add fault-injection tests that fail every file operation of a workload in turn and damage data files one byte at a time. Fix a lock file left behind by a failed write and a file handle leaked by a failed backup copy.
+  - Print readable, colored log lines and command output on a terminal. Output that is piped or redirected is unchanged, and `NO_COLOR` and `FORCE_COLOR` are honored.
+
 ## 0.1.0
 
 ### Minor Changes

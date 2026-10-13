@@ -7,8 +7,7 @@ Command-line server for SinterDB. The package installs the `sinterd` executable.
 
 ## Installation
 
-The package has not been published to npm yet. The `0.1.0` developer preview
-will be published under the `next` tag:
+The `0.2.0` developer preview is published under the `next` tag:
 
 ```bash
 npm install --global @sinterdb/cli@next
@@ -54,6 +53,12 @@ Options:
   --durability <mode> Deprecated: fsync means flushed, buffered means journaled
   --checkpoint-bytes <n>
                       Bytes of log between automatic checkpoints (default 64 MiB)
+  --checkpoint-interval <seconds>
+                      Also checkpoint at least this often when data changed
+  --checkpoint-keep <n>
+                      Snapshots to keep (default 2)
+  --reclaim-lock      Take over a data directory lock left by another host or
+                      container
   -h, --help          Show the help message
   -v, --version       Show the server version
 ```
@@ -101,6 +106,22 @@ recovery, and backups.
 
 `--write-concern` and the checkpoint options require `--data-dir`.
 
+## Backup, Inspection and Repair
+
+These commands work on a data directory the server is not using. They share
+the server's colors on a terminal and are plain text when piped.
+
+```bash
+sinterd backup --data-dir ./data --to ./backups/today
+sinterd verify-backup --from ./backups/today
+sinterd restore --from ./backups/today --data-dir ./restored
+sinterd inspect --data-dir ./data
+sinterd repair --data-dir ./data
+```
+
+See [Backup and restore](../../docs/backup.md) and
+[Inspecting and repairing](../../docs/repair.md).
+
 ## Structured Logging
 
 Lifecycle events are written as newline-delimited JSON:
@@ -115,7 +136,7 @@ Lifecycle events are written as newline-delimited JSON:
     "host": "127.0.0.1",
     "port": 4721,
     "family": "IPv4",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "storage": "disk",
     "dataDirectory": "/var/lib/sinterdb",
     "writeConcern": "flushed",

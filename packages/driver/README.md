@@ -8,8 +8,7 @@ The official Node.js driver for the SinterDB document database.
 
 ## Installation
 
-The package has not been published to npm yet. The `0.1.0` developer preview
-will be published under the `next` tag:
+The `0.2.0` developer preview is published under the `next` tag:
 
 ```bash
 npm install sinterdb@next
@@ -502,7 +501,7 @@ Server rejections of write commands carry a wire code and name:
 
 ## Current Scope
 
-Version `0.1.0` provides:
+Version `0.2.0` provides:
 
 - `SinterClient`
 - `sinterdb://` connection-string parsing
@@ -531,6 +530,6 @@ Version `0.1.0` provides:
 - Unique and sparse single-field indexes with typed `IndexDefinition<TDocument>`
 - `find().explain()`
 
-`0.1.0` is a developer preview. See the
+`0.2.0` is a developer preview. See the
 [compatibility promise](../../docs/compatibility.md) for what stays stable
-between releases. The next milestone is `0.2.0`, Storage Reliability.
+between releases. The next milestone is `0.3.0`, Query Engine and Driver Contract.

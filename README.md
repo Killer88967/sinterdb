@@ -1,7 +1,7 @@
 # SinterDB
 
 [![CI](https://img.shields.io/github/actions/workflow/status/SinterDB/sinterdb/ci.yml?branch=main&label=CI&logo=githubactions)](https://github.com/SinterDB/sinterdb/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/sinterdb/next?logo=npm&logoColor=white)](https://www.npmjs.com/package/sinterdb/v/0.1.0)
+[![npm](https://img.shields.io/npm/v/sinterdb/next?logo=npm&logoColor=white)](https://www.npmjs.com/package/sinterdb/v/0.2.0)
 [![License](https://img.shields.io/github/license/SinterDB/sinterdb?color=blue)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A524-339933?logo=nodedotjs&logoColor=white)](package.json)
 [![Status](https://img.shields.io/badge/Status-Alpha-orange)](ROADMAP.md)
@@ -9,7 +9,7 @@
 A document-oriented database, its official Node.js driver, and supporting packages.
 
 > [!WARNING]
-> SinterDB `0.1.0` is a developer preview for local projects. The server can keep its data durably in a data directory (`--data-dir`) and recover it after a restart or crash. Without a data directory it keeps everything in memory and loses it on shutdown. The whole dataset must fit in memory, and APIs and protocol details may change before `1.0.0`.
+> SinterDB `0.2.0` is a developer preview for local projects. The server can keep its data durably in a data directory (`--data-dir`) and recover it after a restart or crash. Without a data directory it keeps everything in memory and loses it on shutdown. The whole dataset must fit in memory, and APIs and protocol details may change before `1.0.0`.
 
 ## Project Goals
 
@@ -160,7 +160,7 @@ on `SIGINT` or `SIGTERM`.
 
 ## Development Status
 
-The current milestone is `0.1.0 — Developer Preview`.
+The current milestone is `0.2.0 — Storage Reliability`.
 
 Implemented so far:
 
