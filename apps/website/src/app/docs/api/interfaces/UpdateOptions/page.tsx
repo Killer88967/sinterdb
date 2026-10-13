@@ -59,7 +59,7 @@ const page = {
             {
               path: "packages/driver/src/update.ts",
               line: 57,
-              url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/update.ts#L57",
+              url: "https://github.com/SinterDB/sinterdb/blob/53b68e54a4471f29fb9644bdcca6e1b81d7b3b1f/packages/driver/src/update.ts#L57",
             },
           ],
         },
@@ -83,7 +83,7 @@ const page = {
     {
       path: "packages/driver/src/update.ts",
       line: 53,
-      url: "https://github.com/SinterDB/sinterdb/blob/4df6f26b49a6fbae9dfd4e01181046de7fb63c37/packages/driver/src/update.ts#L53",
+      url: "https://github.com/SinterDB/sinterdb/blob/53b68e54a4471f29fb9644bdcca6e1b81d7b3b1f/packages/driver/src/update.ts#L53",
     },
   ],
 } satisfies ApiPage;

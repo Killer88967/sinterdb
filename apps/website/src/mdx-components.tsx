@@ -2,7 +2,7 @@ import type { MDXComponents } from "mdx/types";
 import Link from "next/link";
 import { isValidElement, type ComponentProps, type ReactElement } from "react";
 
-import { CodeBlock } from "@/components/docs/code-block";
+import { CodeBlock, CodeChoices } from "@/components/docs/code-block";
 import { Api, Callout, Card, Cards } from "@/components/docs/mdx";
 import { resolveApiLink } from "@/lib/api-links";
 
@@ -11,6 +11,7 @@ type CodeElement = ReactElement<{
   readonly children?: string;
   readonly "data-title"?: string;
   readonly "data-nocopy"?: string;
+  readonly "data-choices"?: string;
 }>;
 
 const components: MDXComponents = {
@@ -25,7 +26,20 @@ const components: MDXComponents = {
       children: code,
       "data-title": title,
       "data-nocopy": noCopy,
+      "data-choices": choices,
     } = (children as CodeElement).props;
+
+    if (choices !== undefined) {
+      return (
+        <CodeChoices
+          code={String(code ?? "")}
+          choices={choices}
+          lang={className?.replace(/^language-/u, "")}
+          title={title}
+          copy={noCopy === undefined}
+        />
+      );
+    }
 
     return (
       <CodeBlock

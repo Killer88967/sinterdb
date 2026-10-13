@@ -51,6 +51,8 @@
         "vitest.explorer",
         "ms-vscode.hexeditor",
         "EditorConfig.EditorConfig",
+        "bradlc.vscode-tailwindcss",
+        "unifiedjs.vscode-mdx",
         "streetsidesoftware.code-spell-checker",
         "christian-kohler.path-intellisense",
         "redhat.vscode-yaml",

@@ -21,12 +21,16 @@ SinterDB currently requires Node.js 24 or newer.
 
 The SinterDB server CLI is distributed as `@sinterdb/cli`. It provides the `sinterd` command.
 
-```bash npm
+```bash choice[npm,pnpm,bun,yarn[classic(v1 - Global install),modern(v2+ - Temporary execution)]]
 npm install --global @sinterdb/cli@next
-```
-
-```bash pnpm
+---
 pnpm add --global @sinterdb/cli@next
+---
+bun add --global @sinterdb/cli@next
+---
+yarn global add @sinterdb/cli@next
+---
+yarn dlx @sinterdb/cli@next
 ```
 
 ## Start the server
@@ -43,12 +47,14 @@ Using `--data-dir` enables durable storage so your data survives server restarts
 
 In your application project, install the official SinterDB driver:
 
-```bash npm
+```bash choice[npm,pnpm,bun,yarn]
 npm install sinterdb@next
-```
-
-```bash pnpm
+---
 pnpm add sinterdb@next
+---
+bun add sinterdb@next
+---
+yarn add sinterdb@next
 ```
 
 <Callout title="Default server address" tone="neutral">
