@@ -27,12 +27,13 @@ export async function CodeBlock({
   return (
     <figure className="docs-code group relative my-5 overflow-hidden rounded-xl border border-white/8 bg-[#0d0d0d]">
       {title && (
-        <figcaption className="border-b border-white/[0.07] px-4 py-2 font-mono text-[11px] text-zinc-600">
-          {title}
+        <figcaption className="flex items-center justify-between gap-4 border-b border-white/[0.07] px-4 py-2 font-mono text-[11px] text-zinc-600">
+          <span className="truncate">{title}</span>
+          {copy && <CopyButton text={code} inline />}
         </figcaption>
       )}
 
-      {copy && <CopyButton text={code} />}
+      {!title && copy && <CopyButton text={code} />}
 
       <div
         className="overflow-x-auto p-5 font-mono text-sm leading-6 [&_pre]:bg-transparent! [&_pre]:outline-none"
